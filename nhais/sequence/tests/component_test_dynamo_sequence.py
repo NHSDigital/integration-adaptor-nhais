@@ -13,7 +13,7 @@ from sequence import dynamo_sequence
 class ComponentTestDynamoSequence(unittest.TestCase):
 
     def setUp(self):
-        config.setup_config("MHS")
+        config.setup_config("NHAIS")
         self.table_name = 'test_dynamo_sequence_table'
         self.key = 'transaction_id'
         self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)

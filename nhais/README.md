@@ -23,6 +23,4 @@ Select “Create module from existing sources"
 
 Click through wizard and select correct pipenv environment for NHAIS if it asks for one
 
-Open File → Project Structure… → select Modules → add root common (all_common) to NHAIS. 
-
 Now you can add configurations to run component. Just make sure that each configuration uses correct Python interpreter and set EnvFile:
