@@ -11,7 +11,7 @@ Ensure you have Pipenv installed and on your path, then within NHAIS directory, 
 
 ## Developer setup 
 
-Open integration-adaptors in IDE (but point to root folder of repository)
+Open integration-adaptor-nhais in IDE  
 
 File → Project Structure → SDK → Add new Python SDK → Select Pipenv Environment and provide a path to the executable of my pipenv.
 
