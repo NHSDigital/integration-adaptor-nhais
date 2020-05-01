@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Run SonarQube analysis') {
             steps {
-                dir('nhais') {
+                dir('integration-adaptor-nhais') {
                     runSonarQubeAnalysis()
                 }
             }
