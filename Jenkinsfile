@@ -36,18 +36,17 @@ pipeline {
                 }
             }
         }
-        stage('Build & test NHAIS Common') {
+        stage('Unit test') {
             when {
-              expression { runBuild }
+              expression { runUnitTest }
             }
             steps {
-                dir('common') {
-                    buildModules('Installing nhais common dependencies')
-                    executeUnitTestsWithCoverage()
-                }
+                dir('******') {
+                executeUnitTestsWithCoverage()
+               }
             }
         }
-        stage('Deploy NHAIS') {
+        stage('Deploy NHAIS terraform') {
             when {
               expression { runTerraform }
             }
