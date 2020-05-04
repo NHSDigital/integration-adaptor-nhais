@@ -1,3 +1,13 @@
+// Options to switch off certain steps if needed
+ Boolean runBuildCommon     = false
+ Boolean runBuild           = false
+ Boolean runUnitTest        = false
+ Boolean runIntegrationTest = false
+ Boolean runComponentTest   = false
+ Boolean runTerraform       = false
+ Boolean runSonarQube       = true    
+    
+
 pipeline {
     agent{
         label 'jenkins-workers'
@@ -15,7 +25,41 @@ pipeline {
     }    
 
     stages {
+        stage('Build & test common') {
+            when {
+              expression { runBuildCommon }
+            }
+            steps {
+                dir('common') {
+                    buildModules('Installing common dependencies')
+                    executeUnitTestsWithCoverage()
+                }
+            }
+        }
+        stage('Build & test NHAIS Common') {
+            when {
+              expression { runBuild }
+            }
+            steps {
+                dir('common') {
+                    buildModules('Installing nhais common dependencies')
+                    executeUnitTestsWithCoverage()
+                }
+            }
+        }
+        stage('Deploy NHAIS') {
+            when {
+              expression { runTerraform }
+            }
+            steps {
+                dir('pipeline/terraform/nhais') {
+                }
+            }
+        }
         stage('Run SonarQube analysis') {
+            when {
+              expression { runSonarQube }
+            } 
             steps {
                 dir('.') {
                     runSonarQubeAnalysis()
