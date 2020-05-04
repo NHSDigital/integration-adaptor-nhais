@@ -73,7 +73,6 @@ pipeline {
                         }
                     }
                 }
-            }
         }
         stage('Deploy NHAIS terraform') {
             when {
