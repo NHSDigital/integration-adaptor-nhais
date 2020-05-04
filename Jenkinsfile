@@ -75,7 +75,6 @@ pipeline {
                 }
             }
         }
-    }
         stage('Deploy NHAIS terraform') {
             when {
               expression { runTerraform }
