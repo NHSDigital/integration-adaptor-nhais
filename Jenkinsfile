@@ -1,10 +1,12 @@
 // Options to switch off certain steps if needed
-// Boolean runBuildCommon     = false
-// Boolean runBuild           = false
-// Boolean runUnitTest        = false
-// Boolean runIntegrationTest = false
-// Boolean runComponentTest   = false
-// Boolean runTerraform       = true
+ Boolean runBuildCommon     = false
+ Boolean runBuild           = false
+ Boolean runUnitTest        = false
+ Boolean runIntegrationTest = false
+ Boolean runComponentTest   = false
+ Boolean runTerraform       = true
+ Boolean runSonarQube       = true    
+    
 
 pipeline {
     agent{
@@ -24,6 +26,8 @@ pipeline {
 
     stages {
         stage('Run SonarQube analysis') {
+            when {
+              expression { runSonarQube }
             steps {
                 dir('.') {
                     runSonarQubeAnalysis()
