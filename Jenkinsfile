@@ -27,7 +27,7 @@ pipeline {
     stages {
         stage('Run SonarQube analysis') {
             when {
-              expression { runSonarQube }
+              expression { runSonarQubeAnalysis }
             steps {
                 dir('.') {
                     runSonarQubeAnalysis()
