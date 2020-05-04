@@ -40,3 +40,4 @@ pipeline {
 void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
 }
+}
