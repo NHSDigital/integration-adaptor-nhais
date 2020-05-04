@@ -5,8 +5,6 @@
 // Boolean runIntegrationTest = false
 // Boolean runComponentTest   = false
 // Boolean runTerraform       = true
-// Boolean buildFakespine     = false
-// Boolean deployFakespine    = true
 
 pipeline {
     agent{
