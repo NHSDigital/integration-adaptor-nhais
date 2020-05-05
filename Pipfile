@@ -4,16 +4,20 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-apispec = "~=3.0"
-apispec-webframeworks = "~=0.5"
+requests = "~=2.23"
+unittest-xml-reporting = "~=2.5"
 
 [packages]
-tornado = "*"
-integration-adaptors-common = {editable = true,git = "ssh://git@github.com/nhsconnect/integration-adaptor-common.git",ref = "0.0.1"}
-pycurl = {version = "~=7.43",platform_system = "!= 'Windows'"}
-marshmallow = "~=3.2"
+tornado = "~=6.0"
+integration-adaptors-common = {editable=true, git = "https://git@github.com/nhsconnect/integration-adaptor-common.git", tag='0.0.1'}
 fhir-resources = "~=5.1"
 aioboto3 = "~=8.0"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+unittests = 'python -m xmlrunner discover -o test-reports -p "test_*" -v'
+inttests = 'python -m xmlrunner discover -o test-reports -p "int_*" -v'
+componenttests = 'python -m xmlrunner discover -o test-reports -p "component_*" -v'
+start = "python main.py"

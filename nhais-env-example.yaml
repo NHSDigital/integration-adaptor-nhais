@@ -7,6 +7,7 @@ NHAIS_OUTBOUND_RETRY_DELAY: "3"
 #User-specific env variables
 NHAIS_OUTBOUND_QUEUE_BROKERS: amqp://localhost:5672
 NHAIS_OUTBOUND_QUEUE_NAME: 'nhais_outbound'
+NHAIS_OUTBOUND_ADDRESS: 'http://localhost:80'
 
 #common tests
 AWS_ACCESS_KEY_ID: test
