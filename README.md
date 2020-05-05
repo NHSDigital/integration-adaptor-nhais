@@ -40,7 +40,7 @@ when the service is run.
 ## Running with Docker Compose
 
     docker-compose build
-    docker compose up rabbitmq dynamodb nhais
+    docker-compose up rabbitmq dynamodb nhais
     
 There is also a container that will run all types of tests
 
