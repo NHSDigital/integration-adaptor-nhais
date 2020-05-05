@@ -91,7 +91,7 @@ void executeTestsWithCoverage() {
 }
 
 void executeBuild() {
-    sh label: 'Running docker-compose build', script: 'docker-compose build'
+    sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
 }
 
 void runSonarQubeAnalysis() {
