@@ -1,22 +1,16 @@
-import tornado.httpclient
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+
 import utilities.integration_adaptors_logger as log
 from handlers import healthcheck_handler
-from utilities import config
-
 from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHandler
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
+from utilities import config
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
-def configure_http_client():
-    """
-    Configure Tornado to use the curl HTTP client.
-    """
-    tornado.httpclient.AsyncHTTPClient.configure('tornado.curl_httpclient.CurlAsyncHTTPClient')
 
 def start_tornado_server() -> None:
 
@@ -46,7 +40,6 @@ def main():
     config.setup_config("NHAIS")
     log.configure_logging("NHAIS")
 
-    configure_http_client()
     logger.info('Starting tornado server')
     start_tornado_server()
 
