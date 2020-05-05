@@ -7,7 +7,7 @@ Environment Variables are used throughout application, an example can be found i
 
 Ensure you have Pipenv installed and on your path, then within NHAIS directory, run:
 
-`pipenv install -d`
+    pipenv install
 
 ## Configuration
 
@@ -47,6 +47,10 @@ There is also a container that will run all types of tests
     docker-compose up nhais-tests
 
 ## Running Tests
+
+Ensure development dependencies are installed before running the tests
+
+    pipenv install -d
 
 ### Unit Tests
 
