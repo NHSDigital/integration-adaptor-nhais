@@ -21,4 +21,3 @@ unittests = 'python -m xmlrunner discover -o test-reports -p "test_*" -v'
 inttests = 'python -m xmlrunner discover -o test-reports -p "int_*" -v'
 componenttests = 'python -m xmlrunner discover -o test-reports -p "component_*" -v'
 start = "python main.py"
-version = "python version.py"
