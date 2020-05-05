@@ -1,7 +1,6 @@
 // Options to switch off certain steps if needed
- Boolean runBuildCommon     = false
- Boolean runBuild           = false
- Boolean runUnitTest        = false
+ Boolean runBuild           = true
+ Boolean runTests        = false
  Boolean runIntegrationTest = false
  Boolean runComponentTest   = false
  Boolean runTerraform       = false
@@ -25,25 +24,32 @@ pipeline {
     }    
 
     stages {
-        stage('Build & test common') {
+        stage('Build') {
             when {
-              expression { runBuildCommon }
+              expression { runBuild }
             }
             steps {
-                dir('common') {
-                    buildModules('Installing common dependencies')
-                    executeUnitTestsWithCoverage()
-                }
+                executeBuild()
             }
         }
-        stage('Unit test') {
+        // TODO: ensure deploy and test steps have a dedicated worker
+        stage('Deploy Locally') {
             when {
-              expression { runUnitTest }
+                expression { runTests }
             }
             steps {
-                dir('******') {
-                executeUnitTestsWithCoverage()
-               }
+                deployLocally()
+                echo "Waiting 10 seconds for containers to start"
+                sleep 10
+
+            }
+        }
+        stage('Test') {
+            when {
+              expression { runTests }
+            }
+            steps {
+                executeTestsWithCoverage()
             }
         }
         stage('Deploy NHAIS terraform') {
@@ -66,6 +72,26 @@ pipeline {
             }
         }
     }
+}
+
+void deployLocally() {
+    sh label: 'Starting containers', script: 'docker-compose up rabbitmq dynamodb nhais'
+}
+
+void teardownLocally() {
+    sh label: 'Stopping containers', script: 'docker-compose down'
+    // TODO: cleanup images after publishing
+}
+
+void executeTestsWithCoverage() {
+    sh label: 'Running all tests', script: 'docker-compose run nhais-tests'
+    // TODO: copy build result xml out of container
+    // TODO: archive container logs
+    // TODO: publish test results
+}
+
+void executeBuild() {
+    sh label: 'Running docker-compose build', script: 'docker-compose build'
 }
 
 void runSonarQubeAnalysis() {
