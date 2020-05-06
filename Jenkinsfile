@@ -61,6 +61,7 @@ pipeline {
                 }
             }
         }
+        // TODO run integration tests against deployed service
         stage('Run SonarQube analysis') {
             when {
               expression { runSonarQube }
@@ -88,6 +89,7 @@ void executeTestsWithCoverage() {
     // TODO: copy build result xml out of container
     // TODO: archive container logs
     // TODO: publish test results
+    // TODO: update Pipfile to run tests with coverage
 }
 
 void executeBuild() {
