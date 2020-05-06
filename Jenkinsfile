@@ -25,40 +25,34 @@ pipeline {
 
     stages {
         stage('Build NHAIS') {
-            parallel {
-                stage('Outbound') {
-                    stages {
-                        stage('Build') {
-                            steps {
-                                dir('outbound') {
-                                    buildModules('Installing outbound dependencies')
-                                }
-                            }
+            stages {
+                stage('Build') {
+                    steps {
+                        buildModules('Installing outbound dependencies')
+                    }
+                }
+                stage('Unit test') {
+                    steps {
+                        executeUnitTestsWithCoverage()
+                    }
+                }
+                stage('Build image') {
+                    steps {
+                        script {
+                            sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} dockers/Dockerfile ."
                         }
-                        stage('Unit test') {
-                            steps {
-                                dir('outbound') {
-                                    executeUnitTestsWithCoverage()
-                                }
-                            }
-                        }
-                        stage('Build image') {
-                            steps {
-                                script {
-                                    sh label: 'Building outbound image', script: "docker build -t local/nhais-outbound:${BUILD_TAG} dockers/outbound/Dockerfile ."
-                                }
-                            }
-                        }
-                        stage('Push image') {
-                            steps {
-                                script {
-                                    sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/outbound.json"
-                                }
-                            }
+                    }
+                }
+                stage('Push image') {
+                    steps {
+                        script {
+                            sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/nhais.json"
                         }
                     }
                 }
             }
+
+
         }
         // TODO: ensure deploy and test steps have a dedicated worker
 //         stage('Deploy Locally') {

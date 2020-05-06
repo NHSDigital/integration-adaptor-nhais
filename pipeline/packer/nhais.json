@@ -1,14 +1,14 @@
 {
-  "_description": "This template tags and pushes an nhais/outbound image.",
+  "_description": "This template tags and pushes an nhais image.",
   "variables": {
     "registry": "{{env `DOCKER_REGISTRY`}}",
-    "repository": "/nhais/outbound",
+    "repository": "/nhais",
     "tag": "{{env `BUILD_TAG`}}"
   },
   "builders": [
     {
       "type": "docker",
-      "image": "local/nhais-outbound:{{user `tag`}}",
+      "image": "local/nhais:{{user `tag`}}",
       "pull": false,
       "commit": true
     }
