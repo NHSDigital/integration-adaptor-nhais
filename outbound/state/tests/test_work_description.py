@@ -3,19 +3,19 @@ from unittest.mock import MagicMock
 
 from edifact.outgoing.models.interchange import InterchangeHeader
 from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
-from outbound.state import work_description as wd
+from outbound.state import outbound_state as wd
 
 
 class TestWorkDescription(unittest.TestCase):
 
-    def verify_results_for_input_data(self, work_description):
-        self.assertEqual(work_description.transaction_id, 1)
-        self.assertEqual(work_description.transaction_timestamp, '12:00')
-        self.assertEqual(work_description.transaction_type, 'G1')
-        self.assertEqual(work_description.sis_sequence, 2)
-        self.assertEqual(work_description.sms_sequences, [3, 7])
-        self.assertEqual(work_description.sender, 'test_sender')
-        self.assertEqual(work_description.recipient, 'test_recipient')
+    def verify_results_for_input_data(self, outbound_state):
+        self.assertEqual(outbound_state.transaction_id, 1)
+        self.assertEqual(outbound_state.transaction_timestamp, '12:00')
+        self.assertEqual(outbound_state.transaction_type, 'G1')
+        self.assertEqual(outbound_state.sis_sequence, 2)
+        self.assertEqual(outbound_state.sms_sequences, [3, 7])
+        self.assertEqual(outbound_state.sender, 'test_sender')
+        self.assertEqual(outbound_state.recipient, 'test_recipient')
 
     def test_constructor(self):
         input_data = {
@@ -32,12 +32,12 @@ class TestWorkDescription(unittest.TestCase):
         }
 
         persistence = MagicMock()
-        work_description = wd.WorkDescription(persistence, input_data)
+        outbound_state = wd.OutboundState(persistence, input_data)
 
-        self.assertEqual(work_description.operation_id, 'aaa-bbb-ccc')
-        self.verify_results_for_input_data(work_description)
+        self.assertEqual(outbound_state.operation_id, 'aaa-bbb-ccc')
+        self.verify_results_for_input_data(outbound_state)
 
-    def test_create_work_description(self):
+    def test_create_outbound_state(self):
         persistence = MagicMock()
         segments = [InterchangeHeader(sender='test_sender',
                                       recipient='test_recipient',
@@ -47,9 +47,9 @@ class TestWorkDescription(unittest.TestCase):
                     MessageHeader(sequence_number=7),
                     ReferenceTransactionNumber(reference=1),
                     ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-        work_description = wd.create_new_work_description(persistence, segments)
+        outbound_state = wd.create_new_outbound_state(persistence, segments)
 
-        self.verify_results_for_input_data(work_description)
+        self.verify_results_for_input_data(outbound_state)
 
     def test_create_wd_none_or_empty_parameters(self):
         persistence = MagicMock()
@@ -63,7 +63,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=None),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -77,7 +77,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -91,7 +91,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -105,7 +105,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(None)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -119,7 +119,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.NOT_EXISTING)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -133,7 +133,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -145,7 +145,7 @@ class TestWorkDescription(unittest.TestCase):
                                               sequence_number=2),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -159,7 +159,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -173,7 +173,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -187,7 +187,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )
@@ -201,7 +201,7 @@ class TestWorkDescription(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                wd.create_new_work_description(
+                wd.create_new_outbound_state(
                     persistence,
                     segments
                 )

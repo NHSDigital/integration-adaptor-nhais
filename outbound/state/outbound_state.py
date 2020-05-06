@@ -19,8 +19,8 @@ RECIPIENT = 'RECIPIENT'
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
-class WorkDescription(object):
-    """A local copy of an instance of a work description from the state store"""
+class OutboundState(object):
+    """A local copy of an instance of an outbound state from the state store"""
 
     def __init__(self, persistence_store: pa.PersistenceAdaptor, store_data: dict):
         """
@@ -36,15 +36,15 @@ class WorkDescription(object):
 
     async def publish(self):
         """
-        Attempts to publish the local state of the work description to the state store
+        Attempts to publish the local state of the outbound state to the state store
         :return:
         """
-        logger.info(f'Attempting to publish work description {self.operation_id}')
+        logger.info(f'Attempting to publish outbound state {self.operation_id}')
 
         serialised = self._serialise_data()
 
         await self.persistence_store.add(self.operation_id, serialised)
-        logger.info(f'Successfully updated work description to state store for {self.operation_id}')
+        logger.info(f'Successfully updated outbound state to state store for {self.operation_id}')
 
     def _deserialize_data(self, store_data):
         data_attribute = store_data['DATA']
@@ -76,11 +76,11 @@ class WorkDescription(object):
         }
 
 
-def create_new_work_description(persistence_store: pa.PersistenceAdaptor,
+def create_new_outbound_state(persistence_store: pa.PersistenceAdaptor,
                                 segments
-                                ) -> WorkDescription:
+                                ) -> OutboundState:
     """
-    Builds a new local work description instance given the details of the message, these details are held locally
+    Builds a new local outbound state instance given the details of the message, these details are held locally
     until a `publish` is executed
     """
 
@@ -92,9 +92,9 @@ def create_new_work_description(persistence_store: pa.PersistenceAdaptor,
             transaction_timestamp = segment.date_time
             sender = segment.sender
             recipient = segment.recipient
-        if isinstance(segment, (InterchangeHeader, InterchangeTrailer)):
+        if isinstance(segment, InterchangeHeader):
             sis_sequence = segment.sequence_number
-        if isinstance(segment, (MessageHeader, MessageTrailer)):
+        if isinstance(segment, MessageHeader):
             sms_sequences.append(segment.sequence_number)
         if isinstance(segment, ReferenceTransactionNumber):
             transaction_id = segment.reference
@@ -103,20 +103,20 @@ def create_new_work_description(persistence_store: pa.PersistenceAdaptor,
 
     if not transaction_id:
         raise ValueError('Expected transaction_id to not be None or empty')
-    if not transaction_timestamp:
+    elif not transaction_timestamp:
         raise ValueError('Expected transaction_timestamp to not be None or empty')
-    if not transaction_type:
+    elif not transaction_type:
         raise ValueError('Expected transaction_type to not be None or empty')
-    if not sis_sequence:
+    elif not sis_sequence:
         raise ValueError('Expected sis_sequence to not be None or empty')
-    if not sms_sequences:
+    elif not sms_sequences:
         raise ValueError('Expected sms_sequences to not be None or empty')
-    if not sender:
+    elif not sender:
         raise ValueError('Expected sender to not be None or empty')
-    if not recipient:
+    elif not recipient:
         raise ValueError('Expected recipient to not be None or empty')
 
-    work_description_map = {
+    outbound_state_map = {
         OPERATION_ID: operation_id,
         DATA: {
             TRANSACTION_ID: transaction_id,
@@ -129,4 +129,4 @@ def create_new_work_description(persistence_store: pa.PersistenceAdaptor,
         }
     }
 
-    return WorkDescription(persistence_store, work_description_map)
+    return OutboundState(persistence_store, outbound_state_map)
