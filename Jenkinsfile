@@ -45,7 +45,7 @@ pipeline {
                         stage('Build image') {
                             steps {
                                 script {
-                                    docker build -t "local/nhais-outbound:${BUILD_TAG}" dockers/outbound/Dockerfile .
+                                    sh label: 'Building outbound image', script: "docker build -t local/nhais-outbound:${BUILD_TAG} dockers/outbound/Dockerfile ."
                                 }
                             }
                         }
