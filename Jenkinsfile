@@ -109,7 +109,7 @@ pipeline {
 }
 
 void deployLocally() {
-    sh label: 'Starting containers', script: 'docker-compose up rabbitmq dynamodb nhais'
+    sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
 }
 
 void teardownLocally() {
