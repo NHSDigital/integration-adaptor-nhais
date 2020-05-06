@@ -44,11 +44,11 @@ pipeline {
                         }
                     }
                 }
-                stage('Push image') {
+                stage('Deploy Locally') {
                     steps {
-                        script {
-                            sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/nhais.json"
-                        }
+                        deployLocally()
+                        echo "Waiting 10 seconds for containers to start"
+                        sleep 10
                     }
                 }
                 stage('Run tests') {
@@ -56,6 +56,13 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Pushing tests', script: 'docker-compose run nhais-tests'
+                        }
+                    }
+                }
+                stage('Push image') {
+                    steps {
+                        script {
+                            sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/nhais.json"
                         }
                     }
                 }
