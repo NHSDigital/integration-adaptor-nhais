@@ -40,7 +40,7 @@ pipeline {
                     steps {
                         script {
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
-                            sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.tests ."
+                            sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                         }
                     }
                 }
