@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nhais:
-    image: local/nhais:${BUILD_TAG:latest}
+    image: local/nhais:${BUILD_TAG}
     build:
       context: .
       dockerfile: Dockerfile
