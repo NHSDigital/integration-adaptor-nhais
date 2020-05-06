@@ -11,7 +11,7 @@ from utilities import config
 class ComponentTestIds(unittest.TestCase):
 
     def setUp(self):
-        config.setup_config("MHS")
+        config.setup_config("NHAIS")
         self.table_name = 'test_ids_generators_table'
         self.key = 'transaction_id'
         self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)
