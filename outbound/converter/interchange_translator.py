@@ -63,7 +63,7 @@ class InterchangeTranslator(object):
         return '\n'.join([segment.to_edifact() for segment in self.segments])
 
     async def __record_outgoing_state(self):
-        adaptor = get_persistence_adaptor(**{'table_name': 'nhais_state'})
+        adaptor = get_persistence_adaptor(table_name = nhais_outbound_state)
         work_description = create_new_work_description(adaptor, self.segments)
         await work_description.publish()
         return
