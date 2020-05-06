@@ -1,7 +1,7 @@
 FROM python:3.7-alpine as base
 RUN pip install pipenv
 RUN mkdir -p /usr/src/app/nhais
-COPY outbound /usr/src/app/nhais
+COPY . /usr/src/app/nhais
 WORKDIR /usr/src/app/nhais
 
 FROM base as builder
