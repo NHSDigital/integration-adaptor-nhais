@@ -5,7 +5,7 @@
  Boolean runComponentTest   = false
  Boolean runTerraform       = false
  Boolean runSonarQube       = true    
-    
+
 
 pipeline {
     agent{
@@ -24,48 +24,73 @@ pipeline {
     }    
 
     stages {
-        stage('Build') {
-            when {
-              expression { runBuild }
-            }
-            steps {
-                executeBuild()
-            }
-        }
-        // TODO: ensure deploy and test steps have a dedicated worker
-        stage('Deploy Locally') {
-            when {
-                expression { runTests }
-            }
-            steps {
-                deployLocally()
-                echo "Waiting 10 seconds for containers to start"
-                sleep 10
-
-            }
-        }
-        stage('Test') {
-            when {
-              expression { runTests }
-            }
-            steps {
-                executeTestsWithCoverage()
-            }
-        }
-        stage('Deploy NHAIS terraform') {
-            when {
-              expression { runTerraform }
-            }
-            steps {
-                dir('pipeline/terraform/nhais') {
+        stage('Build NHAIS') {
+            parallel {
+                stage('Outbound') {
+                    stages {
+                        stage('Build') {
+                            steps {
+                                dir('outbound') {
+                                    buildModules('Installing outbound dependencies')
+                                }
+                            }
+                        }
+                        stage('Unit test') {
+                            steps {
+                                dir('outbound') {
+                                    executeUnitTestsWithCoverage()
+                                }
+                            }
+                        }
+                        stage('Build image') {
+                            steps {
+                                script {
+                                    docker build -t "local/nhais-outbound:${BUILD_TAG}" dockers/outbound/Dockerfile .
+                                }
+                            }
+                        }
+                        stage('Push image') {
+                            steps {
+                                script {
+                                    sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/outbound.json"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+        // TODO: ensure deploy and test steps have a dedicated worker
+//         stage('Deploy Locally') {
+//             when {
+//                 expression { runTests }
+//             }
+//             steps {
+//                 deployLocally()
+//                 echo "Waiting 10 seconds for containers to start"
+//                 sleep 10
+//
+//             }
+//         }
+//         stage('Test') {
+//             when {
+//               expression { runTests }
+//             }
+//             steps {
+//                 executeTestsWithCoverage()
+//             }
+//         }
+//         stage('Deploy NHAIS terraform') {
+//             when {
+//               expression { runTerraform }
+//             }
+//             steps {
+//                 dir('pipeline/terraform/nhais') {
+//                 }
+//             }
+//         }
         // TODO run integration tests against deployed service
         stage('Run SonarQube analysis') {
-            when {
-              expression { runSonarQube }
-            } 
             steps {
                 dir('.') {
                     runSonarQubeAnalysis()
@@ -98,4 +123,14 @@ void executeBuild() {
 
 void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
+}
+
+void executeUnitTestsWithCoverage() {
+    sh label: 'Running unit tests', script: 'pipenv run unittests'
+//     sh label: 'Displaying code coverage report', script: 'pipenv run coverage-report'
+//     sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report-xml'
+}
+
+void buildModules(String action) {
+    sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
 }
