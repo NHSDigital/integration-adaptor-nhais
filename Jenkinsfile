@@ -39,7 +39,7 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
-                            sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG}dockers/Dockerfile ."
+                            sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                         }
                     }
                 }
@@ -50,9 +50,14 @@ pipeline {
                         }
                     }
                 }
+                stage('Run tests') {
+                    steps {
+                        script {
+                            sh label: 'Pushing tests', script: 'docker-compose run nhais-tests'
+                        }
+                    }
+                }
             }
-
-
         }
         // TODO: ensure deploy and test steps have a dedicated worker
 //         stage('Deploy Locally') {
