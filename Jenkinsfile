@@ -31,15 +31,16 @@ pipeline {
                         buildModules('Installing outbound dependencies')
                     }
                 }
-                stage('Unit test') {
-                    steps {
-                        executeUnitTestsWithCoverage()
-                    }
-                }
+                // stage('Unit test') {
+                //     steps {
+                //         executeUnitTestsWithCoverage()
+                //     }
+                // }
                 stage('Build image') {
                     steps {
                         script {
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
+                            sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais Dockerfile.tests ."
                         }
                     }
                 }
@@ -53,6 +54,7 @@ pipeline {
                 stage('Run tests') {
                     steps {
                         script {
+                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Pushing tests', script: 'docker-compose run nhais-tests'
                         }
                     }
