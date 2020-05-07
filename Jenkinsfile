@@ -40,7 +40,6 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
-                            BRANCH.replaceAll("feature/", "feature_")
                             sh label: 'testing string replaceAll', script: 'echo -n ${BRANCH}'                                //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
@@ -57,7 +56,7 @@ pipeline {
                 stage('Run tests') {
                     steps {
                         script {
-                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
+                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG_LOWER}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
 
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
@@ -72,13 +71,13 @@ pipeline {
                             // Need to get the docker image name
                             sh label: 'Dump container logs to files', script: '''
                                 mkdir logs
-                                docker logs ${BRANCH}_nhais_1 > logs/nhais.log
-                                docker logs ${BRANCH}_dynamodb_1 > logs/outbound.log
-                                docker logs ${BRANCH}_rabbitmq_1 > logs/inbound.log
-                                docker logs ${BRANCH}_nhais-tests > logs/nhais-tests.log
+                                docker logs ${BUILD_TAG_LOWER}_nhais_1 > logs/nhais.log
+                                docker logs ${BUILD_TAG_LOWER}_dynamodb_1 > logs/outbound.log
+                                docker logs ${BUILD_TAG_LOWER}_rabbitmq_1 > logs/inbound.log
+                                docker logs ${BUILD_TAG_LOWER}_nhais-tests > logs/nhais-tests.log
                             '''
                             archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
+                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG_LOWER} logs'
                         }
                     }
                 }
