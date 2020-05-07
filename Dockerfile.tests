@@ -1,6 +1,6 @@
 ARG BUILD_TAG=latest
 FROM local/nhais:${BUILD_TAG}
-RUN apk add --update alpine-sdk libxml2-dev libxslt-dev
+RUN apk add git
 RUN pipenv install -d --ignore-pipfile
 RUN printf "#!/bin/sh\npipenv run unittests-cov && pipenv run coverage-report && pipenv run coverage-report-xml && pipenv run componenttests && pipenv run inttests" > /usr/src/app/test.sh
 RUN chmod +x /usr/src/app/test.sh

@@ -56,11 +56,25 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                            
+
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
                             sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
 
                             //executeUnitTestsWithCoverage()
+                        }
+                    }
+                    post {
+                        always {
+                            sh label: 'Docker status', script: 'docker ps --all'
+                            sh label: 'Dump container logs to files', script: '''
+                                mkdir logs
+                                docker logs integration-adaptor-nhais_nhais_1 > logs/route.log
+                                docker logs integration-adaptor-nhais_dynamodb_1 > logs/outbound.log
+                                docker logs integration-adaptor-nhais_rabbitmq_1 > logs/inbound.log
+                                
+                            '''
+                            archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
+                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
                         }
                     }
                 }
@@ -127,12 +141,12 @@ void deployLocally() {
     sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
 }
 
-void teardownLocally() {
-    sh label: 'Stopping containers', script: 'docker-compose down'
-    // TODO: cleanup images after publishing
-    // Note that the * in the glob patterns doesn't match /
-    sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
-}
+// void teardownLocally() {
+//     sh label: 'Stopping containers', script: 'docker-compose down'
+//     // TODO: cleanup images after publishing
+//     // Note that the * in the glob patterns doesn't match /
+//     sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
+// }
 
 void executeTestsWithCoverage() {
     sh label: 'Running all tests', script: 'docker-compose run nhais-tests'
