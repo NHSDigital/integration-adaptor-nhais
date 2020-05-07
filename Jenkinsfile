@@ -20,7 +20,7 @@ pipeline {
     environment {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
-        BRANCH = sh label: 'branch name', returnStdout: true, script: 'echo -n ${GIT_BRANCH}'
+        BRANCH = sh label: 'branch name', returnStdout: true, script: "echo -n ${GIT_BRANCH} | tr '[:upper:]' '[:lower:]'"
         ENVIRONMENT_ID = "nhais-build"
     }    
 
