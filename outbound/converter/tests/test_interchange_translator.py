@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from unittest import mock
 
 import sequence.sequence_manager
-import outbound.converter.interchange_translator
+import outbound.state.outbound_state
 from edifact.outgoing.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
@@ -25,20 +25,20 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
     UNZ_PATTERN = r"^UNZ\+(?P<message_count>[0-9]+)\+(?P<sis>[0-9]{8})'$"
     RFF_PATTERN = r"^RFF\+950:(?P<transaction_type>G[0-9])'$"
 
-    @mock.patch.object(outbound.converter.interchange_translator.InterchangeTranslator, 'record_outgoing_state')
+    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
     @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_message_id')
     @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_interchange_id')
     @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_transaction_id')
     @mock.patch('utilities.date_utilities.DateUtilities.utc_now')
     @async_test
     async def test_message_translated(self, mock_utc_now, mock_generate_transaction_id, mock_generate_interchange_id,
-                                      mock_generate_message_id, mock_record_outgoing_state):
+                                      mock_generate_message_id, mock_publish):
         expected_date = datetime(year=2020, month=4, day=27, hour=17, minute=37, tzinfo=timezone.utc)
         mock_utc_now.return_value = expected_date
         mock_generate_transaction_id.return_value = awaitable(5174)
         mock_generate_interchange_id.return_value = awaitable(45)
         mock_generate_message_id.return_value = awaitable(56)
-        mock_record_outgoing_state.return_value = awaitable(4)
+        mock_publish.return_value = awaitable(4)
         self.assertEqual(expected_date, DateUtilities.utc_now())
         patient = create_patient()
 

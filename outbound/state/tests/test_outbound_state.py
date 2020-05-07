@@ -5,7 +5,7 @@ from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionN
 from outbound.state import outbound_state as state
 
 
-class TestOutboundSate(unittest.TestCase):
+class TestOutboundState(unittest.TestCase):
 
     def verify_results_for_input_data(self, outbound_state):
         self.assertEqual(outbound_state.transaction_id, 1)
