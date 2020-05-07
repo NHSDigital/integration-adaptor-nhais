@@ -50,7 +50,7 @@ class OutboundState(object):
         data_attribute = store_data['DATA']
         self.operation_id: str = store_data.get('OPERATION_ID')
         self.transaction_id: int = data_attribute.get('TRANSACTION_ID')
-        self.transaction_timestamp: str = data_attribute.get('TRANSACTION_TIMESTAMP').isoformat()
+        self.transaction_timestamp: str = data_attribute.get('TRANSACTION_TIMESTAMP')
         self.transaction_type: str = data_attribute.get('TRANSACTION_TYPE')
         self.sis_sequence: int = data_attribute.get('SIS_SEQUENCE')
         self.sms_sequences: list = data_attribute.get('SMS_SEQUENCES')
