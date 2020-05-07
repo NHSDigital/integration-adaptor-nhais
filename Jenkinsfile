@@ -55,8 +55,10 @@ pipeline {
                     steps {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
-                            sh label: 'Pushing tests', script: 'docker-compose run nhais-tests'
-                            executeUnitTestsWithCoverage()
+                            sh label: 'Running tests', script: 'docker-compose run nhais-tests'
+                            sh label: 'Contiainer id', script: 'docker ps -lq'
+                            sh label: 'Copy test reports', script: 'docker cp "$(docker ps -lq)":/usr/src/app ./tests-reports'
+                            //executeUnitTestsWithCoverage()
                         }
                     }
                 }
@@ -123,6 +125,7 @@ void teardownLocally() {
 void executeTestsWithCoverage() {
     sh label: 'Running all tests', script: 'docker-compose run nhais-tests'
     // TODO: copy build result xml out of container
+
     // TODO: archive container logs
     // TODO: publish test results
     // TODO: update Pipfile to run tests with coverage
@@ -134,12 +137,6 @@ void executeBuild() {
 
 void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
-}
-
-void executeUnitTestsWithCoverage() {
-    sh label: 'Running unit tests', script: 'pipenv run unittests'
-    sh label: 'Displaying code coverage report', script: 'pipenv run coverage-report'
-    sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report-xml'
 }
 
 void buildModules(String action) {

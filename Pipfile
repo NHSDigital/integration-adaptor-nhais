@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+coverage = "~=4.5"
 requests = "~=2.23"
 unittest-xml-reporting = "~=2.5"
 
