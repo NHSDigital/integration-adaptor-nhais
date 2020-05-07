@@ -1,0 +1,1284 @@
+= NHAIS Adaptor (FHIR) API
+team@openapitools.org
+{VERSION}
+:toc: left
+:numbered:
+:toclevels: 3
+:source-highlighter: highlightjs
+:keywords: openapi, rest, NHAIS Adaptor (FHIR) API 
+:specDir: 
+:snippetDir: 
+:generator-template: v1 2019-12-20
+:info-url: https://github.com/nhsconnect/integration-adaptors
+:app-name: NHAIS Adaptor (FHIR) API
+
+[abstract]
+.Abstract
+## Overview Use this API to access the NHAIS Adaptor API  You can: * Accept a new patient * Amend an existing patient's demographics * Request a Removal for a patient who has moved out of area * Request a Deduction for a supported reason  The NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.  The API is based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)  ## Technology This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest).  It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange. Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.  You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular: - resource names are capitalised and singular, for example the `/Patient` not `/patients` - array names are singular, for example `line` not `lines` for address lines - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object 
+
+
+// markup not found, no include::{specDir}intro.adoc[opts=optional]
+
+
+
+== Endpoints
+
+
+[.Patients]
+=== Patients
+
+
+[.acceptance]
+==== acceptance
+    
+`POST /Patient/{id}`
+
+Accept a new patient (Acceptance transaction)
+
+===== Description 
+
+## Overview Use this endpoint to send an Acceptance to NHAIS.  ## Supported acceptance types and fields  Refer to the examples to see how the fields are represented in the request body.  The following is paraphrased from:  HA/GP LINKS - REGISTRATION, GP SYSTEMS SPECIFICATION  3.3.3.a  Algorithm to determine the Patient Acceptance Type  https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation  (*) = Mandatory field  [Deprecated] = fields described in the original NHAIS specification that have since been deprecated and are not supported by the adaptor  It is anticipated that the GP System will prompt the GP to determine the following minimum basic information about the patient:  * NHS Number * Surname (*) * Previous Surname * Forename(s) * Title * Sex (*) *  Date of Birth * Present Address excluding Postcode (*) * Postcode * Place of Birth [mandatory if NHS Number not entered] * Patient's Responsible GP (*) * Patient's Responsible HA (*)  The supported and required fields are each type of acceptance are as follows.  ### Birth  * Patient's Responsible GP (*) * Patient's Responsible HA (*) * NHS Number (*) * Surname (*) * Previous Surname * First Forename * Second Forename * Other Forenames * Title * Sex (*) * Date of Birth (*) * Present Address excluding Postcode (*) * Postcode * Place of Birth * Drugs Dispensed Marker * [Deprecated] RPP Mileage * [Deprecated] Blocked Route/Special District Marker * [Deprecated] Walking Units * Residential Institute Code * Free Text (GP Notes)  ### First Acceptance  * Patient's Responsible GP (*) * Patient's Responsible HA (*) * NHS Number * Surname (*) * Previous Surname * First Forename * Second Forename * Other Forenames * Title * Sex (*) * Date of Birth * Present Address excluding Postcode (*) * Postcode * Place of Birth [mandatory if NHS Number not entered] *  Drugs Dispensed Marker * [Deprecated] RPP Mileage * [Deprecated] Blocked Route/Special District Marker * [Deprecated] Walking Units * Residential Institute Code * Free Text (GP Notes)  ### Transfer In  For Previous Address at least one of the five fields MUST be completed.  * Patient's Responsible GP (*) * Patient's Responsible HA (*) * NHS Number * Surname (*) * Previous Surname * First Forename * Second Forename * Other Forenames * Title * Sex (*) * Date of Birth * Present Address excluding Postcode (*) * Postcode * Place of Birth [mandatory if NHS Number not entered] * Drugs Dispensed Marker * [Deprecated] RPP Mileage * [Deprecated] Blocked Route/Special District Marker * [Deprecated] Walking Units * Residential Institute Code * Previous Address - 5 fields (*) * Previous GP Name (*) * Previous HA Cipher * Free Text (GP Notes)  ### Immigrant  * Patient's Responsible GP (*) * Patient's Responsible HA (*) * NHS Number * Surname (*) * Previous Surname * First Forename * Second Forename * Other Forenames * Title * Sex (*) * Date of Birth * Present Address excluding Postcode (*) * Postcode * Place of Birth [mandatory if NHS Number not entered] * Drugs Dispensed Marker * [Deprecated] RPP Mileage * [Deprecated] Blocked Route/Special District Marker * [Deprecated] Walking Units * Residential Institute Code * Date of Entry into the UK (*) * Date Patient left the UK * Previous Address - 5 fields * Previous GP Name * Previous HA Cipher * Free Text (GP Notes)  ### Ex-Services  * Patient's Responsible GP (*) * Patient's Responsible HA (*) * NHS Number * Surname (*) * Previous Surname * First Forename * Second Forename * Other Forenames * Title * Sex (*) * Date of Birth * Present Address excluding Postcode (*) * Postcode * Place of Birth [mandatory if NHS Number not entered] * Drugs Dispensed Marker * [Deprecated] RPP Mileage * [Deprecated] Blocked Route/Special District Marker * [Deprecated] Walking Units * Residential Institute Code * Previous Address - 5 fields * Date of Enlistment (Joining) * Date of Enlistment (Leaving) * Free Text (GP Notes)  ## Operation Id When you submit an amendment an operation id will be included in the response. This operation id MUST be retained to match against the asynchronous reply from NHAIS  ## Sandbox test scenarios TODO: document interactions supported by fake mesh  | Scenario                            | Request                                                      | Response                                         | | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ | |                                     |                                                              |                                                  | 
+
+
+// markup not found, no include::{specDir}Patient/\{id\}/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| id 
+| The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).  
+| X 
+| null 
+|  
+
+|===         
+
+===== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| Patient 
+|  <<Patient>> 
+| X 
+|  
+|  
+
+|===         
+
+
+
+====== Query Parameters
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| acceptanceType 
+|   
+| - 
+| null 
+|  
+
+|===         
+
+
+===== Return Type
+
+<<OperationOutcome>>
+
+
+===== Content Type
+
+* application/fhir+json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===         
+| Code | Message | Datatype 
+
+
+| 202
+| Acceptance forwarded to NHAIS for processing
+|  <<OperationOutcome>>
+
+
+| 400
+| Client error.
+|  <<OperationOutcome>>
+
+
+| 415
+| Unsupported media type.
+|  <<OperationOutcome>>
+
+|===         
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :Patient/{id}/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}Patient/\{id\}/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
+[.amendment]
+==== amendment
+    
+`PATCH /Patient/{id}`
+
+Amend patient details (Amendment transaction)
+
+===== Description 
+
+## Overview Use this endpoint to send an Amendment to NHAIS.  This is a 'patch' operation, meaning you can update specific parts of the patient record (such as a name or an address), as opposed to having to update the entire record.  ## Operation Id When you submit an amendment an operation id will be included in the response. This operation id MUST be retained to match against the asynchronous reply from NHAIS  ## EDIFACT  The following Interchange contains two Amendment transactions for:  NHS Number SEQ12. New Title : Mrs. New Surname : Patterson. New Previous Surname : Smythe. New Address : Holly Cottage, 12 Long Lane, Bromley, Kent, BR5 4ER. Registered with GP 295 (GMC National GP Code 2750922) - now a dispensing GP for this patient. New Address has an RPP Mileage of  7, a Special District classification, Walking Units of 6 and a Residential Institute Code of AA. The GP has added some free text (GP Notes) at the time of registration.  NHS Number 123/23/123. New Address : Flat 49, 23 Jackson Square, St Pauls Cray, Orpington, Kent. Registered with GP 281 (GMC National GP Code 4826940). New Address no longer has RPP Mileage, Blocked Route/Special District Classification or Walking Units.  Information transmitted within Interchange 7, Message 8, Transaction Numbers 22 and 23 at 15:29 on 16/01/1992.  | EDIFACT                                    | Notes                                                           | |--------------------------------------------|-----------------------------------------------------------------| | UNB+UNOA:2+TES5+XX11+920116:1529+00000007' | SIS 00000007 generated by adaptor, abstracted by operation id, timestamp is when message was translated | UNH+00000008+FHSREG:0:1:FH:FHS001'         | SMS 00000008 generated by adaptor, abstracted by operation id | BGM+++507'                                 | n/a for API | NAD+FHS+XX1:954'                           | XX1 is the cypher of the HA. Supplied by managingOrganization.identifier[0].value in the request body | DTM+137:199201171259:203'                  | TODO: expectation is this == timestamp in UNB but this example is different | RFF+950:G2'                                | \"G3\" = GP to FHSA amendment is used for all PATCH operations | S01+1'                                     | n/a for API | RFF+TN:22'                                 | Transaction id generated by adaptor, abstracted by operation id | NAD+GP+2750922,295:900'                    | GMC Code: 4826940, Local Code: 281. Supplied by       TBD | NAD+RIC+AA:956'                            | Residential Institute Code         TBD | QTY+951:7' | QTY+952:6' | HEA+BM+S:ZZZ' | HEA+DM+Y:ZZZ' | FTX+RGI+++NOW AT THE ARTHUR ANDREWS CENTRE' | S02+2' | PNA+PAT+SEQ12:OPI+++SU:PATTERSON++TI:MRS' | NAD+PAT++HOLLY COTTAGE:12 LONG LANE::BROMLEY:KENT+++++BR5  4ER' | S02+2' | PNA+PER++++SU:SMYTHE' | S01+1' | RFF+TN:23' | NAD+GP+4826940,281:900' | QTY+951:%' | QTY+952:%' | HEA+BM+%:ZZZ' | S02+2' | PNA+PAT+123/23/123:OPI' | NAD+PAT++FLAT 49:23 JACKSON SQUARE:ST PAULS CRAY:ORPINGTON:KENT' | UNT+29+00000008' | UNZ+1+00000007'     ## Sandbox test scenarios TODO: document interactions supported by fake mesh  | Scenario                            | Request                                                      | Response                                         | | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ | |                                     |                                                              |                                                  | 
+
+
+// markup not found, no include::{specDir}Patient/\{id\}/PATCH/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| id 
+| The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).  
+| X 
+| null 
+|  
+
+|===         
+
+===== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| InlineObject 
+|  <<InlineObject>> 
+| X 
+|  
+|  
+
+|===         
+
+
+
+
+
+===== Return Type
+
+<<OperationOutcome>>
+
+
+===== Content Type
+
+* application/fhir+json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===         
+| Code | Message | Datatype 
+
+
+| 202
+| Amendment forwarded to NHAIS for processing
+|  <<OperationOutcome>>
+
+
+| 400
+| Client error.
+|  <<OperationOutcome>>
+
+
+| 415
+| Unsupported media type.
+|  <<OperationOutcome>>
+
+|===         
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/PATCH/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/PATCH/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :Patient/{id}/PATCH/PATCH.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}Patient/\{id\}/PATCH/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
+[.deduction]
+==== deduction
+    
+`POST /Patient/{id}/$nhais.deduction`
+
+Deduct a patient (Deduction transaction)
+
+===== Description 
+
+## Overview Use this endpoint to send a Deduction transaction to NHAIS.  ## Operation Id When you submit an amendment an operation id will be included in the response. This operation id MUST be retained to match against the asynchronous reply from NHAIS  ## EDIFACT  The following Interchange contains just one Deduction Request transaction for:  NHS Number N/10/10. Deduction Date : 25/12/1991, Deduction Reason : Death, Free Text : Died on holiday in Majorca. Registered with GP 281 (GMC National GP Code 4826940).  Information transmitted within Interchange 2, Message 3, Transaction Number 17 at 13:17 on 13/01/1992.  | EDIFACT                                    | Notes                                                           | |--------------------------------------------|-----------------------------------------------------------------| | UNB+UNOA:2+TES5+XX11+920113:1317+00000002' | SIS 00000002 generated by adaptor, abstracted by operation id, timestamp must match DTM | | UNH+00000003+FHSREG:0:1:FH:FHS001'         | SMS 00000003 generated by adaptor, abstracted by operation id   | | BGM+++507'                                 | n/a for API                                                     | | NAD+FHS+XX1:954'                           | XX1 is the cypher of the HA. Supplied by managingOrganization.identifier[0].value in the request body | | DTM+137:199201131317:203'                  | Timestamp of translation, adaptor will generate this            | | RFF+950:G5'                                | The transaction type G5 is used for all $nhais.deduction operations | | S01+1'                                     | n/a for API                                                     | | RFF+TN:17'                                 | Transaction id generated by adaptor, abstracted by operation id | | NAD+GP+4826940,281:900'                    | GMC Code: 4826940, Local Code: 281. Supplied by generalPractitioner[].value in the request body. | | GIS+1:ZZZ'                                 | Can be: 1 - Death, 5 - Emigrated, 13 - Other reason        TODO | | DTM+961:19911225:102'                      | 961 indicates this is a date of deduction                  TODO | | FTX+RGI+++DIED ON HOLIDAY IN MAJORCA'      | Free text deduction reason                                 TODO | | S02+2'                                     | n/a for API                                                     | | PNA+PAT+N/10/10:OPI'                       | N/10/10 is the NHS Number. Suppied by identifier[0].value (see examples) | | UNT+14+00000003'                           | n/a for API                                                     | | UNZ+1+00000002'                            | n/a for API                                                     |  *TODO*: No UK Core representation of an HA, we need to define this ourselves *TODO*: No UK Core representations of GMC or local code, we need to define this ourselves *TODO*: Create a deductionDetails extension for patient  ## Sandbox test scenarios *TODO*: document interactions supported by fake mesh  | Scenario                            | Request                                                      | Response                                         | | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ | |                                     |                                                              |                                                  | 
+
+
+// markup not found, no include::{specDir}Patient/\{id\}/$nhais.deduction/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| id 
+| The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).  
+| X 
+| null 
+|  
+
+|===         
+
+===== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| Patient 
+|  <<Patient>> 
+| X 
+|  
+|  
+
+|===         
+
+
+
+
+
+===== Return Type
+
+<<OperationOutcome>>
+
+
+===== Content Type
+
+* application/fhir+json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===         
+| Code | Message | Datatype 
+
+
+| 202
+| Deduction forwarded to NHAIS for processing
+|  <<OperationOutcome>>
+
+
+| 400
+| Client error.
+|  <<OperationOutcome>>
+
+
+| 415
+| Unsupported media type.
+|  <<OperationOutcome>>
+
+|===         
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/$nhais.deduction/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/$nhais.deduction/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :Patient/{id}/$nhais.deduction/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}Patient/\{id\}/$nhais.deduction/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
+[.removal]
+==== removal
+    
+`POST /Patient/{id}/$nhais.removal`
+
+Accept a new patient (Acceptance transaction)
+
+===== Description 
+
+## Overview Use this endpoint to send a Removal transaction to NHAIS.  ## Operation Id TODO: operation id (transaction id) will probably need to be provided in the request since this is a reply to a HA -> GP amendment  ## EDIFACT  The following Interchange contains one Acceptance transaction - a Type 1 (Birth) Acceptance - one Amendment transaction and one Removal (Out of Area) transaction as follows:  Acceptance for Mr. Peter Martin Stevens, NHS Number ACE99A999. Born : 07/12/1991 in Bury. Address : Middle Farm, New Street, St Pauls Cray, Orpington, Kent, BR1 5ER. Registered with GP 281 (GMC National GP Code 4826940).  Amendment for NHS Number ABCDE1234. New Address : Flat 1a Spencer House, Card Road, St Pauls Cray, Orpington, Kent. Registered with GP 281 (GMC National GP Code 4826940).  Removal (Out of Area) for NHS Number T247. Reason for Removal : PATIENT NOW LIVES 24 MILES FROM PRACTICE Registered with GP 281 (GMC National GP Code 4826940).  Information transmitted within Interchange 8, Messages 9 to 11, Transaction Numbers 24 to 26 at 10:21 on 17/01/1992.  | EDIFACT                                    | Notes                                                           | |--------------------------------------------|-----------------------------------------------------------------| | UNB+UNOA:2+TES5+XX11+920117:1021+00000008' | SIS 00000002 generated by adaptor, abstracted by operation id, timestamp must match DTM | UNH+00000011+FHSREG:0:1:FH:FHS001'         | SMS 00000003 generated by adaptor, abstracted by operation id | BGM+++507'                                 | n/a for API | NAD+FHS+XX1:954'                           | XX1 is the cypher of the HA. Supplied by managingOrganization.identifier[0].value in the request body | DTM+137:199201171259:203'                  | TODO: expectation is this == timestamp in UNB but this example is different | RFF+950:G3'                                | \"G3\" = GP to FHSA removal is used for all $nhais.removal operations | S01+1'                                     | n/a for API | RFF+TN:26'                                 | Transaction id generated by adaptor, abstracted by operation id | | NAD+GP+4826940,281:900'                    | GMC Code: 4826940, Local Code: 281. Supplied by generalPractitioner[].value in the request body. | | FTX+RGI+++PATIENT NOW LIVES 24 MILES FROM PRACTICE' | Free text deduction reason                                 TODO | | S02+2'                                     | n/a for API | PNA+PAT+T247:OPI'                          | T247 is the NHS Number. Suppied by identifier[0].value (see examples) | UNT+12+00000011'                           | n/a for API | UNZ+3+00000008'                            | n/a for API   ## Sandbox test scenarios TODO: document interactions supported by fake mesh  | Scenario                            | Request                                                      | Response                                         | | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ | |                                     |                                                              |                                                  | 
+
+
+// markup not found, no include::{specDir}Patient/\{id\}/$nhais.removal/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| id 
+| The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).  
+| X 
+| null 
+|  
+
+|===         
+
+===== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===         
+|Name| Description| Required| Default| Pattern
+
+| Patient 
+|  <<Patient>> 
+| X 
+|  
+|  
+
+|===         
+
+
+
+
+
+===== Return Type
+
+<<OperationOutcome>>
+
+
+===== Content Type
+
+* application/fhir+json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===         
+| Code | Message | Datatype 
+
+
+| 202
+| Removal forwarded to NHAIS for processing
+|  <<OperationOutcome>>
+
+
+| 400
+| Client error.
+|  <<OperationOutcome>>
+
+
+| 415
+| Unsupported media type.
+|  <<OperationOutcome>>
+
+|===         
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/$nhais.removal/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}Patient/\{id\}/$nhais.removal/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :Patient/{id}/$nhais.removal/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}Patient/\{id\}/$nhais.removal/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
+[#models]
+== Models
+
+
+[#Address]
+=== _Address_ 
+
+An address associated with the patient.
+
+[.fields-Address]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| id 
+| X 
+| String  
+| Unique system identifier for this address.
+|  
+
+| period 
+|  
+| Period  
+| 
+|  
+
+| use 
+| X 
+| String  
+| Purpose of this address: * home - a communication address at a home. * work - an office address. First choice for business related contacts during business hours. * temp - a temporary address. The period can provide more detailed information. * billing - a corresponding address nominated by the patient where communication can be sent. 
+|  _Enum:_ home, work, temp, billing, 
+
+| line 
+|  
+| List  of <<string>> 
+| All lines of the address except the postal code.
+|  
+
+| postalCode 
+|  
+| String  
+| Postal code of the address.
+|  
+
+| extension 
+|  
+| List  of <<AddressKey>> 
+| Postal Address File (PAF) key associated with this address formatted as a FHIR extension. Empty if no PAF key for the address is known, or an object specifying the code system of the address key and the value of the address key.
+|  
+
+|===
+
+
+[#AddressKey]
+=== _AddressKey_ 
+
+Unique identifier for an address.
+
+[.fields-AddressKey]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| url 
+|  
+| String  
+| URL of specification of the AddressKey extension.
+|  
+
+| extension 
+|  
+| List  of <<anyOf&lt;object,object&gt;>> 
+| Specification of address key system and address key value. Contains exactly two items: one describing the code system the Address Key uses, and the other specifying the value of the Address Key.
+|  
+
+|===
+
+
+[#ContactPoint]
+=== _ContactPoint_ 
+
+A contact point, such as a phone number or email address. This will only be populated on a retrieval and not a search.
+
+[.fields-ContactPoint]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| id 
+| X 
+| String  
+| Unique object identifier for this contact point.
+|  
+
+| period 
+|  
+| Period  
+| 
+|  
+
+| system 
+| X 
+| String  
+| Means of communication, such as phone or email.
+|  _Enum:_ phone, fax, email, pager, url, sms, other, 
+
+| value 
+| X 
+| String  
+| Phone number, email address, or other identifier for use with contact system.
+|  
+
+| use 
+| X 
+| String  
+| Location associated with communication system, or marker to indicate it is temporary or outdated.
+|  _Enum:_ home, work, temp, old, mobile, 
+
+|===
+
+
+[#Deduction]
+=== _Deduction_ 
+
+Wrapper object for NHAIS Deduction details.
+
+[.fields-Deduction]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| url 
+| X 
+| String  
+| Definition of Deduction extension.
+|  
+
+| extension 
+| X 
+| Deduction_extension  
+| 
+|  
+
+|===
+
+
+[#DeductionExtension]
+=== _DeductionExtension_ 
+
+NHAIS Deduction details
+
+[.fields-DeductionExtension]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| deductionType 
+|  
+| String  
+| The type of deduction
+|  _Enum:_ death, emigrated, other, 
+
+| deductionDate 
+|  
+| date  
+| The date the patient is deducted
+| date 
+
+| deductionReason 
+|  
+| String  
+| The reason for the deduction. Alphanumeric only
+|  
+
+|===
+
+
+[#ErrorCode]
+=== _ErrorCode_ 
+
+Internal error code.
+
+[.fields-ErrorCode]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| coding 
+|  
+| List  of <<ErrorCode_coding>> 
+| 
+|  
+
+|===
+
+
+[#ErrorCodeCoding]
+=== _ErrorCodeCoding_ 
+
+
+
+[.fields-ErrorCodeCoding]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| system 
+|  
+| String  
+| URI of the coding system specification.
+|  
+
+| version 
+|  
+| String  
+| Version of the coding system in use.
+|  
+
+| code 
+|  
+| String  
+| Symbol in syntax defined by the system.
+|  
+
+| display 
+|  
+| String  
+| Representation defined by the system.
+|  
+
+|===
+
+
+[#Gender]
+=== _Gender_ 
+
+Gender with which the patient most strongly identifies.
+
+[.fields-Gender]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+|===
+
+
+[#GeneralPractitionerReference]
+=== _GeneralPractitionerReference_ 
+
+General practice (not practitioner) with which the patient is or was registered.
+
+[.fields-GeneralPractitionerReference]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| id 
+| X 
+| String  
+| Object identifier (OID) specific to the returned details - this should be return exactly the same in any update.
+|  
+
+| type 
+|  
+| String  
+| Type of Reference being returned.
+|  
+
+| reference 
+|  
+| String  
+| URL for the FHIR Organization resource for the registered general practice. See [Organisation Data Service FHIR API](https://developer.nhs.uk/apis/ods/) for more details.
+|  
+
+| identifier 
+| X 
+| GeneralPractitionerReference_identifier  
+| 
+|  
+
+|===
+
+
+[#GeneralPractitionerReferenceIdentifier]
+=== _GeneralPractitionerReferenceIdentifier_ 
+
+Identifier and system of identification used for this Organisation.
+
+[.fields-GeneralPractitionerReferenceIdentifier]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| system 
+|  
+| String  
+| URL for the Organisation Data Service - who are responsible for publishing codes that identify organisations and individuals across health and social care.
+|  
+
+| value 
+| X 
+| String  
+| Organisation code for the registered general practice, as held in the [Organisation Data Service](https://developer.nhs.uk/apis/ods/).
+|  
+
+| period 
+|  
+| Period  
+| 
+|  
+
+|===
+
+
+[#HumanName]
+=== _HumanName_ 
+
+
+
+[.fields-HumanName]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| id 
+| X 
+| String  
+| Unique object identifier for this name.
+|  
+
+| use 
+| X 
+| String  
+| How this name should be used. * usual - Known as, conventional or the one patient normally uses. A patient will always have a usual name. * temp - An alias or temporary name. This may also be used for temporary names assigned at birth or in emergency situations. * nickname - A name that the patient prefers to be addressed by, but is not part of their usual name. * old - This name is no longer in use (or was never correct, but retained for records). * maiden - Name changed for Marriage. A name used prior to changing name because of marriage. This term is not gender specific. The use of this term does not imply any particular history for a person&#39;s name.  The following use codes are included in the [name-use](https://www.hl7.org/fhir/valueset-name-use.html) value set, but should not be used and will not be returned as part of a retrieval. * official - The formal name as registered in an official (government) registry, but which name might not be commonly used. May be called \&quot;legal name\&quot;. * anonymous - Anonymous assigned name, alias, or pseudonym (used to protect a person&#39;s identity for privacy reasons). 
+|  _Enum:_ usual, temp, nickname, old, maiden, 
+
+| period 
+|  
+| Period  
+| 
+|  
+
+| given 
+|  
+| List  of <<string>> 
+| Given names, including any middle names.
+|  
+
+| family 
+| X 
+| String  
+| Family name (often called Surname).
+|  
+
+| prefix 
+|  
+| List  of <<string>> 
+| Name prefixes, titles, and prenominals.
+|  
+
+| suffix 
+|  
+| List  of <<string>> 
+| Name suffices and postnominals.
+|  
+
+|===
+
+
+[#InlineObject]
+=== _InlineObject_ 
+
+
+
+[.fields-InlineObject]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| correction 
+|  
+| Boolean  
+| Set to true if the update is correcting previously incorrect data.
+|  
+
+| patches 
+| X 
+| List  of <<object>> 
+| 
+|  
+
+|===
+
+
+[#Meta]
+=== _Meta_ 
+
+Metadata about this resource.
+
+[.fields-Meta]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| versionId 
+|  
+| String  
+| The NHS Digital assigned version of the patient resource.
+|  
+
+| security 
+|  
+| List  of <<Meta_security>> 
+| The level of security on the patients record, which affects which fields are populated on retrieval. The possible responses are: * U - unrestricted. All available data will be returned. * R - restricted. Any sensitive data around the patients location, so &#x60;address&#x60;, &#x60;generalPractitioner&#x60; and &#x60;telecom&#x60;, will be removed from the response. Additionally, the death notification extension will be removed. * V - very restricted. All patient data will be removed from the response apart from &#x60;id&#x60;, &#x60;identifier&#x60; and &#x60;meta&#x60; fields. * REDACTED - redacted. The patient record has been marked as invalid, so the data should not be used. This code will never be returned; you will receive a 404, and appropriate error response, if an invalidated patient retrieval is attempted. It is also possible that no security field will be added to the response, which is the equivalent of unrestricted. 
+|  
+
+|===
+
+
+[#MetaSecurity]
+=== _MetaSecurity_ 
+
+
+
+[.fields-MetaSecurity]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| system 
+|  
+| String  
+| URI of the value set specification.
+|  
+
+| code 
+|  
+| String  
+| Code defined by the system value set.
+|  _Enum:_ U, R, V, REDACTED, 
+
+| display 
+|  
+| String  
+| Representation defined by the system.
+|  _Enum:_ unrestricted, restricted, very restricted, redacted, 
+
+|===
+
+
+[#NHSNumberVerificationStatus]
+=== _NHSNumberVerificationStatus_ 
+
+Status indicating if NHS number is present and verified.
+
+[.fields-NHSNumberVerificationStatus]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| url 
+|  
+| String  
+| URL of the extension definition.
+|  
+
+| valueCodeableConcept 
+|  
+| NHSNumberVerificationStatus_2  
+| 
+|  
+
+|===
+
+
+[#NHSNumberVerificationStatus2]
+=== _NHSNumberVerificationStatus2_ 
+
+NHS Number Verification Status Indicator.
+
+[.fields-NHSNumberVerificationStatus2]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| coding 
+| X 
+| List  of <<NHSNumberVerificationStatus_2_coding>> 
+| 
+|  
+
+|===
+
+
+[#NHSNumberVerificationStatus2Coding]
+=== _NHSNumberVerificationStatus2Coding_ 
+
+
+
+[.fields-NHSNumberVerificationStatus2Coding]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| system 
+|  
+| String  
+| URI of the coding system specification.
+|  
+
+| version 
+|  
+| String  
+| Version of the coding system in use.
+|  
+
+| code 
+| X 
+| String  
+| Symbol in syntax defined by the system.
+|  
+
+| display 
+|  
+| String  
+| Representation defined by the system.
+|  
+
+|===
+
+
+[#OperationIdentifier]
+=== _OperationIdentifier_ 
+
+Wrapper object for asynchronous operation identifiers.
+
+[.fields-OperationIdentifier]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| url 
+| X 
+| String  
+| Definition of OperationIdentifier extension.
+|  
+
+| extension 
+| X 
+| OperationIdentifier_extension  
+| 
+|  
+
+|===
+
+
+[#OperationIdentifierExtension]
+=== _OperationIdentifierExtension_ 
+
+Asynchronous operation identifiers. TODO: Could optionally include NHAIS-specific IDs if needed to support queries from HA
+
+[.fields-OperationIdentifierExtension]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| operationId 
+| X 
+| String  
+| The identifier (UUID) of the accepted transaction
+|  
+
+| tn 
+|  
+| String  
+| Transaction number used by EDIFACT messaging
+|  
+
+| sis 
+|  
+| String  
+| Send interchange sequence used by EDIFACT messaging
+|  
+
+| sms 
+|  
+| String  
+| 
+|  
+
+|===
+
+
+[#OperationOutcome]
+=== _OperationOutcome_ 
+
+Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission).
+
+[.fields-OperationOutcome]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| resourceType 
+|  
+| String  
+| FHIR Resource Type.
+|  
+
+| issue 
+|  
+| List  of <<OperationOutcome_issue>> 
+| List of issues that have occurred.
+|  
+
+| extension 
+|  
+| List  of <<anyOf&lt;OperationIdentifier&gt;>> 
+| 
+|  
+
+|===
+
+
+[#OperationOutcomeIssue]
+=== _OperationOutcomeIssue_ 
+
+
+
+[.fields-OperationOutcomeIssue]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| severity 
+| X 
+| String  
+| Severity of the error.
+|  _Enum:_ fatal, error, warning, information, 
+
+| code 
+| X 
+| String  
+| FHIR error code.
+|  _Enum:_ invalid, structure, required, value, invariant, security, login, unknown, expired, forbidden, suppressed, processing, not-supported, duplicate, multiple-matches, not-found, deleted, too-long, code-invalid, extension, too-costly, business-rule, conflict, transient, lock-error, no-store, exception, timeout, incomplete, throttled, informational, 
+
+| details 
+|  
+| ErrorCode  
+| 
+|  
+
+| expression 
+|  
+| String  
+| FHIRPath of element(s) related to the error.
+|  
+
+|===
+
+
+[#Patient]
+=== _Patient_ 
+
+
+
+[.fields-Patient]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| resourceType 
+|  
+| String  
+| FHIR resource type.
+|  
+
+| id 
+|  
+| String  
+| The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
+|  
+
+| identifier 
+|  
+| List  of <<object>> 
+| Identifier and system of identification used for this Patient.
+|  
+
+| meta 
+|  
+| Meta  
+| 
+|  
+
+| name 
+| X 
+| List  of <<HumanName>> 
+| List of names associated with the patient.  When a patient tagged as &#x60;very restricted&#x60; is retrieved, all names will be removed from the response. 
+|  
+
+| gender 
+| X 
+| Gender  
+| 
+|  
+
+| birthDate 
+| X 
+| date  
+| Date of birth. A date in the format &#x60;yyyy-mm-dd&#x60;.  When a patient tagged as &#x60;very restricted&#x60; is retrieved, birth date will be removed from the response. 
+| date 
+
+| deceasedDateTime 
+|  
+| Date  
+| Date and time of death, if applicable and known. A datetime in the format &#x60;yyyy-mm-ddTHH:MM:SS+HH:MM&#x60;.  When a patient tagged as &#x60;very restricted&#x60; is retrieved, death date will be removed from the response. 
+| date-time 
+
+| address 
+| X 
+| List  of <<Address>> 
+| List of addresses associated with the patient.  This will only be fully populated on a retrieval, only a the &#x60;home&#x60; address will be returned on a search.  When a patient tagged as &#x60;restricted&#x60; or &#x60;very restricted&#x60; is retrieved, all addresses will be removed from the response. 
+|  
+
+| telecom 
+|  
+| List  of <<ContactPoint>> 
+| List of contact points for the patient; for example, phone numbers or email addresses.  When a patient tagged as &#x60;restricted&#x60; or &#x60;very restricted&#x60; is retrieved, all contact points will be removed from the response. 
+|  
+
+| generalPractitioner 
+|  
+| List  of <<GeneralPractitionerReference>> 
+| General Practice (not practitioner) with which the patient is, or was, registered. Always contains zero or one general practitioner object.  When a patient tagged as &#x60;restricted&#x60; or &#x60;very restricted&#x60; is retrieved, the General Practice will be removed from the response. 
+|  
+
+| extension 
+|  
+| List  of <<anyOf&lt;Deduction,Removal&gt;>> 
+| 
+|  
+
+|===
+
+
+[#Period]
+=== _Period_ 
+
+Time period when name was, is, or will be in use.
+
+[.fields-Period]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| start 
+| X 
+| date  
+| Start date of time period, if known, in format &#x60;yyyy-mm-dd&#x60;. Can be a future date.
+| date 
+
+| end 
+|  
+| date  
+| End date of time period, if known and if not ongoing, in format &#x60;yyyy-mm-dd&#x60;. Can be a future date.
+| date 
+
+|===
+
+
+[#Removal]
+=== _Removal_ 
+
+Wrapper object for NHAIS Removal details.
+
+[.fields-Removal]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| url 
+| X 
+| String  
+| Definition of Removal extension.
+|  
+
+| extension 
+| X 
+| Removal_extension  
+| 
+|  
+
+|===
+
+
+[#RemovalExtension]
+=== _RemovalExtension_ 
+
+NHAIS Removal details
+
+[.fields-RemovalExtension]
+[cols="2,1,2,4,1"]
+|===         
+| Field Name| Required| Type| Description| Format
+
+| removalDate 
+|  
+| date  
+| The date the patient is removed. TODO: is this required? Need more examples, App J example has a date but no explanation why
+| date 
+
+| removalReason 
+|  
+| String  
+| The free-text reason for the removal. Alphanumeric only
+|  
+
+|===
+
+
