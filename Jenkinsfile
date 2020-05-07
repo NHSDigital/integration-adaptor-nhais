@@ -21,7 +21,6 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         BRANCH = sh label: 'branch name', returnStdout: true, script: "echo -n ${GIT_BRANCH} | tr '[:upper:]' '[:lower:]'"
-        TEST = sh label: 'test string replace', returnStdout: true, script: 'echo -n BRANCH.replaceAll("feature/", "feature_")'
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -41,6 +40,8 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
+                            BRANCH.replaceAll("feature/", "feature_")
+                            echo -n BRANCH
                                 //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
