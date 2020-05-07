@@ -11,7 +11,7 @@ unittest-xml-reporting = "~=2.5"
 tornado = "~=6.0"
 integration-adaptors-common = {editable=true, git = "https://git@github.com/nhsconnect/integration-adaptor-common.git", tag='0.1.2'}
 fhir-resources = "~=5.1"
-aioboto3 = "==6.4.1"
+aioboto3 = "~=8.0"
 
 [requires]
 python_version = "3.7"
