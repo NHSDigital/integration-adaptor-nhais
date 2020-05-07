@@ -60,7 +60,9 @@ pipeline {
                             //sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report'
                             //sh label: 'Exporting code coverage report xml', script: 'pipenv run coverage-report-xml'
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais ./coverage.xml'
+                            //sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais ./coverage.xml'
+                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/coverage.xml coverage.xml'
+
 
                             //executeUnitTestsWithCoverage()
                         }
