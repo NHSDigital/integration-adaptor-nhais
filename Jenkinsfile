@@ -20,7 +20,7 @@ pipeline {
     environment {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
-        BRANCH = get_forward_slash_replaced(BUILD_TAG)
+        BRANCH = get_forward_slash_replaced()
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -175,24 +175,6 @@ void buildModules(String action) {
     sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
 }
 
-
-pipeline {
-   agent none
-   environment {
-       first_path = get_first()
-   }
-   stages {
-       stage('example') {
-            agent { label 'master' }
-            steps {
-                print(env.first_path)
-            }
-        }
-    }
-}
-
-def get_forward_slash_replaced(tag) {
-    node('master') {
-        return tag.replaceAll('feature/:feature_')[0]
-    }
+def get_forward_slash_replaced() {
+   return env.BUILD_TAG.replaceAll('feature/:feature_')
 }
