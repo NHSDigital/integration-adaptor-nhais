@@ -53,10 +53,10 @@
         },
         "aioitertools": {
             "hashes": [
-                "sha256:27411653e28c391f2caa79476cc719591da88540278c53e7d6925d5b2fafa162",
-                "sha256:34155556df490ae1afb63b6393f80111cd3afdd32a5e6fe7c6fb897ace3277d3"
+                "sha256:341cb05a0903177ef1b73d4cc12c92aee18e81c364e0138f4efc7ec3c47b8177",
+                "sha256:e931a2f0dcabd4a8446b5cc2fc71b8bb14716e6adf37728a70869213f1f741cd"
             ],
-            "version": "==0.6.1"
+            "version": "==0.7.0"
         },
         "async-timeout": {
             "hashes": [
@@ -118,7 +118,7 @@
         "integration-adaptors-common": {
             "editable": true,
             "git": "https://git@github.com/nhsconnect/integration-adaptor-common.git",
-            "ref": "1035b77f65a6483401b538b3a53b87c63e8bd498"
+            "ref": "51771de4b14c721cafdf24ae18c185cd2c8027c0"
         },
         "isodate": {
             "hashes": [
@@ -235,6 +235,14 @@
             ],
             "index": "pypi",
             "version": "==6.0.4"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:6e95524d8a547a91e08f404ae485bbb71962de46967e1b71a0cb89af24e761c5",
+                "sha256:79ee589a3caca649a9bfd2a8de4709837400dfa00b6cc81962a1e6a1815969ae",
+                "sha256:f8d2bd89d25bc39dabe7d23df520442fa1d8969b82544370e03d88b5a591c392"
+            ],
+            "version": "==3.7.4.2"
         },
         "urllib3": {
             "hashes": [
