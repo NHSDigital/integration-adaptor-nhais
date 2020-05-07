@@ -40,9 +40,8 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
-                            BRANCH.replaceAll("feature/", "feature_")
-                            echo -n BRANCH
-                                //Does outbound need to be change to nhais?
+                            ${BRANCH}.replaceAll("feature/", "feature_")
+                            echo -n ${BRANCH}                                //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                         }
