@@ -507,6 +507,9 @@ paths:
       operationId: accept-patient
       tags:
         - patients
+      parameters:
+        - acceptanceType:
+
       requestBody:
         required: true
         content:
@@ -515,9 +518,9 @@ paths:
               $ref: components/schemas/Patient.yaml
             examples:
               acceptance:
-                summary: Acceptance transaction
+                summary: Acceptance transaction, Birth (minimal)
                 value:
-                  $ref: components/examples/requests/NHAIS/acceptance.json
+                  $ref: components/examples/requests/NHAIS/acceptance-birth-min.json
       responses:
         '202':
           description: Acceptance forwarded to NHAIS for processing

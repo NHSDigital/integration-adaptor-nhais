@@ -1,0 +1,37 @@
+{
+  "id": "54321",
+  "address": [
+    {
+      "line": [
+        "house name",
+        "number or road name",
+        "locality",
+        "town",
+        "county"
+      ],
+      "postalCode": "SO15 2GB"
+    }
+  ],
+  "birthDate": "1990-01-01T09:33:00",
+  "gender": "male",
+  "generalPractitioner": [
+    {
+      "identifier": {
+        "value": "GP123"
+      },
+      "type": "Organization"
+    }
+  ],
+  "managingOrganization": {
+    "identifier": {
+      "value": "HA456"
+    },
+    "type": "Organization"
+  },
+  "name": [
+    {
+      "family": "Smith"
+    }
+  ],
+  "resourceType": "Patient"
+}

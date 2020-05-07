@@ -79,6 +79,6 @@ class TestAcceptancePayloads(unittest.TestCase):
         opdef.contained = [patient]
         opdef.parameter = [_acceptance_type('birth')]
 
-        json_dict = opdef.as_json()
+        json_dict = patient.as_json()
         json_str = json.dumps(json_dict, indent=2)
         print(json_str)
