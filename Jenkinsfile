@@ -56,8 +56,9 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                            sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report'
-                            sh label: 'Exporting code coverage report xml', script: 'pipenv run coverage-report-xml'
+                            //sh label: 'Run unit test coverage', script: 'pipenv run unittests-cov'
+                            //sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report'
+                            //sh label: 'Exporting code coverage report xml', script: 'pipenv run coverage-report-xml'
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
 
                             //executeUnitTestsWithCoverage()
@@ -140,6 +141,7 @@ void executeTestsWithCoverage() {
 
     // TODO: archive container logs
     // TODO: publish test results
+
     // TODO: update Pipfile to run tests with coverage
 }
 
