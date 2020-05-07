@@ -66,12 +66,14 @@ pipeline {
                     post {
                         always {
                             sh label: 'Docker status', script: 'docker ps --all'
+                            sh label: 'test, build tag', script: '${BUILD_TAG}'
+                            sh label: 'test, build tag lower', script: '${BUILD_TAG_LOWER}'
                             sh label: 'Dump container logs to files', script: '''
                                 mkdir logs
-                                docker logs integration-adaptor-nhais_nhais_1 > logs/route.log
-                                docker logs integration-adaptor-nhais_dynamodb_1 > logs/outbound.log
-                                docker logs integration-adaptor-nhais_rabbitmq_1 > logs/inbound.log
-                                
+                                docker logs ${BUILD_TAG}_nhais_1 > logs/nhais.log
+                                docker logs ${BUILD_TAG}_dynamodb_1 > logs/outbound.log
+                                docker logs ${BUILD_TAG}_rabbitmq_1 > logs/inbound.log
+                                docker logs ${BUILD_TAG}_nhais-tests > logs/nhais-tests.log
                             '''
                             archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
                             sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
@@ -130,8 +132,9 @@ pipeline {
             cobertura coberturaReportFile: '**/coverage.xml'
             junit '**/test-reports/*.xml'
             sh label: 'Stopping containers', script: 'docker-compose down'
-            sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
+            //sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
             // Note that the * in the glob patterns doesn't match /
+            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune -all'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
     }
