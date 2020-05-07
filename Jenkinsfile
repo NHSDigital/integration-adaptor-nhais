@@ -21,6 +21,7 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         BRANCH = get_forward_slash_replaced()
+        GIT_BRANCH =  sh label: 'Generating build tag', returnStdout: true, script: 'echo -n ${GIT_BRANCH}'
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -176,7 +177,7 @@ void buildModules(String action) {
 }
 
 def get_forward_slash_replaced() {
-    node('master') {
+    node(env.GIT_BRANCH) {
         return env.BUILD_TAG.replaceAll('feature/:feature_')[0]
     }
 }
