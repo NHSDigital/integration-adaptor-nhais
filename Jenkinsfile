@@ -177,7 +177,7 @@ void buildModules(String action) {
 }
 
 def get_forward_slash_replaced() {
-    node(env.GIT_BRANCH) {
+    node() {
         return env.BUILD_TAG.replaceAll('feature/:feature_')[0]
     }
 }
