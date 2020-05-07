@@ -20,7 +20,7 @@ pipeline {
     environment {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
-        BRANCH = sh label: 'branch name', returnStdout: true, script: "echo -n ${GIT_BRANCH} | tr '[:upper:]' '[:lower:]'"
+        BRANCH = get_forward_slash_replaced(BUILD_TAG)
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -28,6 +28,10 @@ pipeline {
         stage('Build NHAIS') {
             stages {
                 stage('Build') {
+                    script {
+                        print(env.BRANCH)
+                        sh label: 'testing get_forward_slash_replaced', script: 'echo -n ${BRANCH}'
+                    }
                     steps {
                         buildModules('Installing outbound dependencies')
                     }
@@ -40,7 +44,7 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
-                            sh label: 'testing string replaceAll', script: 'echo -n ${BRANCH}'                                //Does outbound need to be change to nhais?
+                                                           //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                         }
@@ -172,4 +176,26 @@ void runSonarQubeAnalysis() {
 
 void buildModules(String action) {
     sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
+}
+
+
+pipeline {
+   agent none
+   environment {
+       first_path = get_first()
+   }
+   stages {
+       stage('example') {
+            agent { label 'master' }
+            steps {
+                print(env.first_path)
+            }
+        }
+    }
+}
+
+def get_forward_slash_replaced(tag) {
+    node('master') {
+        return tag.replaceAll('feature/:feature_')[0]
+    }
 }
