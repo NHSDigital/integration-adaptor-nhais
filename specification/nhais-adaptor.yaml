@@ -559,45 +559,10 @@ paths:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
               examples:
-                invalid-nhs-number:
-                  summary: Invalid NHS number supplied
+                bad-request:
+                  summary: The request payload is invalid
                   value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: INVALID_NHS_NUMBER
-                              display: NHS Number 9000000000 is not a valid NHS number.
-                no-patches-submitted:
-                  summary: No patches submitted
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: required
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: noPatchesSubmitted
-                              display: No patches submitted.
-                invalid-patch-operation:
-                  summary: Invalid patch operation(s)
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: invalidPatchOperation
-                              display: 'Invalid patch: attempted to modify Patient properties that cannot be changed by an Amendment'
+                    $ref: components/examples/responses/400-bad-request.json
         '415':
           description: Unsupported media type.
           content:
