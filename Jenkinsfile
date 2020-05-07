@@ -21,6 +21,7 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         BRANCH = sh label: 'branch name', returnStdout: true, script: "echo -n ${GIT_BRANCH} | tr '[:upper:]' '[:lower:]'"
+        BRANCH.replaceAll("feature/", "feature_")
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -40,6 +41,7 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
+                                //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                         }
@@ -66,7 +68,8 @@ pipeline {
                     }
                     post {
                         always {
-                            sh label: 'Docker status', script: 'docker ps --all'
+                            sh label: 'Show all running containers', script: 'docker ps'
+                            // Need to get the docker image name
                             sh label: 'Dump container logs to files', script: '''
                                 mkdir logs
                                 docker logs ${BRANCH}_nhais_1 > logs/nhais.log
@@ -133,7 +136,7 @@ pipeline {
             sh label: 'Stopping containers', script: 'docker-compose down'
             //sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
             // Note that the * in the glob patterns doesn't match /
-            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune -all'
+            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
     }
