@@ -56,7 +56,8 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                            sh label: 'Copy test reports', script: 'docker cp $(docker-compose ps -qa nhais-tests | head -n 1):/usr/src/app/nhais/test-reports .'
+                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
+
                             //executeUnitTestsWithCoverage()
                         }
                     }
