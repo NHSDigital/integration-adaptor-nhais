@@ -11,7 +11,6 @@ from outbound.converter.stub_message_translator import StubMessageTranslator
 from outbound.state.outbound_state import create_new_outbound_state
 from sequence.sequence_manager import IdGenerator
 from utilities.date_utilities import DateUtilities
-from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
 
 class InterchangeTranslator(object):
@@ -65,7 +64,6 @@ class InterchangeTranslator(object):
         return '\n'.join([segment.to_edifact() for segment in self.segments])
 
     async def record_outgoing_state(self):
-        adaptor = get_persistence_adaptor(table_name='nhais_outbound_state')
-        outbound_state = create_new_outbound_state(adaptor, self.segments)
+        outbound_state = create_new_outbound_state(self.segments)
         await outbound_state.publish()
         return

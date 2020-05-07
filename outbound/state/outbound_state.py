@@ -3,8 +3,7 @@ from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTr
 from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
     ReferenceTransactionType
 from utilities.message_utilities import get_uuid
-
-from persistence import persistence_adaptor as pa
+from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
 DATA = 'DATA'
 OPERATION_ID = 'OPERATION_ID'
@@ -16,22 +15,22 @@ SMS_SEQUENCES = 'SMS_SEQUENCES'
 SENDER = 'SENDER'
 RECIPIENT = 'RECIPIENT'
 
+NHAIS_OUTBOUND_STATE = 'nhais_outbound_state'
+
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 class OutboundState(object):
     """A local copy of an instance of an outbound state from the state store"""
 
-    def __init__(self, persistence_store: pa.PersistenceAdaptor, store_data: dict):
+    def __init__(self, store_data: dict):
         """
         Given
         :param persistence_store:
         :param store_data:
         """
-        if persistence_store is None:
-            raise ValueError('Expected persistence store')
 
-        self.persistence_store = persistence_store
+        self.persistence_store = get_persistence_adaptor(table_name=NHAIS_OUTBOUND_STATE)
         self._deserialize_data(store_data)
 
     async def publish(self):
@@ -76,9 +75,7 @@ class OutboundState(object):
         }
 
 
-def create_new_outbound_state(persistence_store: pa.PersistenceAdaptor,
-                                segments
-                                ) -> OutboundState:
+def create_new_outbound_state(segments) -> OutboundState:
     """
     Builds a new local outbound state instance given the details of the message, these details are held locally
     until a `publish` is executed
@@ -92,13 +89,12 @@ def create_new_outbound_state(persistence_store: pa.PersistenceAdaptor,
             transaction_timestamp = segment.date_time
             sender = segment.sender
             recipient = segment.recipient
-        if isinstance(segment, InterchangeHeader):
             sis_sequence = segment.sequence_number
-        if isinstance(segment, MessageHeader):
+        elif isinstance(segment, MessageHeader):
             sms_sequences.append(segment.sequence_number)
-        if isinstance(segment, ReferenceTransactionNumber):
+        elif isinstance(segment, ReferenceTransactionNumber):
             transaction_id = segment.reference
-        if isinstance(segment, ReferenceTransactionType):
+        elif isinstance(segment, ReferenceTransactionType):
             transaction_type = segment.reference
 
     if not transaction_id:
@@ -129,4 +125,4 @@ def create_new_outbound_state(persistence_store: pa.PersistenceAdaptor,
         }
     }
 
-    return OutboundState(persistence_store, outbound_state_map)
+    return OutboundState(outbound_state_map)
