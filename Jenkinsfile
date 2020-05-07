@@ -57,7 +57,7 @@ pipeline {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
                             sh label: 'Contiainer id', script: 'docker ps -lq'
-                            sh label: 'Copy test reports', script: 'docker cp "$(docker ps -lq)":/usr/src/app ./tests-reports'
+                            sh label: 'Copy test reports', script: 'docker cp "$(docker ps -lq)":/usr/src/app/test-reports ./test-reports'
                             //executeUnitTestsWithCoverage()
                         }
                     }
@@ -69,6 +69,16 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        post {
+            always {
+                cobertura coberturaReportFile: '**/coverage.xml'
+                junit '**/test-reports/*.xml'
+                sh 'docker volume prune --force'
+                // Prune Docker images for current CI build.
+                // Note that the * in the glob patterns doesn't match /
+                sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
             }
         }
         // TODO: ensure deploy and test steps have a dedicated worker
