@@ -28,10 +28,6 @@ pipeline {
         stage('Build NHAIS') {
             stages {
                 stage('Build') {
-                    script {
-                        
-                        sh label: 'testing get_forward_slash_replaced', script: 'echo -n ${BRANCH}'
-                    }
                     steps {
                         buildModules('Installing outbound dependencies')
                     }
@@ -175,6 +171,7 @@ void runSonarQubeAnalysis() {
 }
 
 void buildModules(String action) {
+    sh label: 'testing get_forward_slash_replaced', script: 'echo -n ${BRANCH}'
     sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
 }
 
