@@ -56,6 +56,7 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Pushing tests', script: 'docker-compose run nhais-tests'
+                            executeUnitTestsWithCoverage()
                         }
                     }
                 }
@@ -115,6 +116,8 @@ void deployLocally() {
 void teardownLocally() {
     sh label: 'Stopping containers', script: 'docker-compose down'
     // TODO: cleanup images after publishing
+    // Note that the * in the glob patterns doesn't match /
+    sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
 }
 
 void executeTestsWithCoverage() {
@@ -135,8 +138,8 @@ void runSonarQubeAnalysis() {
 
 void executeUnitTestsWithCoverage() {
     sh label: 'Running unit tests', script: 'pipenv run unittests'
-//     sh label: 'Displaying code coverage report', script: 'pipenv run coverage-report'
-//     sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report-xml'
+    sh label: 'Displaying code coverage report', script: 'pipenv run coverage-report'
+    sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report-xml'
 }
 
 void buildModules(String action) {
