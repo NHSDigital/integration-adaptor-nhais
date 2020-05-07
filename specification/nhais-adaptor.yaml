@@ -31,12 +31,6 @@ info:
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
-    ## Endpoints
-    To see details for specific endpoints, select from the list on the left hand side of the page:
-    * `GET /Patient` - search for patient
-    * `GET /Patient/{id}` - get patient's personal details
-    * `PATCH /Patient/{id}` - update patient's personal details
-
   contact:
     name: National Integration Adaptors API Support
     url: 'https://github.com/nhsconnect/integration-adaptors'
@@ -99,7 +93,7 @@ paths:
         |                                     |                                                              |                                                  |
 
       summary: Deduct a patient (Deduction transaction)
-      operationId: deduct-patient
+      operationId: deduction
       tags:
         - patients
       requestBody:
@@ -254,7 +248,7 @@ paths:
         |                                     |                                                              |                                                  |
 
       summary: Accept a new patient (Acceptance transaction)
-      operationId: remove-patient
+      operationId: removal
       tags:
         - patients
       requestBody:
@@ -351,146 +345,166 @@ paths:
         ## Overview
         Use this endpoint to send an Acceptance to NHAIS.
 
-        It is anticipated that the GP System will prompt the GP to determine the following minimum basic information about the patient: (* = Mandatory field)
-            NHS Number
-        *   Surname
-            Previous Surname
-            Forename(s)
-            Title
-        *	Sex
-            Date of Birth
-        *	Present Address excluding Postcode
-            Postcode
-            Place of Birth [mandatory if NHS Number not entered]
-        *	Patient's Responsible GP
-        *	Patient's Responsible HA
+        ## Supported acceptance types and fields
 
-        Birth Acceptance:
+        Refer to the examples to see how the fields are represented in the request body.
 
-        *	Patient's Responsible GP
-        *	Patient's Responsible HA
-        *	NHS Number
-        *	Surname
-            Previous Surname
-            First Forename
-            Second Forename
-            Other Forenames
-            Title
-        *	Sex
-        *	Date of Birth
-        *	Present Address excluding Postcode
-            Postcode
-            Place of Birth
-            Drugs Dispensed Marker
-            RPP Mileage
-            Blocked Route/Special District Marker
-            Walking Units
-            Residential Institute Code
-            Free Text (GP Notes)
+        The following is paraphrased from:
 
-        1st Acceptance Acceptance:
+        HA/GP LINKS - REGISTRATION, GP SYSTEMS SPECIFICATION
 
-        *	Patient's Responsible GP
-        *	Patient's Responsible HA
-            NHS Number
-        *	Surname
-            Previous Surname
-            First Forename
-            Second Forename
-            Other Forenames
-            Title
-        *	Sex
-            Date of Birth
-        *	Present Address excluding Postcode
-            Postcode
-            Place of Birth [mandatory if NHS Number not entered]
-            Drugs Dispensed Marker
-            RPP Mileage
-            Blocked Route/Special District Marker
-            Walking Units
-            Residential Institute Code
-            Free Text (GP Notes)
+        3.3.3.a  Algorithm to determine the Patient Acceptance Type
 
-          Transfer In Acceptance:
+        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-          *	  Patient's Responsible GP
-          *	  Patient's Responsible HA
-              NHS Number
-          *	  Surname
-              Previous Surname
-              First Forename
-              Second Forename
-              Other Forenames
-              Title
-          *	  Sex
-              Date of Birth
-          *	  Present Address excluding Postcode
-              Postcode
-              Place of Birth [mandatory if NHS Number not entered]
-              Drugs Dispensed Marker
-              RPP Mileage
-              Blocked Route/Special District Marker
-              Walking Units
-              Residential Institute Code
-          *	  Previous Address - 5 fields
-          *	  Previous GP Name
-              Previous HA Cipher
-              Free Text (GP Notes)
+        (*) = Mandatory field
 
-          (* = Mandatory field: for Previous Address at least one of the five fields MUST be completed.)
+        [Deprecated] = fields described in the original NHAIS specification that have since been deprecated and are not supported by the adaptor
 
-          Immigrant Acceptance:
+        It is anticipated that the GP System will prompt the GP to determine the following minimum basic information about the patient:
 
-          *	  Patient's Responsible GP
-          *	  Patient's Responsible HA
-              NHS Number
-          *	  Surname
-              Previous Surname
-              First Forename
-              Second Forename
-              Other Forenames
-              Title
-          *	  Sex
-              Date of Birth
-          *	  Present Address excluding Postcode
-              Postcode
-              Place of Birth [mandatory if NHS Number not entered]
-              Drugs Dispensed Marker
-              RPP Mileage
-              Blocked Route/Special District Marker
-              Walking Units
-              Residential Institute Code
-          *	  Date of Entry into the UK
-              Date Patient left the UK
-              Previous Address - 5 fields
-              Previous GP Name
-              Previous HA Cipher
-              Free Text (GP Notes)
+        * NHS Number
+        * Surname (*)
+        * Previous Surname
+        * Forename(s)
+        * Title
+        * Sex (*)
+        *  Date of Birth
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth [mandatory if NHS Number not entered]
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
 
-          Ex-Services Acceptance:
-          *	  Patient's Responsible GP
-          *	  Patient's Responsible HA
-              NHS Number
-          *	  Surname
-              Previous Surname
-              First Forename
-              Second Forename
-              Other Forenames
-              Title
-          *	  Sex
-              Date of Birth
-          *	  Present Address excluding Postcode
-              Postcode
-              Place of Birth [mandatory if NHS Number not entered]
-              Drugs Dispensed Marker
-              RPP Mileage
-              Blocked Route/Special District Marker
-              Walking Units
-              Residential Institute Code
-              Previous Address - 5 fields
-              Date of Enlistment (Joining)
-              Date of Enlistment (Leaving)
-              Free Text (GP Notes)
+        The supported and required fields are each type of acceptance are as follows.
+
+        ### Birth
+
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
+        * NHS Number (*)
+        * Surname (*)
+        * Previous Surname
+        * First Forename
+        * Second Forename
+        * Other Forenames
+        * Title
+        * Sex (*)
+        * Date of Birth (*)
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth
+        * Drugs Dispensed Marker
+        * [Deprecated] RPP Mileage
+        * [Deprecated] Blocked Route/Special District Marker
+        * [Deprecated] Walking Units
+        * Residential Institute Code
+        * Free Text (GP Notes)
+
+        ### First Acceptance
+
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
+        * NHS Number
+        * Surname (*)
+        * Previous Surname
+        * First Forename
+        * Second Forename
+        * Other Forenames
+        * Title
+        * Sex (*)
+        * Date of Birth
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth [mandatory if NHS Number not entered]
+        *  Drugs Dispensed Marker
+        * [Deprecated] RPP Mileage
+        * [Deprecated] Blocked Route/Special District Marker
+        * [Deprecated] Walking Units
+        * Residential Institute Code
+        * Free Text (GP Notes)
+
+        ### Transfer In
+
+        For Previous Address at least one of the five fields MUST be completed.
+
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
+        * NHS Number
+        * Surname (*)
+        * Previous Surname
+        * First Forename
+        * Second Forename
+        * Other Forenames
+        * Title
+        * Sex (*)
+        * Date of Birth
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth [mandatory if NHS Number not entered]
+        * Drugs Dispensed Marker
+        * [Deprecated] RPP Mileage
+        * [Deprecated] Blocked Route/Special District Marker
+        * [Deprecated] Walking Units
+        * Residential Institute Code
+        * Previous Address - 5 fields (*)
+        * Previous GP Name (*)
+        * Previous HA Cipher
+        * Free Text (GP Notes)
+
+        ### Immigrant
+
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
+        * NHS Number
+        * Surname (*)
+        * Previous Surname
+        * First Forename
+        * Second Forename
+        * Other Forenames
+        * Title
+        * Sex (*)
+        * Date of Birth
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth [mandatory if NHS Number not entered]
+        * Drugs Dispensed Marker
+        * [Deprecated] RPP Mileage
+        * [Deprecated] Blocked Route/Special District Marker
+        * [Deprecated] Walking Units
+        * Residential Institute Code
+        * Date of Entry into the UK (*)
+        * Date Patient left the UK
+        * Previous Address - 5 fields
+        * Previous GP Name
+        * Previous HA Cipher
+        * Free Text (GP Notes)
+
+        ### Ex-Services
+
+        * Patient's Responsible GP (*)
+        * Patient's Responsible HA (*)
+        * NHS Number
+        * Surname (*)
+        * Previous Surname
+        * First Forename
+        * Second Forename
+        * Other Forenames
+        * Title
+        * Sex (*)
+        * Date of Birth
+        * Present Address excluding Postcode (*)
+        * Postcode
+        * Place of Birth [mandatory if NHS Number not entered]
+        * Drugs Dispensed Marker
+        * [Deprecated] RPP Mileage
+        * [Deprecated] Blocked Route/Special District Marker
+        * [Deprecated] Walking Units
+        * Residential Institute Code
+        * Previous Address - 5 fields
+        * Date of Enlistment (Joining)
+        * Date of Enlistment (Leaving)
+        * Free Text (GP Notes)
 
         ## Operation Id
         When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
@@ -504,12 +518,15 @@ paths:
         |                                     |                                                              |                                                  |
 
       summary: Accept a new patient (Acceptance transaction)
-      operationId: accept-patient
+      operationId: acceptance
       tags:
         - patients
       parameters:
-        - acceptanceType:
-
+        - in: query
+          name: acceptanceType
+          schema:
+            type: string
+            enum: [birth, first, transfer, immigrant, exservices]
       requestBody:
         required: true
         content:
@@ -517,13 +534,20 @@ paths:
             schema:
               $ref: components/schemas/Patient.yaml
             examples:
-              acceptance:
-                summary: Acceptance transaction, Birth (minimal)
+              acceptanceBirthMinimal:
+                summary: "Acceptance transaction, acceptanceType: birth, minimum required fields only"
                 value:
                   $ref: components/examples/requests/NHAIS/acceptance-birth-min.json
+              acceptanceBirthMaximal:
+                summary: "Acceptance transaction, acceptanceType: birth, all possible fields"
+                value:
+                  $ref: components/examples/requests/NHAIS/acceptance-birth-max.json
       responses:
         '202':
           description: Acceptance forwarded to NHAIS for processing
+          headers:
+            operationid:
+              description: A unique identifier for the operation that MUST be retained
           content:
             application/fhir+json:
               schema:
@@ -667,7 +691,7 @@ paths:
         |                                     |                                                              |                                                  |
 
       summary: Amend patient details (Amendment transaction)
-      operationId: update-patient-partial
+      operationId: amendment
       tags:
         - patients
       externalDocs:

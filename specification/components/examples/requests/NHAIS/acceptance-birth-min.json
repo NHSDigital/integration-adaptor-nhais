@@ -3,11 +3,11 @@
   "address": [
     {
       "line": [
-        "house name",
-        "number or road name",
-        "locality",
-        "town",
-        "county"
+        "current house name",
+        "current number or road name",
+        "current locality",
+        "current town",
+        "current county"
       ],
       "postalCode": "SO15 2GB"
     }
@@ -30,7 +30,7 @@
   },
   "name": [
     {
-      "family": "Smith"
+      "family": "Surname"
     }
   ],
   "resourceType": "Patient"
