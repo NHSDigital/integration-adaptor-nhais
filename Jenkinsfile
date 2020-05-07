@@ -56,9 +56,10 @@ pipeline {
                         script {
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                            sh label: 'Test latest docker container id for nhais tests', script: 'docker-compose ps -qa nhais-tests | head -n 1'
+                            sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report'
+                            sh label: 'Exporting code coverage report xml', script: 'pipenv run coverage-report-xml'
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                            sh label: 'Exporting code coverage report', script: 'pipenv run coverage-report-xml'
+
                             //executeUnitTestsWithCoverage()
                         }
                     }
@@ -114,8 +115,8 @@ pipeline {
         always {
             cobertura coberturaReportFile: '**/coverage.xml'
             junit '**/test-reports/*.xml'
-            sh 'docker volume prune --force'
-            // Prune Docker images for current CI build.
+            sh label: 'Stopping containers', script: 'docker-compose down'
+            sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
             // Note that the * in the glob patterns doesn't match /
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
