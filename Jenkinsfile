@@ -29,7 +29,7 @@ pipeline {
             stages {
                 stage('Build') {
                     script {
-                        print(env.BRANCH)
+                        
                         sh label: 'testing get_forward_slash_replaced', script: 'echo -n ${BRANCH}'
                     }
                     steps {
