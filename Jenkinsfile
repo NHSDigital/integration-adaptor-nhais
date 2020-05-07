@@ -20,6 +20,7 @@ pipeline {
     environment {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
+        BRANCH = '${GIT_BRANCH}'
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -66,14 +67,12 @@ pipeline {
                     post {
                         always {
                             sh label: 'Docker status', script: 'docker ps --all'
-                            sh label: 'test, build tag', script: '${BUILD_TAG}'
-                            sh label: 'test, build tag lower', script: '${BUILD_TAG_LOWER}'
                             sh label: 'Dump container logs to files', script: '''
                                 mkdir logs
-                                docker logs ${BUILD_TAG}_nhais_1 > logs/nhais.log
-                                docker logs ${BUILD_TAG}_dynamodb_1 > logs/outbound.log
-                                docker logs ${BUILD_TAG}_rabbitmq_1 > logs/inbound.log
-                                docker logs ${BUILD_TAG}_nhais-tests > logs/nhais-tests.log
+                                docker logs ${BRANCH}_nhais_1 > logs/nhais.log
+                                docker logs ${BRANCH}_dynamodb_1 > logs/outbound.log
+                                docker logs ${BRANCH}_rabbitmq_1 > logs/inbound.log
+                                docker logs ${BRANCH}_nhais-tests > logs/nhais-tests.log
                             '''
                             archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
                             sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
