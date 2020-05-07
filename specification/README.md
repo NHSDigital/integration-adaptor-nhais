@@ -4,5 +4,5 @@ The YAML is currently being rendered into Markdown and HTML manually using the t
 
 This is a temporary solution to facilitate review and feedback while the API is being developed.
 
-     openapi-generator generate -i nhais-adaptor.yaml -g md -o out
-     openapi-generator generate -i nhais-adaptor.yaml -g html2 -o out
+     openapi-generator generate -i nhais-adaptor.yaml -g markdown -o out
+     openapi-generator generate -i nhais-adaptor.yaml -g html -o out

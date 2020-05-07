@@ -7,10 +7,10 @@ All URIs are relative to *https://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*PatientsApi* | [**acceptPatient**](Apis/PatientsApi.md#acceptpatient) | **POST** /Patient/{id} | Accept a new patient (Acceptance transaction)
-*PatientsApi* | [**deductPatient**](Apis/PatientsApi.md#deductpatient) | **POST** /Patient/{id}/$nhais.deduction | Deduct a patient (Deduction transaction)
-*PatientsApi* | [**removePatient**](Apis/PatientsApi.md#removepatient) | **POST** /Patient/{id}/$nhais.removal | Accept a new patient (Acceptance transaction)
-*PatientsApi* | [**updatePatientPartial**](Apis/PatientsApi.md#updatepatientpartial) | **PATCH** /Patient/{id} | Amend patient details (Amendment transaction)
+*PatientsApi* | [**acceptance**](Apis/PatientsApi.md#acceptance) | **POST** /Patient/{id} | Accept a new patient (Acceptance transaction)
+*PatientsApi* | [**amendment**](Apis/PatientsApi.md#amendment) | **PATCH** /Patient/{id} | Amend patient details (Amendment transaction)
+*PatientsApi* | [**deduction**](Apis/PatientsApi.md#deduction) | **POST** /Patient/{id}/$nhais.deduction | Deduct a patient (Deduction transaction)
+*PatientsApi* | [**removal**](Apis/PatientsApi.md#removal) | **POST** /Patient/{id}/$nhais.removal | Accept a new patient (Acceptance transaction)
 
 
 <a name="documentation-for-models"></a>
@@ -39,6 +39,8 @@ Class | Method | HTTP request | Description
  - [OperationOutcomeIssue](.//Models/OperationOutcomeIssue.md)
  - [Patient](.//Models/Patient.md)
  - [Period](.//Models/Period.md)
+ - [Removal](.//Models/Removal.md)
+ - [RemovalExtension](.//Models/RemovalExtension.md)
 
 
 <a name="documentation-for-authorization"></a>
