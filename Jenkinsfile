@@ -40,9 +40,9 @@ pipeline {
                     post {
                         always {
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
+                            junit '**/test-reports/*.xml'
                             sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
                             cobertura coberturaReportFile: '**/coverage.xml'
-                            junit '**/test-reports/*.xml'
                         }
                     }
                 }
