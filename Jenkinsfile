@@ -46,26 +46,29 @@ pipeline {
 //                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
 
+                            sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
+                            sh label: 'Show all running containers', script: 'docker ps'
+                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
+                            echo "Waiting 10 seconds for containers to start"
+                            sleep 10
+
+                            sh label: 'Running tests', script: 'docker-compose run nhais-tests'
+                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
+                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
+
                         }
                     }
                 }
                 stage('Deploy Locally') {
                     steps {
-                        sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
-                        sh label: 'Show all running containers', script: 'docker ps'
-                        sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
-                        sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
-                        echo "Waiting 10 seconds for containers to start"
-                        sleep 10
+
                     }
                 }
                 stage('Run tests') {
                     steps {
                         script {
-                            sh label: 'Running tests', script: 'docker-compose run nhais-tests'
 
-                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
 
                             //executeUnitTestsWithCoverage()
                         }
