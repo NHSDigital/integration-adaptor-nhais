@@ -41,13 +41,8 @@ pipeline {
                         always {
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
                             sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
-                            sh label: 'Create logs directory', script: 'mkdir logs'
-                            sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
-                            sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
-                            sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
-                            sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
-                            archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                            sh label: 'Stopping containers', script: 'docker-compose down -v'
+                            cobertura coberturaReportFile: '**/coverage.xml'
+                            junit '**/test-reports/*.xml'
                         }
                     }
                 }
@@ -57,6 +52,17 @@ pipeline {
                             sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais.json"
                         }
                     }
+                }
+            }
+            post {
+                always {
+                    sh label: 'Create logs directory', script: 'mkdir logs'
+                    sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
+                    sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
+                    sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
+                    sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
+                    archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
+                    sh label: 'Stopping containers', script: 'docker-compose down -v'
                 }
             }
         }
@@ -86,8 +92,7 @@ pipeline {
     }
     post {
         always {
-            cobertura coberturaReportFile: '**/coverage.xml'
-            junit '**/test-reports/*.xml'
+
             sh label: 'Stopping containers', script: 'docker-compose down -v'
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
