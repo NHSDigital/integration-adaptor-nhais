@@ -39,17 +39,22 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
-                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
-                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
+//                             sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+//                             sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
                                                            //Does outbound need to be change to nhais?
-                            sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
-                            sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
+//                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
+//                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
+                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
+
                         }
                     }
                 }
                 stage('Deploy Locally') {
                     steps {
-                        deployLocally()
+                        sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
+                        sh label: 'Show all running containers', script: 'docker ps'
+                        sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+                        sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
                         echo "Waiting 10 seconds for containers to start"
                         sleep 10
                     }
@@ -57,7 +62,6 @@ pipeline {
                 stage('Run tests') {
                     steps {
                         script {
-                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
 
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
@@ -70,15 +74,20 @@ pipeline {
                         always {
                             sh label: 'Show all running containers', script: 'docker ps'
                             // Need to get the docker image name
-                            sh label: 'Dump container logs to files', script: '''
-                                mkdir logs
-                                docker logs ${BUILD_TAG}_nhais_1 > logs/nhais.log
-                                docker logs ${BUILD_TAG}_dynamodb_1 > logs/outbound.log
-                                docker logs ${BUILD_TAG}_rabbitmq_1 > logs/inbound.log
-                                docker logs ${BUILD_TAG}_nhais-tests > logs/nhais-tests.log
-                            '''
+                            sh label: 'Create logs directory', script: 'mkdir logs'
+                            sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
+                            sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
+                            sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
+                            sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
+//                             sh label: 'Dump container logs to files', script: '''
+//                                 mkdir logs
+//                                 docker logs ${BUILD_TAG}_nhais_1 > logs/nhais.log
+//                                 docker logs ${BUILD_TAG}_dynamodb_1 > logs/outbound.log
+//                                 docker logs ${BUILD_TAG}_rabbitmq_1 > logs/inbound.log
+//                                 docker logs ${BUILD_TAG}_nhais-tests > logs/nhais-tests.log
+//                             '''
                             archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
+//                             sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
                         }
                     }
                 }
@@ -140,13 +149,6 @@ pipeline {
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
     }
-}
-
-void deployLocally() {
-    sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
-    sh label: 'Show all running containers', script: 'docker ps'
-    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
-    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
 }
 
 // void teardownLocally() {

@@ -19,7 +19,7 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
   dynamodb:
-    image: local/dynamodb-nhais
+    image: local/dynamodb-nhais:${BUILD_TAG}
     build:
       context: .
       dockerfile: Dockerfile.dynamodb
@@ -32,6 +32,7 @@ services:
       - "5672:5672"
     hostname: "localhost"
   nhais-tests:
+    image: local/nhais-tests:${BUILD_TAG}
     build:
       context: .
       dockerfile: Dockerfile.tests
