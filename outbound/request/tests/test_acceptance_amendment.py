@@ -61,7 +61,7 @@ class TestAcceptanceAmendmentRequestHandler(tornado.testing.AsyncHTTPTestCase):
 
         response = self.fetch(r'/fhir/Patient/9000000009', method="POST", body=self.create_request_body())
 
-        self.assertEqual(202, response.code)
+        self.assertEqual(400, response.code)
         self.assertEqual(MOCK_UUID, response.headers._dict['Operationid'])
 
     @patch.object(validate_request, 'validate_patient')
