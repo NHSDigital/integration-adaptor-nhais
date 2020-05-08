@@ -19,7 +19,7 @@ def generate_tag(branch_name: str, build_id: str, git_hash: str) -> str:
 
 
 def _clean_tag_element(tag_element: str) -> str:
-    clean_tag_element = tag_element.replace("/", "-----")
+    clean_tag_element = tag_element.replace("/", "-")
     return clean_tag_element
 
 
