@@ -62,11 +62,12 @@ pipeline {
                 }
                 stage('Deploy Locally') {
                     steps {
-
+                        echo 'skip'
                     }
                 }
                 stage('Run tests') {
                     steps {
+                        echo 'skip'
 //                         script {
 //
 //
