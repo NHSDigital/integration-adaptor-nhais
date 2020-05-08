@@ -44,6 +44,7 @@ pipeline {
                                                            //Does outbound need to be change to nhais?
 //                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
 //                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
+                            sh label: 'Stopping running containers (preventative maintenance)', script: 'docker-compose down'
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
 
                             sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
