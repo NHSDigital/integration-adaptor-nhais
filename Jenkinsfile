@@ -1,12 +1,3 @@
-// Options to switch off certain steps if needed
- Boolean runBuild           = true
- Boolean runTests        = false
- Boolean runIntegrationTest = false
- Boolean runComponentTest   = false
- Boolean runTerraform       = false
- Boolean runSonarQube       = true    
-
-
 pipeline {
     agent{
         label 'jenkins-workers'
@@ -24,33 +15,13 @@ pipeline {
     }    
 
     stages {
-        stage('Build NHAIS') {
+        stage('Build and Test Locally') {
             stages {
-                stage('Build') {
-                    steps {
-                        buildModules('Installing outbound dependencies')
-                    }
-                }
-                // stage('Unit test') {
-                //     steps {
-                //         executeUnitTestsWithCoverage()
-                //     }
-                // }
-                stage('Build image') {
+                stage('Build Docker Images') {
                     steps {
                         script {
-//                             sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
-//                             sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
-                                                           //Does outbound need to be change to nhais?
-//                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
-//                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
                             sh label: 'Stopping running containers (preventative maintenance)', script: 'docker-compose down -v'
                             sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
-
-
-
-
-
                         }
                     }
                 }
@@ -70,8 +41,6 @@ pipeline {
                         always {
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
                             sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
-                            sh label: 'Show all running containers', script: 'docker ps'
-                            // Need to get the docker image name
                             sh label: 'Create logs directory', script: 'mkdir logs'
                             sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
                             sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
@@ -85,42 +54,28 @@ pipeline {
                 stage('Push image') {
                     steps {
                         script {
-                            sh label: 'Pushing outbound image', script: "packer build -color=false pipeline/packer/nhais.json"
+                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais.json"
                         }
                     }
                 }
             }
         }
-        // TODO: ensure deploy and test steps have a dedicated worker
-//         stage('Deploy Locally') {
-//             when {
-//                 expression { runTests }
-//             }
-//             steps {
-//                 deployLocally()
-//                 echo "Waiting 10 seconds for containers to start"
-//                 sleep 10
-//
-//             }
-//         }
-//         stage('Test') {
-//             when {
-//               expression { runTests }
-//             }
-//             steps {
-//                 executeTestsWithCoverage()
-//             }
-//         }
-//         stage('Deploy NHAIS terraform') {
-//             when {
-//               expression { runTerraform }
-//             }
-//             steps {
-//                 dir('pipeline/terraform/nhais') {
-//                 }
-//             }
-//         }
-        // TODO run integration tests against deployed service
+        stage('Deploy and Integration Test') {
+            stages {
+                stage('Deploy using Terraform') {
+                    steps {
+                        echo 'TODO deploy NHAIS using terraform'
+                    }
+                }
+                stage('Deploy using Terraform') {
+                    steps {
+                        echo 'TODO run integration tests'
+                        echo 'TODO archive test results'
+                    }
+                 }
+            }
+
+        }
         stage('Run SonarQube analysis') {
             steps {
                 dir('.') {
@@ -142,31 +97,8 @@ pipeline {
     }
 }
 
-// void teardownLocally() {
-//     sh label: 'Stopping containers', script: 'docker-compose down'
-//     // TODO: cleanup images after publishing
-//     // Note that the * in the glob patterns doesn't match /
-//     sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
-// }
-
-void executeTestsWithCoverage() {
-    sh label: 'Running all tests', script: 'docker-compose run nhais-tests'
-    // TODO: copy build result xml out of container
-
-    // TODO: archive container logs
-    // TODO: publish test results
-
-    // TODO: update Pipfile to run tests with coverage
-}
-
-void executeBuild() {
-    sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG_LOWER}'
-}
-
 void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
 }
 
-void buildModules(String action) {
-    sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
-}
+
