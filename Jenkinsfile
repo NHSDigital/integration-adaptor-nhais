@@ -67,7 +67,7 @@ pipeline {
                         echo 'TODO deploy NHAIS using terraform'
                     }
                 }
-                stage('Deploy using Terraform') {
+                stage('Run integration tests') {
                     steps {
                         echo 'TODO run integration tests'
                         echo 'TODO archive test results'
