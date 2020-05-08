@@ -20,8 +20,6 @@ pipeline {
     environment {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
-        BRANCH = get_forward_slash_replaced()
-        GIT_BRANCH =  sh label: 'Generating build tag', returnStdout: true, script: 'echo -n ${GIT_BRANCH}'
         ENVIRONMENT_ID = "nhais-build"
     }    
 
@@ -57,7 +55,7 @@ pipeline {
                 stage('Run tests') {
                     steps {
                         script {
-                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG_LOWER}'
+                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
                             sh label: 'Running tests', script: 'docker-compose run nhais-tests'
 
                             sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
@@ -72,13 +70,13 @@ pipeline {
                             // Need to get the docker image name
                             sh label: 'Dump container logs to files', script: '''
                                 mkdir logs
-                                docker logs ${BUILD_TAG_LOWER}_nhais_1 > logs/nhais.log
-                                docker logs ${BUILD_TAG_LOWER}_dynamodb_1 > logs/outbound.log
-                                docker logs ${BUILD_TAG_LOWER}_rabbitmq_1 > logs/inbound.log
-                                docker logs ${BUILD_TAG_LOWER}_nhais-tests > logs/nhais-tests.log
+                                docker logs ${BUILD_TAG}_nhais_1 > logs/nhais.log
+                                docker logs ${BUILD_TAG}_dynamodb_1 > logs/outbound.log
+                                docker logs ${BUILD_TAG}_rabbitmq_1 > logs/inbound.log
+                                docker logs ${BUILD_TAG}_nhais-tests > logs/nhais-tests.log
                             '''
                             archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG_LOWER} logs'
+                            sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -p ${BUILD_TAG} logs'
                         }
                     }
                 }
@@ -172,12 +170,7 @@ void runSonarQubeAnalysis() {
 }
 
 void buildModules(String action) {
-    sh label: 'testing get_forward_slash_replaced', script: 'echo -n ${BRANCH}'
+    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
     sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
-}
-
-def get_forward_slash_replaced() {
-    node(env.node) {
-        return env.BUILD_TAG.replaceAll('feature/:feature_')[0]
-    }
 }
