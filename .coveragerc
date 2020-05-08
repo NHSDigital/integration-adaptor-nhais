@@ -3,3 +3,4 @@ branch = True
 source = .
 omit =
     */tests/*
+    */.local/*
