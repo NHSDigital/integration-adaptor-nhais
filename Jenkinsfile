@@ -144,6 +144,9 @@ pipeline {
 
 void deployLocally() {
     sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
+    sh label: 'Show all running containers', script: 'docker ps'
+    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
 }
 
 // void teardownLocally() {
