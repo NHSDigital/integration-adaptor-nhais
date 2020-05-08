@@ -64,15 +64,12 @@ pipeline {
                 }
                 stage('Run tests') {
                     steps {
-                        sh label: 'Running tests', script: 'docker-compose run nhais-tests --fail-fast'
-                        sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                        sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
-                        // TODO: mdooner: if these are here can we fail the build early if any tests don't pass?
-                        cobertura coberturaReportFile: '**/coverage.xml'
-                        junit '**/test-reports/*.xml'
+                        sh label: 'Running tests', script: 'docker-compose run nhais-tests'
                     }
                     post {
                         always {
+                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
+                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
                             sh label: 'Show all running containers', script: 'docker ps'
                             // Need to get the docker image name
                             sh label: 'Create logs directory', script: 'mkdir logs'
@@ -134,8 +131,8 @@ pipeline {
     }
     post {
         always {
-//             cobertura coberturaReportFile: '**/coverage.xml'
-//             junit '**/test-reports/*.xml'
+            cobertura coberturaReportFile: '**/coverage.xml'
+            junit '**/test-reports/*.xml'
             sh label: 'Stopping containers', script: 'docker-compose down -v'
             //sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
             // Note that the * in the glob patterns doesn't match /
