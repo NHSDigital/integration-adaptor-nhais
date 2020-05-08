@@ -39,6 +39,8 @@ pipeline {
                 stage('Build image') {
                     steps {
                         script {
+                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
+                            sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
                                                            //Does outbound need to be change to nhais?
                             sh label: 'Building outbound image', script: "docker build -t local/nhais:${BUILD_TAG} ."
                             sh label: 'Building dyanamodb image', script: "docker build -t local/dynamodb-nhais -f Dockerfile.dynamodb ."
@@ -170,7 +172,5 @@ void runSonarQubeAnalysis() {
 }
 
 void buildModules(String action) {
-    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG}'
-    sh label: 'testing _clean_tag_element', script: 'echo -n ${BUILD_TAG_LOWER}'
     sh label: action, script: 'pipenv install --dev --deploy --ignore-pipfile'
 }
