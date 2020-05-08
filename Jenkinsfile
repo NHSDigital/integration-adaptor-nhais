@@ -67,11 +67,11 @@ pipeline {
                 }
                 stage('Run tests') {
                     steps {
-                        script {
-
-
-                            //executeUnitTestsWithCoverage()
-                        }
+//                         script {
+//
+//
+//                             //executeUnitTestsWithCoverage()
+//                         }
                     }
                     post {
                         always {
