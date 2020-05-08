@@ -64,16 +64,15 @@ class OutboundState(object):
         return {
             OPERATION_ID: self.operation_id,
             DATA: {
-                TRANSACTION_ID: self.transaction_id,
-                TRANSACTION_TIMESTAMP: self.transaction_timestamp,
+                TRANSACTION_ID: str(self.transaction_id),
+                TRANSACTION_TIMESTAMP: self.transaction_timestamp.isoformat(),
                 TRANSACTION_TYPE: self.transaction_type,
-                SIS_SEQUENCE: self.sis_sequence,
-                SMS_SEQUENCES: self.sms_sequences,
+                SIS_SEQUENCE: str(self.sis_sequence),
+                SMS_SEQUENCES: str(self.sms_sequences),
                 SENDER: self.sender,
                 RECIPIENT: self.recipient
             }
         }
-
 
 def create_new_outbound_state(segments) -> OutboundState:
     """
