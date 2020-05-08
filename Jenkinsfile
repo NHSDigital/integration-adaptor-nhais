@@ -47,6 +47,9 @@ pipeline {
                     }
                 }
                 stage('Push image') {
+                    when {
+                        expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+                    }
                     steps {
                         script {
                             sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais.json"
@@ -67,6 +70,9 @@ pipeline {
             }
         }
         stage('Deploy and Integration Test') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
             stages {
                 stage('Deploy using Terraform') {
                     steps {
