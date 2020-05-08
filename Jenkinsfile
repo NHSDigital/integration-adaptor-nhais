@@ -90,9 +90,7 @@ pipeline {
         }
         stage('Run SonarQube analysis') {
             steps {
-                dir('.') {
-                    runSonarQubeAnalysis()
-                }
+                runSonarQubeAnalysis()
             }
         }
     }
