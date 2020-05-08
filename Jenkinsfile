@@ -150,7 +150,7 @@ pipeline {
             sh label: 'Stopping containers', script: 'docker-compose down -v'
             //sh label: 'Attempt to delete child images from image', script:'docker rmi $(docker images -q) -f'
             // Note that the * in the glob patterns doesn't match /
-            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune'
+            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
     }
