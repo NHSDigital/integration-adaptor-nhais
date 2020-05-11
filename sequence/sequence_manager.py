@@ -1,6 +1,6 @@
 from sequence.sequence_factory import get_sequence_generator
 
-TABLE_NAME = 'nhais_outbound_state'
+TABLE_NAME = 'generated_id_counter'
 
 
 class IdGenerator:
