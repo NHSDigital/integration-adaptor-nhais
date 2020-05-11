@@ -4,6 +4,7 @@ from edifact.outgoing.models.interchange import InterchangeHeader
 from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
 from outbound.state import outbound_state as state
 
+OPERATION_ID = 'GD12JD-3H3D-SK2W-JDJS-CCNCJJ3RTS7E'
 
 class TestOutboundState(unittest.TestCase):
 
@@ -19,15 +20,13 @@ class TestOutboundState(unittest.TestCase):
     def test_constructor(self):
         input_data = {
             state.OPERATION_ID: 'aaa-bbb-ccc',
-            state.DATA: {
-                state.TRANSACTION_ID: 1,
-                state.TRANSACTION_TIMESTAMP: '12:00',
-                state.TRANSACTION_TYPE: 'G1',
-                state.SIS_SEQUENCE: 2,
-                state.SMS_SEQUENCES: [3, 7],
-                state.SENDER: 'test_sender',
-                state.RECIPIENT: 'test_recipient'
-            }
+            state.TRANSACTION_ID: 1,
+            state.TRANSACTION_TIMESTAMP: '12:00',
+            state.TRANSACTION_TYPE: 'G1',
+            state.SIS_SEQUENCE: 2,
+            state.SMS_SEQUENCES: [3, 7],
+            state.SENDER: 'test_sender',
+            state.RECIPIENT: 'test_recipient'
         }
 
         outbound_state = state.OutboundState(input_data)
@@ -44,7 +43,7 @@ class TestOutboundState(unittest.TestCase):
                     MessageHeader(sequence_number=7),
                     ReferenceTransactionNumber(reference=1),
                     ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-        outbound_state = state.create_new_outbound_state(segments)
+        outbound_state = state.create_new_outbound_state(segments, OPERATION_ID)
 
         self.verify_results_for_input_data(outbound_state)
 
@@ -59,7 +58,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=None),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None timestamp'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -70,7 +69,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('Empty timestamp string'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -81,7 +80,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None transaction_type'):
             with self.assertRaises(AttributeError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -92,7 +91,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(None)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('Not existing transaction_type'):
             with self.assertRaises(AttributeError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -103,7 +102,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.NOT_EXISTING)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None sis sequence'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -114,7 +113,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('Empty sms sequences list'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -123,7 +122,7 @@ class TestOutboundState(unittest.TestCase):
                                               sequence_number=2),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None sender'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender=None,
@@ -134,7 +133,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('Empty sender string'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='',
@@ -145,7 +144,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None recipient'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -156,7 +155,7 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('Empty recipient string'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
@@ -167,4 +166,4 @@ class TestOutboundState(unittest.TestCase):
                             MessageHeader(sequence_number=7),
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments)
+                state.create_new_outbound_state(segments, OPERATION_ID)
