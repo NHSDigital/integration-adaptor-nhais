@@ -4,7 +4,7 @@ from edifact.outgoing.models.message import MessageHeader, MessageTrailer, Refer
     ReferenceTransactionType
 from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
-OPERATION_ID = 'OPERATION_ID'
+KEY = 'key'
 TRANSACTION_ID = 'TRANSACTION_ID'
 TRANSACTION_TIMESTAMP = 'TRANSACTION_TIMESTAMP'
 TRANSACTION_TYPE = 'TRANSACTION_TYPE'
@@ -40,18 +40,18 @@ class OutboundState(object):
 
         serialised = self._serialise_data()
 
-        await self.persistence_store.add(self.operation_id, serialised)
+        await self.persistence_store.add(serialised)
         logger.info(f'Successfully updated outbound state to state store for {self.operation_id}')
 
     def _deserialize_data(self, store_data):
-        self.operation_id: str = store_data['OPERATION_ID']
-        self.transaction_id: int = store_data['TRANSACTION_ID']
-        self.transaction_timestamp: str = store_data['TRANSACTION_TIMESTAMP']
-        self.transaction_type: str = store_data['TRANSACTION_TYPE']
-        self.sis_sequence: int = store_data['SIS_SEQUENCE']
-        self.sms_sequences: list = store_data['SMS_SEQUENCES']
-        self.sender: str = store_data['SENDER']
-        self.recipient: str = store_data['RECIPIENT']
+        self.operation_id: str = store_data[KEY]
+        self.transaction_id: int = store_data[TRANSACTION_ID]
+        self.transaction_timestamp: str = store_data[TRANSACTION_TIMESTAMP]
+        self.transaction_type: str = store_data[TRANSACTION_TYPE]
+        self.sis_sequence: int = store_data[SIS_SEQUENCE]
+        self.sms_sequences: list = store_data[SMS_SEQUENCES]
+        self.sender: str = store_data[SENDER]
+        self.recipient: str = store_data[RECIPIENT]
 
     def _serialise_data(self):
         """
@@ -59,7 +59,7 @@ class OutboundState(object):
         persistence store
         """
         return {
-            OPERATION_ID: self.operation_id,
+            KEY: self.operation_id,
             TRANSACTION_ID: str(self.transaction_id),
             TRANSACTION_TIMESTAMP: self.transaction_timestamp.isoformat(),
             TRANSACTION_TYPE: self.transaction_type,
@@ -75,7 +75,6 @@ def create_new_outbound_state(segments, operation_id) -> OutboundState:
     until a `publish` is executed
     """
 
-    # operation_id = get_uuid()
     sms_sequences = []
 
     for segment in segments:
@@ -107,7 +106,7 @@ def create_new_outbound_state(segments, operation_id) -> OutboundState:
         raise ValueError('Expected recipient to not be None or empty')
 
     outbound_state_map = {
-        OPERATION_ID: operation_id,
+        KEY: operation_id,
         TRANSACTION_ID: transaction_id,
         TRANSACTION_TIMESTAMP: transaction_timestamp,
         TRANSACTION_TYPE: transaction_type,

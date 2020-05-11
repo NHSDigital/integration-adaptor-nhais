@@ -19,7 +19,7 @@ class TestOutboundState(unittest.TestCase):
 
     def test_constructor(self):
         input_data = {
-            state.OPERATION_ID: 'aaa-bbb-ccc',
+            state.KEY: 'aaa-bbb-ccc',
             state.TRANSACTION_ID: 1,
             state.TRANSACTION_TIMESTAMP: '12:00',
             state.TRANSACTION_TYPE: 'G1',

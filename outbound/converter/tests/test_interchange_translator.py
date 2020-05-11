@@ -8,6 +8,7 @@ import outbound.state.outbound_state
 from edifact.outgoing.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
+from utilities import message_utilities
 from utilities.date_utilities import DateUtilities
 from utilities.test_utilities import async_test, awaitable
 
@@ -43,7 +44,8 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         patient = create_patient()
 
         translator = InterchangeTranslator()
-        edifact = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE)
+        operation_id = message_utilities.get_uuid()
+        edifact = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE, operation_id)
 
         self.assertIsNotNone(edifact)
         self.assertTrue(len(edifact) > 0)
