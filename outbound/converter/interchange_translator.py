@@ -19,7 +19,7 @@ class InterchangeTranslator(object):
         self.id_generator = IdGenerator()
         self.segments = []
 
-    async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType) -> str:
+    async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType, operation_id: str) -> str:
         translation_timestamp = DateUtilities.utc_now()
         sender, recipient = self.__append_interchange_header(patient, translation_timestamp)
         self.__append_message_segments(patient, translation_timestamp)
@@ -29,7 +29,7 @@ class InterchangeTranslator(object):
         # pre-validate to ensure the EDIFACT message is valid before generating sequence numbers for it
         self.__pre_validate_segments()
         await self.__generate_identifiers(sender, recipient)
-        await self.__record_outgoing_state()
+        await self.__record_outgoing_state(operation_id)
         return self.__translate_edifact()
 
     def __append_interchange_header(self, patient, translation_timestamp: datetime):
@@ -63,7 +63,7 @@ class InterchangeTranslator(object):
     def __translate_edifact(self):
         return '\n'.join([segment.to_edifact() for segment in self.segments])
 
-    async def __record_outgoing_state(self):
-        outbound_state = create_new_outbound_state(self.segments)
+    async def __record_outgoing_state(self, operation_id):
+        outbound_state = create_new_outbound_state(self.segments, operation_id)
         await outbound_state.publish()
         return
