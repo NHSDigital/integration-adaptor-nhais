@@ -3,6 +3,7 @@ from json import JSONDecodeError
 from typing import Any
 
 import tornado.web
+from edifact.outgoing.models.message import ReferenceTransactionType
 from fhir.resources.operationoutcome import OperationOutcome
 from tornado import httputil
 
@@ -34,11 +35,12 @@ class AcceptanceAmendmentRequestHandler(tornado.web.RequestHandler):
         try:
             request_body = json.loads(self.request.body.decode())
             patient = validate_request.validate_patient(request_body)
+            transaction_type = ReferenceTransactionType.TransactionType.ACCEPTANCE
             if patient.id == patient_id:
-                edifact = await self.fhir_to_edifact.convert(patient)
+                unique_operation_id = message_utilities.get_uuid()
+                edifact = await self.fhir_to_edifact.convert(patient, transaction_type, unique_operation_id)
                 await self.mesh_wrapper.send(edifact)
                 self.set_status(202)
-                unique_operation_id = message_utilities.get_uuid()
                 self.set_header("OperationId", unique_operation_id)
                 await self.finish()
             else:

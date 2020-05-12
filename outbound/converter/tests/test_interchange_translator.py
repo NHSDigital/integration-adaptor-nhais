@@ -3,11 +3,12 @@ import unittest
 from datetime import datetime, timezone
 from unittest import mock
 
-import sequence.interchange_id
-import sequence.message_id
-import sequence.transaction_id
+import sequence.sequence_manager
+import outbound.state.outbound_state
+from edifact.outgoing.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
+from utilities import message_utilities
 from utilities.date_utilities import DateUtilities
 from utilities.test_utilities import async_test, awaitable
 
@@ -23,28 +24,37 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
     RFF_TN_PATTERN = r"^RFF\+TN:(?P<transaction_number>[0-9]{1,8})'$"
     UNT_PATTERN = r"^UNT\+(?P<segment_count>[0-9]+)\+(?P<sms>[0-9]{8})'$"
     UNZ_PATTERN = r"^UNZ\+(?P<message_count>[0-9]+)\+(?P<sis>[0-9]{8})'$"
+    RFF_PATTERN = r"^RFF\+950:(?P<transaction_type>G[0-9])'$"
 
-    @mock.patch.object(sequence.message_id.MessageIdGenerator, 'generate_message_id')
-    @mock.patch.object(sequence.interchange_id.InterchangeIdGenerator, 'generate_interchange_id')
-    @mock.patch.object(sequence.transaction_id.TransactionIdGenerator, 'generate_transaction_id')
+    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
+    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_message_id')
+    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_interchange_id')
+    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_transaction_id')
     @mock.patch('utilities.date_utilities.DateUtilities.utc_now')
     @async_test
     async def test_message_translated(self, mock_utc_now, mock_generate_transaction_id, mock_generate_interchange_id,
-                                      mock_generate_message_id):
+                                      mock_generate_message_id, mock_publish):
         expected_date = datetime(year=2020, month=4, day=27, hour=17, minute=37, tzinfo=timezone.utc)
         mock_utc_now.return_value = expected_date
         mock_generate_transaction_id.return_value = awaitable(5174)
         mock_generate_interchange_id.return_value = awaitable(45)
         mock_generate_message_id.return_value = awaitable(56)
+        mock_publish.return_value = awaitable(4)
         self.assertEqual(expected_date, DateUtilities.utc_now())
         patient = create_patient()
 
         translator = InterchangeTranslator()
-        edifact = await translator.convert(patient)
+        operation_id = message_utilities.get_uuid()
+        edifact = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE, operation_id)
 
         self.assertIsNotNone(edifact)
         self.assertTrue(len(edifact) > 0)
         segments = edifact.splitlines()
+
+        rff = segments.pop()
+        self.assertRegex(rff, self.RFF_PATTERN)
+        rff_match = re.match(self.RFF_PATTERN, rff)
+        self.assertEqual('G1', rff_match.group('transaction_type'))
 
         unz = segments.pop()
         self.assertRegex(unz, self.UNZ_PATTERN)
