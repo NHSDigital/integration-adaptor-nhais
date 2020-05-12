@@ -7,7 +7,6 @@ verify_ssl = true
 coverage = "~=4.5"
 requests = "~=2.23"
 unittest-xml-reporting = "~=2.5"
-v = {editable = true,version = "*"}
 
 [packages]
 tornado = "~=6.0"
