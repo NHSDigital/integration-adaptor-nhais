@@ -1,4 +1,5 @@
 import unittest
+import datetime
 
 from edifact.outgoing.models.interchange import InterchangeHeader
 from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
@@ -6,11 +7,12 @@ from outbound.state import outbound_state as state
 
 OPERATION_ID = 'GD12JD-3H3D-SK2W-JDJS-CCNCJJ3RTS7E'
 
+
 class TestOutboundState(unittest.TestCase):
 
     def verify_results_for_input_data(self, outbound_state):
         self.assertEqual(outbound_state.transaction_id, 1)
-        self.assertEqual(outbound_state.transaction_timestamp, '12:00')
+        self.assertEqual(outbound_state.transaction_timestamp, datetime.datetime(2020, 5, 17, 0, 0))
         self.assertEqual(outbound_state.transaction_type, 'G1')
         self.assertEqual(outbound_state.sis_sequence, 2)
         self.assertEqual(outbound_state.sms_sequences, [3, 7])
@@ -21,7 +23,7 @@ class TestOutboundState(unittest.TestCase):
         input_data = {
             state.KEY: 'aaa-bbb-ccc',
             state.TRANSACTION_ID: 1,
-            state.TRANSACTION_TIMESTAMP: '12:00',
+            state.TRANSACTION_TIMESTAMP: datetime.datetime(2020, 5, 17, 0, 0),
             state.TRANSACTION_TYPE: 'G1',
             state.SIS_SEQUENCE: 2,
             state.SMS_SEQUENCES: [3, 7],
@@ -37,7 +39,7 @@ class TestOutboundState(unittest.TestCase):
     def test_create_outbound_state(self):
         segments = [InterchangeHeader(sender='test_sender',
                                       recipient='test_recipient',
-                                      date_time='12:00',
+                                      date_time=datetime.datetime(2020, 5, 17),
                                       sequence_number=2),
                     MessageHeader(sequence_number=3),
                     MessageHeader(sequence_number=7),
@@ -52,7 +54,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -70,22 +72,11 @@ class TestOutboundState(unittest.TestCase):
                             ReferenceTransactionNumber(reference=1),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
                 state.create_new_outbound_state(segments, OPERATION_ID)
-        with self.subTest('Empty timestamp string'):
-            with self.assertRaises(ValueError):
-                segments = [InterchangeHeader(sender='test_sender',
-                                              recipient='test_recipient',
-                                              date_time='',
-                                              sequence_number=2),
-                            MessageHeader(sequence_number=3),
-                            MessageHeader(sequence_number=7),
-                            ReferenceTransactionNumber(reference=1),
-                            ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-                state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None transaction_type'):
             with self.assertRaises(AttributeError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -96,7 +87,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(AttributeError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -107,7 +98,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=None),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -118,16 +109,16 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
-                            ReferenceTransactionNumber(reference=1),
+                            ReferenceTransactionNumber(reference='1'),
                             ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
                 state.create_new_outbound_state(segments, OPERATION_ID)
         with self.subTest('None sender'):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender=None,
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -138,7 +129,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='',
                                               recipient='test_recipient',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -149,7 +140,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient=None,
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
@@ -160,7 +151,7 @@ class TestOutboundState(unittest.TestCase):
             with self.assertRaises(ValueError):
                 segments = [InterchangeHeader(sender='test_sender',
                                               recipient='',
-                                              date_time='12:00',
+                                              date_time=datetime.datetime(2020, 5, 17),
                                               sequence_number=2),
                             MessageHeader(sequence_number=3),
                             MessageHeader(sequence_number=7),
