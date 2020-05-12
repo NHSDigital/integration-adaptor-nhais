@@ -166,7 +166,7 @@ class ReferenceTransactionType(Reference):
 
 class ReferenceTransactionNumber(Reference):
 
-    def __init__(self, reference=(None, int)):
+    def __init__(self, reference: (int, None) = None):
         super().__init__(qualifier='TN', reference=reference)
 
     def pre_validate(self):
