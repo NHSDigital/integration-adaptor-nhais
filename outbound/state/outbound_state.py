@@ -28,7 +28,7 @@ class OutboundState(object):
         :param store_data:
         """
 
-        self.persistence_store = get_persistence_adaptor(table_name=NHAIS_OUTBOUND_STATE)
+        self.persistence_store = get_persistence_adaptor(table_name=NHAIS_OUTBOUND_STATE, max_retries=3, retry_delay=0.1)
         self._deserialize_data(store_data)
 
     async def publish(self):
