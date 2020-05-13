@@ -6,6 +6,7 @@ from fhir.resources.patient import Patient
 from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
     ReferenceTransactionType
+from outbound.converter.acceptance_message_translator import AcceptanceMessageTranslator
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
 from outbound.converter.stub_message_translator import StubMessageTranslator
 from outbound.state.outbound_state import create_new_outbound_state
@@ -22,9 +23,8 @@ class InterchangeTranslator(object):
     async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType, operation_id: str) -> str:
         translation_timestamp = DateUtilities.utc_now()
         sender, recipient = self.__append_interchange_header(patient, translation_timestamp)
-        self.__append_message_segments(patient, translation_timestamp)
+        self.__append_message_segments(patient, translation_timestamp, transaction_type)
         self.segments.append(InterchangeTrailer(number_of_messages=1))
-        self.segments.append(ReferenceTransactionType(transaction_type))
 
         # pre-validate to ensure the EDIFACT message is valid before generating sequence numbers for it
         self.__pre_validate_segments()
@@ -38,8 +38,12 @@ class InterchangeTranslator(object):
         self.segments.append(InterchangeHeader(sender=sender, recipient=recipient, date_time=translation_timestamp))
         return sender, recipient
 
-    def __append_message_segments(self, patient: Patient, translation_timestamp: datetime):
-        message_translator = StubMessageTranslator(translation_timestamp)
+    def __append_message_segments(self, patient: Patient, translation_timestamp: datetime,
+                                  transaction_type: ReferenceTransactionType.TransactionType):
+        if transaction_type == ReferenceTransactionType.TransactionType.ACCEPTANCE:
+            message_translator = AcceptanceMessageTranslator(translation_timestamp)
+        else:
+            message_translator = StubMessageTranslator(translation_timestamp)
         self.segments.extend(message_translator.translate(patient))
 
     def __pre_validate_segments(self):
