@@ -4,7 +4,7 @@ from datetime import datetime
 from fhir.resources.patient import Patient
 
 from edifact.outgoing.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, \
-    DateTimePeriod, SegmentGroup, ReferenceTransactionNumber
+    DateTimePeriod, SegmentGroup, ReferenceTransactionNumber, ReferenceTransactionType
 from outbound.converter.fhir_helpers import get_ha_identifier
 
 

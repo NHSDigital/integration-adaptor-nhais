@@ -51,11 +51,6 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         self.assertTrue(len(edifact) > 0)
         segments = edifact.splitlines()
 
-        rff = segments.pop()
-        self.assertRegex(rff, self.RFF_PATTERN)
-        rff_match = re.match(self.RFF_PATTERN, rff)
-        self.assertEqual('G1', rff_match.group('transaction_type'))
-
         unz = segments.pop()
         self.assertRegex(unz, self.UNZ_PATTERN)
         unz_match = re.match(self.UNZ_PATTERN, unz)
@@ -65,7 +60,7 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         unt = segments.pop()
         self.assertRegex(unt, self.UNT_PATTERN)
         unt_match = re.match(self.UNT_PATTERN, unt)
-        self.assertEqual('7', unt_match.group('segment_count'))
+        self.assertEqual('8', unt_match.group('segment_count'))
         self.assertEqual('00000056', unt_match.group('sms'))
 
         rff_tn = segments.pop()
@@ -75,6 +70,11 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
 
         s01 = segments.pop()
         self.assertRegex(s01, self.S01_PATTERN)
+
+        rff = segments.pop()
+        self.assertRegex(rff, self.RFF_PATTERN)
+        rff_match = re.match(self.RFF_PATTERN, rff)
+        self.assertEqual('G1', rff_match.group('transaction_type'))
 
         dtm_msg_header = segments.pop()
         self.assertRegex(dtm_msg_header, self.DTM_MSG_HEADER_PATTERN)
