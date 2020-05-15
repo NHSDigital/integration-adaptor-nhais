@@ -42,6 +42,17 @@ HA to GP Links
 The goal of the NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of EDIFACT and 
 MESH messaging.
 
+## Workflows
+
+### Initiated by GP Practice
+
+| Request (GP -> HA)     | Possible Replies (HA -> GP)      |
+|--------------|------------------------|
+| Acceptance   | Approval, Rejection (Wrong HA |
+| Amendment    | None, Amendment        |
+| Removal      | TBD                    |
+| Deduction    | Deduction, Deduction Request Rejection |
+
 ## Adaptor API
 
 ### Outbound (GP -> HA)

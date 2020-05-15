@@ -1781,8 +1781,7 @@ public class PatientsApiExample {
         Patient patient = {"$ref":"components/examples/requests/NHAIS/acceptance-birth-min.json"}; // Patient | 
         String acceptanceType = acceptanceType_example; // String | 
         try {
-            OperationOutcome result = apiInstance.acceptance(id, patient, acceptanceType);
-            System.out.println(result);
+            apiInstance.acceptance(id, patient, acceptanceType);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1803,8 +1802,7 @@ public class PatientsApiExample {
         Patient patient = {"$ref":"components/examples/requests/NHAIS/acceptance-birth-min.json"}; // Patient | 
         String acceptanceType = acceptanceType_example; // String | 
         try {
-            OperationOutcome result = apiInstance.acceptance(id, patient, acceptanceType);
-            System.out.println(result);
+            apiInstance.acceptance(id, patient, acceptanceType);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1827,10 +1825,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 [apiInstance acceptanceWith:id
     patient:patient
     acceptanceType:acceptanceType
-              completionHandler: ^(OperationOutcome output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
+              completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1852,7 +1847,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully.');
   }
 };
 api.acceptance(id, patient, opts, callback);
@@ -1884,8 +1879,7 @@ namespace Example
             try
             {
                 // Accept a new patient (Acceptance transaction)
-                OperationOutcome result = apiInstance.acceptance(id, patient, acceptanceType);
-                Debug.WriteLine(result);
+                apiInstance.acceptance(id, patient, acceptanceType);
             }
             catch (Exception e)
             {
@@ -1907,8 +1901,7 @@ $patient = {"$ref":"components/examples/requests/NHAIS/acceptance-birth-min.json
 $acceptanceType = acceptanceType_example; // String | 
 
 try {
-    $result = $api_instance->acceptance($id, $patient, $acceptanceType);
-    print_r($result);
+    $api_instance->acceptance($id, $patient, $acceptanceType);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->acceptance: ', $e->getMessage(), PHP_EOL;
 }
@@ -1926,8 +1919,7 @@ my $patient = WWW::OPenAPIClient::Object::Patient->new(); # Patient |
 my $acceptanceType = acceptanceType_example; # String | 
 
 eval { 
-    my $result = $api_instance->acceptance(id => $id, patient => $patient, acceptanceType => $acceptanceType);
-    print Dumper($result);
+    $api_instance->acceptance(id => $id, patient => $patient, acceptanceType => $acceptanceType);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->acceptance: $@\n";
@@ -1949,8 +1941,7 @@ acceptanceType = acceptanceType_example # String |  (optional) (default to null)
 
 try: 
     # Accept a new patient (Acceptance transaction)
-    api_response = api_instance.acceptance(id, patient, acceptanceType=acceptanceType)
-    pprint(api_response)
+    api_instance.acceptance(id, patient, acceptanceType=acceptanceType)
 except ApiException as e:
     print("Exception when calling PatientsApi->acceptance: %s\n" % e)</code></pre>
                             </div>
@@ -2087,11 +2078,6 @@ $(document).ready(function() {
 
 
                             <ul id="responses-detail-Patients-acceptance-202" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-acceptance-202-schema">Schema</a>
-                                </li>
-
-
 
                                 <li class="">
                                   <a data-toggle="tab" href="#responses-acceptance-202-headers">Headers</a>
@@ -2101,47 +2087,6 @@ $(document).ready(function() {
 
 
                             <div class="tab-content" id="responses-Patients-acceptance-202-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-acceptance-202-schema">
-                                  <div id="responses-Patients-acceptance-schema-202" class="exampleStyle">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Acceptance forwarded to NHAIS for processing",
-  "headers" : {
-    "operationid" : {
-      "description" : "A unique identifier for the operation that MUST be retained",
-      "style" : "simple",
-      "explode" : false
-    }
-  },
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.definitions = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-acceptance-202-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-acceptance-schema-202');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-Patients-acceptance-202-schema-data' type='hidden' value=''></input>
-                                </div>
                                   <div class="tab-pane" id="responses-acceptance-202-headers">
                                       <table>
                                           <tr>
@@ -2154,7 +2099,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>A unique identifier for the operation that MUST be retained</td>
+                                                  <td>A unique identifier (UUID) for the operation that MUST be retained</td>
                                               </tr>
                                       </table>
                                   </div>
@@ -2960,38 +2905,14 @@ Use this endpoint to send a Deduction transaction to NHAIS.
 When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
 to match against the asynchronous reply from NHAIS
 
-## EDIFACT
+## Payload Description
 
-The following Interchange contains just one Deduction Request transaction for:
+The request payload is a Parameters list with the following parameters:
 
-NHS Number N/10/10.
-Deduction Date : 25/12/1991, Deduction Reason : Death, Free Text : Died on holiday in Majorca.
-Registered with GP 281 (GMC National GP Code 4826940).
-
-Information transmitted within Interchange 2, Message 3, Transaction Number 17 at 13:17 on 13/01/1992.
-
-| EDIFACT                                    | Notes                                                           |
-|--------------------------------------------|-----------------------------------------------------------------|
-| UNB+UNOA:2+TES5+XX11+920113:1317+00000002&#39; | SIS 00000002 generated by adaptor, abstracted by operation id, timestamp must match DTM |
-| UNH+00000003+FHSREG:0:1:FH:FHS001&#39;         | SMS 00000003 generated by adaptor, abstracted by operation id   |
-| BGM+++507&#39;                                 | n/a for API                                                     |
-| NAD+FHS+XX1:954&#39;                           | XX1 is the cypher of the HA. Supplied by managingOrganization.identifier[0].value in the request body |
-| DTM+137:199201131317:203&#39;                  | Timestamp of translation, adaptor will generate this            |
-| RFF+950:G5&#39;                                | The transaction type G5 is used for all $nhais.deduction operations |
-| S01+1&#39;                                     | n/a for API                                                     |
-| RFF+TN:17&#39;                                 | Transaction id generated by adaptor, abstracted by operation id |
-| NAD+GP+4826940,281:900&#39;                    | GMC Code: 4826940, Local Code: 281. Supplied by generalPractitioner[].value in the request body. |
-| GIS+1:ZZZ&#39;                                 | Can be: 1 - Death, 5 - Emigrated, 13 - Other reason        TODO |
-| DTM+961:19911225:102&#39;                      | 961 indicates this is a date of deduction                  TODO |
-| FTX+RGI+++DIED ON HOLIDAY IN MAJORCA&#39;      | Free text deduction reason                                 TODO |
-| S02+2&#39;                                     | n/a for API                                                     |
-| PNA+PAT+N/10/10:OPI&#39;                       | N/10/10 is the NHS Number. Suppied by identifier[0].value (see examples) |
-| UNT+14+00000003&#39;                           | n/a for API                                                     |
-| UNZ+1+00000002&#39;                            | n/a for API                                                     |
-
-*TODO*: No UK Core representation of an HA, we need to define this ourselves
-*TODO*: No UK Core representations of GMC or local code, we need to define this ourselves
-*TODO*: Create a deductionDetails extension for patient
+* patient: Patient resource containing id, generalPractitioner, and managingOrganization
+* reason: simple parameter with &#x60;value&#x60; one of: death, emigrated, other
+* date: simple parameter with &#x60;value&#x60; the date (no time) of the deduction in ISO format
+* reasonDetails: simple parameter with &#x60;value&#x60; a brief, free-text reason for the deduction
 
 ## Sandbox test scenarios
 *TODO*: document interactions supported by fake mesh
@@ -3042,8 +2963,7 @@ public class PatientsApiExample {
         String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Patient patient = {"$ref":"components/examples/requests/NHAIS/deduction-death.json"}; // Patient | 
         try {
-            OperationOutcome result = apiInstance.deduction(id, patient);
-            System.out.println(result);
+            apiInstance.deduction(id, patient);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -3063,8 +2983,7 @@ public class PatientsApiExample {
         String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Patient patient = {"$ref":"components/examples/requests/NHAIS/deduction-death.json"}; // Patient | 
         try {
-            OperationOutcome result = apiInstance.deduction(id, patient);
-            System.out.println(result);
+            apiInstance.deduction(id, patient);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -3085,10 +3004,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 // Deduct a patient (Deduction transaction)
 [apiInstance deductionWith:id
     patient:patient
-              completionHandler: ^(OperationOutcome output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
+              completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -3107,7 +3023,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully.');
   }
 };
 api.deduction(id, patient, callback);
@@ -3138,8 +3054,7 @@ namespace Example
             try
             {
                 // Deduct a patient (Deduction transaction)
-                OperationOutcome result = apiInstance.deduction(id, patient);
-                Debug.WriteLine(result);
+                apiInstance.deduction(id, patient);
             }
             catch (Exception e)
             {
@@ -3160,8 +3075,7 @@ $id = 9000000009; // String | The patient's NHS Number. The primary identifier o
 $patient = {"$ref":"components/examples/requests/NHAIS/deduction-death.json"}; // Patient | 
 
 try {
-    $result = $api_instance->deduction($id, $patient);
-    print_r($result);
+    $api_instance->deduction($id, $patient);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->deduction: ', $e->getMessage(), PHP_EOL;
 }
@@ -3178,8 +3092,7 @@ my $id = 9000000009; # String | The patient's NHS Number. The primary identifier
 my $patient = WWW::OPenAPIClient::Object::Patient->new(); # Patient | 
 
 eval { 
-    my $result = $api_instance->deduction(id => $id, patient => $patient);
-    print Dumper($result);
+    $api_instance->deduction(id => $id, patient => $patient);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->deduction: $@\n";
@@ -3200,8 +3113,7 @@ patient = {"$ref":"components/examples/requests/NHAIS/deduction-death.json"} # P
 
 try: 
     # Deduct a patient (Deduction transaction)
-    api_response = api_instance.deduction(id, patient)
-    pprint(api_response)
+    api_instance.deduction(id, patient)
 except ApiException as e:
     print("Exception when calling PatientsApi->deduction: %s\n" % e)</code></pre>
                             </div>
@@ -3313,59 +3225,31 @@ $(document).ready(function() {
 
 
                             <ul id="responses-detail-Patients-deduction-202" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-deduction-202-schema">Schema</a>
+
+                                <li class="">
+                                  <a data-toggle="tab" href="#responses-deduction-202-headers">Headers</a>
                                 </li>
-
-
-
 
                             </ul>
 
 
                             <div class="tab-content" id="responses-Patients-deduction-202-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-deduction-202-schema">
-                                  <div id="responses-Patients-deduction-schema-202" class="exampleStyle">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Deduction forwarded to NHAIS for processing",
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      },
-      "examples" : {
-        "deduction-response" : {
-          "summary" : "Deduction - response with operation id",
-          "value" : {
-            "$ref" : "components/examples/responses/with-operation-id.json"
-          }
-        }
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.definitions = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-deduction-202-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-deduction-schema-202');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
+                                  <div class="tab-pane" id="responses-deduction-202-headers">
+                                      <table>
+                                          <tr>
+                                              <th width="150px">Name</th>
+                                              <th width="100px">Type</th>
+                                              <th width="100px">Format</th>
+                                              <th>Description</th>
+                                          </tr>
+                                              <tr>
+                                                  <td>operationid</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>A unique identifier (UUID) for the operation that MUST be retained</td>
+                                              </tr>
+                                      </table>
                                   </div>
-                                  <input id='responses-Patients-deduction-202-schema-data' type='hidden' value=''></input>
-                                </div>
                             </div>
                             <h3 id="examples-Patients-deduction-title-400"></h3>
                             <p id="examples-Patients-deduction-description-400" class="marked"></p>
