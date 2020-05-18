@@ -7,6 +7,10 @@ logger = log.IntegrationAdaptorsLogger(__name__)
 
 class Inbound_Handler():
 
-    def on_message_recieved(self, edifact_message):
-        fhir_message = EdifactToFhir.convert_edifact_to_fhir(edifact_message)
-        SupplierIncomingMQ.send(fhir_message)
+    def __init__(self):
+        self.edifact_to_fhir = EdifactToFhir()
+        self.supplier_incoming_mq = SupplierIncomingMQ()
+
+    async def on_message_recieved(self, edifact_message):
+        fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact_message)
+        self.supplier_incoming_mq.send(fhir_message)
