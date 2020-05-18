@@ -9,6 +9,14 @@ NHAIS_OUTBOUND_QUEUE_BROKERS: amqp://localhost:5672
 NHAIS_OUTBOUND_QUEUE_NAME: 'nhais_outbound'
 NHAIS_OUTBOUND_ADDRESS: 'http://localhost:80'
 
+NHAIS_INBOUND_QUEUE_BROKERS: amqp://localhost:5672
+NHAIS_INBOUND_QUEUE_NAME: 'nhais_inbound'
+NHAIS_INBOUND_ADDRESS: 'http://localhost:443'
+
+NHAIS_INCOMING_QUEUE_BROKERS: amqp://localhost:5672
+NHAIS_INCOMING_QUEUE_NAME: 'nhais_incoming_test'
+NHAIS_INCOMING_ADDRESS: 'http://localhost:443'
+
 #common tests
 AWS_ACCESS_KEY_ID: test
 AWS_SECRET_ACCESS_KEY: test
