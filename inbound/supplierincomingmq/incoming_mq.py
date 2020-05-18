@@ -2,7 +2,7 @@ from comms import proton_queue_adaptor
 from utilities import timing, config
 
 
-class SupplierIncomingMQ:
+class Supplier_Incoming_MQ:
 
     def __init__(self):
         self.queue_adaptor = proton_queue_adaptor.ProtonQueueAdaptor(
