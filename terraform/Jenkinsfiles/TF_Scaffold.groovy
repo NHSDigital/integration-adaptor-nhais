@@ -30,8 +30,8 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            terraformInit()
-            if (terraform('plan', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
+            terraformInit(TF_STATE_BUCKET, Project, Environment, Component, region)
+            //if (terraform('plan', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -59,8 +59,22 @@ pipeline {
 
 // }
 
-void terraformInit() {
-  println("Terraform Init will go here")
+
+/*
+                                                                    terraform init \
+                                                                        -backend-config="bucket=${TF_STATE_BUCKET}" \
+                                                                        -backend-config="region=${TF_STATE_BUCKET_REGION}" \
+                                                                        -backend-config="key=${ENVIRONMENT_ID}-fakespine.tfstate" \
+                                                                        -input=false -no-color
+                                                                """
+
+*/
+
+void terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
+  println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
+  String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false"
+  println(command)
+
 }
 
 int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
