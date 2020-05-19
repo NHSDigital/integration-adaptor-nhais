@@ -46,7 +46,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            if (terraform('apply', params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
+            if (terraform('apply', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
