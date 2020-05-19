@@ -30,8 +30,8 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            terraformInit(TF_STATE_BUCKET, Project, Environment, Component, region)
-            //if (terraform('plan', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
+            terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region)
+            //if (terraform('plan',params.Project, params.Environment, params.Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -46,7 +46,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            if (terraform('apply', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
+            if (terraform('apply', params.Project, params.Environment, params.Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
