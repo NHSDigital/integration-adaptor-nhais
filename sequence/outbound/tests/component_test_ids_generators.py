@@ -3,8 +3,8 @@
 import unittest
 
 import aioboto3
-from sequence.sequence_factory import get_sequence_generator
-from sequence.sequence_manager import IdGenerator
+from sequence.outbound.sequence_factory import get_sequence_generator
+from sequence.outbound.sequence_manager import IdGenerator
 from utilities import test_utilities
 from utilities import config
 
