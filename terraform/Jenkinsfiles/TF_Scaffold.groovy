@@ -9,9 +9,9 @@ pipeline {
     choice (name: "Project",     choices: ['NIA'],                           description: "Choose a project")
     choice (name: "Environment", choices: ['build', 'vp', 'ptl', 'account'], description: "Choose environment")
     choice (name: "Component",   choices: ['base', 'nhais', 'account'],      description: "Choose component")
-    choice (name: "Action",      choices: ['plan', 'apply'],                 descriptopn: "Choose Terraform action")
+    choice (name: "Action",      choices: ['plan', 'apply'],                 description: "Choose Terraform action")
     string (name: "Variables",   defaultValue: "",                           description: "Terrafrom variables, format: variable1=value,variable2=value")
-    string (name: "Git_Branch",  defaultValue: "develop"                     description: "Git branch")
+    string (name: "Git_Branch",  defaultValue: "develop",                    description: "Git branch")
     string (name: "Git_Repo",    defaultValue: "https://github.com/nhsconnect/integration-adaptor-nhais.git", description "Git Repo to clone")
   }
 
