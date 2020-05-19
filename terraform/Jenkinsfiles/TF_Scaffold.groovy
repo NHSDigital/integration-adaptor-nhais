@@ -30,7 +30,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            terraform('plan', Project, Environment, Component, region, [], [:])
+            if (terraform('plan', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -45,7 +45,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            terraform('apply', Project, Environment, Component, region, [], [:])
+            if (terraform('apply', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
