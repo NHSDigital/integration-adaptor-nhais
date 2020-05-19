@@ -21,6 +21,9 @@ pipeline {
         //git (branch: params.Git_Branch, url: params.Git_Repo)
         script {
           //println(sh(label: "Check the directory contents", script: "ls -laR", returnStdout: true))
+          String buildUser = ""
+          wrap([$class: 'BuildUser']) { buildUser = env.BUILD_USER }
+          currentBuild.description = "TF: ${params.Action} | env: ${params.Environment} | cmp: ${params.Component} | u: ${buildUser}"
           println("TODO Clone the branch from Git_Branch")
         } // script
       }  // steps

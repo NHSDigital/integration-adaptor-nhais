@@ -3,7 +3,7 @@ data "terraform_remote_state" "base" {
   
   config = {
     bucket = var.tf_state_bucket
-    key = "${project}-${environment}-base.tfstate"
+    key = "${var.project}-${var.environment}-base.tfstate"
     region = var.region
   }
 }
