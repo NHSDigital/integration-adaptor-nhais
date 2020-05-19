@@ -28,3 +28,18 @@ variable "tf_state_bucket" {
   type = string
   description = "Name of S3 bucket with TF state of components"
 }
+
+variable "nhais_service_desired_count" {
+  type = number
+  description = "Number of containers to run in the service"
+}
+
+variable "nhais_service_container_port" {
+  type = number
+  description = "Port Number on which service within container will be listening"
+}
+
+variable "nhais_service_launch_type" {
+  type = string
+  description = "Type of cluster on which this service will be run, FARGATE or EC2"
+}
