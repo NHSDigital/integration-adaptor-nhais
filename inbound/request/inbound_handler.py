@@ -1,9 +1,9 @@
 from utilities import integration_adaptors_logger as log
 
-from edifact.incoming.edifact_recep_consumer import EdifactRecepConsumer
-from edifact.incoming.edifact_recep_producer import EdifactRecepProducer
+from inbound.converter.edifact_recep_consumer import EdifactRecepConsumer
+from inbound.converter.edifact_recep_producer import EdifactRecepProducer
 from inbound.supplier.supplier_inbound_mq import SupplierInboundMQ
-from edifact.incoming.edifact_to_fhir import EdifactToFhir
+from inbound.converter.edifact_to_fhir import EdifactToFhir
 from sequence.inbound.sequence_number_manager import InboundSequenceNumberManager
 
 logger = log.IntegrationAdaptorsLogger(__name__)
