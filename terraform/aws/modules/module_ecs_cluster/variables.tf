@@ -1,11 +1,11 @@
-variable "project" {
-  type = string
-  description = "(Required) Name of the project where this module is used"
+variable default_tags {
+  type = map(string)
+  description = "Map of tags to assign to resources in this module"
 }
 
-variable "environment" {
+variable "resource_prefix" {
   type = string
-  description = "(Required) Name of the environment where this modules is used"
+  description = "String that will be added as prefix to resource names in this module"
 }
 
 variable "module_name" {
