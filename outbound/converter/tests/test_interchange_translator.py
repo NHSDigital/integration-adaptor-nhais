@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest import mock
 
-import sequence.sequence_manager
+import sequence.outbound.sequence_manager
 import outbound.state.outbound_state
 from edifact.outgoing.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
@@ -27,9 +27,9 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
     RFF_PATTERN = r"^RFF\+950:(?P<transaction_type>G[0-9])'$"
 
     @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
-    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_message_id')
-    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_interchange_id')
-    @mock.patch.object(sequence.sequence_manager.IdGenerator, 'generate_transaction_id')
+    @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_message_id')
+    @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_interchange_id')
+    @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_transaction_id')
     @mock.patch('utilities.date_utilities.DateUtilities.utc_now')
     @async_test
     async def test_message_translated(self, mock_utc_now, mock_generate_transaction_id, mock_generate_interchange_id,

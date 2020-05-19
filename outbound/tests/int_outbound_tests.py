@@ -60,7 +60,7 @@ class NhaisIntegrationTests(unittest.TestCase):
             )
             if 'Item' not in db_response:
                 self.fail("No results in db for given key")
-        self.assertEquals(operation_id, db_response.get('Item')['key'])
+        self.assertEqual(operation_id, db_response.get('Item')['key'])
 
     def test_acceptance_transaction_translation_error(self):
         patient = create_patient()
