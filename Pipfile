@@ -26,5 +26,3 @@ coverage-report-html = 'coverage html'
 inttests = 'python -m xmlrunner discover -o test-reports -p "int_*" -v'
 componenttests = 'python -m xmlrunner discover -o test-reports -p "component_*" -v'
 start = "python main.py"
-#unittests = 'python -m xmlrunner -o test-reports -v'
-#unittests-cov = 'coverage run -m xmlrunner -o test-reports -v'
