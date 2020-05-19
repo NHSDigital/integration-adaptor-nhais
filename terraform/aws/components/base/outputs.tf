@@ -7,5 +7,5 @@ output "base_cluster_id" {
 }
 
 output "vpc_cidr" {
-  value = aws_vpc.base.cidr_block
+  value = aws_vpc.base_vpc.cidr_block
 }
