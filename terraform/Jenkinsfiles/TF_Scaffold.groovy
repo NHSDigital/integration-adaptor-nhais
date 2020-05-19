@@ -72,7 +72,7 @@ pipeline {
 
 int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
   println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
-  String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false -no-color"
+  String command = "terraform init -backend-config='bucket=${tfStateBucket}' -backend-config='region=${region}' -backend-config='key=${project}-${environment}-${component}.tfstate' -input=false -no-color"
   dir("components/${component}") {
     return( sh( label: "Terraform Init", script: command, returnStatus: true))
   } // dir
