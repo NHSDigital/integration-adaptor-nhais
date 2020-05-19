@@ -1,4 +1,4 @@
-from sequence.sequence_factory import get_sequence_generator
+from sequence.outbound.sequence_factory import get_sequence_generator
 
 TABLE_NAME = 'generated_id_counter'
 

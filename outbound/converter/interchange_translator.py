@@ -10,7 +10,7 @@ from outbound.converter.acceptance_message_translator import AcceptanceMessageTr
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
 from outbound.converter.stub_message_translator import StubMessageTranslator
 from outbound.state.outbound_state import create_new_outbound_state
-from sequence.sequence_manager import IdGenerator
+from sequence.outbound.sequence_manager import IdGenerator
 from utilities.date_utilities import DateUtilities
 
 
