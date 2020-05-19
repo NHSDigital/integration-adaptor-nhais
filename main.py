@@ -1,5 +1,3 @@
-import asyncio
-
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -10,8 +8,6 @@ from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHand
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
 from utilities import config
-
-import threading
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -27,7 +23,6 @@ def start_tornado_server() -> None:
         ])
     tornado_server = tornado.httpserver.HTTPServer(tornado_application)
     server_port = int(config.get_config('OUTBOUND_SERVER_PORT', default='80'))
-    asyncio.set_event_loop(asyncio.new_event_loop())
     tornado_server.listen(server_port)
 
     logger.info('Starting nhais server at port {server_port}', fparams={'server_port': server_port})
@@ -41,23 +36,12 @@ def start_tornado_server() -> None:
         tornado_io_loop.close(True)
     logger.info('Server shut down, exiting...')
 
-
-def start_rabbit_mq():
-    logger.info('Started rabbit mq')
-
-
 def main():
     config.setup_config("NHAIS")
     log.configure_logging("NHAIS")
 
-    tornado_thread = threading.Thread(target=start_tornado_server)
-    rabbit_thread = threading.Thread(target=start_rabbit_mq)
-
     logger.info('Starting tornado server')
-    tornado_thread.start()
-    logger.info('Starting rabbit mq')
-    rabbit_thread.start()
-
+    start_tornado_server()
 
 if __name__ == "__main__":
     try:
