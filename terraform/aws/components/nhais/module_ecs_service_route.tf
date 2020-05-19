@@ -3,6 +3,7 @@ module "nhais_ecs_service" {
 
   project = var.project
   component = var.component
+  environment = var.environment
   module_instance = "nhais_ecs_service"
 
   cluster_id = data.terraform_remote_state.base.outputs.cluster_id
