@@ -1,0 +1,12 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# ide file
+.idea
+*.iml
+
+.DS_Store
+**/test-reports/
+
+# Local configuration
+/nhais/nhais-env.yaml
