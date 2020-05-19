@@ -6,7 +6,7 @@ pipeline {
   } //agent
 
   parameters {
-    choice (name: "Project",     choices: ['NIA'],                           description: "Choose a project")
+    choice (name: "Project",     choices: ['nia'],                           description: "Choose a project")
     choice (name: "Environment", choices: ['build', 'vp', 'ptl', 'account'], description: "Choose environment")
     choice (name: "Component",   choices: ['base', 'nhais', 'account'],      description: "Choose component")
     choice (name: "Action",      choices: ['plan', 'apply'],                 description: "Choose Terraform action")
@@ -81,8 +81,14 @@ int terraformInit(String tfStateBucket, String project, String environment, Stri
 //int terraform(String action, String project, String environment, String component, String region, List<String> parameters=[], Map<String, String> variables=[:], Map<String, String> backendConfig=[:]) {
 int terraform(String action, String project, String environment, String component, String region, List<String> parameters=[], Map<String, String> variables=[:]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
-    List<String> variablesList=variables.collect { key, value -> "-var ${key}=${value}" }
-    String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars -no-color"
+    variablesMap = variables
+    variablesMap.put('region',region)
+    variablesMap.put('project', project)
+    variablesMap.put('environment', environment)
+    parametersList = parameters
+    parametersList.add("-no-color")
+    List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
+    String command = "terraform ${action} ${parametersList.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
     dir("components/${component}") {
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     } // dir
