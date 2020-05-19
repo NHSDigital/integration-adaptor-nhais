@@ -30,6 +30,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
+            terraformInit()
             if (terraform('plan', Project, Environment, Component, region, [], [:])) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
@@ -58,6 +59,9 @@ pipeline {
 
 // }
 
+void terraformInit() {
+  println("Terraform Init will go here")
+}
 
 int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
