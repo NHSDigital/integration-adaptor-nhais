@@ -31,12 +31,12 @@ pipeline {
         dir("terraform/aws") {
           script {
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
-            if (terraform('plan',params.Project, params.Environment, params.Component, region, [], [:]) !=0 ) { error("Terraform Plan failed")}
+            if (terraform('plan', params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
     } // stage Terraform Plan
- 
+
     stage("Terraform Apply") {
       when {
         expression {
@@ -46,7 +46,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            if (terraform('apply', params.Project, params.Environment, params.Component, region, [], [:])) { error("Terraform Plan failed")}
+            if (terraform('apply', params.Project, params.Environment, params.Component, region)) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -78,7 +78,8 @@ int terraformInit(String tfStateBucket, String project, String environment, Stri
   } // dir
 } // int TerraformInit
 
-int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
+//int terraform(String action, String project, String environment, String component, String region, List<String> parameters=[], Map<String, String> variables=[:], Map<String, String> backendConfig=[:]) {
+int terraform(String action, String project, String environment, String component, String region, List<String> parameters=[], Map<String, String> variables=[:]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
     List<String> variablesList=variables.collect { key, value -> "-var ${key}=${value}" }
     String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars -no-color"
