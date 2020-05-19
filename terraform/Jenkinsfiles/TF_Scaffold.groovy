@@ -31,7 +31,7 @@ pipeline {
         dir("terraform/aws") {
           script {
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
-            if (terraform('plan', params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
+            if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -78,12 +78,13 @@ int terraformInit(String tfStateBucket, String project, String environment, Stri
   } // dir
 } // int TerraformInit
 
-int terraform(String action, String project, String environment, String component, String region, Map<String, String> variables=[:], List<String> parameters=[]) {
+int terraform(String action, String tfStateBucket, String project, String environment, String component, String region, Map<String, String> variables=[:], List<String> parameters=[]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
     variablesMap = variables
     variablesMap.put('region',region)
     variablesMap.put('project', project)
     variablesMap.put('environment', environment)
+    variablesMap.put('tf_state_bucket',tfStateBucket)
     parametersList = parameters
     parametersList.add("-no-color")
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}

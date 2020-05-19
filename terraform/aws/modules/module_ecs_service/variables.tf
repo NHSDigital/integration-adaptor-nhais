@@ -8,6 +8,11 @@ variable "environment" {
   description = "(Required) Name of the environment where this modules is used"
 }
 
+variable "component" {
+  type = string
+  description = "Name of the component where the module is used"
+}
+
 variable "module_name" {
   type = string
   description = "(Static) Name of this module"
