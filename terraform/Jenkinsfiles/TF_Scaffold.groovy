@@ -72,16 +72,16 @@ pipeline {
 
 int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
   println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
-  String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false"
+  String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false -no-color"
   dir("components/${component}") {
-    return( sh( label: "Terraform Init", script: command, retrunStatus: true))
+    return( sh( label: "Terraform Init", script: command, returnStatus: true))
   } // dir
 } // int TerraformInit
 
 int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
     List<String> variablesList=variables.collect { key, value -> "-var ${key}=${value}" }
-    String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
+    String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars -no-color"
     dir("components/${component}") {
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     } // dir
