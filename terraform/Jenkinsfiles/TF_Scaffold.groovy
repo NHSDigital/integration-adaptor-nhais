@@ -30,8 +30,8 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region)
-            //if (terraform('plan',params.Project, params.Environment, params.Component, region, [], [:])) { error("Terraform Plan failed")}
+            if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
+            if (terraform('plan',params.Project, params.Environment, params.Component, region, [], [:]) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -70,10 +70,10 @@ pipeline {
 
 */
 
-void terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
+int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
   println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
   String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false"
-  println(command)
+  retrun( sh( label: "Terraform Init", script: command, retrunStatus: true))
 
 }
 
@@ -82,6 +82,6 @@ int terraform(String action, String project, String, environment, String compone
     List<String> variablesList=variables.collect { key, value -> "-var ${key}=${value}" }
     String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
     dir("components/${component}") {
-      return sh(label:"Terraform: "+action, script: command, returnStatus=true)
+      return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     }
 }
