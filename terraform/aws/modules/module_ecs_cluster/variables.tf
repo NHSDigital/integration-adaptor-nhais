@@ -11,7 +11,7 @@ variable "resource_prefix" {
 variable "module_name" {
   type = string
   description = "(Static) Name of this module"
-  default = "ecs_service"
+  default = "ecs_cluster"
 }
 
 variable "module_instance" {
