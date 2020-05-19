@@ -18,7 +18,7 @@ pipeline {
   stages {
     stage("Clone the repository") {
       steps {
-        //git (branch: Git_Branch, url: Git_Repo)
+        //git (branch: params.Git_Branch, url: params.Git_Repo)
         script {
           //println(sh(label: "Check the directory contents", script: "ls -laR", returnStdout: true))
           println("TODO Clone the branch from Git_Branch")
@@ -73,9 +73,10 @@ pipeline {
 int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
   println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
   String command = "terraform init -backend-config=\"bucket=${tfStateBucket}\" -backend-config=\"region=${region}\" -backend-config=\"key=${project}-${environment}-${component}.tfstate\" -input=false"
-  retrun( sh( label: "Terraform Init", script: command, retrunStatus: true))
-
-}
+  dir("components/${component}") {
+    return( sh( label: "Terraform Init", script: command, retrunStatus: true))
+  } // dir
+} // int TerraformInit
 
 int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
     println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
@@ -83,5 +84,5 @@ int terraform(String action, String project, String, environment, String compone
     String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
     dir("components/${component}") {
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
-    }
-}
+    } // dir
+} // int Terraform
