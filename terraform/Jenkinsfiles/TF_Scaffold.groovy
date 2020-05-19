@@ -18,17 +18,21 @@ pipeline {
   stages {
     stage("Clone the repository") {
       steps {
-
         //git (branch: Git_Branch, url: Git_Repo)
         script {
-          println(sh(label: "Check the directory contents", script: "ls -laR", returnStdout: true))
+          //println(sh(label: "Check the directory contents", script: "ls -laR", returnStdout: true))
+          println("TODO Clone the branch from Git_Branch")
         } // script
       }  // steps
     } // stage Clone
 
     stage("Terraform Plan") {
       steps {
-        terraform('plan', Project, Environment, Component, region, [], [:])
+        dir("terraform/aws") {
+          script {
+            terraform('plan', Project, Environment, Component, region, [], [:])
+          } // script
+        } //dir terraform/aws
       } // steps
     } // stage Terraform Plan
  
@@ -39,7 +43,11 @@ pipeline {
         }
       }
       steps {
-        terraform(Action, Project, Environment, Component, region, [], [:])
+        dir("terraform/aws") {
+          script {
+            terraform('apply', Project, Environment, Component, region, [], [:])
+          } // script
+        } //dir terraform/aws
       } // steps
     } // stage Terraform Apply
   } // stages
@@ -52,7 +60,10 @@ pipeline {
 
 
 int terraform(String action, String project, String, environment, String component, String region, List<String> parameters, Map<String, String> variables, Map<String, String> backendConfig=[:]) {
+    println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
     List<String> variablesList=variables.collect { key, value -> "-var ${key}=${value}" }
-    String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=etc/global.tfvars -var-file=etc/${region}_${environment}.tfvars"
-    return sh(label:"Terraform: "+action, script: command, returnStatus=true)
+    String command = "terraform ${action} ${parameters.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
+    dir("components/${component}") {
+      return sh(label:"Terraform: "+action, script: command, returnStatus=true)
+    }
 }
