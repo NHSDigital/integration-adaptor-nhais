@@ -20,10 +20,8 @@ class InboundHandler:
     async def on_message_recieved(self, edifact_message):
         if edifact_message.message:
             fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact_message)
-            if edifact_message.sequence_number:
-                self.inbound_sequence_number_manager.record_sequence_number(edifact_message)
-            else:
-                self.edifact_recep_producer.generate_sequences(edifact_message)
-                self.supplier_incoming_mq.send(fhir_message)
+            self.inbound_sequence_number_manager.record_sequence_number(fhir_message)
+            self.edifact_recep_producer.generate_sequences(fhir_message)
+            self.supplier_incoming_mq.send(fhir_message)
         else:
             self.edifact_recep_consumer.record_reciept(edifact_message)
