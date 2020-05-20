@@ -42,20 +42,21 @@ def start_tornado_server() -> None:
 
 def message_callback(message):
     # number of workers should be configurable
-    max_number_of_worker = 2
+    max_number_of_worker = int(config.get_config('INBOUND_MAX_NUMBER_OF_WORKERS', default='3'))
     worker = Worker(message)
     worker.proceed_message()
+
 
 
 def create_queue_adaptor():
     # username/password was set as quest, not sure if this should be guest or None as done before
     return proton_queue_adaptor.ProtonQueueAdaptor(
         urls=config.get_config('INBOUND_QUEUE_BROKERS').split(','),
-        queue=config.get_config('OUTBOUND_QUEUE_NAME'),
-        username=config.get_config('OUTBOUND_QUEUE_USERNAME', default=None),
-        password=config.get_config('OUTBOUND_QUEUE_PASSWORD', default=None),
-        max_retries=int(config.get_config('OUTBOUND_QUEUE_MAX_RETRIES', default='3')),
-        retry_delay=int(config.get_config('OUTBOUND_QUEUE_RETRY_DELAY', default='100')) / 1000,
+        queue=config.get_config('INBOUND_QUEUE_NAME'),
+        username=config.get_config('INBOUND_QUEUE_USERNAME', default=None),
+        password=config.get_config('INBOUND_QUEUE_PASSWORD', default=None),
+        max_retries=int(config.get_config('INBOUND_QUEUE_MAX_RETRIES', default='3')),
+        retry_delay=int(config.get_config('INBOUND_QUEUE_RETRY_DELAY', default='100')) / 1000,
         get_message_callback=message_callback)
 
 async def send_message_to_queue(adaptor):
