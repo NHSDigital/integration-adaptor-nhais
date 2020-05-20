@@ -48,14 +48,14 @@ def message_callback(message):
 
 
 def create_queue_adaptor():
-    # value hardcoded temporary, should be taken from config or/and secret config
+    # username/password was set as quest, not sure if this should be guest or None as done before
     return proton_queue_adaptor.ProtonQueueAdaptor(
-        urls=['amqp://localhost:5672'],
-        queue='nhais_inbound',
-        username='quest',
-        password='quest',
-        max_retries='3',
-        retry_delay=0.1,
+        urls=config.get_config('INBOUND_QUEUE_BROKERS').split(','),
+        queue=config.get_config('OUTBOUND_QUEUE_NAME'),
+        username=config.get_config('OUTBOUND_QUEUE_USERNAME', default=None),
+        password=config.get_config('OUTBOUND_QUEUE_PASSWORD', default=None),
+        max_retries=int(config.get_config('OUTBOUND_QUEUE_MAX_RETRIES', default='3')),
+        retry_delay=int(config.get_config('OUTBOUND_QUEUE_RETRY_DELAY', default='100')) / 1000,
         get_message_callback=message_callback)
 
 async def send_message_to_queue(adaptor):
