@@ -34,7 +34,7 @@ def _create_org_ref(identifier_value: str):
 
 class TestAcceptancePayloads(unittest.TestCase):
 
-    def _deuction_minimal(self) -> Parameters:
+    def _removal_minimal(self) -> Parameters:
         parameters = Parameters()
         patient_param = ParametersParameter()
         patient_param.name = 'patient'
@@ -44,24 +44,15 @@ class TestAcceptancePayloads(unittest.TestCase):
         patient.managingOrganization = _create_org_ref(HA_ID)
         patient_param.resource = patient
 
-        reason = ParametersParameter()
-        reason.name = 'reason'
-        reason.valueString = 'death'  # Can be: death, emigrated, other
-
-        deduction_date = ParametersParameter()
-        deduction_date.name = 'date'
-        deduction_date.valueDate = FHIRDate()
-        deduction_date.valueDate.date = date(year=1991, month=12, day=25)
-
         reason_details = ParametersParameter()
         reason_details.name = 'reasonDetails'
-        reason_details.valueString = 'DIED ON HOLIDAY IN MAJORCA'  # free text deduction reason to be supplied by GP
+        reason_details.valueString = 'PATIENT NOW LIVES 24 MILES FROM PRACTICE'  # free text deduction reason to be supplied by GP
 
-        parameters.parameter = [patient_param, reason, deduction_date, reason_details]
+        parameters.parameter = [patient_param, reason_details]
         return parameters
 
     def test_deduction(self):
-        payload = self._deuction_minimal()
+        payload = self._removal_minimal()
 
         json_dict = payload.as_json()
         json_str = json.dumps(json_dict, indent=2)

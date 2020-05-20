@@ -73,7 +73,9 @@ properties:
       $ref: "GeneralPractitionerReference.yaml"
   extension:
     type: array
+    description: |
+      A list of extensions for the Patient resource
+
+      TODO: OpenAPI for each supported extension
     items:
-      anyOf:
-        - $ref: "extensions/Deduction.yaml"
-        - $ref: "extensions/Removal.yaml"
+      type: object

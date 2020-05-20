@@ -53,6 +53,10 @@ MESH messaging.
 | Removal      | TBD                    |
 | Deduction    | Deduction, Deduction Request Rejection |
 
+### Initiated by HA
+
+TODO
+
 ## Adaptor API
 
 ### Outbound (GP -> HA)
