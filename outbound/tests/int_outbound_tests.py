@@ -1,15 +1,15 @@
+import json
 import unittest
 import uuid
 
-import json
 import aioboto3
-from utilities import test_utilities
-from fhir.resources.fhirelementfactory import FHIRElementFactory
-
 from comms.blocking_queue_adaptor import BlockingQueueAdaptor
+from fhir.resources.fhirelementfactory import FHIRElementFactory
+from utilities import config
+from utilities import test_utilities
+
 from outbound.tests.fhir_test_helpers import create_patient, GP_ID, HA_ID
 from outbound.tests.outbound_request_builder import OutboundRequestBuilder
-from utilities import config
 
 
 class NhaisIntegrationTests(unittest.TestCase):

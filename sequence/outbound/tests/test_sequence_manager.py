@@ -1,9 +1,10 @@
 import unittest
 from unittest import mock
 
+from utilities.test_utilities import async_test, awaitable
+
 import sequence.outbound.dynamo_sequence
 from sequence.outbound.sequence_manager import IdGenerator
-from utilities.test_utilities import async_test, awaitable
 
 
 class TestSequenceManager(unittest.TestCase):

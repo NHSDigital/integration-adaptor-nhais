@@ -1,5 +1,5 @@
 from comms import proton_queue_adaptor
-from utilities import config, timing
+from utilities import config
 
 
 class SupplierInboundMQ:

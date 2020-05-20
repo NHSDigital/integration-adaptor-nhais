@@ -1,15 +1,14 @@
 import asyncio
 
-from utilities import integration_adaptors_logger as log, timing
+from comms import proton_queue_adaptor
+from utilities import config
+from utilities import integration_adaptors_logger as log
 
 from inbound.converter.edifact_recep_consumer import EdifactRecepConsumer
 from inbound.converter.edifact_recep_producer import EdifactRecepProducer
-from inbound.supplier.supplier_inbound_mq import SupplierInboundMQ
 from inbound.converter.edifact_to_fhir import EdifactToFhir
+from inbound.supplier.supplier_inbound_mq import SupplierInboundMQ
 from sequence.inbound.sequence_number_manager import InboundSequenceNumberManager
-from utilities import config
-from comms import proton_queue_adaptor
-from worker.worker import Worker
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -23,11 +22,7 @@ class InboundHandler:
         self.edifact_recep_consumer = EdifactRecepConsumer()
 
     def message_callback(self, edifact_message):
-        max_number_of_worker = int(config.get_config('INBOUND_MAX_NUMBER_OF_WORKERS', default='3'))
-        worker = Worker(edifact_message)
-        print(f'I am at worker. I have message: {edifact_message}')
-        worker.proceed_message()
-
+        logger.info(f'Message recieved by inbound, message: {edifact_message}')
         if edifact_message:
             fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact_message)
             self.inbound_sequence_number_manager.record_sequence_number(fhir_message)

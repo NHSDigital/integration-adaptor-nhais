@@ -3,10 +3,11 @@
 import unittest
 
 import aioboto3
+from utilities import config
+from utilities import test_utilities
+
 from sequence.outbound.sequence_factory import get_sequence_generator
 from sequence.outbound.sequence_manager import IdGenerator
-from utilities import test_utilities
-from utilities import config
 
 
 class ComponentTestIds(unittest.TestCase):

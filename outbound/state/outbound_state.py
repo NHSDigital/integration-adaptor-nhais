@@ -1,8 +1,9 @@
 import utilities.integration_adaptors_logger as log
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
-    ReferenceTransactionType
 from persistence.persistence_adaptor_factory import get_persistence_adaptor
+
+from edifact.outgoing.models.interchange import InterchangeHeader
+from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, \
+    ReferenceTransactionType
 
 KEY = 'key'
 TRANSACTION_ID = 'TRANSACTION_ID'

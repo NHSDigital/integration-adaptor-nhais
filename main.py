@@ -1,15 +1,16 @@
+import threading
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-import threading
-
 import utilities.integration_adaptors_logger as log
 from handlers import healthcheck_handler
+from utilities import config
+
+from inbound.request.inbound_handler import InboundHandler
 from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHandler
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
-from utilities import config
-from inbound.request.inbound_handler import InboundHandler
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 

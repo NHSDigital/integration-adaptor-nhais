@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 
 from edifact.outgoing.models.interchange import InterchangeHeader
 from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
