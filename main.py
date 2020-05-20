@@ -1,8 +1,8 @@
-import asyncio
-
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+import threading
+import asyncio
 
 import utilities.integration_adaptors_logger as log
 from handlers import healthcheck_handler
@@ -10,14 +10,13 @@ from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHand
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
 from utilities import config
-
-import threading
+from comms import proton_queue_adaptor
+from worker.worker import Worker
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
 
 def start_tornado_server() -> None:
-
     tornado_application = tornado.web.Application(
         [
             (r'/fhir/Patient/([0-9]*)/\$nhais\.removal', RemovalRequestHandler),
@@ -27,7 +26,6 @@ def start_tornado_server() -> None:
         ])
     tornado_server = tornado.httpserver.HTTPServer(tornado_application)
     server_port = int(config.get_config('OUTBOUND_SERVER_PORT', default='80'))
-    asyncio.set_event_loop(asyncio.new_event_loop())
     tornado_server.listen(server_port)
 
     logger.info('Starting nhais server at port {server_port}', fparams={'server_port': server_port})
@@ -42,21 +40,48 @@ def start_tornado_server() -> None:
     logger.info('Server shut down, exiting...')
 
 
-def start_rabbit_mq():
-    logger.info('Started rabbit mq')
+def message_callback(message):
+    # number of workers should be configurable
+    max_number_of_worker = 2
+    worker = Worker(message)
+    worker.proceed_message()
+
+
+def create_queue_adaptor():
+    # value hardcoded temporary, should be taken from config or/and secret config
+    return proton_queue_adaptor.ProtonQueueAdaptor(
+        urls=['amqp://localhost:5672'],
+        queue='nhais_inbound',
+        username='quest',
+        password='quest',
+        max_retries='3',
+        retry_delay=0.1,
+        get_message_callback=message_callback)
+
+async def send_message_to_queue(adaptor):
+    #temporary code, to be replaced by proper tests
+    test_message = {'test': 'message'}
+    test_properties = {'test-property-name': 'test-property-value'}
+    adaptor.send_async(test_message, test_properties)
+
+
+def start_listening_to_events():
+    logger.info('Starting listening to incoming messages')
+    adaptor = create_queue_adaptor()
+    adaptor.wait_for_messages()
+    # temporary, the call of the function to be removed
+    sending_thread = threading.Thread(target=send_message_to_queue)
+    sending_thread.start()
 
 
 def main():
     config.setup_config("NHAIS")
     log.configure_logging("NHAIS")
 
-    tornado_thread = threading.Thread(target=start_tornado_server)
-    rabbit_thread = threading.Thread(target=start_rabbit_mq)
+    listening_events_thread = threading.Thread(target=start_listening_to_events)
+    listening_events_thread.start()
 
-    logger.info('Starting tornado server')
-    tornado_thread.start()
-    logger.info('Starting rabbit mq')
-    rabbit_thread.start()
+    start_tornado_server()
 
 
 if __name__ == "__main__":
