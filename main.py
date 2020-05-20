@@ -69,7 +69,6 @@ def start_listening_to_events():
     logger.info('Starting listening to incoming messages')
     adaptor = create_queue_adaptor()
     adaptor.wait_for_messages()
-    # temporary, the call of the function to be removed
     sending_thread = threading.Thread(target=send_message_to_queue)
     sending_thread.start()
 
