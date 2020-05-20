@@ -9,8 +9,7 @@ from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHand
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
 from utilities import config
-from comms import proton_queue_adaptor
-from worker.worker import Worker
+from inbound.request.inbound_handler import InboundHandler
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
@@ -39,29 +38,10 @@ def start_tornado_server() -> None:
     logger.info('Server shut down, exiting...')
 
 
-def message_callback(message):
-    # number of workers should be configurable
-    max_number_of_worker = int(config.get_config('INBOUND_MAX_NUMBER_OF_WORKERS', default='3'))
-    worker = Worker(message)
-    print(f'I am at worker. I have message: {message}')
-    worker.proceed_message()
-
-
-def create_queue_adaptor():
-    # username/password was set as quest, not sure if this should be guest or None as done before
-    return proton_queue_adaptor.ProtonQueueAdaptor(
-        urls=config.get_config('INBOUND_QUEUE_BROKERS').split(','),
-        queue=config.get_config('INBOUND_QUEUE_NAME'),
-        username=config.get_config('INBOUND_QUEUE_USERNAME', default=None),
-        password=config.get_config('INBOUND_QUEUE_PASSWORD', default=None),
-        max_retries=int(config.get_config('INBOUND_QUEUE_MAX_RETRIES', default='3')),
-        retry_delay=int(config.get_config('INBOUND_QUEUE_RETRY_DELAY', default='100')) / 1000,
-        get_message_callback=message_callback)
-
-
 def start_listening_to_events():
     logger.info('Starting listening to incoming messages')
-    adaptor = create_queue_adaptor()
+    handler = InboundHandler()
+    adaptor = InboundHandler.create_queue_adaptor(self=handler)
     adaptor.wait_for_messages()
 
 
