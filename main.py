@@ -42,8 +42,9 @@ def start_tornado_server() -> None:
 
 def message_callback(message):
     # number of workers should be configurable
-    max_number_of_worker = 2
+    # max_number_of_worker = 2
     worker = Worker(message)
+    print(f'I am at worker. I have message: {message}')
     worker.proceed_message()
 
 
@@ -51,26 +52,18 @@ def create_queue_adaptor():
     # value hardcoded temporary, should be taken from config or/and secret config
     return proton_queue_adaptor.ProtonQueueAdaptor(
         urls=['amqp://localhost:5672'],
-        queue='nhais_inbound',
+        queue='new_queue',
         username='quest',
         password='quest',
         max_retries='3',
         retry_delay=0.1,
         get_message_callback=message_callback)
 
-async def send_message_to_queue(adaptor):
-    #temporary code, to be replaced by proper tests
-    test_message = {'test': 'message'}
-    test_properties = {'test-property-name': 'test-property-value'}
-    adaptor.send_async(test_message, test_properties)
-
 
 def start_listening_to_events():
     logger.info('Starting listening to incoming messages')
     adaptor = create_queue_adaptor()
     adaptor.wait_for_messages()
-    sending_thread = threading.Thread(target=send_message_to_queue)
-    sending_thread.start()
 
 
 def main():
