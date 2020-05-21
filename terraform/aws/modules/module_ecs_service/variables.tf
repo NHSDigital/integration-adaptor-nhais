@@ -136,3 +136,15 @@ variable "logs_datetime_format" {
   description = "Format for date and time in logs"
   default = "\\[%Y-%m-%dT%H:%M:%S\\.%fZ\\]"
 }
+
+variable "load_balancer_type" {
+  type = string
+  description = "Type of loadbalancer for service, application or network"
+  default = "application"
+}
+
+variable "protocol" {
+  type = string
+  description = "Protocol for load balancer, HTTP or HTTPS"
+  default = "HTTP"
+}
