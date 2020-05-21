@@ -20,7 +20,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   network_configuration {
     assign_public_ip = var.assign_public_ip
-    security_groups  = merge(var.additional_security_groups,[aws_security_group.service_sg.id])
+    security_groups  = concat(var.additional_security_groups,[aws_security_group.service_sg.id])
     subnets          = aws_subnet.service_subnet.*.id
   }
 
