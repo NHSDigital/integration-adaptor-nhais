@@ -90,3 +90,49 @@ variable "subnet_cidrs" {
   type = list(string)
   description = "(Required) List of CIDRs for subnets which this service will use"
 }
+
+variable "image_name" {
+  type = string
+  description = "Path to docker image to be used in task definition"
+}
+
+variable "environment_variables" {
+  type = map(string)
+  description = "Map of environment variables to pass to container"
+  default = {}
+}
+
+variable "cpu_units" {
+  type = number
+  description = "Number of CPU units to assign to containers"
+  default = 1024
+}
+
+variable "memory_units" {
+  type = number
+  description = "Number of Memory units to assign to containers"
+  default = 2048
+}
+
+variable "network_mode" {
+  type = string
+  description = "Network mode for containers"
+  default = "awsvpc"
+}
+
+variable "logs_retention" {
+  type = number
+  description = "Number of days to keep the logs in CloudWatch"
+  default = 30
+}
+
+variable "log_stream_prefix" {
+  type = string
+  description = "Value for logs stream prefix"
+}
+
+variable "logs_datetime_format" {
+  type = string
+  description = "Format for date and time in logs"
+  default = "\\[%Y-%m-%dT%H:%M:%S\\.%fZ\\]"
+}

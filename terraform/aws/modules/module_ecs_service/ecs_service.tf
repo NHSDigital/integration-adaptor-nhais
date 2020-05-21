@@ -1,8 +1,5 @@
 resource "aws_ecs_service" "ecs_service" {
   name = "${local.resource_prefix}-service"
-  tags = merge(local.default_tags, {
-    Name = "${local.resource_prefix}-service"
-  })
 
   cluster             = var.cluster_id
   task_definition     = aws_ecs_task_definition.ecs_task_definition.arn
@@ -26,4 +23,8 @@ resource "aws_ecs_service" "ecs_service" {
     security_groups  = merge(var.additional_security_groups,[aws_security_group.service_sg.id])
     subnets          = aws_subnet.service_subnet.*.id
   }
+
+  tags = merge(local.default_tags, {
+    Name = "${local.resource_prefix}-service"
+  })
 }
