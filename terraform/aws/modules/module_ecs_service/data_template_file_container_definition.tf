@@ -1,16 +1,16 @@
-data "template_file" "ecs_task_container_definitions" {
-  template = file("${path.module}/files/container_definition.json")
+# data "template_file" "ecs_task_container_definitions" {
+#   template = file("${path.module}/files/container_definition.json")
 
-  vars = {
-    container_name = "${local.resource_prefix}-container"
-    image          = var.image_name
-    essential               = true
-    aws_log_group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
-    aws_log_region          = var.region
-    aws_log_stream_prefix   = var.log_stream_prefix
-    aws_log_datetime_format = var.logs_datetime_format
-  }
-}
+#   vars = {
+#     container_name          = "${local.resource_prefix}-container"
+#     image                   = var.image_name
+#     essential               = true
+#     aws_log_group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
+#     aws_log_region          = var.region
+#     aws_log_stream_prefix   = var.log_stream_prefix
+#     aws_log_datetime_format = var.logs_datetime_format
+#   }
+# }
     //env_vars       = "[]"
     //secret_vars    = "[]"
     //port_mappings = "[{ containerPort = 80 \n hostPort = 80 \n protocol = \"tcp\"}]"

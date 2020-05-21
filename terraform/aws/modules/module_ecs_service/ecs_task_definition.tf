@@ -3,7 +3,25 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   
   task_role_arn = data.aws_iam_role.ecs_service_task_role.arn
   execution_role_arn = data.aws_iam_role.ecs_service_task_execution_role.arn
-  container_definitions = data.template_file.ecs_task_container_definitions.rendered
+  //container_definitions = data.template_file.ecs_task_container_definitions.rendered
+  container_definitions = jsonencode(
+    [
+      {
+        name      = "${local.resource_prefix}-container"
+        image     = var.image_name
+        essential = true
+        logConfiguration = {
+          logDriver = "awslogs"
+          options = {
+            awslogs-group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
+            awslogs-region          = var.region
+            awslogs-stream-prefix   = var.log_stream_prefix
+            awslogs-datetime-format = var.logs_datetime_format
+          }
+        }
+      }
+    ]
+  )
 
   cpu = var.cpu_units
   memory = var.memory_units

@@ -13,7 +13,7 @@ pipeline {
     choice (name: "Project",     choices: ['nia'],                                                description: "Choose a project")
     choice (name: "Environment", choices: ['build1', 'build2', 'build3', 'vp', 'ptl', 'account'], description: "Choose environment")
     choice (name: "Component",   choices: ['base', 'nhais', 'account'],                           description: "Choose component")
-    choice (name: "Action",      choices: ['plan', 'apply', 'plan-destroy', 'destroy'],                           description: "Choose Terraform action")
+    choice (name: "Action",      choices: ['plan', 'apply', 'plan-destroy', 'destroy'],           description: "Choose Terraform action")
     string (name: "Variables",   defaultValue: "",                                                description: "Terrafrom variables, format: variable1=value,variable2=value")
     //string (name: "Git_Branch",  defaultValue: "develop",                    description: "Git branch")
     //string (name: "Git_Repo",    defaultValue: "https://github.com/nhsconnect/integration-adaptor-nhais.git", description: "Git Repo to clone")
@@ -62,22 +62,6 @@ pipeline {
     } // stage Terraform Apply
   } // stages
 } // pipeline
-
-
-// int terraformScaffold(String action, String project, String environment, String component, Map<String, String> tfVariables, List<String> tfParams) {
-
-// }
-
-
-/*
-                                                                    terraform init \
-                                                                        -backend-config="bucket=${TF_STATE_BUCKET}" \
-                                                                        -backend-config="region=${TF_STATE_BUCKET_REGION}" \
-                                                                        -backend-config="key=${ENVIRONMENT_ID}-fakespine.tfstate" \
-                                                                        -input=false -no-color
-                                                                """
-
-*/
 
 int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
   println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
