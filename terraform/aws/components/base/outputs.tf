@@ -9,3 +9,7 @@ output "base_cluster_id" {
 output "vpc_cidr" {
   value = aws_vpc.base_vpc.cidr_block
 }
+
+output "core_sg_id" {
+  value = aws_security_group.core_sg.id
+}
