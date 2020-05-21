@@ -13,7 +13,7 @@ pipeline {
     choice (name: "Project",     choices: ['nia'],                                                description: "Choose a project")
     choice (name: "Environment", choices: ['build1', 'build2', 'build3', 'vp', 'ptl', 'account'], description: "Choose environment")
     choice (name: "Component",   choices: ['base', 'nhais', 'account'],                           description: "Choose component")
-    choice (name: "Action",      choices: ['plan', 'apply', 'destroy'],                           description: "Choose Terraform action")
+    choice (name: "Action",      choices: ['plan', 'apply', 'plan-destroy', 'destroy'],                           description: "Choose Terraform action")
     string (name: "Variables",   defaultValue: "",                                                description: "Terrafrom variables, format: variable1=value,variable2=value")
     //string (name: "Git_Branch",  defaultValue: "develop",                    description: "Git branch")
     //string (name: "Git_Repo",    defaultValue: "https://github.com/nhsconnect/integration-adaptor-nhais.git", description: "Git Repo to clone")
@@ -38,7 +38,7 @@ pipeline {
         dir("terraform/aws") {
           script {
             List<String> tfParams = []
-            if (params.Acion == "destroy") {tfParams.add("-destroy")}
+            if (params.Action == "destroy" || params.Action == "plan-destroy") {tfParams.add("-destroy")}
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
             if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region, [:], tfParams) !=0 ) { error("Terraform Plan failed")}
           } // script
@@ -96,7 +96,7 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     variablesMap.put('tf_state_bucket',tfStateBucket)
     parametersList = parameters
     parametersList.add("-no-color")
-    parametersList.add("-compact-warnings")
+    //parametersList.add("-compact-warnings")  /TODO update terraform to have this working
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
     List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
     String command = "terraform ${action} ${parametersList.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
