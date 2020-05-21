@@ -20,7 +20,7 @@ resource "aws_vpc_endpoint" "ecr_endpoint" {
   security_group_ids = [
     aws_security_group.ecr_sg.id
   ]
-  subnet_ids = aws_subnet.base_subnet.id
+  subnet_ids = [aws_subnet.base_subnet.id]
   tags = merge(local.default_tags, {
     Name = "${local.resource_prefix}-ecr-vpce"
   })
@@ -47,7 +47,7 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   security_group_ids = [
     aws_security_group.cloudwatch_sg.id
   ]
-  subnet_ids = aws_subnet.base_subnet.id
+  subnet_ids = [aws_subnet.base_subnet.id]
   tags = merge(local.default_tags, {
     Name = "${local.resource_prefix}-cloudwatch-vpce"
   })
