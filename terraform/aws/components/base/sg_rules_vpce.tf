@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "core_sg_to_s3_prefix" {
 }
 
 # DynamoDB
-resource "aws_security_group_rule" "core_sg_to_s3_prefix" { 
+resource "aws_security_group_rule" "core_sg_to_dynamodb_prefix" { 
   type      = "egress"
   from_port = 443
   to_port   = 443
