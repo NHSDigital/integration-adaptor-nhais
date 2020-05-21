@@ -34,6 +34,11 @@ variable "default_tags" {
   description = "List of tags to add to resources in module"
 }
 
+variable "availability_zones" {
+  type = list(string)
+  description = "List of availabilty zones to be used by this module"
+}
+
 variable "cluster_id" {
   type = string
   description = "(Required) ID of the cluster to run the service on"

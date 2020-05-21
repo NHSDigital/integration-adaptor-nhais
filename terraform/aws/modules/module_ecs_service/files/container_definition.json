@@ -2,8 +2,6 @@
   {
     "name": "${container_name}",
     "image": "${image}",
-    "environment": "${env_vars}",
-    "secrets": "${secret_vars}",
     "essential": "${essential}",
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -13,7 +11,6 @@
         "awslogs-stream-prefix": "${aws_log_stream_prefix}",
         "awslogs-datetime-format": "${aws_log_datetime_format}"
       }
-    },
-    "portMappings": "${port_mappings}"
+    }
   }
 ]
