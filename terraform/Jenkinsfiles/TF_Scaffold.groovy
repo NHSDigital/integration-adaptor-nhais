@@ -5,6 +5,10 @@ pipeline {
     label 'jenkins-workers'
   } //agent
 
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '15',))
+  }
+
   parameters {
     choice (name: "Project",     choices: ['nia'],                                                description: "Choose a project")
     choice (name: "Environment", choices: ['build1', 'build2', 'build3', 'vp', 'ptl', 'account'], description: "Choose environment")
