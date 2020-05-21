@@ -6,6 +6,7 @@ module "nhais_ecs_service" {
   environment     = var.environment
   region          = var.region
   module_instance = "nhais_ecs"
+  default_tags    = local.default_tags
 
   image_name        = var.nhais_image_name
   cluster_id        = data.terraform_remote_state.base.outputs.base_cluster_id

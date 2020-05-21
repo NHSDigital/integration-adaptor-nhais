@@ -29,6 +29,11 @@ variable "module_instance" {
   description = "(Required) Name of the instance of this module"
 }
 
+variable "default_tags" {
+  type = map(string)
+  description = "List of tags to add to resources in module"
+}
+
 variable "cluster_id" {
   type = string
   description = "(Required) ID of the cluster to run the service on"
@@ -104,6 +109,12 @@ variable "image_name" {
 variable "environment_variables" {
   type = map(string)
   description = "Map of environment variables to pass to container"
+  default = {}
+}
+
+variable "secret_variables" {
+  type = map(string)
+  description = "Map of secret variables to pass to container"
   default = {}
 }
 

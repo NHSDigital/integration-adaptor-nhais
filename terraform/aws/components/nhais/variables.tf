@@ -11,7 +11,7 @@ variable "environment" {
 variable "component" {
   type = string
   description = "Name of the component"
-  default = "base"
+  default = "nhais"
 }
 
 variable "region" {
