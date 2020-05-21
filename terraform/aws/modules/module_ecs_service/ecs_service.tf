@@ -3,7 +3,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   cluster             = var.cluster_id
   task_definition     = aws_ecs_task_definition.ecs_task_definition.arn
-  iam_role            = aws_iam_role.service_iam_role.arn
+  //iam_role            = aws_iam_role.service_iam_role.arn
   launch_type         = var.launch_type
   scheduling_strategy = var.scheduling_strategy
 
