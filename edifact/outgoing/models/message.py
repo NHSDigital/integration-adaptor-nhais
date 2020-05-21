@@ -135,7 +135,7 @@ class DateTimePeriod(Segment):
 
 class Reference(Segment):
 
-    def __init__(self, qualifier: str, reference: str):
+    def __init__(self, qualifier: str, reference: (None, int, str)):
         self.qualifier = qualifier
         self.reference = reference
 
@@ -166,7 +166,7 @@ class ReferenceTransactionType(Reference):
 
 class ReferenceTransactionNumber(Reference):
 
-    def __init__(self, reference=''):
+    def __init__(self, reference: (int, None) = None):
         super().__init__(qualifier='TN', reference=reference)
 
     def pre_validate(self):

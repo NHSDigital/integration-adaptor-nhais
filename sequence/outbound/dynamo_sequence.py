@@ -1,7 +1,7 @@
 import aioboto3 as aioboto3
 
 import utilities.integration_adaptors_logger as log
-from sequence.sequence import SequenceGenerator
+from sequence.outbound.sequence import SequenceGenerator
 from utilities import config
 
 logger = log.IntegrationAdaptorsLogger(__name__)

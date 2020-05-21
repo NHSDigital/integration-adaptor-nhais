@@ -19,7 +19,7 @@ class TestFhirHelpers(unittest.TestCase):
 
         ha_identifier = get_ha_identifier(patient)
 
-        self.assertEquals('IDVALUE', ha_identifier)
+        self.assertEqual('IDVALUE', ha_identifier)
 
     def test_get_gp_identifier(self):
         patient = Patient()
@@ -31,4 +31,4 @@ class TestFhirHelpers(unittest.TestCase):
 
         gp_identifier = get_gp_identifier(patient)
 
-        self.assertEquals('IDVALUE', gp_identifier)
+        self.assertEqual('IDVALUE', gp_identifier)
