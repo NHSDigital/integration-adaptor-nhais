@@ -6,7 +6,7 @@ pipeline {
   } //agent
 
   options {
-    buildDiscarder(logRotator(numToKeepStr: '15',))
+    buildDiscarder(logRotator(numToKeepStr: '15'))
   }
 
   parameters {

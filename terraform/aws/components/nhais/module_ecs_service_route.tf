@@ -7,6 +7,8 @@ module "nhais_ecs_service" {
   region          = var.region
   module_instance = "nhais_ecs"
   default_tags    = local.default_tags
+  
+  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
 
   image_name        = var.nhais_image_name
   cluster_id        = data.terraform_remote_state.base.outputs.base_cluster_id
