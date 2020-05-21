@@ -27,10 +27,7 @@ class InboundHandler:
             fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact_message)
             self.inbound_sequence_number_manager.record_sequence_number(fhir_message)
             self.edifact_recep_producer.generate_sequences(fhir_message)
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(self.supplier_incoming_mq.send(str(fhir_message)))
-            loop.close()
+            asyncio.run(self.supplier_incoming_mq.send(str(fhir_message)))
         else:
             self.edifact_recep_consumer.record_reciept(edifact_message)
 

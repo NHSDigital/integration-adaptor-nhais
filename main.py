@@ -1,4 +1,4 @@
-import threading
+from multiprocessing import Process
 
 import tornado.httpserver
 import tornado.ioloop
@@ -13,7 +13,6 @@ from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
 
 logger = log.IntegrationAdaptorsLogger(__name__)
-
 
 def start_tornado_server() -> None:
     tornado_application = tornado.web.Application(
@@ -50,8 +49,9 @@ def main():
     config.setup_config("NHAIS")
     log.configure_logging("NHAIS")
 
-    listening_events_thread = threading.Thread(target=start_listening_to_events)
-    listening_events_thread.start()
+    p = Process(target=start_listening_to_events)
+    p.start()
+    p.join()
 
     start_tornado_server()
 
