@@ -20,7 +20,7 @@ class NhaisIntegrationTests(unittest.TestCase):
     def setUp(self):
         config.setup_config('NHAIS')
         self.table_name = 'nhais_outbound_state'
-        self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)
+        self.endpoint = config.get_config('DB_ENDPOINT_URL', None)
         self.region_name = 'eu-west-2'
         self.mq_wrapper = BlockingQueueAdaptor(username=config.get_config('OUTBOUND_QUEUE_USERNAME', default=None),
                                                password=config.get_config('OUTBOUND_QUEUE_PASSWORD', default=None),
@@ -60,7 +60,7 @@ class NhaisIntegrationTests(unittest.TestCase):
             )
             if 'Item' not in db_response:
                 self.fail("No results in db for given key")
-        self.assertEqual(operation_id, db_response.get('Item')['key'])
+        self.assertEqual(operation_id, db_response.get('Item')['OPERATION_ID'])
 
     def test_acceptance_transaction_translation_error(self):
         patient = create_patient()

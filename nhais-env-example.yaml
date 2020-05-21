@@ -19,4 +19,4 @@ NHAIS_SUPPLIER_ADDRESS: 'http://localhost:443'
 #common tests
 AWS_ACCESS_KEY_ID: test
 AWS_SECRET_ACCESS_KEY: test
-NHAIS_DYNAMODB_ENDPOINT_URL: http://localhost:8000
+NHAIS_DB_ENDPOINT_URL: http://localhost:8000
