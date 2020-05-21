@@ -15,7 +15,7 @@ services:
       - NHAIS_OUTBOUND_RETRY_DELAY=3
       - NHAIS_OUTBOUND_QUEUE_BROKERS=amqp://rabbitmq:5672
       - NHAIS_OUTBOUND_QUEUE_NAME=nhais_outbound
-      - NHAIS_DYNAMODB_ENDPOINT_URL=http://dynamodb:8000
+      - NHAIS_DB_ENDPOINT_URL=http://dynamodb:8000
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
   dynamodb:
@@ -43,6 +43,6 @@ services:
       - NHAIS_OUTBOUND_RETRY_DELAY=3
       - NHAIS_OUTBOUND_QUEUE_BROKERS=amqp://rabbitmq:5672
       - NHAIS_OUTBOUND_QUEUE_NAME=nhais_outbound
-      - NHAIS_DYNAMODB_ENDPOINT_URL=http://dynamodb:8000
+      - NHAIS_DB_ENDPOINT_URL=http://dynamodb:8000
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
