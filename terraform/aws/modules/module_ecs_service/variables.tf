@@ -13,6 +13,11 @@ variable "component" {
   description = "Name of the component where the module is used"
 }
 
+variable "region" {
+  type = string
+  description = "Region where the resources will be created"
+}
+
 variable "module_name" {
   type = string
   description = "(Static) Name of this module"

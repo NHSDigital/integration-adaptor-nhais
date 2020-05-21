@@ -4,6 +4,7 @@ module "nhais_ecs_service" {
   project         = var.project
   component       = var.component
   environment     = var.environment
+  region          = var.region
   module_instance = "nhais_ecs_service"
 
   image_name        = var.nhais_image_name
