@@ -5,7 +5,7 @@ from unittest import mock
 
 import sequence.outbound.sequence_manager
 import outbound.state.outbound_state
-from edifact.outgoing.models.message import ReferenceTransactionType
+from edifact.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 from utilities import message_utilities

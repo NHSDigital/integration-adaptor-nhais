@@ -1,6 +1,6 @@
 from fhir.resources.patient import Patient
 
-from edifact.outgoing.models.message import ReferenceTransactionType
+from edifact.models.message import ReferenceTransactionType
 from outbound.converter.base_message_translator import BaseMessageTranslator
 
 

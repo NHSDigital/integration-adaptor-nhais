@@ -3,8 +3,8 @@ from datetime import datetime
 
 from fhir.resources.patient import Patient
 
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
+from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
+from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
     ReferenceTransactionType
 from outbound.converter.acceptance_message_translator import AcceptanceMessageTranslator
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
