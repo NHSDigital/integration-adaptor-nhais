@@ -14,7 +14,7 @@ class Edifact:
     message_header = property(lambda self: self._get_segment(MessageHeader))
     message_trailer = property(lambda self: self._get_segment(MessageTrailer))
     beginning_of_message = property(lambda self: self._get_segment(BeginningOfMessage))
-    mane_and_address = property(lambda self: self._get_segment(NameAndAddress))
+    name_and_address = property(lambda self: self._get_segment(NameAndAddress))
     date_time_period = property(lambda self: self._get_segment(DateTimePeriod))
     reference = property(lambda self: self._get_segment(Reference))
     reference_transaction_type = property(lambda self: self._get_segment(ReferenceTransactionType))
@@ -25,7 +25,7 @@ class Edifact:
         self._segments = segments
 
     def _get_segment(self, segment_type: Type) -> Segment:
-        filtered_segments = list(filter(lambda s: isinstance(s, segment_type), self._segments))
+        filtered_segments = list(filter(lambda s: type(s) is segment_type, self._segments))
         if len(filtered_segments) != 1:
             raise LookupError(f"EDIFACT message does not contain segment type '{segment_type}'")
         return filtered_segments[0]
