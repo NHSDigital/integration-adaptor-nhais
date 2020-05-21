@@ -37,8 +37,10 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
+            List<String> tfParams = []
+            if (params.Acion == "destroy") {tfParams.add("-destroy")}
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
-            if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
+            if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region, [:], tfParams) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -53,7 +55,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            if (terraform('apply', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
+            if (terraform(params.Action, TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -94,6 +96,7 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     variablesMap.put('tf_state_bucket',tfStateBucket)
     parametersList = parameters
     parametersList.add("-no-color")
+    parametersList.add("-compact-warnings")
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
     List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
     String command = "terraform ${action} ${parametersList.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
