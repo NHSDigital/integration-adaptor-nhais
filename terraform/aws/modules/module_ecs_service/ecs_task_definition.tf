@@ -25,7 +25,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
             awslogs-stream-prefix   = var.log_stream_prefix
             awslogs-datetime-format = var.logs_datetime_format
           }
-        }
+        },
+        environment = var.environment_variables
       }
     ]
   )

@@ -53,3 +53,8 @@ variable "build_id" {
   type = string
   description = "Number of the current build, used for tagging the logs"
 }
+
+variable "mq_broker_name" {
+  type = string
+  description = "Name of the MQ broker shared between all envs"
+}

@@ -16,6 +16,9 @@ module "nhais_ecs_service" {
   container_port    = var.nhais_service_container_port
   launch_type       = var.nhais_service_launch_type
   log_stream_prefix = var.build_id
+
+  enable_load_balancing = false
+  environment_variables = local.environment_variables
   
   additional_security_groups = [data.terraform_remote_state.base.outputs.core_sg_id]
   vpc_id = data.terraform_remote_state.base.outputs.vpc_id
