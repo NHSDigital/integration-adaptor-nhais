@@ -17,10 +17,10 @@ services:
       - NHAIS_OUTBOUND_QUEUE_NAME=nhais_outbound
       - NHAIS_INBOUND_QUEUE_BROKERS=amqp://localhost:5672
       - NHAIS_INBOUND_QUEUE_NAME=nhais_inbound
-      - NHAIS_INBOUND_ADDRESS=http://localhost:8080
+      - NHAIS_INBOUND_ADDRESS=amqp://rabbitmq:5672
       - NHAIS_SUPPLIER_QUEUE_BROKERS=amqp://localhost:5672
       - NHAIS_SUPPLIER_QUEUE_NAME=nhais_supplier
-      - NHAIS_SUPPLIER_ADDRESS=http://localhost:443
+      - NHAIS_SUPPLIER_ADDRESS=amqp://rabbitmq:5672
       - NHAIS_DB_ENDPOINT_URL=http://dynamodb:8000
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
@@ -51,10 +51,10 @@ services:
       - NHAIS_OUTBOUND_QUEUE_NAME=nhais_outbound
       - NHAIS_INBOUND_QUEUE_BROKERS=amqp://localhost:5672
       - NHAIS_INBOUND_QUEUE_NAME=nhais_inbound
-      - NHAIS_INBOUND_ADDRESS=http://localhost:8080
+      - NHAIS_INBOUND_ADDRESS=amqp://rabbitmq:5672
       - NHAIS_SUPPLIER_QUEUE_BROKERS=amqp://localhost:5672
       - NHAIS_SUPPLIER_QUEUE_NAME=nhais_supplier
-      - NHAIS_SUPPLIER_ADDRESS=http://localhost:443
+      - NHAIS_SUPPLIER_ADDRESS=amqp://rabbitmq:5672
       - NHAIS_DB_ENDPOINT_URL=http://dynamodb:8000
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
