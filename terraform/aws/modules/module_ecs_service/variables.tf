@@ -158,6 +158,12 @@ variable "logs_datetime_format" {
   default = "\\[%Y-%m-%dT%H:%M:%S\\.%fZ\\]"
 }
 
+variable "enable_load_balancing" {
+  type = bool
+  description = "Should the containers in the service be attached to loadbalancer"
+  default = true
+}
+
 variable "load_balancer_type" {
   type = string
   description = "Type of loadbalancer for service, application or network"
@@ -174,4 +180,10 @@ variable "health_check_grace_period_seconds" {
   type = number
   description = "Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown"
   default = 20
+}
+
+variable "environment_variables" {
+  type = list(object({name=string, value=string}))
+  description = "List of objects for Environment variables"
+  default = []
 }
