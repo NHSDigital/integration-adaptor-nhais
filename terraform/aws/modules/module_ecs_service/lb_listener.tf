@@ -1,5 +1,5 @@
 resource "aws_lb_listener" "service_listener" {
-  load_balancer_arn = aws_lb_listener.service_listener.arn
+  load_balancer_arn = aws_lb.service_load_balancer.arn
   port              = var.container_port
   protocol          = var.protocol
 
