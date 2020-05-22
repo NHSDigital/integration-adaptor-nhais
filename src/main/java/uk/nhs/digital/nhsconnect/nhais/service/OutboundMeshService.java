@@ -20,8 +20,6 @@ public class OutboundMeshService {
 
     public void send(MeshMessage message) {
         rabbitTemplate.convertAndSend(exchange, routingkey, message);
-        System.out.println("Send msg = " + message);
-
     }
 
 }

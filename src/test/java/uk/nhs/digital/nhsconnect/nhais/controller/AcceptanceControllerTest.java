@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AcceptanceController.class)
 public class AcceptanceControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -37,13 +39,13 @@ public class AcceptanceControllerTest {
     @Value("classpath:patient.json")
     private Resource patientPayload;
 
-    @Mock
+    @MockBean
     private OutboundMeshService outboundMeshService;
 
-    @Mock
+    @MockBean
     private FhirToEdifactService fhirToEdifactService;
 
-    @Mock
+    @MockBean
     private EdifactToMeshMessageService edifactToMeshMessageService;
 
     @Test
@@ -57,10 +59,12 @@ public class AcceptanceControllerTest {
         meshMessage.setOdsCode("odsCode");
         when(fhirToEdifactService.convertToEdifact(any(Patient.class))).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
+
         mockMvc.perform(post("/fhir/Patient/12345")
                 .contentType("application/json")
                 .content(requestBody))
                 .andExpect(status().isAccepted());
+
         verify(outboundMeshService).send(meshMessage);
     }
 }

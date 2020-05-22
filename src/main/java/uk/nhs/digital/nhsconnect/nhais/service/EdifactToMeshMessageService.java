@@ -6,6 +6,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 @Component
 public class EdifactToMeshMessageService {
+
     public MeshMessage toMeshMessage(TranslatedInterchange translatedInterchange) {
         // determine workflow id from message type: registration, recep
         // determine ODS code: probably via ENV?
