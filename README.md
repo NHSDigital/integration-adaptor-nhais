@@ -118,9 +118,12 @@ Add previously created yaml file `nhais-env.yaml`
 
 ### Management endpoints:
 Healthcheck:
+
     curl localhost:8080/healthcheck
 Metrics:
+
     curl localhost:8080/metrics
 Info:
+
     curl localhost:8080/info
 
