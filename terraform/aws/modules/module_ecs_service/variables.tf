@@ -111,18 +111,6 @@ variable "image_name" {
   description = "Path to docker image to be used in task definition"
 }
 
-variable "environment_variables" {
-  type = map(string)
-  description = "Map of environment variables to pass to container"
-  default = {}
-}
-
-variable "secret_variables" {
-  type = map(string)
-  description = "Map of secret variables to pass to container"
-  default = {}
-}
-
 variable "cpu_units" {
   type = number
   description = "Number of CPU units to assign to containers"
@@ -185,5 +173,11 @@ variable "health_check_grace_period_seconds" {
 variable "environment_variables" {
   type = list(object({name=string, value=string}))
   description = "List of objects for Environment variables"
+  default = []
+}
+
+variable "secret_variables" {
+  type = list(object({name=string, value=string}))
+  description = "Map of secret variables to pass to container"
   default = []
 }
