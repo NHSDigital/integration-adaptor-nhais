@@ -10,6 +10,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         name      = "${local.resource_prefix}-container"
         image     = var.image_name
         essential = true
+        portMappings = [
+          {
+            containerPort = 80
+            hostPort = 80
+            protocol = "tcp"
+          }
+        ],
         logConfiguration = {
           logDriver = "awslogs"
           options = {
