@@ -117,10 +117,10 @@ Check box enable EnvFile
 Add previously created yaml file `nhais-env.yaml`
 
 ### Management endpoints:
-## Healthcheck:
+Healthcheck:
     curl localhost:8080/healthcheck
-## Metrics:
+Metrics:
     curl localhost:8080/metrics
-## Info:
+Info:
     curl localhost:8080/info
 
