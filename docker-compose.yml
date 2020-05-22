@@ -46,3 +46,7 @@ services:
       - NHAIS_DYNAMODB_ENDPOINT_URL=http://dynamodb:8000
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"

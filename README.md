@@ -5,9 +5,8 @@ Environment Variables are used throughout application, an example can be found i
 
 ## Pre-requisites
 
-Ensure you have Pipenv installed and on your path, then within NHAIS directory, run:
-
-    pipenv install
+* Install an Java JDK 11. AdoptOpenJdk is recommended: https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot
+* MongoDB: `docker-compose up mongodb`
 
 ## Configuration
 
@@ -33,9 +32,8 @@ when the service is run.
 
 ## Running
 
-* Run dynamo and rabbitmq locally using docker-compose; or set environment variables to target desired instances of these
 * Set and export environment variables defined in `nhais-env-example.yaml`
-* Run `main.py`
+* Run `uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication`
 
 ## Running with Docker Compose
 
