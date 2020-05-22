@@ -23,8 +23,8 @@ resource "aws_ecs_service" "ecs_service" {
     security_groups  = concat(var.additional_security_groups,[aws_security_group.service_sg.id])
     subnets          = aws_subnet.service_subnet.*.id
   }
-
-  tags = merge(local.default_tags, {
-    Name = "${local.resource_prefix}-service"
-  })
+  # Tags may not yet be supported - TODO
+  # tags = merge(local.default_tags, {
+  #   Name = "${local.resource_prefix}-service"
+  # })
 }
