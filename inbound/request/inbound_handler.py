@@ -4,7 +4,7 @@ from inbound.converter.edifact_recep_consumer import EdifactRecepConsumer
 from inbound.converter.edifact_recep_producer import EdifactRecepProducer
 from inbound.supplier.supplier_inbound_mq import SupplierInboundMQ
 from inbound.converter.edifact_to_fhir import EdifactToFhir
-from sequence.inbound.sequence_number_manager import InboundSequenceNumberManager
+from sequence.inbound.sequence_manager import InboundSequenceNumberManager
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 

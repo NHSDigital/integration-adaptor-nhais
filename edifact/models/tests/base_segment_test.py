@@ -1,7 +1,7 @@
 import abc
 
 from edifact.edifact_exception import EdifactValidationException
-from edifact.outgoing.models.segment import Segment
+from edifact.models.segment import Segment
 
 
 class BaseSegmentTest(abc.ABC):
@@ -32,7 +32,7 @@ class BaseSegmentTest(abc.ABC):
 
     def test_to_edifact(self):
         segment = self._create_segment()
-        edifact = segment.to_edifact()
+        edifact = segment.to_edifact_string()
         self.assertEqual(self._get_expected_edifact(), edifact)
 
     def test_missing_attributes(self):
@@ -49,6 +49,6 @@ class BaseSegmentTest(abc.ABC):
             instance = generator()
             setattr(instance, attr_name, None)
             with self.assertRaises(EdifactValidationException, msg=f'missing "{attr_name}" did not fail validation') as ctx:
-                instance.to_edifact()
+                instance.to_edifact_string()
             self.assertEqual(f'{instance.key}: Attribute {attr_name} is required', ctx.exception.args[0])
 

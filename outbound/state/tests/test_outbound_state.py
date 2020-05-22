@@ -1,8 +1,8 @@
 import unittest
 import datetime
 
-from edifact.outgoing.models.interchange import InterchangeHeader
-from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
+from edifact.models import InterchangeHeader
+from edifact.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
 from outbound.state import outbound_state as state
 
 OPERATION_ID = 'GD12JD-3H3D-SK2W-JDJS-CCNCJJ3RTS7E'

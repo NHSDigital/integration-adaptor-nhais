@@ -3,8 +3,8 @@
 import unittest
 
 import aioboto3
-from sequence.outbound.sequence_factory import get_sequence_generator
-from sequence.outbound.sequence_manager import IdGenerator
+from sequence.sequence_factory import get_sequence_generator
+from sequence.outbound.sequence_manager import OutboundSequenceNumberManager
 from utilities import test_utilities
 from utilities import config
 
@@ -21,7 +21,7 @@ class ComponentTestIds(unittest.TestCase):
 
         # Create instance id generator and replace the default sequence_generator
         # with one using the test table
-        self.id_generator = IdGenerator()
+        self.id_generator = OutboundSequenceNumberManager()
         self.id_generator.sequence_generator = get_sequence_generator(self.table_name)
 
         async with aioboto3.resource('dynamodb', region_name=self.region_name,

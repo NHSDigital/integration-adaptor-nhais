@@ -1,6 +1,6 @@
 import utilities.integration_adaptors_logger as log
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
+from edifact.models.interchange import InterchangeHeader
+from edifact.models.message import MessageHeader, ReferenceTransactionNumber, \
     ReferenceTransactionType
 from persistence.persistence_adaptor_factory import get_persistence_adaptor
 

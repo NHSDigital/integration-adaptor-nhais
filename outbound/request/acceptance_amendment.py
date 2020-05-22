@@ -3,7 +3,7 @@ from json import JSONDecodeError
 from typing import Any
 
 import tornado.web
-from edifact.outgoing.models.message import ReferenceTransactionType
+from edifact.models.message import ReferenceTransactionType
 from fhir.resources.operationoutcome import OperationOutcome
 from tornado import httputil
 
