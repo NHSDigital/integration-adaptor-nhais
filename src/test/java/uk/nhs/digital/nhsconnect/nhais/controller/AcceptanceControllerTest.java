@@ -21,6 +21,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
 import java.nio.file.Files;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -62,7 +63,7 @@ public class AcceptanceControllerTest {
         meshMessage.setOdsCode("odsCode");
 
         when(fhirParser.parse(requestBody)).thenReturn(new Patient());
-        when(fhirToEdifactService.convertToEdifact(any(Patient.class))).thenReturn(translatedInterchange);
+        when(fhirToEdifactService.convertToEdifact(any(Patient.class), anyString())).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/12345")
