@@ -7,6 +7,7 @@ Environment Variables are used throughout application, an example can be found i
 
 * Install an Java JDK 11. AdoptOpenJdk is recommended: https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot
 * MongoDB: `docker-compose up mongodb`
+* RabbitMQ: `docker-compose up rabbitmq`
 
 ## Configuration
 
