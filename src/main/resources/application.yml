@@ -11,3 +11,8 @@ management:
   health:
     mongo:
       enabled: true
+nhais:
+  amqp:
+    meshOutboundQueue: nhais.queue
+    exchange: nhais.exchange
+    routingkey: nhais.routingkey
