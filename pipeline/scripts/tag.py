@@ -5,7 +5,6 @@ import argparse
 
 def generate_tag(branch_name: str, build_id: str, git_hash: str) -> str:
     """Generate a build tag from the provided values.
-
     :param branch_name: The name of the branch this build is being performed for.
     :param build_id: The identifier of the build being performed.
     :param git_hash: Git hash of the commit used.
