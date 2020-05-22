@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
 
+import java.util.UUID;
 
 @RestController
 public class AcceptanceController {
@@ -32,7 +33,8 @@ public class AcceptanceController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OperationOutcome acceptance(@PathVariable(name = "id") String id, @RequestBody String body) {
         Patient patient = fhirParser.parse(body);
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient);
+        String operationId = UUID.randomUUID().toString();
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
         outboundMeshService.send(meshMessage);
         return null;
