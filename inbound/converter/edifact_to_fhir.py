@@ -8,7 +8,7 @@ DELIMITER = "+"
 class EdifactToFhir:
 
     def convert_edifact_to_fhir(self, edifact: Edifact) -> Patient:
-
+        pass
         # patient = Patient()
         #
         # # ---HEADER ----
