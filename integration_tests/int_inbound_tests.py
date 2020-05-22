@@ -20,7 +20,6 @@ class InboundIntegrationTests(unittest.TestCase):
                                                password=config.get_config('SUPPLIER_QUEUE_PASSWORD', default=None),
                                                queue_url=config.get_config('SUPPLIER_QUEUE_BROKERS'),
                                                queue_name=config.get_config('SUPPLIER_QUEUE_NAME'))
-        self.supplier_queue.drain()
         self.incoming_queue = proton_queue_adaptor.ProtonQueueAdaptor(
             urls=config.get_config('INBOUND_QUEUE_BROKERS').split(','),
             queue=config.get_config('INBOUND_QUEUE_NAME'),
