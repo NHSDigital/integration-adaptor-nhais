@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.StreamUtils;
+import uk.nhs.digital.nhsconnect.nhais.fhir.FhirParser;
 
 import java.nio.file.Files;
 
@@ -23,8 +22,8 @@ public class AcceptanceControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockBean
+    private FhirParser fhirParser;
 
     @Value("classpath:patient.json")
     private Resource patientPayload;
