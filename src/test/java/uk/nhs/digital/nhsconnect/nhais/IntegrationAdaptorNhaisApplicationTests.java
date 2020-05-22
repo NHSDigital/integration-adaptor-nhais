@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.integrationadaptornhais;
+package uk.nhs.digital.nhsconnect.nhais;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

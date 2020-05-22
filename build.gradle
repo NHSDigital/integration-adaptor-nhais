@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.3.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.2.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.2.0'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'

@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'uk.nhs.digital.nhsconnect.integration-adaptor-nhais' is invalid and this project uses 'uk.nhs.digital.nhsconnect.integrationadaptornhais' instead.
+* The original package name 'uk.nhs.digital.nhsconnect.integration-adaptor-nhais' is invalid and this project uses 'uk.nhs.digital.nhsconnect.nhais' instead.
 
 # Getting Started
 
