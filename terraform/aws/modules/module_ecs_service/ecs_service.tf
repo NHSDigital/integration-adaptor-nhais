@@ -10,7 +10,7 @@ resource "aws_ecs_service" "ecs_service" {
   desired_count                      = var.desired_count
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
-  health_check_grace_period_seconds  = var.health_check_grace_period_seconds
+  health_check_grace_period_seconds  = var.enable_load_balancing ? var.health_check_grace_period_seconds : null
 
 
   dynamic "load_balancer" {
@@ -21,7 +21,7 @@ resource "aws_ecs_service" "ecs_service" {
       container_port = load_balancer.container_port
     }
   }
-  
+
   # load_balancer {
   #   target_group_arn = aws_lb_target_group.service_target_group.arn
   #   container_name = "${local.resource_prefix}-container"
