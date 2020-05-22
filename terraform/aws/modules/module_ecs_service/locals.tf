@@ -7,7 +7,7 @@ locals {
 
   load_balancer_default_settings = {
     default = {
-      target_group_arn = aws_lb_target_group.service_target_group.arn
+      target_group_arn = aws_lb_target_group.service_target_group[0].arn
       container_name = "${local.resource_prefix}-container"
       container_port = var.container_port
     }

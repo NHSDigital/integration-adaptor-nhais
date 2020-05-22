@@ -26,7 +26,7 @@ locals {
       },
       {
         name = "NHAIS_OUTBOUND_QUEUE_BROKERS"
-        value = data.nhais_mq_broker.instances[0].endpoints[1] # https://www.terraform.io/docs/providers/aws/r/mq_broker.html#attributes-reference
+        value = data.aws_mq_broker.nhais_mq_broker.instances[0].endpoints[1] # https://www.terraform.io/docs/providers/aws/r/mq_broker.html#attributes-reference
       },
       {
         name = "NHAIS_OUTBOUND_QUEUE_NAME"
