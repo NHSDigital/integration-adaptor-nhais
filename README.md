@@ -8,6 +8,18 @@ Environment Variables are used throughout application, an example can be found i
 * Install an Java JDK 11. AdoptOpenJdk is recommended: https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot
 * MongoDB: `docker-compose up mongodb`
 
+## Developer setup:
+
+Open integration-adaptor-nhais -> click pop-up that appears (import gradle daemon)
+
+Check the following:
+
+Project structure   -> SDKs -> add new SDK -> select adoptopenjdk-11.jdk/Contents/Home
+                    -> Project SDK -> java 11 (11.0.7)
+                    -> Module SDK -> java 11 (11.0.7)
+                    
+To run in dev env, navigate to: IntegrationAdaptorNhaisApplication, right click, run() main.
+
 ## Configuration
 
 The service is configured using environment variables. Variables without a default value and not marked optional are *required* to be provided
