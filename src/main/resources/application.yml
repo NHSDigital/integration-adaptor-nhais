@@ -16,3 +16,7 @@ nhais:
     brokers: ${NHAIS_AMQP_BROKERS}
     meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME}
     exchange: amq.direct
+    username: ${NHAIS_AMQP_USERNAME:}
+    password: ${NHAIS_AMQP_PASSWORD:}
+    maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
+    backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}

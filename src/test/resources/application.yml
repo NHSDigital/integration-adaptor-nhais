@@ -16,3 +16,7 @@ nhais:
     brokers: "localhost:5672"
     meshOutboundQueueName: nhais_mesh_outbound
     exchange: amq.direct
+    username: ""
+    password: ""
+    maxAttempts: "3"
+    backOffPeriod: "100"
