@@ -3,14 +3,9 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InterchangeTrailerTest {
-
-    private final ZonedDateTime translationDateTime = ZonedDateTime.of(2019, 4, 23, 9, 0, 0, 0, ZoneOffset.UTC);
 
     @Test
     public void testValidInterchangeTrailer() throws EdifactValidationException {
