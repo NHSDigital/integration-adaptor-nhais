@@ -8,7 +8,7 @@ import java.util.List;
 @Getter @Setter
 public class Interchange {
 
-    // TODO: stub for out internal representation of an edifact interchange
+    // TODO: stub for the internal representation of an edifact interchange
     private List<Object> segments;
 
 }
