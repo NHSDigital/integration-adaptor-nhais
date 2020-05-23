@@ -1,15 +1,17 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import com.rabbitmq.client.Channel;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.messaging.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.exception.UnknownWorkflowException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+
+import javax.jms.Message;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -23,73 +25,67 @@ public class InboundMeshServiceTest {
     @Mock
     RecepConsumerService recepConsumerService;
 
+    @Spy
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @InjectMocks
     InboundMeshService inboundMeshService;
 
     @Mock
-    Message<MeshMessage> message;
-
-    @Mock
-    Channel channel;
+    Message message;
 
     @Test
     public void registrationMessage_handledByRegistrationConsumerService() throws Exception {
-        MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        when(message.getPayload()).thenReturn(meshMessage);
+        when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
 
-        inboundMeshService.handleInboundMessage(message, channel, 1234);
+        inboundMeshService.handleInboundMessage(message);
 
-        verify(registrationConsumerService).handleRegistration(meshMessage);
-        verify(channel).basicAck(1234, false);
+        MeshMessage expectedMeshMessage = new MeshMessage();
+        expectedMeshMessage.setWorkflowId(WorkflowId.REGISTRATION);
+        verify(registrationConsumerService).handleRegistration(expectedMeshMessage);
+        verify(message).acknowledge();
     }
 
     @Test
-    public void registrationMessage_registrationConsumerServiceThrowsException_noAck() {
-        MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        when(message.getPayload()).thenReturn(meshMessage);
-        doThrow(RuntimeException.class).when(registrationConsumerService).handleRegistration(meshMessage);
+    public void registrationMessage_registrationConsumerServiceThrowsException_noAck() throws Exception {
+        when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
+        doThrow(RuntimeException.class).when(registrationConsumerService).handleRegistration(any(MeshMessage.class));
 
-        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message, channel, 1234));
+        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message));
 
-        verify(registrationConsumerService).handleRegistration(meshMessage);
-        verifyNoInteractions(channel);
+        verify(message, times(0)).acknowledge();
     }
 
     @Test
-    public void registrationMessage_handledByRecepConsumerService() throws Exception {
-        MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setWorkflowId(WorkflowId.RECEP);
-        when(message.getPayload()).thenReturn(meshMessage);
+    public void recepMessage_handledByRecepConsumerService() throws Exception {
+        when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
 
-        inboundMeshService.handleInboundMessage(message, channel, 1234);
+        inboundMeshService.handleInboundMessage(message);
 
-        verify(recepConsumerService).handleRecep(meshMessage);
-        verify(channel).basicAck(1234, false);
+        MeshMessage expectedMeshMessage = new MeshMessage();
+        expectedMeshMessage.setWorkflowId(WorkflowId.RECEP);
+        verify(recepConsumerService).handleRecep(expectedMeshMessage);
+        verify(message).acknowledge();
     }
 
     @Test
-    public void registrationMessage_recepConsumerServiceThrowsException_noAck() {
-        MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setWorkflowId(WorkflowId.RECEP);
-        when(message.getPayload()).thenReturn(meshMessage);
-        doThrow(RuntimeException.class).when(recepConsumerService).handleRecep(meshMessage);
+    public void registrationMessage_recepConsumerServiceThrowsException_noAck() throws Exception {
+        when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
+        doThrow(RuntimeException.class).when(recepConsumerService).handleRecep(any(MeshMessage.class));
 
-        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message, channel, 1234));
+        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message));
 
-        verify(recepConsumerService).handleRecep(meshMessage);
-        verifyNoInteractions(channel);
+        verify(message, times(0)).acknowledge();
     }
 
     @Test
-    public void unknownWorkflow_throwsUnknownWorkflowException_noAck() {
-        MeshMessage meshMessage = new MeshMessage();
-        when(message.getPayload()).thenReturn(meshMessage);
+    public void unknownWorkflow_throwsUnknownWorkflowException_noAck() throws Exception{
+        when(message.getBody(String.class)).thenReturn("{}");
 
-        assertThrows(UnknownWorkflowException.class, () -> inboundMeshService.handleInboundMessage(message, channel, 1234));
+        assertThrows(UnknownWorkflowException.class, () -> inboundMeshService.handleInboundMessage(message));
 
-        verifyNoInteractions(channel, recepConsumerService, registrationConsumerService);
+        verifyNoInteractions(recepConsumerService, registrationConsumerService);
+        verify(message, times(0)).acknowledge();
     }
 
 }
