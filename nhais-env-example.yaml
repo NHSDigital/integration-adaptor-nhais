@@ -5,8 +5,8 @@ NHAIS_OUTBOUND_MAX_RETRIES: "100"
 NHAIS_OUTBOUND_RETRY_DELAY: "3"
 
 #User-specific env variables
-NHAIS_OUTBOUND_QUEUE_BROKERS: amqp://localhost:5672
-NHAIS_OUTBOUND_QUEUE_NAME: 'nhais_outbound'
+NHAIS_AMQP_BROKERS: localhost:5672
+NHAIS_MESH_OUTBOUND_QUEUE_NAME: 'nhais_mesh_outbound'
 NHAIS_OUTBOUND_ADDRESS: 'http://localhost:80'
 
 #common tests

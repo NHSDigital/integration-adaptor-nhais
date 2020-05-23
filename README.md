@@ -29,8 +29,8 @@ when the service is run.
 | Environment Variable             | Default  | Description 
 | ---------------------------------|----------|-------------
 | NHAIS_OUTBOUND_SERVER_PORT       | 80       | The port on which the outbound FHIR REST API will run
-| NHAIS_OUTBOUND_QUEUE_BROKERS     |          | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
-| NHAIS_OUTBOUND_QUEUE_NAME        |          | The name of the outbound (to mesh) message queue
+| NHAIS_AMQP_BROKERS               |          | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
+| NHAIS_MESH_OUTBOUND_QUEUE_NAME   |          | The name of the outbound (to mesh) message queue
 | NHAIS_OUTBOUND_QUEUE_USERNAME    |          | (Optional) username for the amqp server for outbound (to mesh) message queue
 | NHAIS_OUTBOUND_QUEUE_PASSWORD    |          | (Optional) password for the amqp server for outbound (to mesh) message queue
 | NHAIS_OUTBOUND_QUEUE_MAX_RETRIES | 3        | The number of times a request to the outbound (to mesh) broker(s) will be retried
@@ -46,6 +46,8 @@ when the service is run.
 ## Running
 
 * Set and export environment variables defined in `nhais-env-example.yaml`
+* NOTE: Enfile does not appear to work in IntelliJ / Grade. You will need to set each required variable 
+  (see application.yml) in the run configuration if you use these.
 * Run `uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication`
 
 ## Running with Docker Compose

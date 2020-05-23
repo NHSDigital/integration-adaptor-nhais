@@ -9,5 +9,13 @@ public class MeshMessage {
     private String odsCode;
     private String workflowId;
     private String interchange;
+    /**
+     * Correlation id associated with the request - used for distributed tracing
+     */
+    private String correlationId;
+    /**
+     * The timestamp (ISO format, UTC) when this message was sent - used for debugging and tracing
+     */
+    private String messageSentTimestamp;
 
 }

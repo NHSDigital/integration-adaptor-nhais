@@ -7,8 +7,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
-import java.util.UUID;
-
 @Component
 public class FhirToEdifactService {
 
