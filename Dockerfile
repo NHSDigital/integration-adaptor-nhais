@@ -1,16 +1,19 @@
-FROM python:3.7-alpine as base
-RUN pip install pipenv
-RUN mkdir -p /usr/src/app/nhais
-COPY . /usr/src/app/nhais
-WORKDIR /usr/src/app/nhais
+FROM adoptopenjdk/openjdk11:ubi as build
+WORKDIR /workspace/app
 
-FROM base as builder
-# dependencies needed to by pipenv install but not required at runtime
-RUN apk add --update alpine-sdk libxml2-dev libxslt-dev
-RUN pipenv install --ignore-pipfile
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+RUN ./gradlew dependencies
 
-FROM base
-RUN mkdir -p /root/.local/share/virtualenvs
-COPY --from=builder /root/.local/share/virtualenvs /root/.local/share/virtualenvs
-EXPOSE 80
-ENTRYPOINT pipenv run start
+COPY src src
+RUN ./gradlew build -x test
+RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+
+FROM adoptopenjdk/openjdk11:ubi
+VOLUME /tmp
+ARG DEPENDENCY=/workspace/app/build/dependency
+COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+ENTRYPOINT ["java","-cp","app:app/lib/*","uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication"]

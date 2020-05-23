@@ -15,4 +15,15 @@ nhais:
   amqp:
     brokers: "localhost:5672"
     meshOutboundQueueName: nhais_mesh_outbound
+    meshInboundQueueName: nhais_mesh_inbound
     exchange: amq.direct
+    username: ""
+    password: ""
+    maxAttempts: "3"
+    backOffPeriod: "100"
+  mongo:
+    databaseName: nhais
+    username: ""
+    password: ""
+    host: localhost
+    port: "27017"

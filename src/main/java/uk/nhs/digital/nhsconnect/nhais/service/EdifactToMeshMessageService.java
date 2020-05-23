@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 @Component
 public class EdifactToMeshMessageService {
@@ -12,7 +13,7 @@ public class EdifactToMeshMessageService {
         // determine ODS code: probably via ENV?
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setOdsCode("ods123");
-        meshMessage.setWorkflowId("workflow123");
+        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setInterchange(translatedInterchange.getEdifact());
         return meshMessage;
     }

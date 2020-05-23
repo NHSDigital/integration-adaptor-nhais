@@ -14,7 +14,7 @@ public class FhirParser {
 
     public Patient parse(String body) {
         //TODO just an example:
-        LOGGER.info("FhirParser, parsing: " + body);
+        // LOGGER.info("FhirParser, parsing: " + body);
         return parser.parseResource(Patient.class, body);
     }
 
