@@ -144,3 +144,28 @@ Info:
 
     curl localhost:8080/info
 
+
+### Common Issues
+
+#### My test won't run
+
+    Execution failed for task ':test'.
+    > No tests found for given includes:
+    
+Check your imports and ensure you're using JUnit5 `org.junit.jupiter.api.*` classes instead of the older JUnit4 `org.junit.*` ones.
+
+#### Application repeatedly throws exceptions about a missing queue
+
+    com.rabbitmq.client.ShutdownSignalException: channel error; protocol method: #method<channel.close>(reply-code=404, reply-text=NOT_FOUND - no queue 'nhais_mesh_inbound' in vhost '/', class-id=50, method-id=10)
+    
+You need to create this queue.
+
+* Browse: http://localhost:15672/
+* Login: guest/guest
+* Click 'Queues' tab
+* Expand 'Add a queue'
+* Name: nhais_mesh_inbound
+* Durability: Durable
+* Click 'Add queue'
+
+The errors should stop without needing to restart the app.
