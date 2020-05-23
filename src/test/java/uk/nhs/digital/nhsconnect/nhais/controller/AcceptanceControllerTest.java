@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
@@ -59,7 +60,7 @@ public class AcceptanceControllerTest {
         translatedInterchange.setEdifact("EDI");
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setInterchange("EDI");
-        meshMessage.setWorkflowId("workflowId");
+        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOdsCode("odsCode");
 
         when(fhirParser.parse(requestBody)).thenReturn(new Patient());

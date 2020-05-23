@@ -7,7 +7,7 @@ import lombok.Setter;
 public class MeshMessage {
 
     private String odsCode;
-    private String workflowId;
+    private WorkflowId workflowId;
     private String interchange;
     /**
      * Correlation id associated with the request - used for distributed tracing
