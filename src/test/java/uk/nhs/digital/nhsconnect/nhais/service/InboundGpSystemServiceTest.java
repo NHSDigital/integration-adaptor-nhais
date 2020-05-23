@@ -6,12 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class InboundGpSystemServiceTest {
@@ -20,10 +20,7 @@ public class InboundGpSystemServiceTest {
     FhirParser fhirParser;
 
     @Mock
-    AmqpTemplate rabbitTemplate;
-
-    @Value("${nhais.amqp.exchange}")
-    private String exchange;
+    JmsTemplate jmsTemplate;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
@@ -39,9 +36,7 @@ public class InboundGpSystemServiceTest {
 
         inboundGpSystemService.publishToSupplierQueue(parameters);
 
-        verify(rabbitTemplate).send(eq(exchange), eq(gpSystemInboundQueueName), argThat(message ->
-            new String(message.getBody()).equals(jsonEncodedFhir)
-        ));
+        verify(jmsTemplate).convertAndSend(gpSystemInboundQueueName, jsonEncodedFhir);
     }
 
 }

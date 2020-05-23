@@ -18,12 +18,11 @@ services:
       - NHAIS_AMQP_BROKERS=rabbitmq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_HOST=mongodb
-  rabbitmq:
-    image: nhsdev/nia-rabbitmq-local:1.0.1
+  activemq:
+    image: rmohr/activemq:latest
     ports:
-      - "15672:15672"
+      - "8161:8161"
       - "5672:5672"
-    hostname: "localhost"
   # nhais-tests:
   #   image: local/nhais-tests:${BUILD_TAG}
   #   build:
