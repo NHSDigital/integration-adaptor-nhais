@@ -51,6 +51,11 @@ Amazon gives their Amazon MQ endpoint with the scheme `amqp+ssl://` but this is 
 
 You will need to change the schame to `amqps://`
 
+## Using ActiveMQ in a local container (for development)
+
+Admin UI is at http://localhost:8161/
+Login is admin/admin
+
 ## Running
 
 * Set and export environment variables defined in `nhais-env-example.yaml`
