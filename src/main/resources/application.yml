@@ -13,8 +13,9 @@ management:
       enabled: true
 nhais:
   amqp:
-    brokers: ${NHAIS_AMQP_BROKERS}
-    meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME}
+    brokers: ${NHAIS_AMQP_BROKERS:localhost:5672}
+    meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:nhais_mesh_outbound}
+    meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:nhais_mesh_inbound}
     exchange: amq.direct
     username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}

@@ -26,21 +26,22 @@ To run in dev env, navigate to: IntegrationAdaptorNhaisApplication, right click,
 The service is configured using environment variables. Variables without a default value and not marked optional are *required* to be provided
 when the service is run.
 
-| Environment Variable             | Default   | Description 
-| ---------------------------------|-----------|-------------
-| NHAIS_OUTBOUND_SERVER_PORT       | 80        | The port on which the outbound FHIR REST API will run
-| NHAIS_AMQP_BROKERS               |           | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
-| NHAIS_MESH_OUTBOUND_QUEUE_NAME   |           | The name of the outbound (to mesh) message queue
-| NHAIS_AMQP_USERNAME              |           | (Optional) username for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_PASSWORD              |           | (Optional) password for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_MAX_RETRIES           | 3         | The number of times a request to the outbound (to mesh) broker(s) will be retried
-| NHAIS_AMQP_RETRY_DELAY           | 100       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
-| NHAIS_MONGO_DATABASE_NAME        | nhais     | Database name for Mongo
-| NHAIS_MONGO_USERNAME             |           | (Optional) username for Mongo
-| NHAIS_MONGO_PASSWORD             |           | (Optional) password for Mongo
-| NHAIS_MONGO_HOST                 | localhost | Host for Mongo
-| NHAIS_MONGO_PORT                 | 27017     | Port for Mongo
-| NHAIS_LOG_LEVEL                  |           | The desired logging level
+| Environment Variable             | Default             | Description 
+| ---------------------------------|---------------------|-------------
+| NHAIS_OUTBOUND_SERVER_PORT       | 80                  | The port on which the outbound FHIR REST API will run
+| NHAIS_AMQP_BROKERS               | localhost:5672      | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
+| NHAIS_MESH_OUTBOUND_QUEUE_NAME   | nhais_mesh_outbound | The name of the outbound (to mesh) message queue
+| NHAIS_MESH_INBOUND_QUEUE_NAME    | nhais_mesh_inbound  | The name of the inbound (from mesh) message queue
+| NHAIS_AMQP_USERNAME              |                     | (Optional) username for the amqp server for outbound (to mesh) message queue
+| NHAIS_AMQP_PASSWORD              |                     | (Optional) password for the amqp server for outbound (to mesh) message queue
+| NHAIS_AMQP_MAX_RETRIES           | 3                   | The number of times a request to the outbound (to mesh) broker(s) will be retried
+| NHAIS_AMQP_RETRY_DELAY           | 100                 | Milliseconds delay between retries to the outbound (to mesh) broker(s)
+| NHAIS_MONGO_DATABASE_NAME        | nhais               | Database name for Mongo
+| NHAIS_MONGO_USERNAME             |                     | (Optional) username for Mongo
+| NHAIS_MONGO_PASSWORD             |                     | (Optional) password for Mongo
+| NHAIS_MONGO_HOST                 | localhost           | Host for Mongo
+| NHAIS_MONGO_PORT                 | 27017               | Port for Mongo
+| NHAIS_LOG_LEVEL                  |                     | The desired logging level
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
