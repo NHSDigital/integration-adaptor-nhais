@@ -1,18 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import io.micrometer.core.instrument.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderAndRecipientValidationException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 @Service
+@AllArgsConstructor
 public class SequenceService {
     private final static String TRANSACTION_ID = "transaction_id";
     private final static String INTERCHANGE_FORMAT = "SIS-%s-%s";
     private final static String INTERCHANGE_MESSAGE_FORMAT = "SMS-%s-%s";
 
-    @Autowired
     private SequenceRepository sequenceRepository;
 
     public String generateTransactionId() {
@@ -24,7 +24,7 @@ public class SequenceService {
         return String.valueOf(getNextSequence(String.format(INTERCHANGE_FORMAT, sender, recipient)));
     }
 
-    public String generate_message_id(String sender, String recipient) {
+    public String generateMessageId(String sender, String recipient) {
         validateSenderAndRecipient(sender, recipient);
         return String.valueOf(getNextSequence(String.format(INTERCHANGE_MESSAGE_FORMAT, sender, recipient)));
     }

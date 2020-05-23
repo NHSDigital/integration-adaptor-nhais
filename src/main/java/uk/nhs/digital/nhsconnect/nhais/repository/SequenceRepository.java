@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
@@ -15,16 +15,14 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Slf4j
+@AllArgsConstructor
 @Repository
 public class SequenceRepository {
     private final static String KEY = "key";
     private final static String SEQUENCE_NUMBER = "sequenceNumber";
     private final static Long MAX_SEQUENCE_NUMBER = 10000000L;
 
-    @Autowired
     private MongoOperations mongoOperations;
-
-    @Autowired
     private SequenceDao sequenceDao;
 
     public boolean existsByKey(String key) {
