@@ -14,7 +14,7 @@ public class EdifactToMeshMessageService {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setOdsCode("ods123");
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        meshMessage.setInterchange(translatedInterchange.getEdifact());
+        meshMessage.setContent(translatedInterchange.getEdifact());
         return meshMessage;
     }
 }

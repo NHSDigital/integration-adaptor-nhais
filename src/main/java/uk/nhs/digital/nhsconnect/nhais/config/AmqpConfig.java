@@ -17,7 +17,10 @@ import org.springframework.util.StringUtils;
 @Configuration
 public class AmqpConfig {
     @Value("${nhais.amqp.meshOutboundQueueName}")
-    private String queueName;
+    private String meshOutboundQueueName;
+
+    @Value("${nhais.amqp.gpSystemInboundQueueName}")
+    private String gpSystemInboundQueueName;
 
     @Value("${nhais.amqp.exchange}")
     private String exchange;
@@ -51,19 +54,30 @@ public class AmqpConfig {
     }
 
     @Bean
-    Queue queue() {
-        return new Queue(queueName, true);
-    }
-
-    @Bean
     DirectExchange exchange() {
         return new DirectExchange(exchange);
     }
 
     @Bean
-    Binding binding(Queue queue, DirectExchange exchange) {
+    Queue meshOutboundQueue() {
+        return new Queue(meshOutboundQueueName, true);
+    }
+
+    @Bean
+    Binding meshOutboundBinding(DirectExchange exchange) {
         // use same routing key as queue name as convention for direct exchanges
-        return BindingBuilder.bind(queue).to(exchange).with(queueName);
+        return BindingBuilder.bind(meshOutboundQueue()).to(exchange).with(meshOutboundQueueName);
+    }
+
+    @Bean
+    Queue gpSystemInboundQueue() {
+        return new Queue(gpSystemInboundQueueName, true);
+    }
+
+    @Bean
+    Binding gpSystemInboundBinding(DirectExchange exchange) {
+        // use same routing key as queue name as convention for direct exchanges
+        return BindingBuilder.bind(gpSystemInboundQueue()).to(exchange).with(gpSystemInboundQueueName);
     }
 
     @Bean
@@ -83,6 +97,7 @@ public class AmqpConfig {
         retryPolicy.setMaxAttempts(maxAttempts);
         retryTemplate.setRetryPolicy(retryPolicy);
         rabbitTemplate.setRetryTemplate(retryTemplate);
+        rabbitTemplate.setUsePublisherConnection(true);
         return rabbitTemplate;
     }
 }

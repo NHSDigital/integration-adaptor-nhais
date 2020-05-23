@@ -25,7 +25,9 @@ public class InboundMeshService {
 
     @RabbitListener(queues = "#{'${nhais.amqp.meshInboundQueueName}'.split(',')}", ackMode = "MANUAL")
     public void handleInboundMessage(Message<MeshMessage> message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
+        LOGGER.debug("Received message: {}", message);
         MeshMessage meshMessage = message.getPayload();
+        LOGGER.debug("Received message payload: {}", meshMessage);
         // TODO: get the correlation id and attach to logger?
         if(WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
             registrationConsumerService.handleRegistration(meshMessage);
@@ -34,10 +36,7 @@ public class InboundMeshService {
         } else {
             throw new UnknownWorkflowException(meshMessage.getWorkflowId());
         }
-        LOGGER.info(message.toString());
-        LOGGER.info(message.getPayload().toString());
-        // do stuff that works
-        // TODO: deadletter if it doesn't work?
+        // TODO: deadletter if something goes pop?
         channel.basicAck(tag, false);
     }
 

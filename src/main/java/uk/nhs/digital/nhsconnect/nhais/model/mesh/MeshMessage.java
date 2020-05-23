@@ -9,7 +9,7 @@ public class MeshMessage {
 
     private String odsCode;
     private WorkflowId workflowId;
-    private String interchange;
+    private String content;
     /**
      * Correlation id associated with the request - used for distributed tracing
      */
