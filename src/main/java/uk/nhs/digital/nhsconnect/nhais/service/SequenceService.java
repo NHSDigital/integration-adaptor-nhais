@@ -38,21 +38,6 @@ public class SequenceService {
     }
 
     private Long getNextSequence(String key) {
-        Long seqNumber;
-        if (existsByKey(key)) {
-            seqNumber = sequenceRepository.getNext(key);
-        } else {
-            seqNumber = addSequenceKey(key);
-        }
-
-        return seqNumber;
-    }
-
-    private boolean existsByKey(String key) {
-        return sequenceRepository.existsByKey(key);
-    }
-
-    private Long addSequenceKey(String key) {
-        return sequenceRepository.addSequenceKey(key);
+        return sequenceRepository.getNext(key);
     }
 }
