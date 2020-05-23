@@ -31,17 +31,28 @@ public class InterchangeHeader extends Segment {
     @Override
     public String getValue() {
         String timestamp = translationTime.format(DATE_FORMAT);
-        return "asdf"+timestamp;
+        String formattedSequenceNumber = String.format("%08d", sequenceNumber);
+        return "UNOA:2"+"+"+sender+"+"+recipient+"+"+timestamp+"+"+formattedSequenceNumber;
     }
 
     @Override
-    protected void validateStateful() {
-        // sequence number is > 1
+    protected void validateStateful() throws EdifactValidationException {
+        if (sequenceNumber == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        }
+        if(sequenceNumber <= 0){
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        }
     }
 
     @Override
-    public void preValidate() {
-        // sender, recipient are not empty
-        // translationTime is not null
+    public void preValidate() throws EdifactValidationException {
+
+        if(sender.isEmpty()){
+            throw new EdifactValidationException(getKey() + ": Attribute sender is required");
+        }
+        if(recipient.isEmpty()){
+            throw new EdifactValidationException(getKey() + ": Attribute recipient is required");
+        }
     }
 }

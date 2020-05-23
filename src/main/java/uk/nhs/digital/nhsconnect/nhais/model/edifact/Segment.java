@@ -17,19 +17,19 @@ public abstract class Segment {
     /**
      * Validates the stateful portions of message (sequence numbers, transaction id) only
      */
-    protected abstract void validateStateful();
+    protected abstract void validateStateful() throws EdifactValidationException;
 
     /**
      * Validates non-stateful data items of the segment (excludes things like sequence numbers)
      */
-    public abstract void preValidate();
+    public abstract void preValidate() throws EdifactValidationException;
 
-    public void validate() {
+    public void validate() throws EdifactValidationException {
         this.preValidate();
         this.validateStateful();
     }
 
-    public String toEdifact() {
+    public String toEdifact() throws EdifactValidationException {
         this.validate();
         return this.getKey() + "+" + this.getValue() + TERMINATOR;
     }
