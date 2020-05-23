@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import uk.nhs.digital.nhsconnect.nhais.fhir.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;

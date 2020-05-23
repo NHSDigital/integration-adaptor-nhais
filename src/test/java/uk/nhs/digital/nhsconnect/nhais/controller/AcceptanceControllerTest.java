@@ -11,7 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.nhs.digital.nhsconnect.nhais.fhir.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -59,7 +59,7 @@ public class AcceptanceControllerTest {
         TranslatedInterchange translatedInterchange = new TranslatedInterchange();
         translatedInterchange.setEdifact("EDI");
         MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setInterchange("EDI");
+        meshMessage.setContent("EDI");
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOdsCode("odsCode");
 
