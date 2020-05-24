@@ -56,6 +56,7 @@ dependencies {
 	}
 
 	testImplementation "org.testcontainers:testcontainers:1.14.2"
+	testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
 }
 
 lombok {
@@ -85,4 +86,5 @@ task integrationTest(type: Test) {
 	}
 }
 
+check.dependsOn componentTest
 check.dependsOn integrationTest
