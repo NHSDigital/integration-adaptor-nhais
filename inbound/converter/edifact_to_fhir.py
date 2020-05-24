@@ -4,6 +4,7 @@ from edifact.models.edifact import Edifact
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, \
     DateTimePeriod, ReferenceTransactionNumber, ReferenceTransactionType, SegmentGroup
+from sequence.inbound.sequence_number_manager import InboundSequenceNumberManager
 
 
 class EdifactToFhir:
@@ -32,7 +33,11 @@ class EdifactToFhir:
             for segment_no in range(self.number_of_segments[message_no]):
                 self.__translate_segment_group(edifact.segment_group)
 
+        self.__record_incoming_edifact_sequence_numbers()
         return self.__patient
+
+    def __record_incoming_edifact_sequence_numbers(self):
+        InboundSequenceNumberManager().record_sequence_number(self.interchange_id, self.message_ids)
 
     def __translate_interchange_header(self, interchange_header: InterchangeHeader):
         self.__patient.managingOrganization.identifier.value = interchange_header.sender
