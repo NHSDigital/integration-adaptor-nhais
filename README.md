@@ -7,7 +7,7 @@ Environment Variables are used throughout application, an example can be found i
 
 * Install an Java JDK 11. AdoptOpenJdk is recommended: https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot
 * MongoDB: `docker-compose up mongodb`
-* RabbitMQ: `docker-compose up rabbitmq`
+* RabbitMQ: `docker-compose up activemq`
 
 ## Developer setup:
 
@@ -45,6 +45,17 @@ when the service is run.
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
+## Using AmazonMQ
+
+Amazon gives their Amazon MQ endpoint with the scheme `amqp+ssl://` but this is not supported / recognised by Java.
+
+You will need to change the schame to `amqps://`
+
+## Using ActiveMQ in a local container (for development)
+
+Admin UI is at http://localhost:8161/
+Login is admin/admin
+
 ## Running
 
 * Set and export environment variables defined in `nhais-env-example.yaml`
@@ -55,7 +66,7 @@ when the service is run.
 ## Running with Docker Compose
 
     docker-compose build
-    docker-compose up rabbitmq dynamodb nhais
+    docker-compose up activemq mongodb nhais
     
 There is also a container that will run all types of tests
 

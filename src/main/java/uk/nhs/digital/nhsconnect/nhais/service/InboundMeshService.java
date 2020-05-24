@@ -1,17 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import com.rabbitmq.client.Channel;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.exception.UnknownWorkflowException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
 import java.io.IOException;
 
 @Component @Slf4j
@@ -23,22 +22,31 @@ public class InboundMeshService {
     @Autowired
     private RecepConsumerService recepConsumerService;
 
-    @RabbitListener(queues = "#{'${nhais.amqp.meshInboundQueueName}'.split(',')}", ackMode = "MANUAL")
-    public void handleInboundMessage(Message<MeshMessage> message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        MeshMessage meshMessage = message.getPayload();
-        // TODO: get the correlation id and attach to logger?
-        if(WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
-            registrationConsumerService.handleRegistration(meshMessage);
-        } else if(WorkflowId.RECEP.equals(meshMessage.getWorkflowId())) {
-            recepConsumerService.handleRecep(meshMessage);
-        } else {
-            throw new UnknownWorkflowException(meshMessage.getWorkflowId());
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @JmsListener(destination = "${nhais.amqp.meshInboundQueueName}")
+    public void handleInboundMessage(Message message) throws IOException {
+        LOGGER.debug("Received message: {}", message);
+        String body = null;
+        try {
+            body = message.getBody(String.class);
+            LOGGER.debug("Received message body: {}", body);
+            MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
+            LOGGER.debug("Decoded message: {}", meshMessage);
+            // TODO: get the correlation id and attach to logger?
+            if(WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
+                registrationConsumerService.handleRegistration(meshMessage);
+            } else if(WorkflowId.RECEP.equals(meshMessage.getWorkflowId())) {
+                recepConsumerService.handleRecep(meshMessage);
+            } else {
+                throw new UnknownWorkflowException(meshMessage.getWorkflowId());
+            }
+            message.acknowledge();
+            // TODO: deadletter if something goes pop?
+        } catch (JMSException e) {
+            e.printStackTrace();
         }
-        LOGGER.info(message.toString());
-        LOGGER.info(message.getPayload().toString());
-        // do stuff that works
-        // TODO: deadletter if it doesn't work?
-        channel.basicAck(tag, false);
     }
 
 }

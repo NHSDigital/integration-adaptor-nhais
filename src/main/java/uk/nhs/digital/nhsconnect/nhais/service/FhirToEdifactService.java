@@ -11,7 +11,10 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 public class FhirToEdifactService {
 
     @Autowired
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
+
+    @Autowired
+    private SequenceService sequenceService;
 
     public TranslatedInterchange convertToEdifact(Patient patient, String operationId) {
         OutboundStateDAO outboundStateDAO = new OutboundStateDAO();
