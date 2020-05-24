@@ -10,23 +10,29 @@ import lombok.Setter;
 @Getter @Setter
 public class ReferenceTransactionType extends Reference {
 
-    public ReferenceTransactionType(@NonNull String qualifier, @NonNull String reference) {
-        super("950", reference);
+    public ReferenceTransactionType(@NonNull TransactionType transactionType) {
+        super("950", transactionType.getCode());
     }
 
-    private String getTransactionType(String reference){
-        String a;
-        switch (reference){
-            case "G1":
-                return "ACCEPTANCE";
-            case "G2":
-                return "AMENDMENT";
-            case "G3":
-                return "REMOVAL";
-            case "G4":
-                return "DEDUCTION";
-            default:
-                return ""; //Should this raise exception?
+    @Override
+    protected void validateStateful() throws EdifactValidationException {
+        // no stateful properties to validate
+    }
+
+    public enum TransactionType {
+        ACCEPTANCE("G1"),
+        AMENDMENT("G2"),
+        REMOVAL("G3"),
+        DEDUCTION("G4");
+
+        TransactionType(String code) {
+            this.code = code;
+        }
+
+        private String code;
+
+        public String getCode() {
+            return this.code;
         }
     }
 

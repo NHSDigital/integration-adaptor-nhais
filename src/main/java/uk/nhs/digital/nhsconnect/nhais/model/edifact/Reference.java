@@ -9,7 +9,7 @@ import lombok.Setter;
  *class declaration:
  */
 @Getter @Setter @RequiredArgsConstructor
-public class Reference extends Segment{
+public abstract class Reference extends Segment{
 
     private @NonNull String qualifier;
     private @NonNull String reference;
@@ -22,11 +22,6 @@ public class Reference extends Segment{
     @Override
     public String getValue() {
         return qualifier + ":" + reference;
-    }
-
-    @Override
-    protected void validateStateful() throws EdifactValidationException {
-        // Do nothing
     }
 
     @Override
