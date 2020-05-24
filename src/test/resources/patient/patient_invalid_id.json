@@ -1,6 +1,6 @@
 {
   "resourceType": "Patient",
-  "id": {"idShouldNotBeObject": "itIsString"},
+  "id": 12345,
   "identifier": [
     {
       "system": "https://fhir.nhs.uk/Id/nhs-number",

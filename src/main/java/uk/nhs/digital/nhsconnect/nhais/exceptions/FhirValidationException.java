@@ -3,6 +3,8 @@ package uk.nhs.digital.nhsconnect.nhais.exceptions;
 import ca.uhn.fhir.validation.ValidationResult;
 import lombok.Getter;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.OperationOutcome;
 
 @Getter
 public class FhirValidationException extends NhaisBaseException {
@@ -16,7 +18,18 @@ public class FhirValidationException extends NhaisBaseException {
 
     public FhirValidationException(String message) {
         super(message);
-        operationOutcome = null;
+        operationOutcome = createOperationOutcome(message);
+    }
+
+    private static OperationOutcome createOperationOutcome(String message) {
+        OperationOutcome operationOutcome = new OperationOutcome();
+        OperationOutcome.OperationOutcomeIssueComponent issue = operationOutcome.addIssue();
+        issue.setCode(OperationOutcome.IssueType.STRUCTURE);
+        issue.setSeverity(OperationOutcome.IssueSeverity.ERROR);
+        CodeableConcept details = new CodeableConcept();
+        details.setText(message);
+        issue.setDetails(details);
+        return operationOutcome;
     }
 
     private static String createMessage(ValidationResult validationResult) {

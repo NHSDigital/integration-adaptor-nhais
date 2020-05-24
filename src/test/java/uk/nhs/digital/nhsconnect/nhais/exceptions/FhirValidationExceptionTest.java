@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.exceptions;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import ca.uhn.fhir.validation.ValidationResult;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +15,12 @@ import org.mockito.quality.Strictness;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class TestFhirValidationException {
+public class FhirValidationExceptionTest {
 
     @Mock
     ValidationResult validationResult;
@@ -63,9 +63,13 @@ public class TestFhirValidationException {
 
     @Test
     public void testWithoutValidationResult() {
-        FhirValidationException exception = new FhirValidationException("the message");
-        assertEquals("the message", exception.getMessage());
-        assertNull(exception.getOperationOutcome());
+        FhirValidationException ex = new FhirValidationException("the message");
+        assertEquals("the message", ex.getMessage());
+        OperationOutcome operationOutcome = (OperationOutcome) ex.getOperationOutcome();
+        OperationOutcome.OperationOutcomeIssueComponent issue = operationOutcome.getIssueFirstRep();
+        assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity());
+        assertEquals(OperationOutcome.IssueType.STRUCTURE, issue.getCode());
+        assertEquals("the message", issue.getDetails().getText());
     }
 
 }

@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.parse;
 
 import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FhirParserTest {
 
@@ -21,8 +21,7 @@ public class FhirParserTest {
     public void when_validPatient_parsedSuccessfully() throws Exception {
         try(InputStream is = this.getClass().getResourceAsStream("/patient/patient.json")) {
             String payload = IOUtils.toString(is, StandardCharsets.UTF_8);
-            Patient patient = fhirParser.parsePatient(payload);
-            // TODO: validate patient? or trust that HAPI works...
+            fhirParser.parsePatient(payload);
         }
     }
 
@@ -30,17 +29,45 @@ public class FhirParserTest {
     public void when_emptyPatientPayload_throwsFhirValidationException() throws Exception {
         String payload = "{}";
         FhirValidationException ex = assertThrows(FhirValidationException.class, () -> fhirParser.parsePatient(payload));
-        assertTrue(ex.getMessage().contains("missing required element: 'resourceType'"));
+        assertExceptionAndOperationOutcome(ex, "missing required element: 'resourceType'");
     }
 
-    @Test @Disabled
+    @Test
     public void when_invalidId_throwsExceptionWithOperationOutcome() throws Exception {
         try(InputStream is = this.getClass().getResourceAsStream("/patient/patient_invalid_id.json")) {
             String payload = IOUtils.toString(is, StandardCharsets.UTF_8);
-            Patient patient = fhirParser.parsePatient(payload);
             FhirValidationException ex = assertThrows(FhirValidationException.class, () -> fhirParser.parsePatient(payload));
-            IBaseOperationOutcome operationOutcome = ex.getOperationOutcome();
+            assertExceptionAndOperationOutcome(ex, "Expected SCALAR (STRING) and found SCALAR (NUMBER)");
         }
+    }
+
+    @Test
+    public void when_missingId_parsedSuccessfully() throws Exception {
+        try(InputStream is = this.getClass().getResourceAsStream("/patient/patient_missing_id.json")) {
+            String payload = IOUtils.toString(is, StandardCharsets.UTF_8);
+            fhirParser.parsePatient(payload);
+        }
+    }
+
+    @Test
+    public void when_multipleErrors_onlyFirstErrorAppearsInOperationOutcomeIssues() throws Exception {
+        // We would like multiple errors to appear but this is a limitation of HAPI parsing
+        // See comment in FhirParser about enhanced validation
+        try(InputStream is = this.getClass().getResourceAsStream("/patient/patient_payload_multiple_invalid.json")) {
+            String payload = IOUtils.toString(is, StandardCharsets.UTF_8);
+            FhirValidationException ex = assertThrows(FhirValidationException.class, () -> fhirParser.parsePatient(payload));
+            assertEquals(1, ((OperationOutcome)ex.getOperationOutcome()).getIssue().size());
+            assertExceptionAndOperationOutcome(ex, "Expected SCALAR (STRING) and found SCALAR (NUMBER)");
+        }
+    }
+
+    private void assertExceptionAndOperationOutcome(FhirValidationException ex, String expectedMessageFragment) {
+        assertTrue(ex.getMessage().contains(expectedMessageFragment));
+        OperationOutcome operationOutcome = (OperationOutcome) ex.getOperationOutcome();
+        OperationOutcome.OperationOutcomeIssueComponent issue = operationOutcome.getIssueFirstRep();
+        assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity());
+        assertEquals(OperationOutcome.IssueType.STRUCTURE, issue.getCode());
+        assertTrue(issue.getDetails().getText().contains(expectedMessageFragment));
     }
 
 }
