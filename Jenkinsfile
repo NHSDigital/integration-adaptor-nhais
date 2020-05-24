@@ -74,11 +74,11 @@ pipeline {
             }
 
         }
-        stage('Run SonarQube analysis') {
-            steps {
-                runSonarQubeAnalysis()
-            }
-        }
+        // stage('Run SonarQube analysis') {
+        //     steps {
+        //         runSonarQubeAnalysis()
+        //     }
+        // }
     }
     post {
         always {
