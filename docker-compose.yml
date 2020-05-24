@@ -15,7 +15,7 @@ services:
       - NHAIS_AMQP_MAX_RETRIES=3
       - NHAIS_OUTBOUND_MAX_RETRIES=100
       - NHAIS_OUTBOUND_RETRY_DELAY=3
-      - NHAIS_AMQP_BROKERS=rabbitmq:5672
+      - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_HOST=mongodb
   activemq:
