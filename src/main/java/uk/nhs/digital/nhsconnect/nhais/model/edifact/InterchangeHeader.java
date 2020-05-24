@@ -40,7 +40,7 @@ public class InterchangeHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
+        if(sequenceNumber != 1){
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
     }
