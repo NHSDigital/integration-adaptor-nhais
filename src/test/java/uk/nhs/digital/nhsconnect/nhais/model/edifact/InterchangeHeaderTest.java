@@ -16,7 +16,7 @@ public class InterchangeHeaderTest {
     @Test
     public void testValidInterchangeHeader() throws EdifactValidationException {
         InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", translationDateTime);
-        interchangeHeader.setSequenceNumber(1);
+        interchangeHeader.setSequenceNumber(1L);
 
         String edifact = interchangeHeader.toEdifact();
 

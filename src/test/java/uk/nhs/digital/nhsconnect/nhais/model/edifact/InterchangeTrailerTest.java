@@ -11,7 +11,7 @@ public class InterchangeTrailerTest {
     @Test
     public void testValidInterchangeTrailer() throws EdifactValidationException {
         InterchangeTrailer interchangeTrailer = new InterchangeTrailer(1);
-        interchangeTrailer.setSequenceNumber(1);
+        interchangeTrailer.setSequenceNumber(1L);
 
         String edifact = interchangeTrailer.toEdifact();
 
@@ -21,7 +21,7 @@ public class InterchangeTrailerTest {
     @Test
     public void testPreValidationNumberOfMessagesZero() {
         InterchangeTrailer interchangeTrailer = new InterchangeTrailer(0);
-        interchangeTrailer.setSequenceNumber(1);
+        interchangeTrailer.setSequenceNumber(1L);
 
         Exception exception = assertThrows(EdifactValidationException.class, interchangeTrailer::preValidate);
 

@@ -30,8 +30,5 @@ public abstract class Reference extends Segment{
         if (qualifier.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
-        if(reference.isEmpty()){
-            throw new EdifactValidationException(getKey() + ": Attribute reference is required");
-        }
     }
 }

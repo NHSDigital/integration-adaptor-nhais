@@ -17,12 +17,12 @@ import java.time.format.DateTimeFormatter;
 @Getter @Setter @RequiredArgsConstructor
 public class InterchangeHeader extends Segment {
 
-    private static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:hhmm");
+    private static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm");
 
     private @NonNull String sender;
     private @NonNull String recipient;
     private @NonNull ZonedDateTime translationTime;
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @Override
     public String getKey() {
@@ -41,8 +41,8 @@ public class InterchangeHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber != 1){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        if(sequenceNumber <= 0){
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
         }
     }
 

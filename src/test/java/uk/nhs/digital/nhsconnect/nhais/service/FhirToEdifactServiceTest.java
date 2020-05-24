@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -62,7 +63,7 @@ public class FhirToEdifactServiceTest {
         Patient patient = createPatient();
         String operationId = UUID.randomUUID().toString();
 
-        fhirToEdifactService.convertToEdifact(patient, operationId, null);
+        fhirToEdifactService.convertToEdifact(patient, operationId, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         verify(sequenceService).generateInterchangeId(GP_CODE, HA_CODE);
         verify(sequenceService).generateMessageId(GP_CODE, HA_CODE);
@@ -75,18 +76,18 @@ public class FhirToEdifactServiceTest {
         expected.setSendInterchangeSequence(SIS);
         expected.setSendMessageSequence(SMS);
         expected.setTransactionId(TN);
-//      TODO: expected.setTransactionType();
+        expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
         expected.setTransactionTimestamp(Date.from(expectedTimestamp.toInstant()));
         expected.setOperationId(operationId);
         verify(outboundStateRepository).save(expected);
     }
 
-    @Test @Disabled
+    @Test
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
         Patient patient = createPatient();
         String operationId = UUID.randomUUID().toString();
 
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
                 "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
@@ -124,3 +125,27 @@ public class FhirToEdifactServiceTest {
     }
 
 }
+
+// expected
+//UNB+UNOA:2+GP123+HA456+200427:1737+00000045'
+//UNH+00000056+FHSREG:0:1:FH:FHS001'
+//BGM+++507'
+//NAD+FHS+HA456:954'
+//DTM+137:202004271737:203'
+//RFF+950:G1'
+//S01+1'
+//RFF+TN:5174'
+//UNT+8+00000056'
+//UNZ+1+00000045'
+
+// actual
+//UNB+UNOA:2+GP123+HA456+200427:0537+00000045'
+//UNH+00000056+FHSREG:0:1:FH:FHS001'
+//BGM+++507'
+//NAD+FHS+HA456:954'
+//DTM+137:202004271737:203'
+//RFF+950:G1'
+//S01+1'
+//RFF+TN:5174'
+//UNT+8+00000056'
+//UNZ+1+00000045'

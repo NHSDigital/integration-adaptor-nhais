@@ -15,7 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 public class MessageTrailer extends Segment{
 
     private @NonNull Integer numberOfSegments;
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @Override
     public String getKey() {
@@ -33,11 +33,11 @@ public class MessageTrailer extends Segment{
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber != 3){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        if(sequenceNumber <= 0){
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to zero");
         }
-        if(numberOfSegments != 18){
-            throw new EdifactValidationException(getKey() + ": Attribute numberOfSegments is required");
+        if(numberOfSegments <= 1){
+            throw new EdifactValidationException(getKey() + ": Attribute numberOfSegments must be greater than or equal to 2");
         }
     }
 

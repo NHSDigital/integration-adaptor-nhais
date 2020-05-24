@@ -5,30 +5,26 @@ import lombok.NonNull;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-/**
- *class declaration:
- */
-@Getter @Setter
 public class ReferenceTransactionNumber extends Reference {
 
-    private String reference;
-
-    public ReferenceTransactionNumber(@NonNull Integer reference) {
-        super("TN", reference.toString());
-        this.reference = reference.toString();
+    public ReferenceTransactionNumber() {
+        super("TN", "");
     }
 
-    @Override
-    public void preValidate() throws EdifactValidationException {
-        // Qualifier is hardcoded, no validation needed?
+    public Long getTransactionNumber() {
+        return Long.decode(getReference());
+    }
+
+    public void setTransactionNumber(Long transactionNumber) {
+        this.setReference(Long.toString(transactionNumber));
     }
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
-        if (reference == null) {
+        if (getReference() == null) {
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
-        if (reference.isEmpty()) {
+        if (getReference().isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
     }

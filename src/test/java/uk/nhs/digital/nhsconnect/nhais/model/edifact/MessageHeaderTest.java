@@ -10,7 +10,7 @@ public class MessageHeaderTest {
     @Test
     public void testValidMessageHeader() throws EdifactValidationException {
         MessageHeader messageHeader = new MessageHeader();
-        messageHeader.setSequenceNumber(3);
+        messageHeader.setSequenceNumber(3L);
 
         String edifact = messageHeader.toEdifact();
 

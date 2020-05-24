@@ -9,8 +9,8 @@ public class ReferenceTransactionNumberTest {
     @Test
     public void testValidReferenceTransactionType() throws EdifactValidationException {
         ReferenceTransactionNumber referenceTransactionNumber =
-                new ReferenceTransactionNumber(1234);
-
+                new ReferenceTransactionNumber();
+        referenceTransactionNumber.setTransactionNumber(1234L);
         String edifact = referenceTransactionNumber.toEdifact();
 
         assertEquals("RFF+TN:1234'", edifact);

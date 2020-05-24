@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
@@ -35,10 +37,10 @@ public class AcceptanceController {
 
     @PostMapping(path = "/fhir/Patient/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> acceptance(@PathVariable(name = "id") String id, @RequestBody String body) throws FhirValidationException {
+    public ResponseEntity<?> acceptance(@PathVariable(name = "id") String id, @RequestBody String body) throws FhirValidationException, EdifactValidationException {
         Patient patient = fhirParser.parsePatient(body);
         String operationId = UUID.randomUUID().toString();
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, ReferenceTransactionType.TransactionType.ACCEPTANCE);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
         outboundMeshService.send(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

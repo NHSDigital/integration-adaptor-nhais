@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 @Getter @Setter @RequiredArgsConstructor
 public class MessageHeader extends Segment {
 
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @Override
     public String getKey() {
@@ -31,8 +31,8 @@ public class MessageHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber != 3){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        if(sequenceNumber <= 0){
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
         }
     }
 

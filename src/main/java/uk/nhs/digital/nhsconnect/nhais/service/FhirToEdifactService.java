@@ -6,28 +6,18 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class FhirToEdifactService {
-
-    // TODO: remove and replace with Segment abstract class when merged
-    public interface Segment {
-        String toEdifact();
-        void prevalidate();
-    }
-
-    public enum TransactionType {} // TODO: remove and replace with edifact model when implemented
 
     @Autowired
     private OutboundStateRepository outboundStateRepository;
@@ -38,16 +28,16 @@ public class FhirToEdifactService {
     @Autowired
     private TimestampService timestampService;
 
-    public TranslatedInterchange convertToEdifact(Patient patient, String operationId, TransactionType transactionType) throws FhirValidationException {
+    public TranslatedInterchange convertToEdifact(Patient patient, String operationId, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.patient = patient;
         translationItems.operationId = operationId;
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
+        generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
         generateSequenceNumbers(translationItems);
-        generateTimestamp(translationItems);
         recordOutboundState(translationItems);
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
@@ -109,14 +99,23 @@ public class FhirToEdifactService {
     }
 
     private void createSegments(TranslationItems translationItems) {
-        // TODO: create each segment needed for EDIFACT state MVC (those created by Python app)
-        translationItems.segments = Collections.emptyList();
+        translationItems.segments = Arrays.asList(
+                new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp),
+                new MessageHeader(),
+                new BeginningOfMessage(),
+                new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
+                new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+                new ReferenceTransactionType(translationItems.transactionType),
+                new SegmentGroup(1),
+                new ReferenceTransactionNumber(),
+                new MessageTrailer(8),
+                new InterchangeTrailer(1)
+        );
     }
 
-    private void prevalidateSegments(TranslationItems translationItems) {
-        // TODO: add correct throws declaration for actual prevalidate implementation
+    private void prevalidateSegments(TranslationItems translationItems) throws EdifactValidationException {
         for(Segment segment : translationItems.segments) {
-            segment.prevalidate();
+            segment.preValidate();
         }
     }
 
@@ -142,8 +141,7 @@ public class FhirToEdifactService {
         outboundStateDAO.setSendMessageSequence(translationItems.sendMessageSequence);
         outboundStateDAO.setTransactionId(translationItems.transactionNumber);
 
-//      TODO: Record three letter transaction type e.g. ACG
-//        outboundStateDAO.setTransactionType();
+        outboundStateDAO.setTransactionType(translationItems.transactionType.getAbbreviation());
         outboundStateDAO.setTransactionTimestamp(Date.from(translationItems.translationTimestamp.toInstant()));
         outboundStateDAO.setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundStateDAO);
@@ -151,16 +149,31 @@ public class FhirToEdifactService {
 
     private void addSequenceNumbersToSegments(TranslationItems translationItems) {
         for(Segment segment : translationItems.segments) {
-            // if instanceof SomethingWithState
-            // set stateful properties
-            // else if isntanceof SomethingElseWithState
-            // ...
+            if(segment instanceof InterchangeHeader) {
+                InterchangeHeader interchangeHeader = (InterchangeHeader) segment;
+                interchangeHeader.setSequenceNumber(translationItems.sendInterchangeSequence);
+            } else if(segment instanceof InterchangeTrailer) {
+                InterchangeTrailer interchangeTrailer = (InterchangeTrailer) segment;
+                interchangeTrailer.setSequenceNumber(translationItems.sendInterchangeSequence);
+            } else if(segment instanceof MessageHeader) {
+                MessageHeader messageHeader = (MessageHeader) segment;
+                messageHeader.setSequenceNumber(translationItems.sendMessageSequence);
+            } else if(segment instanceof MessageTrailer) {
+                MessageTrailer messageTrailer = (MessageTrailer) segment;
+                messageTrailer.setSequenceNumber(translationItems.sendMessageSequence);
+            } else if(segment instanceof ReferenceTransactionNumber) {
+                ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
+                referenceTransactionNumber.setTransactionNumber(translationItems.transactionNumber);
+            }
         }
     }
 
-    private TranslatedInterchange translateInterchange(TranslationItems translationItems) {
-        // toEdifact() also calls validate()
-        String edifact = translationItems.segments.stream().map(Segment::toEdifact).collect(Collectors.joining("\n"));
+    private TranslatedInterchange translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
+        List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
+        for(Segment segment : translationItems.segments) {
+            segmentStrings.add(segment.toEdifact());
+        }
+        String edifact = String.join("\n", segmentStrings);
         TranslatedInterchange interchange = new TranslatedInterchange();
         interchange.setEdifact(edifact);
         return interchange;
@@ -168,7 +181,7 @@ public class FhirToEdifactService {
 
     private static class TranslationItems {
         private Patient patient;
-        private TransactionType transactionType;
+        private ReferenceTransactionType.TransactionType transactionType;
         private List<Segment> segments = new ArrayList<>();
         private String sender;
         private String recipient;

@@ -15,7 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 public class InterchangeTrailer extends Segment {
 
     private @NonNull Integer numberOfMessages;
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @Override
     public String getKey() {

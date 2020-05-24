@@ -10,7 +10,7 @@ public class MessageTrailerTest {
     @Test
     public void testValidMessageHeader() throws EdifactValidationException {
         MessageTrailer messageTrailer = new MessageTrailer(18);
-        messageTrailer.setSequenceNumber(3);
+        messageTrailer.setSequenceNumber(3L);
 
         String edifact = messageTrailer.toEdifact();
 
@@ -31,12 +31,12 @@ public class MessageTrailerTest {
 
     @Test
     public void testValidationStatefulInvalidNumberOfSegments() {
-        MessageTrailer messageTrailer = new MessageTrailer(1000);
-        messageTrailer.setSequenceNumber(3);
+        MessageTrailer messageTrailer = new MessageTrailer(-1);
+        messageTrailer.setSequenceNumber(3L);
 
         Exception exception = assertThrows(EdifactValidationException.class, messageTrailer::validateStateful);
 
-        String expectedMessage = "UNT: Attribute numberOfSegments is required";
+        String expectedMessage = "UNT: Attribute numberOfSegments must be greater than or equal to 2";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
