@@ -7,10 +7,11 @@ COPY build.gradle .
 RUN ./gradlew dependencies
 
 COPY src src
-RUN ./gradlew build -x test
+RUN ./gradlew build -x test -x integrationTest
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
-FROM adoptopenjdk/openjdk11:ubi
+# FROM adoptopenjdk/openjdk11:ubi
+FROM adoptopenjdk/openjdk11-openj9:jre
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/build/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
