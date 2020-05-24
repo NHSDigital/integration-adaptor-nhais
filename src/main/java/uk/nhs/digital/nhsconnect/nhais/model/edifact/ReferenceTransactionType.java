@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.*;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 /**
  *class declaration:

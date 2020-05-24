@@ -1,5 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+
 public abstract class Segment {
 
     private static final String TERMINATOR = "'";

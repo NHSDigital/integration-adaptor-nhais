@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 /**
  * A specialisation of a segment for the specific use case of a message trailer

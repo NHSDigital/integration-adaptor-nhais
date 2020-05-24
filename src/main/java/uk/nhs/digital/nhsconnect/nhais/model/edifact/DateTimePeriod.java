@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;

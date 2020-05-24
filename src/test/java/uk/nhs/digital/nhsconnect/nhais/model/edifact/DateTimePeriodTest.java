@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

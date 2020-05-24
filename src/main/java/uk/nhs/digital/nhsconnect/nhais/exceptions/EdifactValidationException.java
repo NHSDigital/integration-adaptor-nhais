@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.model.edifact;
+package uk.nhs.digital.nhsconnect.nhais.exceptions;
 
 public class EdifactValidationException extends Exception {
     public EdifactValidationException(String message)
