@@ -1,14 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 /**
  *class declaration:
  */
 @Getter @Setter
 public class ReferenceTransactionType extends Reference {
+    private @NonNull TransactionType transactionType;
 
     public ReferenceTransactionType(@NonNull TransactionType transactionType) {
         super("950", transactionType.getCode());

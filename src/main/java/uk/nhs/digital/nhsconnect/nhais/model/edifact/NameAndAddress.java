@@ -11,9 +11,28 @@ import lombok.Setter;
 @Getter @Setter @RequiredArgsConstructor
 public class NameAndAddress extends Segment{
 
-    private @NonNull String qualifier;
     private @NonNull String identifier;
-    private @NonNull String code;
+    private @NonNull QualifierAndCode partyQualifierAndCode;
+
+    public enum QualifierAndCode {
+        FHS("FHS", "954");
+
+        QualifierAndCode(String qualifier, String code) {
+            this.code = code;
+            this.qualifier = qualifier;
+        }
+
+        private final String code;
+        private final String qualifier;
+
+        public String getCode() {
+            return this.code;
+        }
+
+        public String getQualifier(){
+            return this.qualifier;
+        }
+    }
 
     @Override
     public String getKey() {
@@ -22,10 +41,7 @@ public class NameAndAddress extends Segment{
 
     @Override
     public String getValue() {
-        // identifier = "HA456";
-        code = "956";
-        qualifier = "FHS";
-        return qualifier + "+" + identifier + "+" + code;
+        return partyQualifierAndCode.getQualifier() + "+" + identifier + ":" + partyQualifierAndCode.getCode();
     }
 
     @Override
@@ -38,10 +54,11 @@ public class NameAndAddress extends Segment{
         if (identifier.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
-        if (code.isEmpty()) {
+        //Is below needed as it will always be populated
+        if (partyQualifierAndCode.getCode().isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute code is required");
         }
-        if(qualifier.isEmpty()){
+        if(partyQualifierAndCode.getQualifier().isEmpty()){
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
     }

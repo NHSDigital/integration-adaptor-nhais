@@ -15,7 +15,7 @@ public class SegmentGroup extends Segment{
 
     @Override
     public String getKey() {
-        return String.format("%02d", segmentGroupNumber);
+        return "S"+String.format("%02d", segmentGroupNumber);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SegmentGroup extends Segment{
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if(segmentGroupNumber != 1 || segmentGroupNumber != 2){
+        if(!(segmentGroupNumber == 1 || segmentGroupNumber == 2)){
             throw new EdifactValidationException("S: Attribute segment_group_number must be 1 or 2");
         }
     }
