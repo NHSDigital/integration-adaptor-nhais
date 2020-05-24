@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from edifact.models.segment import Segment
-from edifact.util import UNB_PATTERN, UNZ_PATTERN
+from edifact.patterns import UNB_PATTERN, UNZ_PATTERN
 
 
 class InterchangeHeader(Segment):

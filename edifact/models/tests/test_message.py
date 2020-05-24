@@ -16,6 +16,10 @@ class TestMessageHeader(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return MessageHeader(sequence_number=1)
 
+    def _create_segment_from_string(self) -> Segment:
+        message_header_segment = "UNH+00000001+FHSREG:0:1:FH:FHS001'"
+        return MessageHeader.from_string(message_header_segment)
+
     def _get_attributes(self):
         return ['sequence_number']
 
@@ -30,6 +34,10 @@ class TestMessageTrailer(BaseSegmentTest, unittest.TestCase):
 
     def _create_segment(self) -> Segment:
         return MessageTrailer(number_of_segments=5, sequence_number=1)
+
+    def _create_segment_from_string(self) -> Segment:
+        message_trailer_segment = "UNT+5+00000001'"
+        return MessageTrailer.from_string(message_trailer_segment)
 
     def _get_attributes(self):
         return ['number_of_segments', 'sequence_number']
@@ -49,6 +57,10 @@ class TestNameAndAddress(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return NameAndAddress(NameAndAddress.QualifierAndCode.FHS, 'PARTY')
 
+    def _create_segment_from_string(self) -> Segment:
+        name_and_address_segment = "NAD+FHS+PARTY:954'"
+        return NameAndAddress.from_string(name_and_address_segment)
+
     def _get_attributes(self):
         return ['qualifier', 'code', 'identifier']
 
@@ -63,6 +75,10 @@ class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP, self.TS)
 
+    def _create_segment_from_string(self) -> Segment:
+        time_period_segment = "DTM+137:202004282058:203'"
+        return DateTimePeriod.from_string(time_period_segment)
+
     def _get_attributes(self):
         return ['type_code', 'format_code', 'date_time_format', 'timestamp']
 
@@ -74,6 +90,10 @@ class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)
 
+    def _create_segment_from_string(self) -> Segment:
+        transaction_type_segment = "RFF+950:G1'"
+        return ReferenceTransactionType.from_string(transaction_type_segment)
+
     def _get_attributes(self):
         return ['qualifier', 'reference']
 
@@ -84,6 +104,10 @@ class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
 class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return ReferenceTransactionNumber('1234')
+
+    def _create_segment_from_string(self) -> Segment:
+        transaction_number_segment = "RFF+TN:1234'"
+        return ReferenceTransactionNumber.from_string(transaction_number_segment)
 
     def _get_attributes(self):
         return ['qualifier', 'reference']

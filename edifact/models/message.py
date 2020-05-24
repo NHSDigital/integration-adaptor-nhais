@@ -4,7 +4,7 @@ from datetime import datetime
 
 from edifact.edifact_exception import EdifactValidationException
 from edifact.models.segment import Segment
-from edifact.util import UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN, \
+from edifact.patterns import UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN, \
     SG_PATTERN, RFF_TN_PATTERN, UNT_PATTERN, RFF_PATTERN
 
 

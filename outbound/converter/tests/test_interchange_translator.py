@@ -6,7 +6,7 @@ from unittest import mock
 import sequence.outbound.sequence_manager
 import outbound.state.outbound_state
 from edifact.models.message import ReferenceTransactionType
-from edifact.util import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN,\
+from edifact.patterns import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN,\
     SG_PATTERN, RFF_TN_PATTERN, UNT_PATTERN, UNZ_PATTERN, RFF_PATTERN
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID

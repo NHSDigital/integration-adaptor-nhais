@@ -5,7 +5,7 @@ from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTrans
     ReferenceTransactionType, BeginningOfMessage, NameAndAddress, DateTimePeriod, SegmentGroup
 
 from edifact.edifact_exception import EdifactValidationException
-from edifact.util import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN, \
+from edifact.patterns import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN, \
     SG_PATTERN, RFF_TN_PATTERN, UNT_PATTERN, UNZ_PATTERN, RFF_PATTERN
 
 

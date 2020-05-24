@@ -12,9 +12,15 @@ class BaseSegmentTest(abc.ABC):
     @abc.abstractmethod
     def _create_segment(self) -> Segment:
         """
-        :return: a valid Segment with all attributes populated
+        :return: a valid Segment with all attributes populated, created with given parameters
         """
         pass
+
+    @abc.abstractmethod
+    def _create_segment_from_string(self) -> Segment:
+        """
+        :return: a valid Segment with all attributes populated, generated from edifact segment string
+        """
 
     @abc.abstractmethod
     def _get_attributes(self):
@@ -22,6 +28,12 @@ class BaseSegmentTest(abc.ABC):
         :return: all of the Segments settable attributes
         """
         pass
+
+    def _get_expected_segment(self):
+        """
+        :return: the expected segment from EDIFACT returned by _create_segment_from_string()
+        """
+        return self._create_segment()
     
     @abc.abstractmethod
     def _get_expected_edifact(self):
@@ -34,6 +46,10 @@ class BaseSegmentTest(abc.ABC):
         segment = self._create_segment()
         edifact = segment.to_edifact_string()
         self.assertEqual(self._get_expected_edifact(), edifact)
+
+    def test_from_string(self):
+        segment = self._create_segment_from_string()
+        self.assertEqual(self._get_expected_segment(), segment)
 
     def test_missing_attributes(self):
         self.__test_missing_properties(self._get_attributes(), self._create_segment)
