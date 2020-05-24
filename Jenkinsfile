@@ -20,7 +20,7 @@ pipeline {
                 stage('Tests') {
                     steps {
                         script {
-                            sh label: 'Running tests', script: 'docker run -it --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle check'
+                            sh label: 'Running tests', script: 'docker run --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle check'
                         }
                     }
                 }
