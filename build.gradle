@@ -9,14 +9,24 @@ group = 'uk.nhs.digital.nhsconnect'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+    intTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+    }
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-}
-
-repositories {
-	mavenCentral()
+	intTestImplementation.extendsFrom implementation
+	intTestImplementation.extendsFrom testImplementation
+	intTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {
@@ -36,7 +46,6 @@ dependencies {
 	implementation 'org.apache.qpid:qpid-jms-client:0.51.0'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-
 	implementation 'org.projectlombok:lombok'
 	testImplementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -45,12 +54,13 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+
+	testImplementation "org.testcontainers:testcontainers:1.14.2"
 }
 
 lombok {
 	config['lombok.log.fieldName'] = 'LOGGER'
 }
-
 
 test {
 	useJUnitPlatform() {
@@ -63,3 +73,16 @@ task componentTest(type: Test) {
 		includeTags 'component'
 	}
 }
+
+task integrationTest(type: Test) {
+	useJUnitPlatform() {
+		description = 'Runs integration tests.'
+		group = 'verification'
+
+		testClassesDirs = sourceSets.intTest.output.classesDirs
+		classpath = sourceSets.intTest.runtimeClasspath
+		shouldRunAfter test
+	}
+}
+
+check.dependsOn integrationTest

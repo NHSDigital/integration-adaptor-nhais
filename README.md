@@ -92,6 +92,12 @@ To run component tests you have to use command:
 
 ### Integration Tests
 
+Integration tests are located in a separate source folder src/intTest.
+To run the integration tests use:
+
+    ./gradlew integrationTest
+
+
 ### Configuration
 
 The following additional configuration is used by integration tests
