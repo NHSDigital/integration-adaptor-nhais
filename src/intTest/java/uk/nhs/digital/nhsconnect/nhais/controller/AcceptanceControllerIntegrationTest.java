@@ -1,10 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.nio.file.Files;
-
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +15,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import lombok.extern.slf4j.Slf4j;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+
+import java.nio.file.Files;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = AcceptanceControllerIntegrationTest.MongoDbInitializer.class)

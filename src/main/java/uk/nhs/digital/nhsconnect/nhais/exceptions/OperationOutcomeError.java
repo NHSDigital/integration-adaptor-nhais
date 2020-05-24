@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.exceptions;
 
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
-import org.hl7.fhir.r4.model.OperationOutcome;
 import org.springframework.http.HttpStatus;
 
 public interface OperationOutcomeError {

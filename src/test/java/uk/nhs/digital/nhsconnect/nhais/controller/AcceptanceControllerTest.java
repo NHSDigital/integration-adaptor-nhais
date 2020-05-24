@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -27,12 +29,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("component")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AcceptanceController.class)
 public class AcceptanceControllerTest {
+
+    private static final String UUID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 
     @Autowired
     private MockMvc mockMvc;
@@ -72,8 +76,37 @@ public class AcceptanceControllerTest {
         mockMvc.perform(post("/fhir/Patient/12345")
                 .contentType("application/json")
                 .content(requestBody))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isAccepted())
+                .andExpect(header().string("OperationId", org.hamcrest.Matchers.matchesPattern(UUID_PATTERN)));
 
         verify(outboundMeshService).send(meshMessage);
+    }
+
+    @Test
+    void whenInvalidInput_thenReturns400() throws Exception {
+        String requestBody = "{}";
+        when(fhirParser.parsePatient(requestBody)).thenThrow(new FhirValidationException("the message"));
+        String expectedResponse = "{\"expected\":\"response\"}";
+        when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
+
+        mockMvc.perform(post("/fhir/Patient/12345")
+                .contentType("application/json")
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(expectedResponse));
+    }
+
+    @Test
+    void whenUnhandledException_thenReturns500() throws Exception {
+        String requestBody = "{}";
+        when(fhirParser.parsePatient(requestBody)).thenThrow(new RuntimeException("the message"));
+        String expectedResponse = "{\"expected\":\"response\"}";
+        when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
+
+        mockMvc.perform(post("/fhir/Patient/12345")
+                .contentType("application/json")
+                .content(requestBody))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().json(expectedResponse));
     }
 }
