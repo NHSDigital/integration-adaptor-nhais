@@ -84,14 +84,12 @@ Ensure development dependencies are installed before running the tests
     
 ### Component Tests
 
-Prerequisites
+All component tests are annotated with "component" Tag.
+Component tests will not be launched using gradle test task.
+To run component tests you have to use command:
 
-* Run dynamo locally using docker-compose from repository root
-* Set and export environment variables defined in `nhais-env-example.yaml`
+    ./gradlew componentTest
 
-
-    pipenv run componenttests
-    
 ### Integration Tests
 
 ### Configuration
