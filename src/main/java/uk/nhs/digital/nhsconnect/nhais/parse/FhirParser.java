@@ -60,12 +60,8 @@ public class FhirParser {
         }
     }
 
-    public String encodeToString(Patient patient) {
-        return parser.encodeResourceToString(patient);
-    }
-
-    public String encodeToString(Parameters parameters) {
-        return parser.encodeResourceToString(parameters);
+    public String encodeToString(IBaseResource resource) {
+        return parser.encodeResourceToString(resource);
     }
 }
 

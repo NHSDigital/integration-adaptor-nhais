@@ -34,7 +34,7 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testNoMessages() {
+    public void testValidationResult_NoMessages() {
         when(validationResult.getMessages()).thenReturn(Collections.emptyList());
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation", exception.getMessage());
@@ -42,7 +42,7 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testSingleMessage() {
+    public void testValidationResult_SingleMessage() {
         SingleValidationMessage message = new SingleValidationMessage();
         message.setMessage("the message");
         when(validationResult.getMessages()).thenReturn(Collections.singletonList(message));
@@ -52,7 +52,7 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testMultipleMessages() {
+    public void testValidationResult_MultipleMessages() {
         SingleValidationMessage message = new SingleValidationMessage();
         message.setMessage("the message");
         when(validationResult.getMessages()).thenReturn(Arrays.asList(message, message, message));
@@ -66,10 +66,7 @@ public class FhirValidationExceptionTest {
         FhirValidationException ex = new FhirValidationException("the message");
         assertEquals("the message", ex.getMessage());
         OperationOutcome operationOutcome = (OperationOutcome) ex.getOperationOutcome();
-        OperationOutcome.OperationOutcomeIssueComponent issue = operationOutcome.getIssueFirstRep();
-        assertEquals(OperationOutcome.IssueSeverity.ERROR, issue.getSeverity());
-        assertEquals(OperationOutcome.IssueType.STRUCTURE, issue.getCode());
-        assertEquals("the message", issue.getDetails().getText());
+        assertEquals(OperationOutcome.IssueType.STRUCTURE, operationOutcome.getIssueFirstRep().getCode());
     }
 
 }

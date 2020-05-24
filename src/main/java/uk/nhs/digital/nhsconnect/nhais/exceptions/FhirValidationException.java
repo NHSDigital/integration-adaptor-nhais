@@ -5,9 +5,10 @@ import lombok.Getter;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.OperationOutcome;
+import org.springframework.http.HttpStatus;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationOutcomeUtils;
 
-@Getter
-public class FhirValidationException extends NhaisBaseException {
+public class FhirValidationException extends NhaisBaseException implements OperationOutcomeError {
 
     private IBaseOperationOutcome operationOutcome;
 
@@ -18,18 +19,17 @@ public class FhirValidationException extends NhaisBaseException {
 
     public FhirValidationException(String message) {
         super(message);
-        operationOutcome = createOperationOutcome(message);
+        operationOutcome = OperationOutcomeUtils.createFromMessage(message, OperationOutcome.IssueType.STRUCTURE);
     }
 
-    private static OperationOutcome createOperationOutcome(String message) {
-        OperationOutcome operationOutcome = new OperationOutcome();
-        OperationOutcome.OperationOutcomeIssueComponent issue = operationOutcome.addIssue();
-        issue.setCode(OperationOutcome.IssueType.STRUCTURE);
-        issue.setSeverity(OperationOutcome.IssueSeverity.ERROR);
-        CodeableConcept details = new CodeableConcept();
-        details.setText(message);
-        issue.setDetails(details);
-        return operationOutcome;
+    @Override
+    public IBaseOperationOutcome getOperationOutcome() {
+        return this.operationOutcome;
+    }
+
+    @Override
+    public HttpStatus getStatusCode() {
+        return HttpStatus.BAD_REQUEST;
     }
 
     private static String createMessage(ValidationResult validationResult) {
@@ -44,7 +44,4 @@ public class FhirValidationException extends NhaisBaseException {
         return b.toString();
     }
 
-    public FhirValidationException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

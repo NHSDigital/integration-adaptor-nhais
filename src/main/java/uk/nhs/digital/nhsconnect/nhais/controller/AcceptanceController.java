@@ -32,17 +32,12 @@ public class AcceptanceController {
 
     @PostMapping(path = "/fhir/Patient/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public OperationOutcome acceptance(@PathVariable(name = "id") String id, @RequestBody String body) {
-        try {
-            Patient patient = fhirParser.parsePatient(body);
-            String operationId = UUID.randomUUID().toString();
-            TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
-            MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
-            outboundMeshService.send(meshMessage);
-        } catch (FhirValidationException e) {
-            e.printStackTrace(); // TODO: do something
-        }
-        return null;
+    public void acceptance(@PathVariable(name = "id") String id, @RequestBody String body) throws FhirValidationException {
+        Patient patient = fhirParser.parsePatient(body);
+        String operationId = UUID.randomUUID().toString();
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
+        MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
+        outboundMeshService.send(meshMessage);
     }
 
 }
