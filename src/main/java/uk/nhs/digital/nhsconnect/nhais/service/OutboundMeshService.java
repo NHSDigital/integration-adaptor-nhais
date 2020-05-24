@@ -1,25 +1,31 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.springframework.amqp.core.AmqpTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+
+import static uk.nhs.digital.nhsconnect.nhais.utils.TimestampUtils.getCurrentDateTimeInISOFormat;
 
 @Component
 public class OutboundMeshService {
 
     @Autowired
-    private AmqpTemplate rabbitTemplate;
+    private JmsTemplate jmsTemplate;
 
-    @Value("${nhais.amqp.exchange}")
-    private String exchange;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Value("${nhais.amqp.routingkey}")
-    private String routingkey;
+    @Value("${nhais.amqp.meshOutboundQueueName}")
+    private String meshOutboundQueueName;
 
+    @SneakyThrows
     public void send(MeshMessage message) {
-        rabbitTemplate.convertAndSend(exchange, routingkey, message);
+        message.setMessageSentTimestamp(getCurrentDateTimeInISOFormat());
+        jmsTemplate.convertAndSend(meshOutboundQueueName, message);
     }
 
 }

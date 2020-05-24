@@ -11,3 +11,9 @@ build
 
 # Local configuration
 /nhais/nhais-env.yaml
+
+.classpath
+.project
+.settings/
+.vscode/
+bin/

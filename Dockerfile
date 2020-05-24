@@ -1,16 +1,14 @@
-FROM python:3.7-alpine as base
-RUN pip install pipenv
-RUN mkdir -p /usr/src/app/nhais
-COPY . /usr/src/app/nhais
-WORKDIR /usr/src/app/nhais
+FROM gradle:jdk11 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon -x test -x integrationTest
 
-FROM base as builder
-# dependencies needed to by pipenv install but not required at runtime
-RUN apk add --update alpine-sdk libxml2-dev libxslt-dev
-RUN pipenv install --ignore-pipfile
+FROM adoptopenjdk/openjdk11-openj9:jre
 
-FROM base
-RUN mkdir -p /root/.local/share/virtualenvs
-COPY --from=builder /root/.local/share/virtualenvs /root/.local/share/virtualenvs
-EXPOSE 80
-ENTRYPOINT pipenv run start
+EXPOSE 8080
+
+RUN mkdir /app
+
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/integration-adaptor-nhais.jar
+
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/integration-adaptor-nhais.jar"]

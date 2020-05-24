@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Tag("component")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = RemovalController.class)
 public class RemovalControllerTest {
