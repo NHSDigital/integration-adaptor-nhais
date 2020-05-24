@@ -43,11 +43,19 @@ dependencies {
 	}
 }
 
-test {
-	useJUnitPlatform()
-}
-
 lombok {
 	config['lombok.log.fieldName'] = 'LOGGER'
 }
 
+
+test {
+	useJUnitPlatform() {
+		excludeTags 'component'
+	}
+}
+
+task componentTest(type: Test) {
+	useJUnitPlatform() {
+		includeTags 'component'
+	}
+}

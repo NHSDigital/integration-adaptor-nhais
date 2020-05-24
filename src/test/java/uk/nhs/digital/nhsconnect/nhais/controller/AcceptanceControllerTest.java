@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Tag("component")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AcceptanceController.class)
 public class AcceptanceControllerTest {
