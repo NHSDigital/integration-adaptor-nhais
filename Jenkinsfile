@@ -20,14 +20,14 @@ pipeline {
                 stage('Tests') {
                     steps {
                         script {
-                            sh label: 'Running tests', script: './gradlew check'
+                            sh label: 'Running tests', script: 'docker run -it --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle check'
                         }
                     }
                 }
                 stage('Build Docker Images') {
                     steps {
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG}'
+                            sh label: 'Running docker build', script: 'docker build -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock -t local/nhais:${BUILD_TAG}'
                         }
                     }
                 }
