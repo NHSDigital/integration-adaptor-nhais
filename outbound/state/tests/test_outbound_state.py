@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from edifact.models import InterchangeHeader
+from edifact.models.interchange import InterchangeHeader
 from edifact.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
 from outbound.state import outbound_state as state
 
