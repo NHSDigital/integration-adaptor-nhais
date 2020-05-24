@@ -20,7 +20,7 @@ pipeline {
                 stage('Tests') {
                     steps {
                         script {
-                            sh label: 'List files', script: 'ls -l'
+                            sh label: 'List files in container', script: 'docker run -i --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle tasks ls -l'
                             sh label: 'List tasks', script: 'docker run -i --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle tasks'
                             sh label: 'Running tests', script: 'docker run -i --rm -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock gradle:jdk11 gradle check'
                         }
