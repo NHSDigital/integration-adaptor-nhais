@@ -1,8 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 public class ReferenceTransactionNumber extends Reference {

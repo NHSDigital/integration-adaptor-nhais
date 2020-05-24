@@ -1,8 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,12 +17,10 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -125,27 +124,3 @@ public class FhirToEdifactServiceTest {
     }
 
 }
-
-// expected
-//UNB+UNOA:2+GP123+HA456+200427:1737+00000045'
-//UNH+00000056+FHSREG:0:1:FH:FHS001'
-//BGM+++507'
-//NAD+FHS+HA456:954'
-//DTM+137:202004271737:203'
-//RFF+950:G1'
-//S01+1'
-//RFF+TN:5174'
-//UNT+8+00000056'
-//UNZ+1+00000045'
-
-// actual
-//UNB+UNOA:2+GP123+HA456+200427:0537+00000045'
-//UNH+00000056+FHSREG:0:1:FH:FHS001'
-//BGM+++507'
-//NAD+FHS+HA456:954'
-//DTM+137:202004271737:203'
-//RFF+950:G1'
-//S01+1'
-//RFF+TN:5174'
-//UNT+8+00000056'
-//UNZ+1+00000045'

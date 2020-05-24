@@ -7,6 +7,10 @@ import lombok.Setter;
 public class TranslatedInterchange {
 
     private String edifact;
+    private InterchangeType interchangeType;
     // other metadata needed for processing
 
+    public enum InterchangeType {
+        REGISTRATION, RECEP;
+    }
 }

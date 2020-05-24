@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Getter @Setter @EqualsAndHashCode @ToString

@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,10 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class FhirToEdifactService {
@@ -176,6 +177,7 @@ public class FhirToEdifactService {
         String edifact = String.join("\n", segmentStrings);
         TranslatedInterchange interchange = new TranslatedInterchange();
         interchange.setEdifact(edifact);
+        interchange.setInterchangeType(TranslatedInterchange.InterchangeType.REGISTRATION);
         return interchange;
     }
 

@@ -9,10 +9,17 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 public class EdifactToMeshMessageService {
 
     public MeshMessage toMeshMessage(TranslatedInterchange translatedInterchange) {
-        // determine workflow id from message type: registration, recep
-        // determine ODS code: probably via ENV?
+        // TODO: determine ODS code: probably via ENV?
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setOdsCode("ods123");
+        switch(translatedInterchange.getInterchangeType()) {
+            case REGISTRATION:
+                meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
+                break;
+            case RECEP:
+                meshMessage.setWorkflowId(WorkflowId.RECEP);
+                break;
+        }
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setContent(translatedInterchange.getEdifact());
         return meshMessage;
