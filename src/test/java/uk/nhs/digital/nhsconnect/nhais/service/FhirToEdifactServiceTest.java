@@ -1,9 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +9,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
@@ -27,11 +30,9 @@ public class FhirToEdifactServiceTest {
     private static final String NHS_NUMBER = "54321";
     private static final String GP_CODE = "GP123";
     private static final String HA_CODE = "HA456";
-    private static final String SIS = "45";
-    private static final String SMS = "56";
-    private static final String TN = "5174";
-
-    private static final Pattern UNB = Pattern.compile("^UNB\\+UNOA:2\\+(?<sender>[a-zA-Z0-9]+)\\+(?<recipient>[a-zA-Z0-9]+)+\\+(?<timestamp>[0-9]{6}:[0-9]{4})\\+(?<sis>[0-9]{8})'$");
+    private static final Long SIS = 45L;
+    private static final Long SMS = 56L;
+    private static final Long TN = 5174L;
 
     @Mock
     OutboundStateRepository outboundStateRepository;
@@ -39,31 +40,49 @@ public class FhirToEdifactServiceTest {
     @Mock
     SequenceService sequenceService;
 
+    @Mock
+    TimestampService timestampService;
+
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
 
-    @Test @Disabled
-    public void when_convertedSuccessfully_dependenciesCalledCorrectly() {
+    private ZonedDateTime expectedTimestamp;
+
+    @BeforeEach
+    public void beforeEach() {
+        when(sequenceService.generateMessageId(GP_CODE, HA_CODE)).thenReturn(SMS);
+        when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
+        when(sequenceService.generateTransactionId()).thenReturn(TN);
+        expectedTimestamp = ZonedDateTime.of(2020, 4, 27, 17, 37, 0, 0, UTC);
+        when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
+    }
+
+    @Test
+    public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
         Patient patient = createPatient();
         String operationId = UUID.randomUUID().toString();
 
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
+        fhirToEdifactService.convertToEdifact(patient, operationId, null);
 
         verify(sequenceService).generateInterchangeId(GP_CODE, HA_CODE);
         verify(sequenceService).generateMessageId(GP_CODE, HA_CODE);
-        verify(outboundStateRepository).save(argThat(outboundState ->
-            outboundState.getRecipient().equals(HA_CODE) &&
-                    outboundState.getSender().equals(GP_CODE) &&
-                    outboundState.getSendInterchangeSequence().equals(SIS) &&
-                    outboundState.getSendMessageSequence().equals(SMS) &&
-                    outboundState.getTransactionId().equals(TN) &&
-                    outboundState.getOperationId().equals(operationId) &&
-                    outboundState.getTransactionTimestamp() != null
-        ));
+        verify(sequenceService).generateTransactionId();
+        verify(timestampService).getCurrentTimestamp();
+
+        OutboundStateDAO expected = new OutboundStateDAO();
+        expected.setRecipient(HA_CODE);
+        expected.setSender(GP_CODE);
+        expected.setSendInterchangeSequence(SIS);
+        expected.setSendMessageSequence(SMS);
+        expected.setTransactionId(TN);
+//      TODO: expected.setTransactionType();
+        expected.setTransactionTimestamp(Date.from(expectedTimestamp.toInstant()));
+        expected.setOperationId(operationId);
+        verify(outboundStateRepository).save(expected);
     }
 
     @Test @Disabled
-    public void when_convertedSuccessfully_edifactIsCorrect() {
+    public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
         Patient patient = createPatient();
         String operationId = UUID.randomUUID().toString();
 
@@ -89,17 +108,17 @@ public class FhirToEdifactServiceTest {
         Identifier patientId = new Identifier();
         patientId.setValue(NHS_NUMBER);
         patient.setIdentifier(singletonList(patientId));
-        Organization gp = new Organization();
+
         Identifier gpId = new Identifier();
         gpId.setValue(GP_CODE);
-        gp.setIdentifier(singletonList(gpId));
-        Reference gpRef = new Reference(gp);
+        Reference gpRef = new Reference();
+        gpRef.setIdentifier(gpId);
         patient.setGeneralPractitioner(singletonList(gpRef));
-        Organization ha = new Organization();
+
         Identifier haId = new Identifier();
         haId.setValue(HA_CODE);
-        ha.setIdentifier(singletonList(haId));
-        Reference haRef = new Reference(ha);
+        Reference haRef = new Reference();
+        haRef.setIdentifier(haId);
         patient.setManagingOrganization(haRef);
         return patient;
     }

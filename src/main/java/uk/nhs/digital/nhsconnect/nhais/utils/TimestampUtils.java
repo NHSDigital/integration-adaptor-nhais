@@ -8,8 +8,12 @@ import static java.time.ZoneOffset.UTC;
 
 public class TimestampUtils {
 
+    public static ZonedDateTime getCurrentDateTimeAsUTC() {
+        return ZonedDateTime.ofInstant(Instant.now(), UTC);
+    }
+
     public static String getCurrentDateTimeInISOFormat() {
-        return ZonedDateTime.ofInstant(Instant.now(), UTC).format(DateTimeFormatter.ISO_DATE_TIME);
+        return getCurrentDateTimeAsUTC().format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
 }
