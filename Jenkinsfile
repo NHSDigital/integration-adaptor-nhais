@@ -20,14 +20,15 @@ pipeline {
                 stage('Run Tests') {
                     steps {
                         script {
-                            sh label: 'Running tests', script: 'docker run --rm -v $PWD:$PWD -w $PWD gradle:jdk11 gradle check'
+                            sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
+                            sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local.nhais-tests:latest gradle check'
                         }
                     }
                 }
                 stage('Build Docker Images') {
                     steps {
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG}'
+                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG} .'
                         }
                     }
                 }
