@@ -1,6 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.model.mesh;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter @Setter @ToString @EqualsAndHashCode
 public class MeshMessage {

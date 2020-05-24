@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
@@ -32,11 +33,15 @@ public class AcceptanceController {
     @PostMapping(path = "/fhir/Patient/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OperationOutcome acceptance(@PathVariable(name = "id") String id, @RequestBody String body) {
-        Patient patient = fhirParser.parse(body);
-        String operationId = UUID.randomUUID().toString();
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId);
-        MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
-        outboundMeshService.send(meshMessage);
+        try {
+            Patient patient = fhirParser.parsePatient(body);
+            String operationId = UUID.randomUUID().toString();
+            TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, null);
+            MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
+            outboundMeshService.send(meshMessage);
+        } catch (FhirValidationException e) {
+            e.printStackTrace(); // TODO: do something
+        }
         return null;
     }
 

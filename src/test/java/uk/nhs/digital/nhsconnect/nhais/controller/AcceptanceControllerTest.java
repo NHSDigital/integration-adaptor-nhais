@@ -65,8 +65,8 @@ public class AcceptanceControllerTest {
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOdsCode("odsCode");
 
-        when(fhirParser.parse(requestBody)).thenReturn(new Patient());
-        when(fhirToEdifactService.convertToEdifact(any(Patient.class), anyString())).thenReturn(translatedInterchange);
+        when(fhirParser.parsePatient(requestBody)).thenReturn(new Patient());
+        when(fhirToEdifactService.convertToEdifact(any(Patient.class), anyString(), any())).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/12345")

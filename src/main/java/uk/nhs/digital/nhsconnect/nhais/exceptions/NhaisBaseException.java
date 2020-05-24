@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.model.exception;
+package uk.nhs.digital.nhsconnect.nhais.exceptions;
 
 public class NhaisBaseException extends Exception {
 
