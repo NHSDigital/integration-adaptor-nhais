@@ -18,7 +18,7 @@ public class DateTimePeriod extends Segment{
     private @NonNull TypeAndFormat typeAndFormat;
 
     public enum TypeAndFormat {
-        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddhhmm");
+        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm");
 
         private final String typeCode;
         private final String formatCode;
