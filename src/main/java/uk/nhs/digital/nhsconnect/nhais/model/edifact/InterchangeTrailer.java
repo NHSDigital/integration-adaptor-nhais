@@ -32,7 +32,7 @@ public class InterchangeTrailer extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber != 2){
+        if(sequenceNumber <= 0){
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
     }

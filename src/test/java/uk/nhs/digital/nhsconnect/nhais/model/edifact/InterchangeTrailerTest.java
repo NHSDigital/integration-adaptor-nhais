@@ -31,10 +31,10 @@ public class InterchangeTrailerTest {
     }
 
     @Test
-    public void testPreValidationRecipientEmptyString() {
+    public void testPreValidationSequenceNumberMissing() {
         InterchangeTrailer interchangeTrailer = new InterchangeTrailer(1);
 
-        Exception exception = assertThrows(EdifactValidationException.class, interchangeTrailer::validateStateful);
+        Exception exception = assertThrows(EdifactValidationException.class, interchangeTrailer::toEdifact);
 
         String expectedMessage = "UNZ: Attribute sequenceNumber is required";
         String actualMessage = exception.getMessage();
