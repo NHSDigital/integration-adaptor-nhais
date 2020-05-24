@@ -1,20 +1,14 @@
-FROM adoptopenjdk/openjdk11:ubi as build
-WORKDIR /workspace/app
+FROM gradle:jdk11 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon -x test -x integrationTest
 
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-RUN ./gradlew dependencies
-
-COPY src src
-RUN ./gradlew build -x test -x integrationTest
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
-
-# FROM adoptopenjdk/openjdk11:ubi
 FROM adoptopenjdk/openjdk11-openj9:jre
-VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/build/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication"]
+
+EXPOSE 8080
+
+RUN mkdir /app
+
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/integration-adaptor-nhais.jar
+
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/integration-adaptor-nhais.jar"]

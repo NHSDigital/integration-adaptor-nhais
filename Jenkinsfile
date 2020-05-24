@@ -17,32 +17,17 @@ pipeline {
     stages {
         stage('Build and Test Locally') {
             stages {
-                stage('Build Docker Images') {
+                stage('Tests') {
                     steps {
                         script {
-                            sh label: 'Stopping running containers (preventative maintenance)', script: 'docker-compose down -v'
-                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
+                            sh label: 'Running tests', script: './gradlew check'
                         }
                     }
                 }
-                stage('Deploy Locally') {
+                stage('Build Docker Images') {
                     steps {
-                        sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
-                        echo "Waiting 10 seconds for containers to start"
-                        sleep 10
-                        sh label: 'Show all running containers', script: 'docker ps'
-                    }
-                }
-                stage('Run tests') {
-                    steps {
-                        sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                    }
-                    post {
-                        always {
-                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                            junit '**/test-reports/*.xml'
-                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
-                            cobertura coberturaReportFile: '**/coverage.xml'
+                        script {
+                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG}'
                         }
                     }
                 }
@@ -52,7 +37,7 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais.json"
+                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais-push.json"
                         }
                     }
                 }
@@ -97,7 +82,7 @@ pipeline {
     post {
         always {
 
-            sh label: 'Stopping containers', script: 'docker-compose down -v'
+            // sh label: 'Stopping containers', script: 'docker-compose down -v'
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
