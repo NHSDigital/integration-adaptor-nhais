@@ -249,7 +249,7 @@ class ReferenceTransactionNumber(Reference):
         generates edifact segment from given edifact message line
         """
         rff_tn_match = re.match(RFF_TN_PATTERN, message_line)
-        reference = rff_tn_match.group('transaction_number')
+        reference = int(rff_tn_match.group('transaction_number'))
         return cls(reference)
 
     def pre_validate(self):
