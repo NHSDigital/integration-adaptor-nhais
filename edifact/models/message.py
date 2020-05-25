@@ -174,19 +174,6 @@ class ReferenceTransactionType(Reference):
         super().__init__(qualifier='950', reference=transaction_type.value)
 
 
-
-class ReferenceTransactionType(Reference):
-
-    class TransactionType(enum.Enum):
-        ACCEPTANCE = 'G1'
-        AMENDMENT = 'G2'
-        REMOVAL = 'G3'
-        DEDUCTION = 'G5'
-
-    def __init__(self, transaction_type: TransactionType):
-        super().__init__(qualifier='950', reference=transaction_type.value)
-
-
 class ReferenceTransactionNumber(Reference):
 
     def __init__(self, reference: (int, None) = None):
