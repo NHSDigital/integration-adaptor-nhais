@@ -24,7 +24,7 @@ class TestInboundStateHandler(unittest.TestCase):
     @test_utilities.async_test
     async def test_save_as_new(self):
         persistence_adaptor = MagicMock()
-        persistence_adaptor.add.return_value = awaitable()
+        persistence_adaptor.add.return_value = awaitable(1)
 
         handler = InboundStateHandler(self.inbound_state_record, persistence_adaptor)
 

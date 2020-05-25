@@ -18,7 +18,7 @@ import sequence.outbound.sequence_manager
 
 class TestFhirToEdifactTranslator(unittest.TestCase):
 
-    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
+    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'save_as_new')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_message_id')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_interchange_id')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_transaction_id')
@@ -26,7 +26,7 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
     @async_test
     async def test_message_translated(self, mock_utc_now, mock_generate_transaction_id, mock_generate_interchange_id,
                                       mock_generate_message_id, mock_publish):
-        expected_date = datetime(year=2020, month=4, day=27, hour=17, minute=37, tzinfo=timezone.utc)
+        expected_date = datetime(year=2020, month=4, day=27, hour=17, minute=37)
         mock_utc_now.return_value = expected_date
         mock_generate_transaction_id.return_value = awaitable(5174)
         mock_generate_interchange_id.return_value = awaitable(45)
