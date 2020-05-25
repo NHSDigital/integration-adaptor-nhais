@@ -3,10 +3,11 @@
 import unittest
 
 import aioboto3
+from utilities import config
+from utilities import test_utilities
+
 from sequence.outbound.sequence_factory import get_sequence_generator
 from sequence.outbound.sequence_manager import IdGenerator
-from utilities import test_utilities
-from utilities import config
 
 
 class ComponentTestIds(unittest.TestCase):
@@ -16,7 +17,7 @@ class ComponentTestIds(unittest.TestCase):
         config.setup_config("NHAIS")
         self.table_name = 'test_ids_generators_table'
         self.key = 'transaction_id'
-        self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)
+        self.endpoint = config.get_config('DB_ENDPOINT_URL', None)
         self.region_name = 'eu-west-2'
 
         # Create instance id generator and replace the default sequence_generator

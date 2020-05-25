@@ -5,10 +5,9 @@ import unittest
 import uuid
 
 import requests
+from comms.http_headers import HttpHeaders
 from fhir.resources.patient import Patient
 from requests import Response
-
-from comms.http_headers import HttpHeaders
 from utilities import config
 
 

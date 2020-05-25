@@ -1,10 +1,11 @@
 import utilities.integration_adaptors_logger as log
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
-    ReferenceTransactionType
 from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
-KEY = 'key'
+from edifact.outgoing.models.interchange import InterchangeHeader
+from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, \
+    ReferenceTransactionType
+
+OPERATION_ID = 'OPERATION_ID'
 TRANSACTION_ID = 'TRANSACTION_ID'
 TRANSACTION_TIMESTAMP = 'TRANSACTION_TIMESTAMP'
 TRANSACTION_TYPE = 'TRANSACTION_TYPE'
@@ -40,11 +41,11 @@ class OutboundState(object):
 
         serialised = self._serialise_data()
 
-        await self.persistence_store.add(serialised)
+        await self.persistence_store.add(self.operation_id ,serialised)
         logger.info(f'Successfully updated outbound state to state store for {self.operation_id}')
 
     def _deserialize_data(self, store_data):
-        self.operation_id: str = store_data[KEY]
+        self.operation_id: str = store_data[OPERATION_ID]
         self.transaction_id: int = store_data[TRANSACTION_ID]
         self.transaction_timestamp: str = store_data[TRANSACTION_TIMESTAMP]
         self.transaction_type: str = store_data[TRANSACTION_TYPE]
@@ -59,7 +60,7 @@ class OutboundState(object):
         persistence store
         """
         return {
-            KEY: self.operation_id,
+            OPERATION_ID: self.operation_id,
             TRANSACTION_ID: str(self.transaction_id),
             TRANSACTION_TIMESTAMP: self.transaction_timestamp.isoformat(),
             TRANSACTION_TYPE: self.transaction_type,
@@ -106,7 +107,7 @@ def create_new_outbound_state(segments, operation_id) -> OutboundState:
         raise ValueError('Expected recipient to not be None or empty')
 
     outbound_state_map = {
-        KEY: operation_id,
+        OPERATION_ID: operation_id,
         TRANSACTION_ID: transaction_id,
         TRANSACTION_TIMESTAMP: transaction_timestamp,
         TRANSACTION_TYPE: transaction_type,
