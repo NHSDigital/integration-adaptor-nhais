@@ -13,3 +13,11 @@ output "vpc_cidr" {
 output "core_sg_id" {
   value = aws_security_group.core_sg.id
 }
+
+output "cloudwatch_vpce_id" {
+  value = aws_vpc_endpoint.cloudwatch_endpoint.id
+}
+
+output "ecr_vpce_id" {
+  value = aws_vpc_endpoint.ecr_endpoint.id
+}
