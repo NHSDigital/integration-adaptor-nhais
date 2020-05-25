@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
       "kms:Decrypt",
       "secretsmanager:GetSecretValue"
     ]
-    resource = [
+    resources = [
       "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:*",
       "arn:aws:kms:${var.region}:${var.account_id}:key/*"
     ]
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resource = "*"
+    resources = ["*"]
   }
 
   statement {
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
       "ecr:BatchCheckLayerAvailability",
     ]
 
-    resource = "*"
+    resources = ["*"]
 
     condition {
       test = "StringEquals"
@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
     condition {
       test = "StringEquals"
       variable = "aws:sourceVpc"
-      values = var.vpc_id
+      values = data.terraform_remote_state.base.outputs.vpc_id
     }
   }
 }

@@ -50,7 +50,7 @@ locals {
     },
     {
       name = "NHAIS_MONGO_PORT"
-      value = aws_docdb_instance.nhais_db_instance[0].port
+      value = aws_docdb_cluster_instance.nhais_db_instance[0].port
     },
     {
       name  = "NHAIS_LOG_LEVEL"
