@@ -5,7 +5,7 @@ from edifact.edifact_exception import EdifactValidationException
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, \
     DateTimePeriod, ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
 from edifact.models.segment import Segment
-from edifact.models import BaseSegmentTest
+from edifact.models.tests.base_segment_test import BaseSegmentTest
 
 
 class TestMessageHeader(BaseSegmentTest, unittest.TestCase):
@@ -26,6 +26,9 @@ class TestMessageHeader(BaseSegmentTest, unittest.TestCase):
     def _get_expected_edifact(self):
         return "UNH+00000001+FHSREG:0:1:FH:FHS001'"
 
+    def _compare_segments(self, expected_segment: MessageHeader, actual_segment: MessageHeader) -> bool:
+        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
+
 
 class TestMessageTrailer(BaseSegmentTest, unittest.TestCase):
     """
@@ -44,6 +47,10 @@ class TestMessageTrailer(BaseSegmentTest, unittest.TestCase):
 
     def _get_expected_edifact(self):
         return "UNT+5+00000001'"
+
+    def _compare_segments(self, expected_segment: MessageTrailer, actual_segment: MessageTrailer) -> bool:
+        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
+        self.assertEqual(expected_segment.number_of_segments, actual_segment.number_of_segments)
 
 
 class TestBeginningOfMessage(unittest.TestCase):
@@ -67,10 +74,15 @@ class TestNameAndAddress(BaseSegmentTest, unittest.TestCase):
     def _get_expected_edifact(self):
         return "NAD+FHS+PARTY:954'"
 
+    def _compare_segments(self, expected_segment: NameAndAddress, actual_segment: NameAndAddress) -> bool:
+        self.assertEqual(expected_segment.qualifier, actual_segment.qualifier)
+        self.assertEqual(expected_segment.code, actual_segment.code)
+        self.assertEqual(expected_segment.identifier, actual_segment.identifier)
+
 
 class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
 
-    TS = datetime(year=2020, month=4, day=28, hour=20, minute=58, tzinfo=timezone.utc)
+    TS = datetime(year=2020, month=4, day=28, hour=20, minute=58)
 
     def _create_segment(self) -> Segment:
         return DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP, self.TS)
@@ -84,6 +96,12 @@ class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
 
     def _get_expected_edifact(self):
         return "DTM+137:202004282058:203'"
+
+    def _compare_segments(self, expected_segment: DateTimePeriod, actual_segment: DateTimePeriod) -> bool:
+        self.assertEqual(expected_segment.timestamp, actual_segment.timestamp)
+        self.assertEqual(expected_segment.format_code, actual_segment.format_code)
+        self.assertEqual(expected_segment.type_code, actual_segment.type_code)
+        self.assertEqual(expected_segment.date_time_format, actual_segment.date_time_format)
 
 
 class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
@@ -100,6 +118,10 @@ class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
     def _get_expected_edifact(self):
         return "RFF+950:G1'"
 
+    def _compare_segments(self, expected_segment: ReferenceTransactionType, actual_segment: ReferenceTransactionType) -> bool:
+        self.assertEqual(expected_segment.qualifier, actual_segment.qualifier)
+        self.assertEqual(expected_segment.reference, actual_segment.reference)
+
 
 class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
@@ -114,6 +136,10 @@ class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
 
     def _get_expected_edifact(self):
         return "RFF+TN:1234'"
+
+    def _compare_segments(self, expected_segment: ReferenceTransactionNumber, actual_segment: ReferenceTransactionNumber) -> bool:
+        self.assertEqual(expected_segment.reference, actual_segment.reference)
+        self.assertEqual(expected_segment.qualifier, actual_segment.qualifier)
 
 
 class TestSegmentGroup(unittest.TestCase):

@@ -15,13 +15,20 @@ class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):
 
     def _create_segment_from_string(self) -> Segment:
         interchange_header_segment = "UNB+UNOA:2+SNDR+RECP+190423:0900+00000001'"
-        InterchangeHeader.from_string(interchange_header_segment)
+        return InterchangeHeader.from_string(interchange_header_segment)
 
     def _get_attributes(self):
         return ['sender', 'recipient', 'date_time', 'sequence_number']
 
     def _get_expected_edifact(self):
         return "UNB+UNOA:2+SNDR+RECP+190423:0900+00000001'"
+
+    def _compare_segments(self, expected_segment: InterchangeHeader, actual_segment: InterchangeHeader) -> bool:
+        self.assertEqual(expected_segment.sender, actual_segment.sender)
+        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
+        self.assertEqual(expected_segment.TIMESTAMP_FORMAT, actual_segment.TIMESTAMP_FORMAT)
+        self.assertEqual(expected_segment.date_time, actual_segment.date_time)
+        self.assertEqual(expected_segment.recipient, actual_segment.recipient)
 
 
 class TestInterchangeTrailer(BaseSegmentTest, unittest.TestCase):
@@ -31,10 +38,14 @@ class TestInterchangeTrailer(BaseSegmentTest, unittest.TestCase):
 
     def _create_segment_from_string(self) -> Segment:
         interchange_trailer_segment = "UNZ+1+00000001'"
-        InterchangeHeader.from_string(interchange_trailer_segment)
+        return InterchangeTrailer.from_string(interchange_trailer_segment)
 
     def _get_attributes(self):
         return ['number_of_messages', 'sequence_number']
 
     def _get_expected_edifact(self):
         return "UNZ+1+00000001'"
+
+    def _compare_segments(self, expected_segment: InterchangeTrailer, actual_segment: InterchangeTrailer) -> bool:
+        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
+        self.assertEqual(expected_segment.number_of_messages, actual_segment.number_of_messages)

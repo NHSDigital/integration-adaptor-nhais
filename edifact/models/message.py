@@ -22,13 +22,13 @@ class MessageHeader(Segment):
         self.sequence_number = sequence_number
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
         unh_match = re.match(UNH_PATTERN, message_line)
-        sequence_number = unh_match.group('sms')
-        cls(sequence_number)
+        sequence_number = int(unh_match.group('sms'))
+        return cls(sequence_number)
 
     @property
     def key(self):
@@ -62,14 +62,14 @@ class MessageTrailer(Segment):
         self.sequence_number = sequence_number
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
         unt_match = re.match(UNT_PATTERN, message_line)
-        number_of_segments = unt_match.group('segment_count')
-        sequence_number = unt_match.group('sms')
-        cls(number_of_segments, sequence_number)
+        number_of_segments = int(unt_match.group('segment_count'))
+        sequence_number = int(unt_match.group('sms'))
+        return cls(number_of_segments, sequence_number)
 
     @property
     def key(self):
@@ -95,8 +95,8 @@ class BeginningOfMessage(Segment):
     """
 
     @classmethod
-    def from_string(cls, message_line: str):
-        cls()
+    def from_string(cls, message_line: str) -> Segment:
+        return cls()
 
     @property
     def key(self):
@@ -119,7 +119,7 @@ class NameAndAddress(Segment):
         self.identifier = party_identifier
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
@@ -127,7 +127,7 @@ class NameAndAddress(Segment):
         party_qualifier_and_code = NameAndAddress.QualifierAndCode.FHS
         assert (nad_match.group('party_qualifier'), nad_match.group('party_code')) == party_qualifier_and_code.value
         party_identifier = nad_match.group('party_id')
-        cls(party_qualifier_and_code, party_identifier)
+        return cls(party_qualifier_and_code, party_identifier)
 
     @property
     def key(self):
@@ -153,7 +153,7 @@ class DateTimePeriod(Segment):
         self.timestamp = timestamp
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
@@ -169,11 +169,11 @@ class DateTimePeriod(Segment):
         assert format_code == type_and_format.value[1]
 
         date_time_format = type_and_format.value[2]
-        timestamp_string = datetime(dtm_match.group('date_time_value'))
+        timestamp_string = dtm_match.group('date_time_value')
         timestamp = datetime.strptime(timestamp_string, date_time_format)
 
         qualifier_and_code = date_time_formats.get(type_code)
-        cls(qualifier_and_code, timestamp)
+        return cls(qualifier_and_code, timestamp)
 
     @property
     def key(self):
@@ -221,7 +221,7 @@ class ReferenceTransactionType(Reference):
         super().__init__(qualifier='950', reference=transaction_type.value)
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
@@ -230,10 +230,10 @@ class ReferenceTransactionType(Reference):
 
         transaction_types = {}
         for t in ReferenceTransactionType.TransactionType:
-            transaction_types[t.value[0]] = t
+            transaction_types[t.value] = t
         transaction_type_code = transaction_types.get(transaction_type)
 
-        cls(transaction_type_code)
+        return cls(transaction_type_code)
 
 
 class ReferenceTransactionNumber(Reference):
@@ -242,13 +242,13 @@ class ReferenceTransactionNumber(Reference):
         super().__init__(qualifier='TN', reference=reference)
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
         rff_tn_match = re.match(RFF_TN_PATTERN, message_line)
         reference = rff_tn_match.group('transaction_number')
-        cls(reference)
+        return cls(reference)
 
     def pre_validate(self):
         self._required('qualifier')
@@ -263,14 +263,14 @@ class SegmentGroup(Segment):
         self.segment_group_number = segment_group_number
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
         sg_match = re.match(SG_PATTERN, message_line)
         assert sg_match.group('segment_group_number_0') == sg_match.group('segment_group_number')
         segment_group_number = sg_match.group('segment_group_number')
-        cls(int(segment_group_number))
+        return cls(int(segment_group_number))
 
     @property
     def key(self):

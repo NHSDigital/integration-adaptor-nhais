@@ -42,6 +42,14 @@ class BaseSegmentTest(abc.ABC):
         """
         pass
 
+    @abc.abstractmethod
+    def _compare_segments(self, expected_segment: Segment, actual_segment: Segment) -> bool:
+        """
+        compares two segment's attributes one by one
+        :return: true if segments are equal
+        """
+        pass
+
     def test_to_edifact(self):
         segment = self._create_segment()
         edifact = segment.to_edifact_string()
@@ -49,7 +57,8 @@ class BaseSegmentTest(abc.ABC):
 
     def test_from_string(self):
         segment = self._create_segment_from_string()
-        self.assertEqual(self._get_expected_segment(), segment)
+        expected_segment = self._get_expected_segment()
+        self._compare_segments(expected_segment, segment)
 
     def test_missing_attributes(self):
         self.__test_missing_properties(self._get_attributes(), self._create_segment)

@@ -62,7 +62,7 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         s01 = segments.pop()
         self.assertRegex(s01, SG_PATTERN)
         sg_match = re.match(SG_PATTERN, s01)
-        assert sg_match.group(int('segment_group_number_0')) == sg_match.group(int('segment_group_number'))
+        assert int(sg_match.group('segment_group_number_0')) == int(sg_match.group('segment_group_number'))
 
         rff = segments.pop()
         self.assertRegex(rff, RFF_PATTERN)

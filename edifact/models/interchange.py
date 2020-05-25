@@ -26,7 +26,7 @@ class InterchangeHeader(Segment):
         self.sequence_number = sequence_number
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
@@ -35,8 +35,8 @@ class InterchangeHeader(Segment):
         recipient = unb_match.group('recipient')
         timestamp_string = unb_match.group('timestamp')
         timestamp = datetime.strptime(timestamp_string, InterchangeHeader.TIMESTAMP_FORMAT)
-        sequence_number = unb_match.group('sis')
-        cls(sender, recipient, timestamp, sequence_number)
+        sequence_number = int(unb_match.group('sis'))
+        return cls(sender, recipient, timestamp, sequence_number)
 
     @property
     def key(self):
@@ -73,14 +73,14 @@ class InterchangeTrailer(Segment):
         self.sequence_number = sequence_number
 
     @classmethod
-    def from_string(cls, message_line: str):
+    def from_string(cls, message_line: str) -> Segment:
         """
         generates edifact segment from given edifact message line
         """
         unz_match = re.match(UNZ_PATTERN, message_line)
         number_of_messages = int(unz_match.group('message_count'))
         sequence_number = int(unz_match.group('sis'))
-        cls(number_of_messages, sequence_number)
+        return cls(number_of_messages, sequence_number)
 
     @property
     def key(self):
