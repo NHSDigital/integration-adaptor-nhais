@@ -9,11 +9,12 @@ from utilities.test_utilities import async_test, awaitable
 
 import outbound.state.outbound_state
 from edifact.models.message import ReferenceTransactionType
-from edifact.patterns import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN,\
+from edifact.patterns import UNB_PATTERN, UNH_PATTERN, BGM_PATTERN, NAD_MSG_HEADER_PATTERN, DTM_MSG_HEADER_PATTERN, \
     SG_PATTERN, RFF_TN_PATTERN, UNT_PATTERN, UNZ_PATTERN, RFF_PATTERN
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 import sequence.outbound.sequence_manager
+
 
 class TestFhirToEdifactTranslator(unittest.TestCase):
 

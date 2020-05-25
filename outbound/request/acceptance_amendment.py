@@ -3,14 +3,13 @@ from json import JSONDecodeError
 from typing import Any
 
 import tornado.web
-from edifact.models.message import ReferenceTransactionType
 from fhir.resources.operationoutcome import OperationOutcome
 from tornado import httputil
 from utilities import integration_adaptors_logger as log, timing
 from utilities import message_utilities
 
 from edifact.edifact_exception import EdifactValidationException
-from edifact.outgoing.models.message import ReferenceTransactionType
+from edifact.models.message import ReferenceTransactionType
 from mesh.mesh_outbound import MeshOutboundWrapper
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.request.fhir_error_helpers import create_operation_outcome_from_validation_exception, \
@@ -46,7 +45,8 @@ class AcceptanceAmendmentRequestHandler(tornado.web.RequestHandler):
                 await self.finish()
             else:
                 logger.error(self.URI_MISMATCH_ERROR)
-                operation_outcome = create_operation_outcome(OperationOutcomeIssueCode.URI, 'id', self.URI_MISMATCH_ERROR)
+                operation_outcome = create_operation_outcome(OperationOutcomeIssueCode.URI, 'id',
+                                                             self.URI_MISMATCH_ERROR)
                 self.__set_unsuccessful_response(400, operation_outcome)
 
         except RequestValidationException as e:
@@ -59,7 +59,8 @@ class AcceptanceAmendmentRequestHandler(tornado.web.RequestHandler):
             self.__set_unsuccessful_response(400, operation_outcome)
         except JSONDecodeError as e:
             logger.exception(self.JSON_DECODE_ERROR_MESSAGE)
-            operation_outcome = create_operation_outcome(OperationOutcomeIssueCode.STRUCTURE, '', self.JSON_DECODE_ERROR_MESSAGE)
+            operation_outcome = create_operation_outcome(OperationOutcomeIssueCode.STRUCTURE, '',
+                                                         self.JSON_DECODE_ERROR_MESSAGE)
             self.__set_unsuccessful_response(400, operation_outcome)
 
     def __set_unsuccessful_response(self, status: int, operation_outcome: OperationOutcome):
