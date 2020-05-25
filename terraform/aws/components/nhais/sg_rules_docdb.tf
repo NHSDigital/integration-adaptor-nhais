@@ -1,5 +1,5 @@
 resource "aws_security_group_rule" "allow_ingress_in_docdb" {
-  type = "igress"
+  type = "ingress"
   from_port = aws_docdb_cluster_instance.nhais_db_instance[0].port
   to_port = aws_docdb_cluster_instance.nhais_db_instance[0].port
   protocol = "tcp"
