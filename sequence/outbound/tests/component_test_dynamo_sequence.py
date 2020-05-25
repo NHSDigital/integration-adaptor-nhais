@@ -17,7 +17,7 @@ class ComponentTestDynamoSequence(unittest.TestCase):
         config.setup_config("NHAIS")
         self.table_name = 'test_dynamo_sequence_table'
         self.key = 'transaction_id'
-        self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)
+        self.endpoint = config.get_config('DB_ENDPOINT_URL', None)
         self.region_name = 'eu-west-2'
 
         async with aioboto3.resource('dynamodb', region_name=self.region_name, endpoint_url=self.endpoint) as dynamo_resource:

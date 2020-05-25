@@ -3,14 +3,14 @@ import unittest
 from datetime import datetime, timezone
 from unittest import mock
 
-import sequence.outbound.sequence_manager
-import outbound.state.outbound_state
-from edifact.outgoing.models.message import ReferenceTransactionType
-from outbound.converter.interchange_translator import InterchangeTranslator
-from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
-from utilities import message_utilities
 from utilities.date_utilities import DateUtilities
 from utilities.test_utilities import async_test, awaitable
+
+import outbound.state.outbound_state
+import sequence.outbound.sequence_manager
+from edifact.models.message import ReferenceTransactionType
+from outbound.converter.interchange_translator import InterchangeTranslator
+from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 
 
 class TestFhirToEdifactTranslator(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
     UNZ_PATTERN = r"^UNZ\+(?P<message_count>[0-9]+)\+(?P<sis>[0-9]{8})'$"
     RFF_PATTERN = r"^RFF\+950:(?P<transaction_type>G[0-9])'$"
 
-    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
+    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'save_as_new')
     @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_message_id')
     @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_interchange_id')
     @mock.patch.object(sequence.outbound.sequence_manager.IdGenerator, 'generate_transaction_id')
@@ -44,8 +44,7 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         patient = create_patient()
 
         translator = InterchangeTranslator()
-        operation_id = message_utilities.get_uuid()
-        edifact = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE, operation_id)
+        edifact, operation_id = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE)
 
         self.assertIsNotNone(edifact)
         self.assertTrue(len(edifact) > 0)

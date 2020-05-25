@@ -1,17 +1,18 @@
 import asyncio
 from datetime import datetime
+from typing import Tuple
 
 from fhir.resources.patient import Patient
+from utilities.date_utilities import DateUtilities
 
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
+from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
+from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
     ReferenceTransactionType
 from outbound.converter.acceptance_message_translator import AcceptanceMessageTranslator
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
 from outbound.converter.stub_message_translator import StubMessageTranslator
 from outbound.state.outbound_state import create_new_outbound_state
 from sequence.outbound.sequence_manager import IdGenerator
-from utilities.date_utilities import DateUtilities
 
 
 class InterchangeTranslator(object):
@@ -20,7 +21,7 @@ class InterchangeTranslator(object):
         self.id_generator = IdGenerator()
         self.segments = []
 
-    async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType, operation_id: str) -> str:
+    async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType) -> Tuple[str, str]:
         translation_timestamp = DateUtilities.utc_now()
         sender, recipient = self.__append_interchange_header(patient, translation_timestamp)
         self.__append_message_segments(patient, translation_timestamp, transaction_type)
@@ -29,8 +30,8 @@ class InterchangeTranslator(object):
         # pre-validate to ensure the EDIFACT message is valid before generating sequence numbers for it
         self.__pre_validate_segments()
         await self.__generate_identifiers(sender, recipient)
-        await self.__record_outgoing_state(operation_id)
-        return self.__translate_edifact()
+        operation_id = await self.__record_outgoing_state()
+        return self.__join_segments_into_edifact(), operation_id
 
     def __append_interchange_header(self, patient, translation_timestamp: datetime):
         sender = get_gp_identifier(patient)
@@ -64,10 +65,10 @@ class InterchangeTranslator(object):
             elif isinstance(segment, ReferenceTransactionNumber):
                 segment.reference = transaction_id
 
-    def __translate_edifact(self):
+    def __join_segments_into_edifact(self):
         return '\n'.join([segment.to_edifact() for segment in self.segments])
 
-    async def __record_outgoing_state(self, operation_id):
-        outbound_state = create_new_outbound_state(self.segments, operation_id)
-        await outbound_state.publish()
-        return
+    async def __record_outgoing_state(self):
+        outbound_state = create_new_outbound_state(self.segments)
+        await outbound_state.save_as_new()
+        return outbound_state.build_operation_id()

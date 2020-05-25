@@ -1,23 +1,20 @@
-import asyncio
+from multiprocessing import Process
 
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-
 import utilities.integration_adaptors_logger as log
 from handlers import healthcheck_handler
+from utilities import config
+
+from inbound.request.inbound_handler import InboundHandler
 from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHandler
 from outbound.request.deduction import DeductionRequestHandler
 from outbound.request.removal import RemovalRequestHandler
-from utilities import config
-
-import threading
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
-
 def start_tornado_server() -> None:
-
     tornado_application = tornado.web.Application(
         [
             (r'/fhir/Patient/([0-9]*)/\$nhais\.removal', RemovalRequestHandler),
@@ -27,7 +24,6 @@ def start_tornado_server() -> None:
         ])
     tornado_server = tornado.httpserver.HTTPServer(tornado_application)
     server_port = int(config.get_config('OUTBOUND_SERVER_PORT', default='80'))
-    asyncio.set_event_loop(asyncio.new_event_loop())
     tornado_server.listen(server_port)
 
     logger.info('Starting nhais server at port {server_port}', fparams={'server_port': server_port})
@@ -42,21 +38,22 @@ def start_tornado_server() -> None:
     logger.info('Server shut down, exiting...')
 
 
-def start_rabbit_mq():
-    logger.info('Started rabbit mq')
+def start_listening_to_events():
+    logger.info('Starting listening to incoming messages')
+    handler = InboundHandler()
+    adaptor = InboundHandler.create_queue_adaptor(self=handler)
+    adaptor.wait_for_messages()
 
 
 def main():
     config.setup_config("NHAIS")
     log.configure_logging("NHAIS")
 
-    tornado_thread = threading.Thread(target=start_tornado_server)
-    rabbit_thread = threading.Thread(target=start_rabbit_mq)
+    p = Process(target=start_listening_to_events)
+    p.start()
 
-    logger.info('Starting tornado server')
-    tornado_thread.start()
-    logger.info('Starting rabbit mq')
-    rabbit_thread.start()
+    start_tornado_server()
+    p.join()
 
 
 if __name__ == "__main__":

@@ -1,15 +1,15 @@
+import json
 import unittest
 import uuid
 
-import json
 import aioboto3
-from utilities import test_utilities
-from fhir.resources.fhirelementfactory import FHIRElementFactory
-
 from comms.blocking_queue_adaptor import BlockingQueueAdaptor
+from fhir.resources.fhirelementfactory import FHIRElementFactory
+from utilities import config
+from utilities import test_utilities
+
 from outbound.tests.fhir_test_helpers import create_patient, GP_ID, HA_ID
 from outbound.tests.outbound_request_builder import OutboundRequestBuilder
-from utilities import config
 
 
 class NhaisIntegrationTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class NhaisIntegrationTests(unittest.TestCase):
     def setUp(self):
         config.setup_config('NHAIS')
         self.table_name = 'nhais_outbound_state'
-        self.endpoint = config.get_config('DYNAMODB_ENDPOINT_URL', None)
+        self.endpoint = config.get_config('DB_ENDPOINT_URL', None)
         self.region_name = 'eu-west-2'
         self.mq_wrapper = BlockingQueueAdaptor(username=config.get_config('OUTBOUND_QUEUE_USERNAME', default=None),
                                                password=config.get_config('OUTBOUND_QUEUE_PASSWORD', default=None),
@@ -37,9 +37,11 @@ class NhaisIntegrationTests(unittest.TestCase):
             .execute_post_expecting_success()
         self.assertIn('operationid', response.headers)
         try:
-            uuid.UUID(response.headers['operationid'])
+            operation_id = response.headers['operationid']
+            self.assertRegex(operation_id, '[0-9a-fA-F]+')
+            self.assertEqual(len(operation_id), 64)
         except ValueError:
-            self.fail('operationid header is not a UUID')
+            self.fail('operationid header is not a sha256')
 
         message = self.mq_wrapper.get_next_message_on_queue()
         self.assertIsNotNone(message, 'message from queue should exist')
@@ -60,7 +62,6 @@ class NhaisIntegrationTests(unittest.TestCase):
             )
             if 'Item' not in db_response:
                 self.fail("No results in db for given key")
-        self.assertEqual(operation_id, db_response.get('Item')['key'])
 
     def test_acceptance_transaction_translation_error(self):
         patient = create_patient()
