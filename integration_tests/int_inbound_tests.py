@@ -3,6 +3,7 @@ import json
 
 from comms import proton_queue_adaptor
 from comms.blocking_queue_adaptor import BlockingQueueAdaptor
+from fhir.resources.fhirelementfactory import FHIRElementFactory
 from utilities import config, test_utilities
 
 
@@ -36,10 +37,22 @@ class InboundIntegrationTests(unittest.TestCase):
 
     @test_utilities.async_test
     async def test_acceptance_transaction(self):
-        mymessage = 'this is my message'
-        await self.incoming_queue.send_async(mymessage)
+        edifact_file = """UNB+UNOA:2+GP123+HA456+200427:1737+00000045'
+UNH+00000056+FHSREG:0:1:FH:FHS001'
+BGM+++507'
+NAD+FHS+HA456:954'
+DTM+137:202004271737:203'
+RFF+950:G1'
+S01+1'
+RFF+TN:5174'
+UNT+8+00000056'
+UNZ+1+00000045'"""
+        message_dict = {
+            'workflowId': 'NHAIS_REG',
+            'content': edifact_file
+        }
+        await self.incoming_queue.send_async(message_dict)
         message = self.supplier_queue.get_next_message_on_queue()
         message_body = self.get_message_body(message)
-        self.assertIsNotNone(message, 'message from queue should exist')
-        self.assertTrue(len(message.body) > 0, 'message from queue should not be empty')
-        self.assertEqual(self.EXPECTED_BODY, message_body)
+        patient = FHIRElementFactory.instantiate('Patient', message_body)
+        # TODO: validate patient

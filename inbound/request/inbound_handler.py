@@ -1,9 +1,12 @@
 import asyncio
+import json
 
 from comms import proton_queue_adaptor
+from proton import Message
 from utilities import config
 from utilities import integration_adaptors_logger as log
 
+from edifact.models.edifact import Edifact
 from inbound.converter.edifact_recep_consumer import EdifactRecepConsumer
 from inbound.converter.edifact_recep_producer import EdifactRecepProducer
 from inbound.converter.edifact_to_fhir import EdifactToFhir
@@ -21,15 +24,19 @@ class InboundHandler:
         self.edifact_recep_producer = EdifactRecepProducer()
         self.edifact_recep_consumer = EdifactRecepConsumer()
 
-    def message_callback(self, edifact_message):
-        logger.info(f'Message recieved by inbound, message: {edifact_message}')
-        if edifact_message:
-            fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact_message)
+    def message_callback(self, message: Message):
+        logger.info(f'Message recieved by inbound, message: {message}')
+        mesh_message = json.loads(message.body)
+        if mesh_message['workflowId'] == 'NHAIS_REG':
+            edifact_file_content = mesh_message['content']
+            edifact = Edifact.create_edifact_from_message(edifact_file_content)
+            fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact)
             self.inbound_sequence_number_manager.record_sequence_number(fhir_message)
             self.edifact_recep_producer.generate_sequences(fhir_message)
+            # TODO: is str() the correct way to marshall a FHIR Patient?
             asyncio.run(self.supplier_incoming_mq.send(str(fhir_message)))
         else:
-            self.edifact_recep_consumer.record_reciept(edifact_message)
+            self.edifact_recep_consumer.record_reciept(message)
 
     def create_queue_adaptor(self):
         return proton_queue_adaptor.ProtonQueueAdaptor(

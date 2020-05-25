@@ -12,6 +12,7 @@ NHAIS_INBOUND_QUEUE_BROKERS: amqp://localhost:5672
 NHAIS_INBOUND_QUEUE_NAME: 'nhais_inbound'
 NHAIS_SUPPLIER_QUEUE_BROKERS: amqp://localhost:5672
 NHAIS_SUPPLIER_QUEUE_NAME: 'nhais_supplier'
+NHAIS_SUPPLIER_ADDRESS: 'http://localhost:80'
 
 #common tests
 AWS_ACCESS_KEY_ID: test
