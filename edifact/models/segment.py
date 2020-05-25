@@ -76,7 +76,7 @@ class Segment(abc.ABC):
 class SegmentFactory:
 
     @staticmethod
-       def create_segment_from_string(message_line: str) -> Segment:
+    def create_segment_from_string(message_line: str) -> Segment:
         from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
         from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
             ReferenceTransactionType, BeginningOfMessage, NameAndAddress, DateTimePeriod, SegmentGroup
