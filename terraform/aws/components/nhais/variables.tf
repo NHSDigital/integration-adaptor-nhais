@@ -1,3 +1,8 @@
+variable "account_id" {
+  type = string
+  description = "ID of AWS Account on which the resources are created"
+}
+
 variable "project" {
   type = string
   description = "Name of the project where this code is used"
@@ -57,4 +62,10 @@ variable "build_id" {
 variable "mq_broker_name" {
   type = string
   description = "Name of the MQ broker shared between all envs"
+}
+
+variable "environment_variables" {
+  type = list(object({name=string, value=string}))
+  description = "List of objects for Environment variables"
+  default = []
 }

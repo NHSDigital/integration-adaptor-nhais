@@ -101,9 +101,14 @@ variable "vpc_id" {
   description = "(Required) ID of VPC in which this service will be running"
 }
 
-variable "subnet_cidrs" {
+# variable "subnet_cidrs" {
+#   type = list(string)
+#   description = "(Required) List of CIDRs for subnets which this service will use"
+# }
+
+variable "subnet_ids" {
   type = list(string)
-  description = "(Required) List of CIDRs for subnets which this service will use"
+  description = "(Requred) List of SubnetIds for subnets which this service will use"
 }
 
 variable "image_name" {
@@ -180,4 +185,14 @@ variable "secret_variables" {
   type = list(object({name=string, value=string}))
   description = "Map of secret variables to pass to container"
   default = []
+}
+
+variable "task_execution_role_arn" {
+  type = string
+  description = "ARN of role used by the ECS Task"
+}
+
+variable "task_role_arn" {
+  type = string
+  description = "ARN of role used by the container itself"
 }
