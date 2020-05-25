@@ -1,15 +1,17 @@
+import hashlib
+
 import utilities.integration_adaptors_logger as log
+from persistence.persistence_adaptor_factory import get_persistence_adaptor
+
 from edifact.models.interchange import InterchangeHeader
 from edifact.models.message import MessageHeader, ReferenceTransactionNumber, \
     ReferenceTransactionType
-from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
-OPERATION_ID = 'OPERATION_ID'
 TRANSACTION_ID = 'TRANSACTION_ID'
 TRANSACTION_TIMESTAMP = 'TRANSACTION_TIMESTAMP'
 TRANSACTION_TYPE = 'TRANSACTION_TYPE'
 SIS_SEQUENCE = 'SIS_SEQUENCE'
-SMS_SEQUENCES = 'SMS_SEQUENCES'
+SMS_SEQUENCE = 'SMS_SEQUENCE'
 SENDER = 'SENDER'
 RECIPIENT = 'RECIPIENT'
 
@@ -29,53 +31,67 @@ class OutboundState(object):
         """
 
         self.persistence_store = get_persistence_adaptor(table_name=NHAIS_OUTBOUND_STATE, max_retries=3, retry_delay=0.1)
-        self._deserialize_data(store_data)
+        self._from_dict(store_data)
 
-    async def publish(self):
+    async def save_as_new(self):
         """
         Attempts to publish the local state of the outbound state to the state store
         :return:
         """
-        logger.info(f'Attempting to publish outbound state {self.operation_id}')
+        operation_id = self.build_operation_id()
 
-        serialised = self._serialise_data()
+        logger.info(f'Attempting to publish outbound state {operation_id}')
 
-        await self.persistence_store.add(self.operation_id ,serialised)
-        logger.info(f'Successfully updated outbound state to state store for {self.operation_id}')
+        serialised = self._to_dict()
 
-    def _deserialize_data(self, store_data):
-        self.operation_id: str = store_data[OPERATION_ID]
+        await self.persistence_store.add(operation_id, serialised)
+        logger.info(f'Successfully updated outbound state to state store for {operation_id}')
+
+    def build_operation_id(self):
+        bare_key = '_'.join([
+            str(self.sis_sequence),
+            str(self.sms_sequence),
+            self.sender,
+            self.recipient])
+        return hashlib.sha256(bare_key.encode()).hexdigest()
+
+    def _from_dict(self, store_data):
         self.transaction_id: int = store_data[TRANSACTION_ID]
         self.transaction_timestamp: str = store_data[TRANSACTION_TIMESTAMP]
         self.transaction_type: str = store_data[TRANSACTION_TYPE]
         self.sis_sequence: int = store_data[SIS_SEQUENCE]
-        self.sms_sequences: list = store_data[SMS_SEQUENCES]
+        self.sms_sequence: str = store_data[SMS_SEQUENCE]
         self.sender: str = store_data[SENDER]
         self.recipient: str = store_data[RECIPIENT]
 
-    def _serialise_data(self):
+    def _to_dict(self):
         """
         A simple serialization method that produces an object from the local data which can be stored in the
         persistence store
         """
         return {
-            OPERATION_ID: self.operation_id,
             TRANSACTION_ID: str(self.transaction_id),
             TRANSACTION_TIMESTAMP: self.transaction_timestamp.isoformat(),
             TRANSACTION_TYPE: self.transaction_type,
             SIS_SEQUENCE: str(self.sis_sequence),
-            SMS_SEQUENCES: str(self.sms_sequences),
+            SMS_SEQUENCE: str(self.sms_sequence),
             SENDER: self.sender,
             RECIPIENT: self.recipient
         }
 
-def create_new_outbound_state(segments, operation_id) -> OutboundState:
+
+def create_new_outbound_state(segments) -> OutboundState:
     """
     Builds a new local outbound state instance given the details of the message, these details are held locally
     until a `publish` is executed
     """
-
-    sms_sequences = []
+    transaction_timestamp = None
+    sender = None
+    recipient = None
+    sis_sequence = None
+    sms_sequence = None
+    transaction_id = None
+    transaction_type = None
 
     for segment in segments:
         if isinstance(segment, InterchangeHeader):
@@ -84,7 +100,7 @@ def create_new_outbound_state(segments, operation_id) -> OutboundState:
             recipient = segment.recipient
             sis_sequence = segment.sequence_number
         elif isinstance(segment, MessageHeader):
-            sms_sequences.append(segment.sequence_number)
+            sms_sequence = segment.sequence_number
         elif isinstance(segment, ReferenceTransactionNumber):
             transaction_id = segment.reference
         elif isinstance(segment, ReferenceTransactionType):
@@ -98,20 +114,19 @@ def create_new_outbound_state(segments, operation_id) -> OutboundState:
         raise ValueError('Expected transaction_type to not be None or empty')
     elif not sis_sequence:
         raise ValueError('Expected sis_sequence to not be None or empty')
-    elif not sms_sequences:
-        raise ValueError('Expected sms_sequences to not be None or empty')
+    elif not sms_sequence:
+        raise ValueError('Expected sms_sequence to not be None or empty')
     elif not sender:
         raise ValueError('Expected sender to not be None or empty')
     elif not recipient:
         raise ValueError('Expected recipient to not be None or empty')
 
     outbound_state_map = {
-        OPERATION_ID: operation_id,
         TRANSACTION_ID: transaction_id,
         TRANSACTION_TIMESTAMP: transaction_timestamp,
         TRANSACTION_TYPE: transaction_type,
         SIS_SEQUENCE: sis_sequence,
-        SMS_SEQUENCES: sms_sequences,
+        SMS_SEQUENCE: sms_sequence,
         SENDER: sender,
         RECIPIENT: recipient
     }

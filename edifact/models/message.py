@@ -111,6 +111,7 @@ class BeginningOfMessage(Segment):
 
 
 class NameAndAddress(Segment):
+
     class QualifierAndCode(enum.Enum):
         FHS = ('FHS', '954')
 
@@ -144,7 +145,8 @@ class NameAndAddress(Segment):
 
 
 class DateTimePeriod(Segment):
-    class TypeAndFormat(enum.Enum):
+
+    class TypeAndFormat (enum.Enum):
         TRANSLATION_TIMESTAMP = ('137', '203', '%Y%m%d%H%M')
         PERIOD_END_DATE = ('206', '102', '%Y%m%d')
 
