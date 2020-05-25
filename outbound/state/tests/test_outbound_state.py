@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 
 from edifact.models.interchange import InterchangeHeader
 from edifact.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
@@ -21,7 +21,7 @@ class TestOutboundState(unittest.TestCase):
 
     def test_constructor(self):
         input_data = {
-            state.KEY: 'aaa-bbb-ccc',
+            state.OPERATION_ID: 'aaa-bbb-ccc',
             state.TRANSACTION_ID: 1,
             state.TRANSACTION_TIMESTAMP: datetime.datetime(2020, 5, 17, 0, 0),
             state.TRANSACTION_TYPE: 'G1',

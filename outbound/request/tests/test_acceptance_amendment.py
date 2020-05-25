@@ -7,6 +7,8 @@ from fhir.resources.fhirelementfactory import FHIRElementFactory
 from fhir.resources.operationoutcome import OperationOutcomeIssue
 from fhir.resources.patient import Patient
 from tornado.web import Application
+from utilities import message_utilities
+from utilities.test_utilities import awaitable, awaitable_exception
 
 from edifact.edifact_exception import EdifactValidationException
 from mesh.mesh_outbound import MeshOutboundWrapper
@@ -14,8 +16,6 @@ from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.request.acceptance_amendment import AcceptanceAmendmentRequestHandler
 from outbound.schema import validate_request
 from outbound.schema.request_validation_exception import RequestValidationException, ValidationError
-from utilities import message_utilities
-from utilities.test_utilities import awaitable, awaitable_exception
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
