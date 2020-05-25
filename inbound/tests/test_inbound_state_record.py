@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+import os
 
 from edifact.models.edifact import Edifact
 from edifact.models.interchange import InterchangeHeader
@@ -24,7 +25,7 @@ class TestInboundStateRecord(unittest.TestCase):
         'RECIPIENT': 'some_recipient',
         'TRANSACTION_ID': 'some_transaction_id',
         'TRANSACTION_TYPE': 'G1',
-        'TRANSLATION_TIMESTAMP': '2010-09-12T12:19:55'
+        'TRANSLATION_TIMESTAMP': '2010-09-12T10:19:55'
     }
     edifact = Edifact([
         InterchangeHeader(
@@ -40,6 +41,12 @@ class TestInboundStateRecord(unittest.TestCase):
             timestamp=datetime.fromtimestamp(1284286795))
     ])
     key = "1cd5025637968ae969238c0b33174387f97455d7772d2b35996dc28e5edaf2ad"
+
+    def setUp(self) -> None:
+        os.environ['TZ'] = 'GMT'
+
+    def tearDown(self) -> None:
+        del os.environ['TZ']
 
     def test_to_dict(self):
         self.assertEqual(self.inbound_state_record.to_dict(), self.inbound_state_as_dictionary)
