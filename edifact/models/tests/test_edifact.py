@@ -3,7 +3,7 @@ import unittest
 from edifact.models.edifact import Edifact
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, DateTimePeriod, \
-    Reference, ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
+    ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
 
 
 class TestEdifact(unittest.TestCase):
@@ -16,7 +16,6 @@ class TestEdifact(unittest.TestCase):
         beginning_of_message = BeginningOfMessage()
         name_and_address = NameAndAddress(NameAndAddress.QualifierAndCode.FHS, None)
         date_time_period = DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP, None)
-        reference = Reference(None, None)
         reference_transaction_type = ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)
         reference_transaction_number = ReferenceTransactionNumber(None)
         segment_group = SegmentGroup(None)
@@ -29,7 +28,6 @@ class TestEdifact(unittest.TestCase):
             beginning_of_message,
             name_and_address,
             date_time_period,
-            reference,
             reference_transaction_type,
             reference_transaction_number,
             segment_group
@@ -42,7 +40,6 @@ class TestEdifact(unittest.TestCase):
         self.assertEqual(edifact.beginning_of_message, beginning_of_message)
         self.assertEqual(edifact.name_and_address, name_and_address)
         self.assertEqual(edifact.date_time_period, date_time_period)
-        self.assertEqual(edifact.reference, reference)
         self.assertEqual(edifact.reference_transaction_type, reference_transaction_type)
         self.assertEqual(edifact.reference_transaction_number, reference_transaction_number)
         self.assertEqual(edifact.segment_group, segment_group)
@@ -57,7 +54,6 @@ class TestEdifact(unittest.TestCase):
         self.assertRaises(LookupError, lambda: edifact.beginning_of_message)
         self.assertRaises(LookupError, lambda: edifact.name_and_address)
         self.assertRaises(LookupError, lambda: edifact.date_time_period)
-        self.assertRaises(LookupError, lambda: edifact.reference)
         self.assertRaises(LookupError, lambda: edifact.reference_transaction_type)
         self.assertRaises(LookupError, lambda: edifact.reference_transaction_number)
         self.assertRaises(LookupError, lambda: edifact.segment_group)
