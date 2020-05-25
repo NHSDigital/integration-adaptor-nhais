@@ -51,9 +51,9 @@ def main():
 
     p = Process(target=start_listening_to_events)
     p.start()
-    p.join()
 
     start_tornado_server()
+    p.join()
 
 
 if __name__ == "__main__":
