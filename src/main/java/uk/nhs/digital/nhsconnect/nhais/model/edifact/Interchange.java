@@ -9,6 +9,6 @@ import java.util.List;
 public class Interchange {
 
     // TODO: stub for the internal representation of an edifact interchange
-    private List<Object> segments;
+    private List<Segment> segments;
 
 }
