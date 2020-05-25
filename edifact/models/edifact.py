@@ -30,7 +30,7 @@ class Edifact:
         segments = []
         for line in lines:
             segments.append(SegmentFactory.create_segment_from_string(line))
-        cls(segments)
+        return cls(segments)
 
     def create_message_from_edifact(self) -> str:
         return '\n'.join([segment.to_edifact_string() for segment in self._segments])
