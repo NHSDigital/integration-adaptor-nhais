@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
     actions = [
       "kms:Decrypt",
       "secretsmanager:GetSecretValue"
-    ],
+    ]
     resource = [
       "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:*",
       "arn:aws:kms:${var.region}:${var.account_id}:key/*"
