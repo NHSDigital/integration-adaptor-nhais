@@ -3,14 +3,15 @@ import unittest
 from datetime import datetime, timezone
 from unittest import mock
 
-import sequence.outbound.sequence_manager
-import outbound.state.outbound_state
-from edifact.models.message import ReferenceTransactionType
-from outbound.converter.interchange_translator import InterchangeTranslator
-from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 from utilities import message_utilities
 from utilities.date_utilities import DateUtilities
 from utilities.test_utilities import async_test, awaitable
+
+import outbound.state.outbound_state
+import sequence.outbound.sequence_manager
+from edifact.models.message import ReferenceTransactionType
+from outbound.converter.interchange_translator import InterchangeTranslator
+from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 
 
 class TestFhirToEdifactTranslator(unittest.TestCase):

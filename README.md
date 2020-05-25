@@ -23,7 +23,7 @@ when the service is run.
 | NHAIS_OUTBOUND_QUEUE_PASSWORD    |          | (Optional) password for the amqp server for outbound (to mesh) message queue
 | NHAIS_OUTBOUND_QUEUE_MAX_RETRIES | 3        | The number of times a request to the outbound (to mesh) broker(s) will be retried
 | NHAIS_OUTBOUND_QUEUE_RETRY_DELAY | 100      | Milliseconds delay between retries to the outbound (to mesh) broker(s)
-| NHAIS_DYNAMODB_ENDPOINT_URL      |          | URL of dynamodb instance (if used)
+| NHAIS_DB_ENDPOINT_URL      |          | URL of dynamodb instance (if used)
 | NHAIS_PERSISTENCE_ADAPTOR        | dynamodb | To specify the database adaptor used
 | NHAIS_LOG_LEVEL                  |          | The desired logging level
 | AWS_ACCESS_KEY_ID                |          | The AWS Access Key ID for DynamoDB (if used). If using local dynamo can be set to 'test'
