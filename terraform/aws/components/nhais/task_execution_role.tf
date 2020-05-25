@@ -1,6 +1,6 @@
 resource "aws_iam_role" "ecs_service_task_execution_role" {
   name = "${local.resource_prefix}-task_execution_role"
-  assume_role_policy = data.aws_iam_policy_document.ecs_service_task_execution_policies.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_service_task_execution_assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_task_execution_role_attachment" {
@@ -8,7 +8,18 @@ resource "aws_iam_role_policy_attachment" "ecs_service_task_execution_role_attac
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
+resource "aws_iam_role_policy_attachment" "ecs_service_task_execution_policies_attachment" { 
+  role = aws_iam_role.ecs_service_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_service_task_execution_role_policy.arn
+}
+
+resource "aws_iam_policy" "ecs_service_task_execution_role_policy" {
+  name = "${local.resource_prefix}-iam-task-execution-policy"
+  description = "Policy for ECS tasks running NHAIS in env: ${var.environment}"
+  policy = data.aws_iam_policy_document.ecs_service_task_execution_policies.json
+}
+
+data "aws_iam_policy_document" "ecs_service_task_execution_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -16,6 +27,9 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
+
+data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
 
   statement {
     effect = "Allow"
