@@ -74,11 +74,11 @@ class Segment(abc.ABC):
 
 
 class SegmentFactory:
-    from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
-    from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
-    ReferenceTransactionType, BeginningOfMessage, NameAndAddress, DateTimePeriod, SegmentGroup
 
     @staticmethod
+    from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
+    from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
+        ReferenceTransactionType, BeginningOfMessage, NameAndAddress, DateTimePeriod, SegmentGroup
     def create_segment_from_string(message_line: str) -> Segment:
         if segment_pattern_check(message_line, UNB_PATTERN):
             return InterchangeHeader.from_string(message_line)
