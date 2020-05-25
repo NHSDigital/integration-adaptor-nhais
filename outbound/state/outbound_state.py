@@ -14,6 +14,7 @@ SIS_SEQUENCE = 'SIS_SEQUENCE'
 SMS_SEQUENCE = 'SMS_SEQUENCE'
 SENDER = 'SENDER'
 RECIPIENT = 'RECIPIENT'
+RECEP_RECEIVED = 'RECEP_RECEIVED'
 
 NHAIS_OUTBOUND_STATE = 'nhais_outbound_state'
 
@@ -38,7 +39,7 @@ class OutboundState(object):
         Attempts to publish the local state of the outbound state to the state store
         :return:
         """
-        operation_id = self.build_operation_id()
+        operation_id = self.build_operation_id(self.sis_sequence, self.sms_sequence, self.sender, self.recipient)
 
         logger.info(f'Attempting to publish outbound state {operation_id}')
 
@@ -47,12 +48,13 @@ class OutboundState(object):
         await self.persistence_store.add(operation_id, serialised)
         logger.info(f'Successfully updated outbound state to state store for {operation_id}')
 
-    def build_operation_id(self):
+    @staticmethod
+    def build_operation_id(sis_sequence, sms_sequence, sender, recipient):
         bare_key = '_'.join([
-            str(self.sis_sequence),
-            str(self.sms_sequence),
-            self.sender,
-            self.recipient])
+            str(sis_sequence),
+            str(sms_sequence),
+            sender,
+            recipient])
         return hashlib.sha256(bare_key.encode()).hexdigest()
 
     def _from_dict(self, store_data):

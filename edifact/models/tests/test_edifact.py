@@ -3,7 +3,7 @@ import unittest
 from edifact.models.edifact import Edifact
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, DateTimePeriod, \
-    ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
+    ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup, ReferenceInterchangeRecep, ReferenceMessageRecep
 
 
 class TestEdifact(unittest.TestCase):
@@ -20,6 +20,9 @@ class TestEdifact(unittest.TestCase):
         reference_transaction_number = ReferenceTransactionNumber(None)
         segment_group = SegmentGroup(None)
 
+        reference_interchange_recep = ReferenceInterchangeRecep(None)
+        reference_message_recep = ReferenceMessageRecep(None)
+
         edifact = Edifact([
             interchange_header,
             interchange_trailer,
@@ -30,7 +33,9 @@ class TestEdifact(unittest.TestCase):
             date_time_period,
             reference_transaction_type,
             reference_transaction_number,
-            segment_group
+            segment_group,
+            reference_interchange_recep,
+            reference_message_recep
         ])
 
         self.assertEqual(edifact.interchange_header, interchange_header)
@@ -43,6 +48,8 @@ class TestEdifact(unittest.TestCase):
         self.assertEqual(edifact.reference_transaction_type, reference_transaction_type)
         self.assertEqual(edifact.reference_transaction_number, reference_transaction_number)
         self.assertEqual(edifact.segment_group, segment_group)
+        self.assertEqual(edifact.reference_interchange_recep, reference_interchange_recep)
+        self.assertEqual(edifact.reference_message_recep, [reference_message_recep])
 
     def test_missing_segment_raises_error(self):
         edifact = Edifact([])
@@ -57,3 +64,5 @@ class TestEdifact(unittest.TestCase):
         self.assertRaises(LookupError, lambda: edifact.reference_transaction_type)
         self.assertRaises(LookupError, lambda: edifact.reference_transaction_number)
         self.assertRaises(LookupError, lambda: edifact.segment_group)
+        self.assertRaises(LookupError, lambda: edifact.reference_interchange_recep)
+        self.assertRaises(LookupError, lambda: edifact.reference_message_recep)
