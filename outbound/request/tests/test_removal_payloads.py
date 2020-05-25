@@ -32,7 +32,7 @@ def _create_org_ref(identifier_value: str):
     return ref
 
 
-class TestAcceptancePayloads(unittest.TestCase):
+class TestRemovalPayloads(unittest.TestCase):
     """
     Verifies that acceptance examples enclosed in API documentation are valid according to fhir.resources library
     """

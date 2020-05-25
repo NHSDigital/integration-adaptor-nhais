@@ -459,11 +459,11 @@ paths:
               acceptanceBirthMinimal:
                 summary: "Acceptance transaction, acceptanceType: birth, minimum required fields only"
                 value:
-                  $ref: components/examples/requests/NHAIS/acceptance-birth-min.json
+                  $ref: components/examples/requests/NHAIS/acceptance-birth-required-fields-only.json
               acceptanceBirthMaximal:
                 summary: "Acceptance transaction, acceptanceType: birth, all possible fields"
                 value:
-                  $ref: components/examples/requests/NHAIS/acceptance-birth-max.json
+                  $ref: components/examples/requests/NHAIS/acceptance-birth-all-possible-fields.json
       responses:
         '202':
           description: Acceptance forwarded to NHAIS for processing

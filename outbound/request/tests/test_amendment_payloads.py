@@ -47,7 +47,7 @@ def _create_address_minimal() -> Address:
     return a
 
 
-class TestAcceptancePayloads(unittest.TestCase):
+class TestAmendmentPayloads(unittest.TestCase):
     """
     Verifies that acceptance examples enclosed in API documentation are valid according to fhir.resources library
     """
