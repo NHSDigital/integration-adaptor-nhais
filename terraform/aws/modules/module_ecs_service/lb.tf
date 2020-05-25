@@ -4,7 +4,7 @@ resource "aws_lb" "service_load_balancer" {
   internal = true
   load_balancer_type = var.load_balancer_type
   security_groups = [aws_security_group.service_lb_sg.id]
-  subnets = aws_subnet.service_subnet.*.id
+  subnets = var.subnet_ids
 
   tags = merge(local.default_tags, {
     Name = "${local.resource_prefix}-lb"
