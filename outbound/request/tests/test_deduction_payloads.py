@@ -33,6 +33,9 @@ def _create_org_ref(identifier_value: str):
 
 
 class TestAcceptancePayloads(unittest.TestCase):
+    """
+    Verifies that acceptance examples enclosed in API documentation are valid according to fhir.resources library
+    """
 
     def _deuction_minimal(self) -> Parameters:
         parameters = Parameters()

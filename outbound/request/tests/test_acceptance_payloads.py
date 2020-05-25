@@ -101,6 +101,9 @@ def _acceptance_type(type: str) -> OperationDefinitionParameter:
 
 
 class TestAcceptancePayloads(unittest.TestCase):
+    """
+    Verifies that acceptance examples enclosed in API documentation are valid according to fhir.resources library
+    """
 
     def _birth_minimal(self):
         patient = Patient()
