@@ -9,7 +9,7 @@ from utilities import integration_adaptors_logger as log, timing
 from utilities import message_utilities
 
 from edifact.edifact_exception import EdifactValidationException
-from edifact.outgoing.models.message import ReferenceTransactionType
+from edifact.models.message import ReferenceTransactionType
 from mesh.mesh_outbound import MeshOutboundWrapper
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.request.fhir_error_helpers import create_operation_outcome_from_validation_exception, \

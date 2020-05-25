@@ -1,7 +1,7 @@
 import abc
 
 from edifact.edifact_exception import EdifactValidationException
-from edifact.outgoing.models.segment import Segment
+from edifact.models.segment import Segment
 
 
 class BaseSegmentTest(abc.ABC):
