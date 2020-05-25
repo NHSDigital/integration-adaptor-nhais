@@ -37,9 +37,11 @@ class NhaisIntegrationTests(unittest.TestCase):
             .execute_post_expecting_success()
         self.assertIn('operationid', response.headers)
         try:
-            uuid.UUID(response.headers['operationid'])
+            operation_id = response.headers['operationid']
+            self.assertRegex(operation_id, '[0-9a-fA-F]+')
+            self.assertEqual(len(operation_id), 64)
         except ValueError:
-            self.fail('operationid header is not a UUID')
+            self.fail('operationid header is not a sha256')
 
         message = self.mq_wrapper.get_next_message_on_queue()
         self.assertIsNotNone(message, 'message from queue should exist')
@@ -60,7 +62,6 @@ class NhaisIntegrationTests(unittest.TestCase):
             )
             if 'Item' not in db_response:
                 self.fail("No results in db for given key")
-        self.assertEqual(operation_id, db_response.get('Item')['OPERATION_ID'])
 
     def test_acceptance_transaction_translation_error(self):
         patient = create_patient()
