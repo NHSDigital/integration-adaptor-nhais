@@ -1,5 +1,5 @@
 resource "aws_docdb_cluster" "nhais_db_cluster" {
-  cluster_identifier = "${local.resource_prefix}-db_cluster"
+  cluster_identifier = "${replace(local.resource_prefix,"_","-")}-dbcluster"
   engine = "docdb"
   master_username = "master_user"
   master_password = "master567"
@@ -9,6 +9,6 @@ resource "aws_docdb_cluster" "nhais_db_cluster" {
   vpc_security_group_ids = [aws_security_group.docdb_sg.id]
 
   tags = merge(local.default_tags,{
-    Name = "${local.resource_prefix}-db_cluster"
+    Name = "${local.resource_prefix}-dbcluster"
   })
 }
