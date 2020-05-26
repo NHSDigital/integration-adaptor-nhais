@@ -28,3 +28,9 @@ variable "tf_state_bucket" {
   type = string
   description = "Name of S3 bucket with TF state of components"
 }
+
+variable "cluster_container_insights" {
+  type = string
+  description = "Container Insights for containers in the cluster, default is disabled"
+  default = "disabled"
+}
