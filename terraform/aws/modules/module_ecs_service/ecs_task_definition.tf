@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
           logDriver = "awslogs"
           options = {
             awslogs-group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
-            awslogs-create-group    = true
+            awslogs-create-group    = "true"
             awslogs-region          = var.region
             awslogs-stream-prefix   = var.log_stream_prefix
             awslogs-datetime-format = var.logs_datetime_format
