@@ -6,6 +6,7 @@ import tornado.web
 from fhir.resources.operationoutcome import OperationOutcome
 from tornado import httputil
 from utilities import integration_adaptors_logger as log, timing
+from utilities import message_utilities
 
 from edifact.edifact_exception import EdifactValidationException
 from edifact.models.message import ReferenceTransactionType
@@ -36,10 +37,11 @@ class AcceptanceAmendmentRequestHandler(tornado.web.RequestHandler):
             patient = validate_request.validate_patient(request_body)
             transaction_type = ReferenceTransactionType.TransactionType.ACCEPTANCE
             if patient.id == patient_id:
-                edifact, operation_id = await self.fhir_to_edifact.convert(patient, transaction_type)
+                unique_operation_id = message_utilities.get_uuid()
+                edifact = await self.fhir_to_edifact.convert(patient, transaction_type, unique_operation_id)
                 await self.mesh_wrapper.send(edifact)
                 self.set_status(202)
-                self.set_header("OperationId", operation_id)
+                self.set_header("OperationId", unique_operation_id)
                 await self.finish()
             else:
                 logger.error(self.URI_MISMATCH_ERROR)
