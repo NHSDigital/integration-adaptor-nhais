@@ -4,7 +4,9 @@ from datetime import datetime
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.segment import Segment
 from edifact.models.tests.base_segment_test import BaseSegmentTest
+from edifact.models.tests.segments_comparison_util import SegmentComparisonTest
 
+SEGMENT_COMPARISON = SegmentComparisonTest()
 
 class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):
 
@@ -23,12 +25,8 @@ class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):
     def _get_expected_edifact(self):
         return "UNB+UNOA:2+SNDR+RECP+190423:0900+00000001'"
 
-    def _compare_segments(self, expected_segment: InterchangeHeader, actual_segment: InterchangeHeader) -> bool:
-        self.assertEqual(expected_segment.sender, actual_segment.sender)
-        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
-        self.assertEqual(expected_segment.TIMESTAMP_FORMAT, actual_segment.TIMESTAMP_FORMAT)
-        self.assertEqual(expected_segment.date_time, actual_segment.date_time)
-        self.assertEqual(expected_segment.recipient, actual_segment.recipient)
+    def _compare_segments(self, expected_segment: InterchangeHeader, actual_segment: InterchangeHeader):
+        SEGMENT_COMPARISON.compare_interchange_header(expected_segment, actual_segment)
 
 
 class TestInterchangeTrailer(BaseSegmentTest, unittest.TestCase):
@@ -46,6 +44,5 @@ class TestInterchangeTrailer(BaseSegmentTest, unittest.TestCase):
     def _get_expected_edifact(self):
         return "UNZ+1+00000001'"
 
-    def _compare_segments(self, expected_segment: InterchangeTrailer, actual_segment: InterchangeTrailer) -> bool:
-        self.assertEqual(expected_segment.sequence_number, actual_segment.sequence_number)
-        self.assertEqual(expected_segment.number_of_messages, actual_segment.number_of_messages)
+    def _compare_segments(self, expected_segment: InterchangeTrailer, actual_segment: InterchangeTrailer):
+        SEGMENT_COMPARISON.compare_interchange_trailer(expected_segment, actual_segment)
