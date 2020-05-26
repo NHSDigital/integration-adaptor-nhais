@@ -11,7 +11,7 @@ from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTrans
 from outbound.converter.acceptance_message_translator import AcceptanceMessageTranslator
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
 from outbound.converter.stub_message_translator import StubMessageTranslator
-from outbound.state.outbound_state import create_new_outbound_state
+from outbound.state.outbound_state import create_new_outbound_state, OutboundState
 from sequence.outbound.sequence_manager import IdGenerator
 
 
@@ -71,4 +71,8 @@ class InterchangeTranslator(object):
     async def __record_outgoing_state(self):
         outbound_state = create_new_outbound_state(self.segments)
         await outbound_state.save_as_new()
-        return outbound_state.build_operation_id()
+        return OutboundState.build_operation_id(
+            sis_sequence=outbound_state.sis_sequence,
+            sms_sequence=outbound_state.sms_sequence,
+            sender=outbound_state.sender,
+            recipient=outbound_state.recipient)

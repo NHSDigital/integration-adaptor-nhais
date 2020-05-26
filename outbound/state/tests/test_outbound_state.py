@@ -4,6 +4,7 @@ import unittest
 from edifact.models.interchange import InterchangeHeader
 from edifact.models.message import MessageHeader, ReferenceTransactionNumber, ReferenceTransactionType
 from outbound.state import outbound_state as state
+from outbound.state.outbound_state import OutboundState
 
 OPERATION_ID = 'ca095fd63fd2c657ecba5a4d1e3589e939a65c150a903c0e6d76235a05af0522'
 
@@ -148,13 +149,6 @@ class TestOutboundState(unittest.TestCase):
                 state.create_new_outbound_state(segments)
 
     def test_build_operation_id(self):
-        segments = [InterchangeHeader(sender='test_sender',
-                                      recipient='test_recipient',
-                                      date_time=datetime.datetime(2020, 5, 17),
-                                      sequence_number=2),
-                    MessageHeader(sequence_number=3),
-                    ReferenceTransactionNumber(reference=1),
-                    ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)]
-        outbound_state = state.create_new_outbound_state(segments)
-
-        self.assertEqual(outbound_state.build_operation_id(), OPERATION_ID)
+        self.assertEqual(OutboundState.build_operation_id(
+            sis_sequence=2, sms_sequence=3, sender='test_sender', recipient='test_recipient'),
+            OPERATION_ID)
