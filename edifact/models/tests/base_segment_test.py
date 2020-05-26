@@ -10,7 +10,6 @@ class BaseSegmentTest(abc.ABC):
     @abc.abstractmethod
     def _create_segment(self) -> Segment:
         """
-        :return: a valid Segment with all attributes populated
         :return: a valid Segment with all attributes populated, created with given parameters
         """
         pass
@@ -44,7 +43,7 @@ class BaseSegmentTest(abc.ABC):
     @abc.abstractmethod
     def _compare_segments(self, expected_segment: Segment, actual_segment: Segment) -> bool:
         """
-        compares two segment's attributes one by one
+        compares the two segments and raises an AssertionError if they are not the same
         :return: true if segments are equal
         """
         pass

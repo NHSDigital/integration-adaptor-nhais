@@ -267,15 +267,13 @@ class SegmentGroup(Segment):
         """
         sg_match = re.match(SG_PATTERN, message_line)
 
-        sg0 = sg_match.group('segment_group_number_0')
-        sg1 = sg_match.group('segment_group_number')
+        segment_group_0 = int(sg_match.group('segment_group_number_0'))
+        segment_group_1 = int(sg_match.group('segment_group_number'))
 
-        # TODO: sg0 is zero-padded, ignoring this check for now
-        # if sg0 != sg1:
-        #     raise EdifactValidationException(f'Segment group numbers do not match for segment: {message_line}')
+        if int(segment_group_0) != int(segment_group_1):
+            raise EdifactValidationException(f'Segment group numbers do not match for segment: {message_line}')
 
-        segment_group_number = sg_match.group('segment_group_number')
-        return cls(int(segment_group_number))
+        return cls(segment_group_1)
 
     @property
     def key(self):
