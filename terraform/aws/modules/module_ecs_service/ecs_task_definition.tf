@@ -10,7 +10,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         name      = local.container_name
         image     = var.image_name
         essential = true
-        portMappings = var.portMappings
+        portMappings = var.port_mappings
         logConfiguration = {
           logDriver = "awslogs"
           options = {
