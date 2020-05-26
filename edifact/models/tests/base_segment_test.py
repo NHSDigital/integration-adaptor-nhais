@@ -41,10 +41,9 @@ class BaseSegmentTest(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def _compare_segments(self, expected_segment: Segment, actual_segment: Segment) -> bool:
+    def _compare_segments(self, expected_segment: Segment, actual_segment: Segment):
         """
         compares the two segments and raises an AssertionError if they are not the same
-        :return: true if segments are equal
         """
         pass
 
