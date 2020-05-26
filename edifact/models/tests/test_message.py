@@ -5,9 +5,9 @@ from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMes
     DateTimePeriod, ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
 from edifact.models.segment import Segment
 from edifact.models.tests.base_segment_test import BaseSegmentTest
-from edifact.models.tests.segments_comparison_util import SegmentComparisonTest
+from edifact.models.tests.segments_comparison_util import SegmentComparisonUtil
 
-SEGMENT_COMPARISON = SegmentComparisonTest()
+SEGMENT_COMPARISON = SegmentComparisonUtil()
 
 
 class TestMessageHeader(BaseSegmentTest, unittest.TestCase):

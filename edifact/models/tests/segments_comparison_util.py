@@ -5,7 +5,7 @@ from edifact.models.message import MessageHeader, MessageTrailer, NameAndAddress
     ReferenceTransactionType, ReferenceTransactionNumber
 
 
-class SegmentComparisonTest(unittest.TestCase):
+class SegmentComparisonUtil(unittest.TestCase):
 
     def compare_interchange_header(self, expected_segment: InterchangeHeader,
                                    actual_segment: InterchangeHeader):

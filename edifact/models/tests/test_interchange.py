@@ -4,9 +4,9 @@ from datetime import datetime
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.segment import Segment
 from edifact.models.tests.base_segment_test import BaseSegmentTest
-from edifact.models.tests.segments_comparison_util import SegmentComparisonTest
+from edifact.models.tests.segments_comparison_util import SegmentComparisonUtil
 
-SEGMENT_COMPARISON = SegmentComparisonTest()
+SEGMENT_COMPARISON = SegmentComparisonUtil()
 
 
 class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):

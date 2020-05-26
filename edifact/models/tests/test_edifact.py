@@ -5,9 +5,9 @@ from edifact.models.edifact import Edifact
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, DateTimePeriod, \
     ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
-from edifact.models.tests.segments_comparison_util import SegmentComparisonTest
+from edifact.models.tests.segments_comparison_util import SegmentComparisonUtil
 
-SEGMENT_COMPARISON = SegmentComparisonTest()
+SEGMENT_COMPARISON = SegmentComparisonUtil()
 
 EDI_FILE = """UNB+UNOA:2+GP123+HA456+200427:1737+00000045'
 UNH+00000056+FHSREG:0:1:FH:FHS001'
