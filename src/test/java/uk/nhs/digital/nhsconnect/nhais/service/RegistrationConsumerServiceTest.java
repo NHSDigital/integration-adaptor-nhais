@@ -33,7 +33,7 @@ public class RegistrationConsumerServiceTest {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setContent("CONTENT");
-        Interchange interchange = new Interchange();
+        Interchange interchange = Interchange.builder().build();
         when(edifactParser.parse("CONTENT")).thenReturn(interchange);
         Parameters parameters = new Parameters();
         when(edifactToFhirService.convertToFhir(any(Interchange.class))).thenReturn(parameters);

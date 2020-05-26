@@ -5,7 +5,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 public class EdifactParser {
 
     public Interchange parse(String edifact) {
-        return new Interchange();
+        return Interchange.builder().build();
     }
-
 }
