@@ -7,11 +7,10 @@ verify_ssl = true
 coverage = "~=4.5"
 requests = "~=2.23"
 unittest-xml-reporting = "~=2.5"
-#integration-adaptors-common = {editable = true, path = "./../integration-adaptor-common"}
 
 [packages]
 tornado = "~=6.0"
-integration-adaptors-common = {editable = true, git = "https://git@github.com/nhsconnect/integration-adaptor-common.git",tag = '0.1.10'}
+integration-adaptors-common = {editable = true,git = "https://git@github.com/nhsconnect/integration-adaptor-common.git",tag = '0.1.10'}
 fhir-resources = "~=5.1"
 aioboto3 = "~=8.0"
 

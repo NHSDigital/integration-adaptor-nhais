@@ -9,7 +9,7 @@ from utilities.test_utilities import async_test, awaitable
 
 import outbound.state.outbound_state
 import sequence.outbound.sequence_manager
-from edifact.models.message import ReferenceTransactionType
+from edifact.outgoing.models.message import ReferenceTransactionType
 from outbound.converter.interchange_translator import InterchangeTranslator
 from outbound.tests.fhir_test_helpers import create_patient, HA_ID, GP_ID
 
