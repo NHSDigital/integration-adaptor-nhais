@@ -57,8 +57,11 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
     effect = "Allow"
     actions = [
       "ecr:GetAuthorizationToken",
+      "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
     ]
     resources = ["*"]
   }
@@ -69,6 +72,14 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchCheckLayerAvailability",
+      "ecr:ListImages",
+      "ecr:DescribeRepositories",
+      "ecr:DescribeImages",
+      "ecr:DescribeImageScanFindings",
+      "ecr:GetLifecyclePolicy",
+      "ecr:GetLifecyclePolicyPreview",
+      "ecr:GetRepositoryPolicy",
+      "ecr:ListTagsForResource",
     ]
 
     resources = ["*"]
