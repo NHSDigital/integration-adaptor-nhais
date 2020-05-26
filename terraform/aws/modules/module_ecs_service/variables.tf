@@ -44,9 +44,20 @@ variable "cluster_id" {
   description = "(Required) ID of the cluster to run the service on"
 }
 
+variable "cluster_name" {
+  type = string
+  description = "(Required) Name of the cluster to run the service on"
+}
+
 variable "desired_count" {
   type = number
   description = "(Required) Number of containers to run in the service"
+}
+
+variable "minimal_count" {
+  type = number
+  description = "Minimal count of containers"
+  default = 0
 }
 
 variable "container_port" {
@@ -195,4 +206,15 @@ variable "task_execution_role_arn" {
 variable "task_role_arn" {
   type = string
   description = "ARN of role used by the container itself"
+}
+
+variable "task_scaling_role_arn" {
+  type = string
+  description = "ARN of role used to autoscale the task"
+}
+
+variable service_target_request_count" {
+  type = number
+  description = "The target number of requests per minute that an service should handle. The number of services will be autoscaled so each instance handles this number of requests. This value should be tuned based on the results of performance testing."
+  default = 1200
 }

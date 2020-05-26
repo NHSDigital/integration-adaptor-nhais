@@ -6,6 +6,10 @@ output "base_cluster_id" {
   value = module.base_ecs_cluster.cluster_id
 }
 
+output "base_cluster_name" {
+  value = module.base_ecs_cluster.cluster_name
+}
+
 output "vpc_cidr" {
   value = aws_vpc.base_vpc.cidr_block
 }
