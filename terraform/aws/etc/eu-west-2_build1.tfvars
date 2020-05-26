@@ -6,7 +6,8 @@ nhais_service_container_port = 80
 nhais_service_launch_type = "FARGATE"
 cluster_container_insights = "enabled"
 
-nhais_image_name = "067756640211.dkr.ecr.eu-west-2.amazonaws.com/nhais:feature-java-25-ff66367"
-build_id = "feature-java-25-ff66367"
-
+# nhais_image_name = "067756640211.dkr.ecr.eu-west-2.amazonaws.com/nhais:feature-java-26-dd577d0"
+# build_id = "feature-java-26-dd577d0"
+nhais_image_name = "067756640211.dkr.ecr.eu-west-2.amazonaws.com/nhais:PR-39-30-863332c"
+build_id = "PR-39-30-863332c"
 
