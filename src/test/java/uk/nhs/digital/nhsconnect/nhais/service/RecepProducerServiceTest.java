@@ -1,23 +1,43 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class RecepProducerServiceTest {
+    private static final String INBOUND_EXAMPLE_PATH = "/edifact/inbound_example.txt";
     private static final String SENDER = "GP123";
     private static final String RECIPIENT = "HA456";
     private static final Long INTERCHANGE_SEQUENCE = 45L;
     private static final Long MESSAGE_SEQUENCE = 56L;
     private static final Long TRANSACTION_NUMBER = 5174L;
 
+    private static final ZonedDateTime fixedTime = ZonedDateTime.of(
+            2020,
+            4,
+            27,
+            17,
+            37,
+            0,
+            0,
+            ZoneId.of("GMT"));
+
     @Autowired
     RecepProducerService recepProducerService;
 
-    @Autowired
-    private SequenceService sequenceService;
+    @Test
+    public void When_CreatingInterchange_Then_ItsTheSameAsExample() throws IOException {
+        assertEquals(createInterchange().toString(), readFile(INBOUND_EXAMPLE_PATH));
+    }
 
     @Test
     public void when_then() {
@@ -29,9 +49,7 @@ class RecepProducerServiceTest {
     }
 
     private Interchange createInterchange() {
-        ZonedDateTime currentTime = ZonedDateTime.now();
-
-        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, currentTime);
+        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, fixedTime);
         interchangeHeader.setSequenceNumber(INTERCHANGE_SEQUENCE);
 
         MessageHeader messageHeader = new MessageHeader();
@@ -51,12 +69,18 @@ class RecepProducerServiceTest {
                 .segment(messageHeader)
                 .segment(new BeginningOfMessage())
                 .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
-                .segment(new DateTimePeriod(currentTime, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
+                .segment(new DateTimePeriod(fixedTime, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
                 .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
                 .segment(new SegmentGroup(1))
                 .segment(referenceTransactionNumber)
                 .segment(messageTrailer)
                 .segment(interchangeTrailer)
                 .build();
+    }
+
+    private String readFile(String path) throws IOException {
+        try (InputStream is = this.getClass().getResourceAsStream(path)) {
+            return IOUtils.toString(is, StandardCharsets.UTF_8);
+        }
     }
 }

@@ -39,6 +39,9 @@ public class RecepProducerService {
     }
 
     public List<Segment> mapEdifactToRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
+        //TODO count MessageHeaders = number of msgs
+
+
         for (Segment segment : receivedInterchangeFromHa.getSegments()) {
             LOGGER.info("segment to edifact: " + segment.toEdifact());
             // grab interchange and message identifiers
