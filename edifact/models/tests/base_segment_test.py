@@ -1,4 +1,5 @@
 import abc
+
 from edifact.edifact_exception import EdifactValidationException
 from edifact.models.segment import Segment
 

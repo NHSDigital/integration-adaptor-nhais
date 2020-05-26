@@ -79,7 +79,6 @@ class TestNameAndAddress(BaseSegmentTest, unittest.TestCase):
 
 class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
 
-    TS = datetime(year=2020, month=4, day=28, hour=20, minute=58, tzinfo=timezone.utc)
     TS = datetime(year=2020, month=4, day=28, hour=20, minute=58)
 
     def _create_segment(self) -> Segment:
