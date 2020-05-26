@@ -3,13 +3,13 @@ from datetime import datetime
 
 from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
 from edifact.models.segment import Segment
-from edifact.models.tests.base_segment_test import BaseSegmentTest
+from edifact.models.tests.base_segment_test_helper import BaseSegmentTestHelper
 from edifact.models.tests.segments_comparison_util import SegmentComparisonUtil
 
 SEGMENT_COMPARISON = SegmentComparisonUtil()
 
 
-class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):
+class TestHelperInterchangeHeader(BaseSegmentTestHelper, unittest.TestCase):
     TS = datetime(year=2019, month=4, day=23, hour=9, minute=0)
 
     def _create_segment(self) -> Segment:
@@ -29,7 +29,7 @@ class TestInterchangeHeader(BaseSegmentTest, unittest.TestCase):
         SEGMENT_COMPARISON.compare_interchange_header(expected_segment, actual_segment)
 
 
-class TestInterchangeTrailer(BaseSegmentTest, unittest.TestCase):
+class TestHelperInterchangeTrailer(BaseSegmentTestHelper, unittest.TestCase):
 
     def _create_segment(self) -> Segment:
         return InterchangeTrailer(number_of_messages=1, sequence_number=1)

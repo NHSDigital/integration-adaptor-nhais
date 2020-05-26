@@ -4,7 +4,7 @@ from edifact.edifact_exception import EdifactValidationException
 from edifact.models.segment import Segment
 
 
-class BaseSegmentTest(abc.ABC):
+class BaseSegmentTestHelper(abc.ABC):
     """
     A base test for subclasses of Segment. Implementor must also inherit unittest.TestCase.
     """

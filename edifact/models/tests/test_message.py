@@ -4,13 +4,13 @@ from edifact.edifact_exception import EdifactValidationException
 from edifact.models.message import MessageHeader, MessageTrailer, BeginningOfMessage, NameAndAddress, \
     DateTimePeriod, ReferenceTransactionType, ReferenceTransactionNumber, SegmentGroup
 from edifact.models.segment import Segment
-from edifact.models.tests.base_segment_test import BaseSegmentTest
+from edifact.models.tests.base_segment_test_helper import BaseSegmentTestHelper
 from edifact.models.tests.segments_comparison_util import SegmentComparisonUtil
 
 SEGMENT_COMPARISON = SegmentComparisonUtil()
 
 
-class TestMessageHeader(BaseSegmentTest, unittest.TestCase):
+class TestHelperMessageHeader(BaseSegmentTestHelper, unittest.TestCase):
     """
     Test the generating of a message header
     """
@@ -31,7 +31,7 @@ class TestMessageHeader(BaseSegmentTest, unittest.TestCase):
         SEGMENT_COMPARISON.compare_message_header(expected_segment, actual_segment)
 
 
-class TestMessageTrailer(BaseSegmentTest, unittest.TestCase):
+class TestHelperMessageTrailer(BaseSegmentTestHelper, unittest.TestCase):
     """
     Test the generating of a message trailer
     """
@@ -58,7 +58,7 @@ class TestBeginningOfMessage(unittest.TestCase):
         self.assertEqual("BGM+++507'", BeginningOfMessage().to_edifact_string())
 
 
-class TestNameAndAddress(BaseSegmentTest, unittest.TestCase):
+class TestHelperNameAndAddress(BaseSegmentTestHelper, unittest.TestCase):
 
     def _create_segment(self) -> Segment:
         return NameAndAddress(NameAndAddress.QualifierAndCode.FHS, 'PARTY')
@@ -77,7 +77,7 @@ class TestNameAndAddress(BaseSegmentTest, unittest.TestCase):
         SEGMENT_COMPARISON.compare_name_and_address(expected_segment, actual_segment)
 
 
-class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
+class TestHelperDateTimePeriod(BaseSegmentTestHelper, unittest.TestCase):
 
     TS = datetime(year=2020, month=4, day=28, hour=20, minute=58)
 
@@ -98,7 +98,7 @@ class TestDateTimePeriod(BaseSegmentTest, unittest.TestCase):
         SEGMENT_COMPARISON.compare_date_time_period(expected_segment, actual_segment)
 
 
-class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
+class TestHelperReferenceTransactionType(BaseSegmentTestHelper, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)
 
@@ -116,7 +116,7 @@ class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
         SEGMENT_COMPARISON.compare_reference_transaction_type(expected_segment, actual_segment)
 
 
-class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
+class TestHelperReferenceTransactionNumber(BaseSegmentTestHelper, unittest.TestCase):
     def _create_segment(self) -> Segment:
         return ReferenceTransactionNumber(1234)
 

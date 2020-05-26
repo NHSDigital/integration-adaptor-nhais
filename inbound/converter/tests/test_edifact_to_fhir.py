@@ -21,12 +21,12 @@ class TestEdifactToFhir(unittest.TestCase):
         edifact = create_edifact()
         edifact_to_fhir = EdifactToFhir()
         patient = edifact_to_fhir.convert_edifact_to_fhir(edifact)
-        self.assertEqual(patient.managingOrganization.identifier.value, SENDER)
-        self.assertEqual(patient.generalPractitioner[0].identifier.value, RECEIVER)
+        self.assertEqual(patient.managingOrganization.identifier.value, RECEIVER)
+        self.assertEqual(patient.generalPractitioner[0].identifier.value, SENDER)
         self.assertEqual(edifact_to_fhir.interchange_id, INTERCHANGE_ID)
         self.assertEqual(edifact_to_fhir.message_ids[0], MESSAGE_ID)
         self.assertEqual(edifact_to_fhir.number_of_messages, NUMBER_OF_MESSAGES)
-        self.assertEqual(edifact_to_fhir.number_of_segments, NUMBER_OF_SEGMENTS)
+        self.assertEqual(edifact_to_fhir.number_of_segments[0], NUMBER_OF_SEGMENTS)
 
 
 def create_edifact():
