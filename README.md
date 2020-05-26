@@ -6,6 +6,7 @@ Environment Variables are used throughout application, an example can be found i
 ## Pre-requisites
 
 * Install an Java JDK 11. AdoptOpenJdk is recommended: https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot
+* Download Lombok plugin : https://plugins.jetbrains.com/plugin/6317-lombok
 * MongoDB: `docker-compose up mongodb`
 * RabbitMQ: `docker-compose up activemq`
 
@@ -20,6 +21,44 @@ Project structure   -> SDKs -> add new SDK -> select adoptopenjdk-11.jdk/Content
                     -> Module SDK -> java 11 (11.0.7)
                     
 To run in dev env, navigate to: IntegrationAdaptorNhaisApplication, right click, run() main.
+
+## Getting started 
+
+Debug database and quese for NHAIS:
+
+[NHAIS Diagram with key](/documentation/nhais_diagram_plus_key.jpeg)
+
+### Mongo DB
+
+To view data in MongoDB:
+
+Download Robo 3T
+https://robomongo.org/
+
+Open Robo 3T -> Create new connection with details as below:
+
+- Type: Direct Connection
+- Name: nhais
+- Address: localhost : 27017
+
+View NHAIS by navigating to nhais -> collections -> (select any table)
+
+### ActiveMQ
+
+To view messages in ActiveMQ Queue:
+
+Open browser and native to: http://localhost:8161/
+
+- Username: admin
+- Password: admin
+
+Click manage ActiveMQ broker
+
+Click Queues tab
+
+Select desired queue
+
+Select a message ID to display information of message 
 
 ## Configuration
 
