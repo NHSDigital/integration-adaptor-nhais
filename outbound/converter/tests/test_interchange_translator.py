@@ -36,7 +36,8 @@ class TestFhirToEdifactTranslator(unittest.TestCase):
         patient = create_patient()
 
         translator = InterchangeTranslator()
-        edifact, operation_id = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE)
+        operation_id = message_utilities.get_uuid()
+        edifact = await translator.convert(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE, operation_id)
 
         self.assertIsNotNone(edifact)
         self.assertTrue(len(edifact) > 0)

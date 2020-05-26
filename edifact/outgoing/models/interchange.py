@@ -12,7 +12,7 @@ class InterchangeHeader(Segment):
     example: UNB+UNOA:2+TES5+XX11+920113:1317+00000002'
     """
 
-    TIMESTAMP_FORMAT = '%y%m%d:%H%M'
+    TIMESTAMP_FORMAT ='%y%m%d:%H%M'
 
     def __init__(self, sender, recipient, date_time: datetime, sequence_number: (None, int) = None):
         """
