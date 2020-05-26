@@ -11,10 +11,24 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   })
 }
 
-# ECR VPC endpoint
+# ECR DKR VPC endpoint
 resource "aws_vpc_endpoint" "ecr_endpoint" {
   vpc_id = aws_vpc.base_vpc.id
   service_name = "com.amazonaws.${var.region}.ecr.dkr"
+  vpc_endpoint_type = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.ecr_sg.id
+  ]
+  subnet_ids = [aws_subnet.base_subnet.id]
+  tags = merge(local.default_tags, {
+    Name = "${local.resource_prefix}-ecr-vpce"
+  })
+}
+
+resource "aws_vpc_endpoint" "ecr_api_endpoint" {
+  vpc_id = aws_vpc.base_vpc.id
+  service_name = "com.amazonaws.${var.region}.ecr.api"
   vpc_endpoint_type = "Interface"
   private_dns_enabled = true
   security_group_ids = [
