@@ -36,7 +36,6 @@ class TestEdifact(unittest.TestCase):
 
     def test_create_from_message(self):
         edifact = Edifact.create_edifact_from_message(EDI_FILE)
-        # TODO: validate parsed segments
 
         SEGMENT_COMPARISON.compare_interchange_header(edifact.interchange_header, interchange_header)
         SEGMENT_COMPARISON.compare_interchange_trailer(edifact.interchange_trailer, interchange_trailer)
