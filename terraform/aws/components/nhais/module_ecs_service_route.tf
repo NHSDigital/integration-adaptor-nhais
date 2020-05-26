@@ -10,7 +10,7 @@ module "nhais_ecs_service" {
   
   availability_zones = local.availability_zones
 
-  image_name        = var.nhais_image_name
+  image_name        = local.image_name
   cluster_id        = data.terraform_remote_state.base.outputs.base_cluster_id
   cluster_name      = data.terraform_remote_state.base.outputs.base_cluster_name
   desired_count     = var.nhais_service_desired_count
@@ -20,6 +20,7 @@ module "nhais_ecs_service" {
 
   enable_load_balancing = false
   environment_variables = local.environment_variables
+  port_mappings = local.port_mappings
   task_execution_role_arn = aws_iam_role.ecs_service_task_execution_role.arn
   task_role_arn = data.aws_iam_role.ecs_service_task_role.arn
   task_scaling_role_arn = data.aws_iam_role.ecs_autoscale_role.arn
