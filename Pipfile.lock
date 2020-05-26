@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f9987a6c3dbc0a84a3372637848cbeb8eed81643c9375e53675181df67c25031"
+            "sha256": "6d0bce50d4b238ab3e7d77cb5200cfca27928a98a1357f8e08bf7a1241c84540"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -133,6 +133,21 @@
                 "sha256:cdf6525904cc597730141d61b36f2e4b8ecc257c420fa2f4549bac2c2d0cb72f"
             ],
             "version": "==0.10.0"
+        },
+        "jsonpatch": {
+            "hashes": [
+                "sha256:cc3a7241010a1fd3f50145a3b33be2c03c1e679faa19934b628bb07d0f64819e",
+                "sha256:ddc0f7628b8bfdd62e3cbfbc24ca6671b0b6265b50d186c2cf3659dc0f78fd6a"
+            ],
+            "index": "pypi",
+            "version": "==1.25"
+        },
+        "jsonpointer": {
+            "hashes": [
+                "sha256:c192ba86648e05fdae4f08a17ec25180a9aef5008d973407b581798a83975362",
+                "sha256:ff379fa021d1b81ab539f5ec467c7745beb1a5671463f9dcc2b2d458bd361c1e"
+            ],
+            "version": "==2.0"
         },
         "lxml": {
             "hashes": [

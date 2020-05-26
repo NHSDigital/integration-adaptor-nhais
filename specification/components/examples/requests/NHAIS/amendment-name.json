@@ -1,0 +1,17 @@
+{
+  "patches": [
+    {
+      "op": "add",
+      "path": "/name/0/given",
+      "value": [
+        "FirstForename",
+        "NewSecondForename"
+      ]
+    },
+    {
+      "op": "replace",
+      "path": "/name/0/family",
+      "value": "NewSurname"
+    }
+  ]
+}

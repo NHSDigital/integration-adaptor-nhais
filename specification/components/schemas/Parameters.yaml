@@ -1,0 +1,15 @@
+type: object
+required:
+  - parameter
+properties:
+  parameter:
+    type: array
+    description: |
+      List of parameter objects.
+
+      Each object must contain a `name` property. Each object must also contain only one of the following properties:
+      * `resource` property containing a Patient resource. There can only be one such object in the parameter list
+      * `valueString` property with string value of the parameter
+    minItems: 1
+    items:
+      type: object
