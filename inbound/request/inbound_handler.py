@@ -25,7 +25,7 @@ class InboundHandler:
         self.edifact_recep_consumer = EdifactRecepConsumer()
 
     def message_callback(self, message: Message):
-        logger.info(f'Message recieved by inbound, message: {message}')
+        logger.info(f'Message from queue received by inbound')
         mesh_message = json.loads(message.body)
         if mesh_message['workflowId'] == 'NHAIS_REG':
             edifact_file_content = mesh_message['content']
