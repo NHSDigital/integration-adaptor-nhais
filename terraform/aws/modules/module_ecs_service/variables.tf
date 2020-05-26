@@ -194,7 +194,13 @@ variable "environment_variables" {
 
 variable "secret_variables" {
   type = list(object({name=string, value=string}))
-  description = "Map of secret variables to pass to container"
+  description = "list of objects for secret variables to pass to container"
+  default = []
+}
+
+variable "port_mappings" {
+  type = list(object({containerPort=number, hostPort=number, protocol=string}))
+  description = "List of object for portMappings to pass to container"
   default = []
 }
 
