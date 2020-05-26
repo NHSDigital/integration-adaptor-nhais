@@ -36,7 +36,7 @@ resource "aws_vpc_endpoint" "ecr_api_endpoint" {
   ]
   subnet_ids = [aws_subnet.base_subnet.id]
   tags = merge(local.default_tags, {
-    Name = "${local.resource_prefix}-ecr-vpce"
+    Name = "${local.resource_prefix}-ecr-api-vpce"
   })
 }
 
