@@ -4,38 +4,11 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   task_role_arn = var.task_role_arn
   execution_role_arn = var.task_execution_role_arn
   //container_definitions = data.template_file.ecs_task_container_definitions.rendered
-  # container_definitions = jsonencode(
-  #   [
-  #     {
-  #       name      = local.container_name
-  #       image     = var.image_name
-  #       essential = true
-  #       portMappings = [
-  #         {
-  #           containerPort = 80
-  #           hostPort = 80
-  #           protocol = "tcp"
-  #         }
-  #       ],
-  #       logConfiguration = {
-  #         logDriver = "awslogs"
-  #         options = {
-  #           awslogs-group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
-  #           awslogs-create-group    = true
-  #           awslogs-region          = var.region
-  #           awslogs-stream-prefix   = var.log_stream_prefix
-  #           awslogs-datetime-format = var.logs_datetime_format
-  #         }
-  #       },
-  #       environment = var.environment_variables
-  #     }
-  #   ]
-  # )
   container_definitions = jsonencode(
     [
       {
         name      = local.container_name
-        image     = "httpd:2.4"
+        image     = var.image_name
         essential = true
         portMappings = [
           {
@@ -44,13 +17,11 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
             protocol = "tcp"
           }
         ],
-        entryPoint = ["sh", "-c"]
-        command = ["/bin/sh -c \"echo '<html> <head> <title>Amazon ECS Sample App</title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now running on a container in Amazon ECS.</p> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""]
         logConfiguration = {
           logDriver = "awslogs"
           options = {
             awslogs-group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
-            awslogs-create-group    = "true"
+            awslogs-create-group    = true
             awslogs-region          = var.region
             awslogs-stream-prefix   = var.log_stream_prefix
             awslogs-datetime-format = var.logs_datetime_format
@@ -60,6 +31,35 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       }
     ]
   )
+  # container_definitions = jsonencode(
+  #   [
+  #     {
+  #       name      = local.container_name
+  #       image     = "httpd:2.4"
+  #       essential = true
+  #       portMappings = [
+  #         {
+  #           containerPort = 80
+  #           hostPort = 80
+  #           protocol = "tcp"
+  #         }
+  #       ],
+  #       entryPoint = ["sh", "-c"]
+  #       command = ["/bin/sh -c \"echo '<html> <head> <title>Amazon ECS Sample App</title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now running on a container in Amazon ECS.</p> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""]
+  #       logConfiguration = {
+  #         logDriver = "awslogs"
+  #         options = {
+  #           awslogs-group           = aws_cloudwatch_log_group.ecs_service_cw_log_group.name
+  #           awslogs-create-group    = "true"
+  #           awslogs-region          = var.region
+  #           awslogs-stream-prefix   = var.log_stream_prefix
+  #           awslogs-datetime-format = var.logs_datetime_format
+  #         }
+  #       },
+  #       environment = var.environment_variables
+  #     }
+  #   ]
+  # )
 
   cpu = var.cpu_units
   memory = var.memory_units
