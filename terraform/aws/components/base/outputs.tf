@@ -25,3 +25,7 @@ output "cloudwatch_vpce_id" {
 output "ecr_vpce_id" {
   value = aws_vpc_endpoint.ecr_endpoint.id
 }
+
+output "private_nat_gw_route_table" {
+  value = aws_route_table.private.id
+}
