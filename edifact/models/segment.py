@@ -48,15 +48,16 @@ class Segment(abc.ABC):
         self.pre_validate()
         self._validate_stateful()
 
-    def to_edifact(self):
-        def to_edifact_string(self):
-            """
-            generates the edifact message of the segment
-            :return: a string of the formatted edifact message using the key and value
-            """
-            self.validate()
-            edifact_segment = f"{self.key}+{self.value}{Segment.TERMINATOR}"
-            return edifact_segment
+
+    def to_edifact_string(self):
+        """
+        generates the edifact message of the segment
+        :return: a string of the formatted edifact message using the key and value
+        """
+        self.validate()
+        edifact_segment = f"{self.key}+{self.value}{Segment.TERMINATOR}"
+        return edifact_segment
+
     def _required(self, attribute_name):
         """
         A validation method to require that a specific property is truthy

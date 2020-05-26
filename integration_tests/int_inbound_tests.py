@@ -28,13 +28,6 @@ class InboundIntegrationTests(unittest.TestCase):
             max_retries=int(config.get_config('INBOUND_QUEUE_MAX_RETRIES', default='3')),
             retry_delay=int(config.get_config('INBOUND_QUEUE_RETRY_DELAY', default='100')) / 1000)
 
-    def get_message_body(self, message):
-        json_message = json.loads(message.body)
-        message_payload = json_message['payload']
-        split_payload = message_payload.split(',')
-        message_body = split_payload[3]
-        return message_body
-
     @test_utilities.async_test
     async def test_acceptance_transaction(self):
         edifact_file = """UNB+UNOA:2+GP123+HA456+200427:1737+00000045'
@@ -53,6 +46,11 @@ UNZ+1+00000045'"""
         }
         await self.incoming_queue.send_async(message_dict)
         message = self.supplier_queue.get_next_message_on_queue()
-        message_body = self.get_message_body(message)
-        patient = FHIRElementFactory.instantiate('Patient', message_body)
+        json_message = json.loads(message.body)
+        message_payload = json_message['payload']
+
+        patient = FHIRElementFactory.instantiate('Patient', message_payload)
+
+        self.assertEqual("HA456", message_payload['managingOrganization']['identifier']['value'])
+        self.assertEqual("GP123", message_payload['generalPractitioner'][0]['identifier']['value'])
         # TODO: validate patient

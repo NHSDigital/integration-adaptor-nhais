@@ -73,6 +73,5 @@ class BaseSegmentTest(abc.ABC):
             instance = generator()
             setattr(instance, attr_name, None)
             with self.assertRaises(EdifactValidationException, msg=f'missing "{attr_name}" did not fail validation') as ctx:
-                instance.to_edifact()
                 instance.to_edifact_string()
             self.assertEqual(f'{instance.key}: Attribute {attr_name} is required', ctx.exception.args[0])

@@ -3,6 +3,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest import mock
 
+from utilities import message_utilities
 from utilities.date_utilities import DateUtilities
 from utilities.test_utilities import async_test, awaitable
 
@@ -18,7 +19,7 @@ import sequence.outbound.sequence_manager
 
 class TestFhirToEdifactTranslator(unittest.TestCase):
 
-    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'save_as_new')
+    @mock.patch.object(outbound.state.outbound_state.OutboundState, 'publish')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_message_id')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_interchange_id')
     @mock.patch.object(sequence.outbound.sequence_manager.OutboundSequenceNumberManager, 'generate_transaction_id')

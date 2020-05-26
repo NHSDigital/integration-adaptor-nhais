@@ -31,10 +31,10 @@ class InboundHandler:
             edifact_file_content = mesh_message['content']
             edifact = Edifact.create_edifact_from_message(edifact_file_content)
             fhir_message = self.edifact_to_fhir.convert_edifact_to_fhir(edifact)
-            self.inbound_sequence_number_manager.record_sequence_number(fhir_message)
+            # self.inbound_sequence_number_manager.record_sequence_number(fhir_message)
             self.edifact_recep_producer.generate_sequences(fhir_message)
             # TODO: is str() the correct way to marshall a FHIR Patient?
-            asyncio.run(self.supplier_incoming_mq.send(str(fhir_message)))
+            asyncio.run(self.supplier_incoming_mq.send(fhir_message.as_json()))
         else:
             self.edifact_recep_consumer.record_reciept(message)
 

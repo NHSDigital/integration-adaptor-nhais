@@ -55,7 +55,6 @@ class TestMessageTrailer(BaseSegmentTest, unittest.TestCase):
 class TestBeginningOfMessage(unittest.TestCase):
 
     def test_to_edifact(self):
-        self.assertEqual("BGM+++507'", BeginningOfMessage().to_edifact())
         self.assertEqual("BGM+++507'", BeginningOfMessage().to_edifact_string())
 
 
@@ -120,7 +119,6 @@ class TestReferenceTransactionType(BaseSegmentTest, unittest.TestCase):
 
 class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
     def _create_segment(self) -> Segment:
-        return ReferenceTransactionNumber('1234')
         return ReferenceTransactionNumber(1234)
 
     def _create_segment_from_string(self) -> Segment:
@@ -140,8 +138,6 @@ class TestReferenceTransactionNumber(BaseSegmentTest, unittest.TestCase):
 class TestSegmentGroup(unittest.TestCase):
 
     def test_to_edifact(self):
-        self.assertEqual("S01+1'", SegmentGroup(1).to_edifact())
-        self.assertEqual("S02+2'", SegmentGroup(2).to_edifact())
         self.assertEqual("S01+1'", SegmentGroup(1).to_edifact_string())
         self.assertEqual("S02+2'", SegmentGroup(2).to_edifact_string())
 
@@ -149,20 +145,17 @@ class TestSegmentGroup(unittest.TestCase):
         sg = SegmentGroup(1)
         sg.segment_group_number = None
         with self.assertRaises(EdifactValidationException, msg=f'missing "segment_group_number" did not fail validation') as ctx:
-            sg.to_edifact()
             sg.to_edifact_string()
         self.assertEqual(f'S: Attribute segment_group_number is required', ctx.exception.args[0])
 
     def test_segment_group_number_is_not_integer(self):
         sg = SegmentGroup('1')
         with self.assertRaises(EdifactValidationException, msg=f'missing "segment_group_number" did not fail validation') as ctx:
-            sg.to_edifact()
             sg.to_edifact_string()
         self.assertEqual(f'S: Attribute segment_group_number must be an integer', ctx.exception.args[0])
 
     def test_segment_group_number_is_out_of_range(self):
         sg = SegmentGroup(3)
         with self.assertRaises(EdifactValidationException, msg=f'missing "segment_group_number" did not fail validation') as ctx:
-            sg.to_edifact()
             sg.to_edifact_string()
         self.assertEqual(f'S: Attribute segment_group_number must be 1 or 2', ctx.exception.args[0])

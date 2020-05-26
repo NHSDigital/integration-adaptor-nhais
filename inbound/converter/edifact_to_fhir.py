@@ -1,3 +1,9 @@
+import json
+
+from fhir.resources.fhirreference import FHIRReference
+from fhir.resources.identifier import Identifier
+from fhir.resources.practitioner import Practitioner
+
 from edifact.edifact_exception import EdifactValidationException
 from fhir.resources.patient import Patient
 from edifact.models.edifact import Edifact
@@ -40,8 +46,17 @@ class EdifactToFhir:
         InboundSequenceNumberManager().record_sequence_number(self.interchange_id, self.message_ids)
 
     def __translate_interchange_header(self, interchange_header: InterchangeHeader):
-        self.__patient.managingOrganization.identifier.value = interchange_header.sender
-        self.__patient.generalPractitioner[0].identifier.value = interchange_header.recipient
+        fhir_reference = FHIRReference()
+        identifier_ha = Identifier()
+        identifier_ha.value = interchange_header.recipient
+        fhir_reference.identifier = identifier_ha
+        self.__patient.managingOrganization = fhir_reference
+
+        practitioners = [FHIRReference()]
+        identifier_gp = Identifier()
+        identifier_gp.value = interchange_header.sender
+        practitioners[0].identifier = identifier_gp
+        self.__patient.generalPractitioner = practitioners
         self.interchange_id = interchange_header.sequence_number
 
     def __translate_interchange_trailer(self, interchange_trailer: InterchangeTrailer):
