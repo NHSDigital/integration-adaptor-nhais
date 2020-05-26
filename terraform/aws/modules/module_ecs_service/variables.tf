@@ -213,7 +213,7 @@ variable "task_scaling_role_arn" {
   description = "ARN of role used to autoscale the task"
 }
 
-variable service_target_request_count" {
+variable "service_target_request_count" {
   type = number
   description = "The target number of requests per minute that an service should handle. The number of services will be autoscaled so each instance handles this number of requests. This value should be tuned based on the results of performance testing."
   default = 1200
