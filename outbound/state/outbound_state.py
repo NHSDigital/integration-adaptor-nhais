@@ -70,6 +70,7 @@ class OutboundState(object):
             RECIPIENT: self.recipient
         }
 
+
 def create_new_outbound_state(segments, operation_id) -> OutboundState:
     """
     Builds a new local outbound state instance given the details of the message, these details are held locally

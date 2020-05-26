@@ -48,12 +48,16 @@ class InterchangeHeader(Segment):
         formatted_date_time = self.date_time.strftime(InterchangeHeader.TIMESTAMP_FORMAT)
         formatted_sequence_number = f'{self.sequence_number:08}'
         return f"UNOA:2+{self.sender}+{self.recipient}+{formatted_date_time}+{formatted_sequence_number}"
+
     def pre_validate(self):
         self._required('sender')
         self._required('recipient')
         self._required('date_time')
+
     def _validate_stateful(self):
         self._required('sequence_number')
+
+
 class InterchangeTrailer(Segment):
     """
     A specialisation of a segment for the specific use case of an interchange trailer
@@ -81,11 +85,14 @@ class InterchangeTrailer(Segment):
     @property
     def key(self):
         return "UNZ"
+
     @property
     def value(self):
         formatted_sequence_number = f'{self.sequence_number:08}'
         return f"{self.number_of_messages}+{formatted_sequence_number}"
+
     def pre_validate(self):
         self._required('number_of_messages')
+
     def _validate_stateful(self):
         self._required('sequence_number')

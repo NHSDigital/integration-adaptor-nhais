@@ -13,6 +13,7 @@ class Segment(abc.ABC):
     example: NAD+GP+4826940,281:900'
     """
     TERMINATOR = "'"
+
     @property
     @abc.abstractmethod
     def key(self):
@@ -20,6 +21,7 @@ class Segment(abc.ABC):
         :return: the key of the segment for example NAD, DTM ...
         """
         pass
+
     @property
     @abc.abstractmethod
     def value(self):
@@ -27,6 +29,7 @@ class Segment(abc.ABC):
         :return: the value of the segment
         """
         pass
+
     @abc.abstractmethod
     def pre_validate(self):
         """
@@ -34,12 +37,14 @@ class Segment(abc.ABC):
         :raises: EdifactValidationException
         """
         pass
+
     def _validate_stateful(self):
         """
         Validates stateful data items of the segment like sequence numbers
         :raises: EdifactValidationException
         """
         pass
+
     def validate(self):
         """
         Validates the entire segment including stateful items like sequence numbers
@@ -47,7 +52,6 @@ class Segment(abc.ABC):
         """
         self.pre_validate()
         self._validate_stateful()
-
 
     def to_edifact_string(self):
         """
@@ -65,7 +69,6 @@ class Segment(abc.ABC):
         :raises: EdifactValidationException if the attribute is not set
         """
         if not getattr(self, attribute_name, None):
-            raise EdifactValidationException(f'{self.key}: Attribute {attribute_name} is required')
             raise EdifactValidationException(f'{self.key}: Attribute {attribute_name} is required')
 
 

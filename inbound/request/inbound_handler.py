@@ -15,6 +15,7 @@ from sequence.inbound.sequence_number_manager import InboundSequenceNumberManage
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
+
 class InboundHandler:
 
     def __init__(self):

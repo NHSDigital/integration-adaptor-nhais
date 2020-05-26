@@ -2,7 +2,6 @@ import json
 
 from fhir.resources.fhirreference import FHIRReference
 from fhir.resources.identifier import Identifier
-from fhir.resources.practitioner import Practitioner
 
 from edifact.edifact_exception import EdifactValidationException
 from fhir.resources.patient import Patient
