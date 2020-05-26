@@ -53,4 +53,3 @@ UNZ+1+00000045'"""
 
         self.assertEqual("HA456", message_payload['managingOrganization']['identifier']['value'])
         self.assertEqual("GP123", message_payload['generalPractitioner'][0]['identifier']['value'])
-        # TODO: validate patient
