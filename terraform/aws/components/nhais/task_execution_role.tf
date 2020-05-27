@@ -32,6 +32,7 @@ resource "aws_iam_policy" "ecs_service_task_execution_role_policy" {
 data "aws_iam_policy_document" "ecs_service_task_execution_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
+    effect = "Allow"
     principals {
       type = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
