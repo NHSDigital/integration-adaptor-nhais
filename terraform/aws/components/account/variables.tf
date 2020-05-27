@@ -18,3 +18,8 @@ variable "region" {
   type = string
   description = "Region where the resources will be created"
 }
+
+variable "tf_state_bucket" {
+  type = string
+  description = "Name of S3 bucket with TF state of components"
+}
