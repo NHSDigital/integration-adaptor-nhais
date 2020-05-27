@@ -21,7 +21,7 @@ public class Interchange {
     @Override
     public String toString() {
         return segments.stream()
-                .map(segment -> segment.getKey() + "+" + segment.getValue() + TERMINATOR)
+                .map(segment -> segment.toEdifact())
                 .collect(Collectors.joining("\n"));
 
     }

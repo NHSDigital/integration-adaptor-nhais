@@ -23,9 +23,6 @@ public class RecepProducerService {
     @Autowired
     private SequenceService sequenceService;
 
-    @Autowired
-    private TimestampService timestampService;
-
     public void produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
         // TODO convert
         mapEdifactToRecep(receivedInterchangeFromHa);
@@ -68,5 +65,4 @@ public class RecepProducerService {
         outboundStateDAO.setOperationId("put operation id here");
         outboundStateRepository.save(outboundStateDAO);
     }
-
 }

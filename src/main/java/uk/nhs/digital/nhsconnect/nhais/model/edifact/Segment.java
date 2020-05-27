@@ -31,9 +31,8 @@ public abstract class Segment {
         this.validateStateful();
     }
 
-    public String toEdifact() throws EdifactValidationException {
+    public String toEdifact() {
         this.validate();
         return this.getKey() + "+" + this.getValue() + TERMINATOR;
     }
-
 }

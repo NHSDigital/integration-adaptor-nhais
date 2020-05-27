@@ -21,7 +21,7 @@ class RecepProducerServiceTest {
     private static final Long MESSAGE_SEQUENCE = 56L;
     private static final Long TRANSACTION_NUMBER = 5174L;
 
-    private static final ZonedDateTime fixedTime = ZonedDateTime.of(
+    private static final ZonedDateTime FIXED_TIME = ZonedDateTime.of(
             2020,
             4,
             27,
@@ -49,7 +49,7 @@ class RecepProducerServiceTest {
     }
 
     private Interchange createInterchange() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, fixedTime);
+        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, FIXED_TIME);
         interchangeHeader.setSequenceNumber(INTERCHANGE_SEQUENCE);
 
         MessageHeader messageHeader = new MessageHeader();
@@ -69,7 +69,7 @@ class RecepProducerServiceTest {
                 .segment(messageHeader)
                 .segment(new BeginningOfMessage())
                 .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
-                .segment(new DateTimePeriod(fixedTime, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
+                .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
                 .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
                 .segment(new SegmentGroup(1))
                 .segment(referenceTransactionNumber)
