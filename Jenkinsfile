@@ -17,32 +17,18 @@ pipeline {
     stages {
         stage('Build and Test Locally') {
             stages {
-                stage('Build Docker Images') {
+                stage('Run Tests') {
                     steps {
                         script {
-                            sh label: 'Stopping running containers (preventative maintenance)', script: 'docker-compose down -v'
-                            sh label: 'Running docker-compose build', script: 'docker-compose build --build-arg BUILD_TAG=${BUILD_TAG}'
+                            sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
+                            sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
                         }
                     }
                 }
-                stage('Deploy Locally') {
+                stage('Build Docker Images') {
                     steps {
-                        sh label: 'Starting containers', script: 'docker-compose up -d rabbitmq dynamodb nhais'
-                        echo "Waiting 10 seconds for containers to start"
-                        sleep 10
-                        sh label: 'Show all running containers', script: 'docker ps'
-                    }
-                }
-                stage('Run tests') {
-                    steps {
-                        sh label: 'Running tests', script: 'docker-compose run nhais-tests'
-                    }
-                    post {
-                        always {
-                            sh label: 'Copy test reports to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/test-reports .'
-                            junit '**/test-reports/*.xml'
-                            sh label: 'Copy test coverage to folder', script: 'docker cp "$(docker ps -lq)":/usr/src/app/nhais/coverage.xml ./coverage.xml'
-                            cobertura coberturaReportFile: '**/coverage.xml'
+                        script {
+                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG} .'
                         }
                     }
                 }
@@ -52,22 +38,22 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais.json"
+                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais-push.json"
                         }
                     }
                 }
             }
-            post {
-                always {
-                    sh label: 'Create logs directory', script: 'mkdir logs'
-                    sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
-                    sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
-                    sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
-                    sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
-                    archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                    sh label: 'Stopping containers', script: 'docker-compose down -v'
-                }
-            }
+            // post {
+                // always {
+                    // sh label: 'Create logs directory', script: 'mkdir logs'
+                    // sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
+                    // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
+                    // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
+                    // sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
+                    // archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
+                    // sh label: 'Stopping containers', script: 'docker-compose down -v'
+                // }
+            // }
         }
         stage('Deploy and Integration Test') {
             when {
@@ -88,16 +74,16 @@ pipeline {
             }
 
         }
-        stage('Run SonarQube analysis') {
-            steps {
-                runSonarQubeAnalysis()
-            }
-        }
+        // stage('Run SonarQube analysis') {
+        //     steps {
+        //         runSonarQubeAnalysis()
+        //     }
+        // }
     }
     post {
         always {
 
-            sh label: 'Stopping containers', script: 'docker-compose down -v'
+            // sh label: 'Stopping containers', script: 'docker-compose down -v'
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }

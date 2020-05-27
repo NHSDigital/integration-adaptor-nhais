@@ -1,5 +1,6 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Java
+build
+.gradle
 
 # ide file
 .idea
@@ -10,3 +11,9 @@ __pycache__/
 
 # Local configuration
 /nhais/nhais-env.yaml
+
+.classpath
+.project
+.settings/
+.vscode/
+bin/
