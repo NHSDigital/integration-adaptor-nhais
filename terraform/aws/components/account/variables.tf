@@ -11,7 +11,7 @@ variable "environment" {
 variable "component" {
   type = string
   description = "Name of the component"
-  default = "base"
+  default = "account"
 }
 
 variable "region" {
@@ -22,4 +22,9 @@ variable "region" {
 variable "tf_state_bucket" {
   type = string
   description = "Name of S3 bucket with TF state of components"
+}
+
+variable "nhais_ecr_repository_name" {
+  type = string
+  description = "Name for NHAIS ECR repository"
 }
