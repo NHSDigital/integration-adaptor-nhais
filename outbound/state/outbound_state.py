@@ -1,8 +1,8 @@
 import utilities.integration_adaptors_logger as log
 from persistence.persistence_adaptor_factory import get_persistence_adaptor
 
-from edifact.outgoing.models.interchange import InterchangeHeader
-from edifact.outgoing.models.message import MessageHeader, ReferenceTransactionNumber, \
+from edifact.models.interchange import InterchangeHeader
+from edifact.models.message import MessageHeader, ReferenceTransactionNumber, \
     ReferenceTransactionType
 
 OPERATION_ID = 'OPERATION_ID'
@@ -69,6 +69,7 @@ class OutboundState(object):
             SENDER: self.sender,
             RECIPIENT: self.recipient
         }
+
 
 def create_new_outbound_state(segments, operation_id) -> OutboundState:
     """

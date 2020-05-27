@@ -1,4 +1,6 @@
 
 class InboundSequenceNumberManager:
-    def record_sequence_number(self, sequence_number):
+
+    @staticmethod
+    def record_sequence_number(interchange_id: int, message_ids: dict):
         pass

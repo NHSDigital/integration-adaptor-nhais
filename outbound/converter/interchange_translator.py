@@ -4,20 +4,21 @@ from datetime import datetime
 from fhir.resources.patient import Patient
 from utilities.date_utilities import DateUtilities
 
-from edifact.outgoing.models.interchange import InterchangeHeader, InterchangeTrailer
-from edifact.outgoing.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
+from edifact.models.interchange import InterchangeHeader, InterchangeTrailer
+from edifact.models.message import MessageHeader, MessageTrailer, ReferenceTransactionNumber, \
     ReferenceTransactionType
+from edifact.models.edifact import Edifact
 from outbound.converter.acceptance_message_translator import AcceptanceMessageTranslator
 from outbound.converter.fhir_helpers import get_ha_identifier, get_gp_identifier
 from outbound.converter.stub_message_translator import StubMessageTranslator
 from outbound.state.outbound_state import create_new_outbound_state
-from sequence.outbound.sequence_manager import IdGenerator
+from sequence.outbound.sequence_manager import OutboundSequenceNumberManager
 
 
 class InterchangeTranslator(object):
 
     def __init__(self):
-        self.id_generator = IdGenerator()
+        self.id_generator = OutboundSequenceNumberManager()
         self.segments = []
 
     async def convert(self, patient: Patient, transaction_type: ReferenceTransactionType.TransactionType, operation_id: str) -> str:
@@ -65,7 +66,7 @@ class InterchangeTranslator(object):
                 segment.reference = transaction_id
 
     def __translate_edifact(self):
-        return '\n'.join([segment.to_edifact() for segment in self.segments])
+        return Edifact(self.segments).create_message_from_edifact()
 
     async def __record_outgoing_state(self, operation_id):
         outbound_state = create_new_outbound_state(self.segments, operation_id)

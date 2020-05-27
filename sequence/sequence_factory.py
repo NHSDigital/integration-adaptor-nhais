@@ -1,8 +1,8 @@
 import utilities.config as config
 import utilities.integration_adaptors_logger as log
 
-from sequence.outbound.dynamo_sequence import DynamoSequenceGenerator
-from sequence.outbound.sequence import SequenceGenerator
+from sequence.dynamo_sequence import DynamoSequenceGenerator
+from sequence.sequence import SequenceGenerator
 
 logger = log.IntegrationAdaptorsLogger(__name__)
 
