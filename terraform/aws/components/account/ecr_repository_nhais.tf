@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "nhais_ecr_repository" {
-  name = "nhais2"
+  name = var.nhais_ecr_repository_name
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
