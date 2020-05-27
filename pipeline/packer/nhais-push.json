@@ -2,7 +2,7 @@
   "_description": "This template tags and pushes a nhais image.",
   "variables": {
     "registry": "{{env `DOCKER_REGISTRY`}}",
-    "repository": "/mhs/nhais",
+    "repository": "/manual-nhais",
     "tag": "{{env `BUILD_TAG`}}"
   },
   "builders": [
