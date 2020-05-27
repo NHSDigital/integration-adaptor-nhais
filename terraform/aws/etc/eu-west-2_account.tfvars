@@ -1,1 +1,1 @@
-nhais_ecr_repository_name = "nhais2"
+nhais_ecr_repository_name = "mhs/nhais"
