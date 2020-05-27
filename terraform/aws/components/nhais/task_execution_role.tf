@@ -84,16 +84,16 @@ data "aws_iam_policy_document" "ecs_service_task_execution_policies" {
 
     resources = ["*"]
 
-    condition {
-      test = "StringEquals"
-      variable = "aws:sourceVpce"
-      values = [data.terraform_remote_state.base.outputs.ecr_vpce_id]
-    }
+    # condition {
+    #   test = "StringEquals"
+    #   variable = "aws:sourceVpce"
+    #   values = [data.terraform_remote_state.base.outputs.ecr_vpce_id]
+    # }
 
-    condition {
-      test = "StringEquals"
-      variable = "aws:sourceVpc"
-      values = [data.terraform_remote_state.base.outputs.vpc_id]
-    }
+    # condition {
+    #   test = "StringEquals"
+    #   variable = "aws:sourceVpc"
+    #   values = [data.terraform_remote_state.base.outputs.vpc_id]
+    # }
   }
 }
