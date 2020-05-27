@@ -11,7 +11,7 @@ resource "aws_ecr_lifecycle_policy" "nhais_policy" {
             tagPrefixList = ["PR"]
             countType = "sinceImagePushed"
             countUnit = "days"
-            countNumber = "14"
+            countNumber = 14
           }
           action = {
             type = "expire"
