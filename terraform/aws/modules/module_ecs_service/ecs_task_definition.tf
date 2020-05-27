@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     [
       {
         name      = local.container_name
-        #image     = var.image_name
-        image = "lukaszkw/kainos:feauture-java-local"
+        image     = var.image_name
+        #image = "lukaszkw/kainos:feauture-java-local"
         essential = true
         portMappings = var.port_mappings
         logConfiguration = {
