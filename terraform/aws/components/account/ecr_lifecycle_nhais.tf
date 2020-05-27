@@ -5,7 +5,7 @@ resource "aws_ecr_lifecycle_policy" "nhais_policy" {
       rules = [
         {
           rulePriority = 1
-          description = "Expire images older than 14 days from PRs"
+          description = "Expire images from PRs older than 14 days"
           selection = {
             tagStatus = "tagged"
             tagPrefixList = ["PR"]
