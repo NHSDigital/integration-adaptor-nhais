@@ -10,6 +10,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import static uk.nhs.digital.nhsconnect.nhais.utils.TimestampUtils.getCurrentDateTimeInISOFormat;
 
+import javax.jms.Message;
+
 @Component
 public class OutboundMeshService {
 
@@ -28,4 +30,9 @@ public class OutboundMeshService {
         jmsTemplate.convertAndSend(meshOutboundQueueName, message);
     }
 
+    @SneakyThrows
+    public Message receive() {
+        return jmsTemplate.receive(meshOutboundQueueName);
+    }
+    
 }

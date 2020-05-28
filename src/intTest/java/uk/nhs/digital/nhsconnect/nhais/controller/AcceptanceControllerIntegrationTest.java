@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
 
 import java.nio.file.Files;
 
@@ -38,6 +39,9 @@ public class AcceptanceControllerIntegrationTest {
 
     @Autowired
     OutboundStateRepository outboundStateRepository;
+
+    @Autowired
+    OutboundMeshService outboundMeshService;
 
     private static MongoDbContainer mongoDbContainer;
     private static ActiveMqContainer activeMqContainer;
@@ -61,6 +65,8 @@ public class AcceptanceControllerIntegrationTest {
 
         //TODO: assert outboundStateDao contains expected data
         //TODO: read the item off the queue and check it
+        var message = outboundMeshService.receive();
+        int i = 1;
     }
 
     public static class MongoDbInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
