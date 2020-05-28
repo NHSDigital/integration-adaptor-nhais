@@ -17,6 +17,8 @@ public class FhirPayloadTest {
         patient.setName(Collections.singletonList(humanName));
         FhirParser fhirParser = new FhirParser();
         System.out.println(fhirParser.encodeToString(patient));
+
+
         // {"resourceType":"Patient","name":[{"family":"Surname"}]}
 
         // PNA+PAT+N/10/10:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN'
