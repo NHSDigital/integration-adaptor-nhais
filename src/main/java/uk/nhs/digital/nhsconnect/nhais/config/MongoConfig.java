@@ -41,4 +41,9 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         }
         builder.applyToClusterSettings(settings -> settings.hosts(singletonList(new ServerAddress(host, port))));
     }
+
+    @Override
+    protected boolean autoIndexCreation() {
+        return true;
+    }
 }
