@@ -28,7 +28,7 @@ pipeline {
                 stage('Build and Push Docker Images'){
                     steps{
                         script {
-                            docker.withRegistry([ credentialsId: "6544de7e-17a4-4576-9b9b-e86bc1e4f903", url: "" ]) {
+                            docker.withRegistry([ credentialsId: "E8B4DABB-570C-4BC0-A879-67E57847A267", url: "" ]) {
                                 sh 'docker tag -a local/nhais-tests:${BUILD_TAG} petervdm/nhais:develop'
                                 sh 'docker push petervdm/nhais:develop'
                                 // sh "docker rmi --force \$(docker images -q ${customImage.id} | uniq)"
