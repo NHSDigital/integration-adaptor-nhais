@@ -25,23 +25,34 @@ pipeline {
                         }
                     }
                 }
-                stage('Build Docker Images') {
-                    steps {
+                stage('Build and Push Docker Images'){
+                    steps{
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG} .'
+                            docker.withRegistry([ credentialsId: "6544de7e-17a4-4576-9b9b-e86bc1e4f903", url: "" ]) {
+                                sh 'docker tag -a local/nhais-tests:${BUILD_TAG} petervdm/nhais:develop'
+                                sh 'docker push petervdm/nhais:develop'
+                                // sh "docker rmi --force \$(docker images -q ${customImage.id} | uniq)"
+                            }
                         }
                     }
                 }
-                stage('Push image') {
-                    when {
-                        expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-                    }
-                    steps {
-                        script {
-                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais-push.json"
-                        }
-                    }
-                }
+                // stage('Build Docker Images') {
+                //     steps {
+                //         script {
+                //             sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG} .'
+                //         }
+                //     }
+                // }
+                // stage('Push image') {
+                //     when {
+                //         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+                //     }
+                //     steps {
+                //         script {
+                //             sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais-push.json"
+                //         }
+                //     }
+                // }
             }
             // post {
                 // always {
@@ -55,25 +66,25 @@ pipeline {
                 // }
             // }
         }
-        stage('Deploy and Integration Test') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
-            stages {
-                stage('Deploy using Terraform') {
-                    steps {
-                        echo 'TODO deploy NHAIS using terraform'
-                    }
-                }
-                stage('Run integration tests') {
-                    steps {
-                        echo 'TODO run integration tests'
-                        echo 'TODO archive test results'
-                    }
-                 }
-            }
+        // stage('Deploy and Integration Test') {
+        //     when {
+        //         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+        //     }
+        //     stages {
+        //         stage('Deploy using Terraform') {
+        //             steps {
+        //                 echo 'TODO deploy NHAIS using terraform'
+        //             }
+        //         }
+        //         stage('Run integration tests') {
+        //             steps {
+        //                 echo 'TODO run integration tests'
+        //                 echo 'TODO archive test results'
+        //             }
+        //          }
+        //     }
 
-        }
+        // }
         // stage('Run SonarQube analysis') {
         //     steps {
         //         runSonarQubeAnalysis()
