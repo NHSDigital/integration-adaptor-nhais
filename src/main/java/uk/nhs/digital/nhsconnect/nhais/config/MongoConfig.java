@@ -4,6 +4,7 @@ package uk.nhs.digital.nhsconnect.nhais.config;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 import static java.util.Collections.singletonList;
 
 @Configuration
+@Slf4j
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${nhais.mongo.databaseName}")
@@ -29,6 +31,9 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Value("${nhais.mongo.port}")
     int port;
 
+    @Value("${nhais.mongo.autoIndexCreation:false}")
+    boolean autoIndexCreation;
+
     @Override
     public String getDatabaseName() {
         return databaseName;
@@ -43,7 +48,9 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Override
+    @Value("${nhais.mongo.autoIndexCreation}")
     protected boolean autoIndexCreation() {
-        return true;
+        LOGGER.info("Auto index creation is {}", autoIndexCreation);
+        return autoIndexCreation;
     }
 }
