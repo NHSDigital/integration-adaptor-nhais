@@ -12,6 +12,8 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         ENVIRONMENT_ID = "nhais-build"
+        REGISTRY_CREDENTIAL = 'dockerhub'
+        dockerImage = ''
     }    
 
     stages {
@@ -25,12 +27,20 @@ pipeline {
                         }
                     }
                 }
-                stage('Build and Push Docker Images'){
+                stage('Building image') {
                     steps{
                         script {
-                            docker.withRegistry("", "E8B4DABB-570C-4BC0-A879-67E57847A267") {
-                                sh 'docker tag -a local/nhais-tests:${BUILD_TAG} petervdm/nhais:develop'
-                                sh 'docker push petervdm/nhais:develop'
+                        dockerImage = docker.build 'petervdm/nhais:develop'
+                        }
+                    }
+                }
+                stage('Deploy Image'){
+                    steps{
+                        script {
+                            docker.withRegistry('', REGISTRY_CREDENTIAL) {
+                                dockerImage.push()
+                                // sh 'docker tag -a local/nhais-tests:${BUILD_TAG} petervdm/nhais:develop'
+                                // sh 'docker push petervdm/nhais:develop'
                                 // sh "docker rmi --force \$(docker images -q ${customImage.id} | uniq)"
                             }
                         }
