@@ -32,11 +32,7 @@ public class RegistrationConsumerService {
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
         var inboundState = InboundState.fromInterchange(interchange);
-        try {
-            inboundStateRepository.save(inboundState); // this can detect duplicates as there is an unique compound index
-            LOGGER.debug("Saved inbound state: {}", inboundState);
-        } catch (DuplicateKeyException ex) {
-            LOGGER.warn("Duplicate message received: {}", inboundState);
+        if (!saveState(inboundState)) {
             return;
         }
 
@@ -45,5 +41,16 @@ public class RegistrationConsumerService {
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(outputParameters);
         LOGGER.debug("Published inbound registration message to gp supplier queue");
+    }
+
+    private boolean saveState(InboundState inboundState) {
+        try {
+            inboundStateRepository.save(inboundState); // this can detect duplicates as there is an unique compound index
+            LOGGER.debug("Saved inbound state: {}", inboundState);
+            return true;
+        } catch (DuplicateKeyException ex) {
+            LOGGER.warn("Duplicate message received: {}", inboundState);
+            return false;
+        }
     }
 }

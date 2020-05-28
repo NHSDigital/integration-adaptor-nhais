@@ -9,14 +9,16 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class MongoDbInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-        LOGGER.info("Overriding Spring Properties for mongodb and activemq !!!!!!!!!");
-
         var mongoDbContainer = new MongoDbContainer();
         mongoDbContainer.start();
 
-        var values = TestPropertyValues.of("nhais.mongo.host=" + mongoDbContainer.getContainerIpAddress(),
-            "nhais.mongo.port=" + mongoDbContainer.getFirstMappedPort());
+        var newValues = new String[] {
+            "nhais.mongo.host=" + mongoDbContainer.getContainerIpAddress(),
+            "nhais.mongo.port=" + mongoDbContainer.getFirstMappedPort()
+        };
 
-        values.applyTo(configurableApplicationContext);
+        LOGGER.info("Overriding Spring Properties for mongodb with: {}", String.join(", ", newValues));
+
+        TestPropertyValues.of(newValues).applyTo(configurableApplicationContext);
     }
 }

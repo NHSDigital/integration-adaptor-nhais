@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class Interchange {
     private final List<Segment> segments;
 
     public Interchange(List<Segment> segments) {
-        this.segments = segments;
+        this.segments = ImmutableList.copyOf(segments);
     }
 
     @Getter(lazy=true)

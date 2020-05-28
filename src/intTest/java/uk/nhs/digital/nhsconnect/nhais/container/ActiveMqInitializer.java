@@ -9,14 +9,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class ActiveMqInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-        LOGGER.info("Overriding Spring Properties for mongodb and activemq !!!!!!!!!");
-
         var activeMqContainer = new ActiveMqContainer();
         activeMqContainer.start();
 
-        var values = TestPropertyValues.of(
-            "nhais.amqp.brokers=amqp://" + activeMqContainer.getContainerIpAddress() + ":" + activeMqContainer.getFirstMappedPort());
+        var newValue = "nhais.amqp.brokers=amqp://" + activeMqContainer.getContainerIpAddress() + ":" + activeMqContainer.getFirstMappedPort();
 
-        values.applyTo(configurableApplicationContext);
+        LOGGER.info("Overriding Spring Properties for activemq with: {}", newValue);
+
+        TestPropertyValues.of(newValue).applyTo(configurableApplicationContext);
     }
 }
