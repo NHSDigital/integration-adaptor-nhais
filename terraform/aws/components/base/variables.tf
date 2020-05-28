@@ -34,3 +34,8 @@ variable "cluster_container_insights" {
   description = "Container Insights for containers in the cluster, default is disabled"
   default = "disabled"
 }
+
+variable "mq_vpc_id" {
+  type = string
+  description = "VPC where MQ cluster is hosted"
+}
