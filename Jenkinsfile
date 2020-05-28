@@ -13,7 +13,7 @@ pipeline {
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         ENVIRONMENT_ID = "nhais-build"
         ECR_REPO_DIR = "nhais"
-        DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
+        DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
     }    
 
     stages {
@@ -30,7 +30,7 @@ pipeline {
                 stage('Build Docker Images') {
                     steps {
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE_PATH} .'
+                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
                         }
                     }
                 }
@@ -41,7 +41,7 @@ pipeline {
                     steps {
                         script {
                             if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
-                            String dockerPushCommand = "docker push ${DOCKER_IMAGE_PATH}"
+                            String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
                             if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
                         }
                     }
