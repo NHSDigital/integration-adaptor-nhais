@@ -25,14 +25,14 @@ resource "aws_vpc_peering_connection" "mq_peering" {
 resource "aws_route" "mq_to_base_route" {
   route_table_id = data.aws_vpc.mq_vpc.main_route_table_id
   destination_cidr_block = aws_vpc.base_vpc.cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.mq_peering
+  vpc_peering_connection_id = aws_vpc_peering_connection.mq_peering.id
 }
 
 # Add a route to the supplier VPC in the MHS VPC route table
 resource "aws_route" "mhs_to_supplier_route" {
   route_table_id = aws_route.route_private_to_nat_gw.id
   destination_cidr_block = data.aws_vpc.mq_vpc.cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.mq_peering
+  vpc_peering_connection_id = aws_vpc_peering_connection.mq_peering.id
 }
 
 resource "aws_security_group_rule" "mhs_inbound_security_group_amazon_mq_egress_rule" {
