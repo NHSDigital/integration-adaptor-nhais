@@ -40,3 +40,4 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     host: ${NHAIS_MONGO_HOST:localhost}
     port: ${NHAIS_MONGO_PORT:27017}
+    autoIndexCreation: true
