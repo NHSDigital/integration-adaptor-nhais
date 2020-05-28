@@ -10,8 +10,7 @@ module "nhais_ecs_service" {
   
   availability_zones = local.availability_zones
 
-  #image_name        = local.image_name
-  image_name        = "067756640211.dkr.ecr.eu-west-2.amazonaws.com/mhs/inbound:feature-NIAD-23-v-p-31-6610d7d"
+  image_name        = local.image_name
   cluster_id        = data.terraform_remote_state.base.outputs.base_cluster_id
   cluster_name      = data.terraform_remote_state.base.outputs.base_cluster_name
   desired_count     = var.nhais_service_desired_count
