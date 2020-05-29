@@ -44,11 +44,6 @@ variable "cluster_id" {
   description = "(Required) ID of the cluster to run the service on"
 }
 
-variable "cluster_name" {
-  type = string
-  description = "(Required) Name of the cluster to run the service on"
-}
-
 variable "desired_count" {
   type = number
   description = "(Required) Number of containers to run in the service"

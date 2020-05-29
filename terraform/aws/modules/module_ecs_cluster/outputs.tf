@@ -7,5 +7,5 @@ output "cluster_arn" {
 }
 
 output "cluster_name" {
-  value = "${local.resource_prefix}-cluster"
+  value = local.resource_prefix
 }
