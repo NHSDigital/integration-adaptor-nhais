@@ -11,6 +11,11 @@ management:
   health:
     mongo:
       enabled: true
+spring:
+  data:
+    mongodb:
+      database: nhais
+      uri: mongodb://localhost:27017
 nhais:
   amqp:
     brokers: "localhost:5672"
@@ -22,9 +27,3 @@ nhais:
     password: ""
     maxAttempts: "3"
     backOffPeriod: "100"
-  mongo:
-    databaseName: nhais
-    username: ""
-    password: ""
-    host: localhost
-    port: "27017"
