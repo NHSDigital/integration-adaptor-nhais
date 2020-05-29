@@ -1,5 +1,5 @@
 resource "aws_docdb_cluster_parameter_group" "nhais_db_parameters" {
-  name = "${replace(local.resource_prefix,"_","-")}-db-parameters-3.6"
+  name = "${replace(local.resource_prefix,"_","-")}-db-parameters-36"
   family = "docdb3.6"
   description = "Parameter group for MongoDB in env: ${var.environment}"
 
@@ -16,6 +16,6 @@ resource "aws_docdb_cluster_parameter_group" "nhais_db_parameters" {
   }
 
   tags = merge(local.default_tags,{
-    Name = "${local.resource_prefix}-db-parameters-3.6"
+    Name = "${replace(local.resource_prefix,"_","-")}-db-parameters-36"
   })
 }
