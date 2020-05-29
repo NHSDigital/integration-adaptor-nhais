@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
+@DirtiesContext
 public class AcceptanceControllerIntegrationTest {
 
     @Autowired
@@ -44,7 +46,7 @@ public class AcceptanceControllerIntegrationTest {
         mockMvc.perform(post("/fhir/Patient/12345").contentType("application/json").content(requestBody))
                 .andExpect(status().isAccepted());
 
-        Iterable<OutboundState> outboundStateDAO = outboundStateRepository.findAll();
+        Iterable<OutboundState> outboundState = outboundStateRepository.findAll();
 
         //TODO: assert outboundStateDao contains expected data
         //TODO: read the item off the queue and check it

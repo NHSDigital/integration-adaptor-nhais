@@ -2,7 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.repository;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 public interface OutboundStateRepositoryExtensions {
     void updateRecep(
@@ -10,6 +10,6 @@ public interface OutboundStateRepositoryExtensions {
         String recipient,
         Long interchangeSequence,
         Long messageSequence,
-        ZonedDateTime dateTime,
-        ReferenceMessageRecep.RecepCode recepCode);
+        ReferenceMessageRecep.RecepCode recepCode,
+        Instant recepDateTime);
 }

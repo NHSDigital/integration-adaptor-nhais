@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.repository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.annotation.DirtiesContext;
@@ -17,29 +16,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(initializers = MongoDbInitializer.class)
 @SpringBootTest
-@AutoConfigureMockMvc
 @DirtiesContext
-public class InboundStateRepositoryTest {
+public class OutboundStateRepositoryTest {
 
     @Autowired
-    InboundStateRepository inboundStateRepository;
+    OutboundStateRepository outboundStateRepository;
 
     @Test
-    void whenDuplicateInboundStateInserted_thenThrowsException() {
-        var inboundState = new InboundState()
+    void whenDuplicateOutboundStateInserted_thenThrowsException() {
+        var outboundState = new OutboundState()
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setReceiveInterchangeSequence(123L)
-            .setReceiveMessageSequence(234L);
-        var duplicateInboundState = new InboundState()
+            .setSendInterchangeSequence(123L)
+            .setSendMessageSequence(234L);
+        var duplicateOutboundState = new OutboundState()
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setReceiveInterchangeSequence(123L)
-            .setReceiveMessageSequence(234L);
+            .setSendInterchangeSequence(123L)
+            .setSendMessageSequence(234L);
 
-        inboundStateRepository.save(inboundState);
-        assertTrue(inboundStateRepository.existsById(inboundState.getId()));
+        outboundStateRepository.save(outboundState);
+        assertTrue(outboundStateRepository.existsById(outboundState.getId()));
 
-        assertThrows(DuplicateKeyException.class, () -> inboundStateRepository.save(duplicateInboundState));
+        assertThrows(DuplicateKeyException.class, () -> outboundStateRepository.save(duplicateOutboundState));
     }
 }

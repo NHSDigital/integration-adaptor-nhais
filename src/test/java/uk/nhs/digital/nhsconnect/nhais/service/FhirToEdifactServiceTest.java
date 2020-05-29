@@ -14,6 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -46,14 +47,16 @@ public class FhirToEdifactServiceTest {
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
 
-    private ZonedDateTime expectedTimestamp;
+    private Instant expectedTimestamp;
 
     @BeforeEach
     public void beforeEach() {
         when(sequenceService.generateMessageId(GP_CODE, HA_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
-        expectedTimestamp = ZonedDateTime.of(2020, 4, 27, 17, 37, 0, 0, UTC);
+        expectedTimestamp = ZonedDateTime
+            .of(2020, 4, 27, 17, 37, 0, 0, UTC)
+            .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
     }
 
@@ -76,7 +79,7 @@ public class FhirToEdifactServiceTest {
         expected.setSendMessageSequence(SMS);
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
-        expected.setTransactionTimestamp(Date.from(expectedTimestamp.toInstant()));
+        expected.setTransactionTimestamp(Date.from(expectedTimestamp));
         expected.setOperationId(operationId);
         verify(outboundStateRepository).save(expected);
     }

@@ -22,7 +22,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -154,7 +154,7 @@ public class FhirToEdifactService {
         outboundState.setTransactionId(translationItems.transactionNumber);
 
         outboundState.setTransactionType(translationItems.transactionType.getAbbreviation());
-        outboundState.setTransactionTimestamp(Date.from(translationItems.translationTimestamp.toInstant()));
+        outboundState.setTransactionTimestamp(Date.from(translationItems.translationTimestamp));
         outboundState.setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
@@ -202,7 +202,7 @@ public class FhirToEdifactService {
         private Long sendMessageSequence;
         private Long sendInterchangeSequence;
         private Long transactionNumber;
-        private ZonedDateTime translationTimestamp;
+        private Instant translationTimestamp;
     }
 
 }

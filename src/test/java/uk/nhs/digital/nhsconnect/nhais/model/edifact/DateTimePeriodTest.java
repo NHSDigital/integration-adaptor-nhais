@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -10,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTimePeriodTest {
 
-    private final ZonedDateTime translationDateTime = ZonedDateTime.of(2020, 4, 28, 20, 58, 0, 0, ZoneOffset.UTC);
+    private final Instant translationDateTime = ZonedDateTime
+        .of(2020, 4, 28, 20, 58, 0, 0, ZoneOffset.UTC)
+        .toInstant();
 
     @Test
     public void testValidDateTimePeriod() throws EdifactValidationException {
-        DateTimePeriod dateTimePeriod = new DateTimePeriod(translationDateTime,DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
+        DateTimePeriod dateTimePeriod = new DateTimePeriod(translationDateTime, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
 
         String edifact = dateTimePeriod.toEdifact();
 

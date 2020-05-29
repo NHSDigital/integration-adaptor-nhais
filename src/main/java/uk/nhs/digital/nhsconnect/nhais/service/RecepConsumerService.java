@@ -10,7 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 @Component
 @Slf4j
@@ -32,7 +32,7 @@ public class RecepConsumerService {
 
         String sender = interchange.getInterchangeHeader().getSender();
         String recipient = interchange.getInterchangeHeader().getRecipient();
-        ZonedDateTime zonedDateTime = interchange.getDateTimePeriod().getTimestamp();
+        Instant dateTimePeriod = interchange.getDateTimePeriod().getTimestamp();
         long interchangeSequence = interchange.getInterchangeHeader().getSequenceNumber();
         for (ReferenceMessageRecep referenceMessageRecep : interchange.getReferenceMessageReceps()) {
             long messageSequence = referenceMessageRecep.getMessageSequenceNumber();
@@ -40,7 +40,7 @@ public class RecepConsumerService {
 
             var outboundState = new OutboundState()
                 .setRecepCode(recepCode)
-                .setRecepDateTime(zonedDateTime);
+                .setRecepDateTime(dateTimePeriod);
 
             ReferenceMessageRecep.builder()
                 .messageSequenceNumber(123L)
@@ -49,7 +49,7 @@ public class RecepConsumerService {
 
             outboundStateRepository.updateRecep(
                 sender, recipient, interchangeSequence, messageSequence,
-                zonedDateTime, recepCode);
+                recepCode, dateTimePeriod);
             // update outbound state from the recep using
             // sender + recipient + interchangeSequence + messageSequence
         }

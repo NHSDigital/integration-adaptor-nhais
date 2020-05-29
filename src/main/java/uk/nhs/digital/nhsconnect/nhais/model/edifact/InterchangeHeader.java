@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -17,11 +18,11 @@ import java.time.format.DateTimeFormatter;
 @Getter @Setter @RequiredArgsConstructor
 public class InterchangeHeader extends Segment {
 
-    private static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm");
+    private static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(ZoneOffset.UTC);
 
     private @NonNull String sender;
     private @NonNull String recipient;
-    private @NonNull ZonedDateTime translationTime;
+    private @NonNull Instant translationTime;
     private Long sequenceNumber;
 
     @Override
@@ -31,7 +32,7 @@ public class InterchangeHeader extends Segment {
 
     @Override
     public String getValue() {
-        String timestamp = translationTime.format(DATE_FORMAT);
+        String timestamp = DATE_FORMAT.format(translationTime);
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
         return "UNOA:2"+"+"+sender+"+"+recipient+"+"+timestamp+"+"+formattedSequenceNumber;
     }

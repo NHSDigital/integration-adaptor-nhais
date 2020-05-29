@@ -6,16 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-/**
- *class declaration:
- */
 @Getter @Setter @RequiredArgsConstructor
 public class DateTimePeriod extends Segment{
 
-    private @NonNull ZonedDateTime timestamp;
+    private @NonNull Instant timestamp;
     private @NonNull TypeAndFormat typeAndFormat;
 
     public enum TypeAndFormat {
@@ -40,7 +38,7 @@ public class DateTimePeriod extends Segment{
         }
 
         public DateTimeFormatter getDateTimeFormat(){
-            return DateTimeFormatter.ofPattern(this.dateTimeFormat);
+            return DateTimeFormatter.ofPattern(this.dateTimeFormat).withZone(ZoneOffset.UTC);
         }
     }
 
@@ -51,7 +49,7 @@ public class DateTimePeriod extends Segment{
 
     @Override
     public String getValue() {
-        String formattedTimestamp = this.timestamp.format(typeAndFormat.getDateTimeFormat());
+        String formattedTimestamp = typeAndFormat.getDateTimeFormat().format(this.timestamp);
         return typeAndFormat.getTypeCode() + ":" + formattedTimestamp + ":" + typeAndFormat.getFormatCode();
     }
 
