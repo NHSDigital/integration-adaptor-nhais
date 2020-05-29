@@ -25,6 +25,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class RegistrationConsumerServiceTest {
 
+    private static final String OPERATION_ID = "bd0327c35d94d2972b4e0c99e355a8bb5ea2453eb27777d9e1985af38c9c2cf2";
+
     @Mock
     EdifactParser edifactParser;
 
@@ -56,7 +58,7 @@ public class RegistrationConsumerServiceTest {
         InboundState savedInboundState = inboundStateArgumentCaptor.getValue();
         assertEquals(savedInboundState, InboundStateTest.INBOUND_STATE);
 
-        verify(inboundGpSystemService).publishToSupplierQueue(parameters);
+        verify(inboundGpSystemService).publishToSupplierQueue(parameters, OPERATION_ID);
     }
 
     @Test
