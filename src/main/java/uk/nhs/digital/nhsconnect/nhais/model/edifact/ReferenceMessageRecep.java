@@ -1,6 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -8,37 +11,18 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReferenceMessageRecep extends Reference {
-    private Long messageSequenceNumber;
-    private RecepCode recepCode;
 
-    public ReferenceMessageRecep(@NonNull Long messageSequenceNumber, @NonNull RecepCode recepCode) {
-        super("MIS", buildReferenceString(messageSequenceNumber, recepCode));
-        this.messageSequenceNumber = messageSequenceNumber;
-        this.recepCode = recepCode;
-    }
+    public static final String QUALIFIER = "MIS";
 
-    public void setMessageSequenceNumber(@NonNull Long messageSequenceNumber) {
-        this.messageSequenceNumber = messageSequenceNumber;
-        this.setReference(buildReferenceString());
-    }
-
-    public void setRecepCode(@NonNull RecepCode recepCode) {
-        this.recepCode = recepCode;
-        this.setReference(buildReferenceString());
-    }
-
-    @Override
-    public Reference setReference(@NonNull String reference) {
-        throw new IllegalAccessError("Use setReferenceId and setRecepCode to build reference");
-    }
-
-    private static String buildReferenceString(Long messageSequenceNumber, RecepCode recepCode) {
-        return messageSequenceNumber + " " + recepCode.name();
-    }
+    private @NonNull Long messageSequenceNumber;
+    private @NonNull RecepCode recepCode;
 
     private String buildReferenceString() {
-        return buildReferenceString(this.messageSequenceNumber, this.recepCode);
+        return messageSequenceNumber + " " + recepCode.name();
     }
 
     @Override
@@ -46,6 +30,16 @@ public class ReferenceMessageRecep extends Reference {
         if (StringUtils.isEmpty(getReference())) {
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
+    }
+
+    @Override
+    protected String getReference() {
+        return buildReferenceString();
+    }
+
+    @Override
+    protected String getQualifier() {
+        return QUALIFIER;
     }
 
     @Getter

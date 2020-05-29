@@ -19,7 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.ZonedDateTime;
@@ -117,7 +117,7 @@ public class FhirToEdifactService {
                 new BeginningOfMessage(),
                 new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType(translationItems.transactionType),
+                new ReferenceTransactionType().setTransactionType(translationItems.transactionType),
                 new SegmentGroup(1),
                 new ReferenceTransactionNumber(),
                 new MessageTrailer(8),
@@ -145,18 +145,18 @@ public class FhirToEdifactService {
     }
 
     private void recordOutboundState(TranslationItems translationItems) {
-        OutboundStateDAO outboundStateDAO = new OutboundStateDAO();
-        outboundStateDAO.setRecipient(translationItems.recipient);
-        outboundStateDAO.setSender(translationItems.sender);
+        OutboundState outboundState = new OutboundState();
+        outboundState.setRecipient(translationItems.recipient);
+        outboundState.setSender(translationItems.sender);
 
-        outboundStateDAO.setSendInterchangeSequence(translationItems.sendInterchangeSequence);
-        outboundStateDAO.setSendMessageSequence(translationItems.sendMessageSequence);
-        outboundStateDAO.setTransactionId(translationItems.transactionNumber);
+        outboundState.setSendInterchangeSequence(translationItems.sendInterchangeSequence);
+        outboundState.setSendMessageSequence(translationItems.sendMessageSequence);
+        outboundState.setTransactionId(translationItems.transactionNumber);
 
-        outboundStateDAO.setTransactionType(translationItems.transactionType.getAbbreviation());
-        outboundStateDAO.setTransactionTimestamp(Date.from(translationItems.translationTimestamp.toInstant()));
-        outboundStateDAO.setOperationId(translationItems.operationId);
-        outboundStateRepository.save(outboundStateDAO);
+        outboundState.setTransactionType(translationItems.transactionType.getAbbreviation());
+        outboundState.setTransactionTimestamp(Date.from(translationItems.translationTimestamp.toInstant()));
+        outboundState.setOperationId(translationItems.operationId);
+        outboundStateRepository.save(outboundState);
     }
 
     private void addSequenceNumbersToSegments(TranslationItems translationItems) {

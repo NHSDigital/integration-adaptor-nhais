@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Getter @Setter @EqualsAndHashCode @ToString
-public class OutboundStateDAO {
+public class OutboundState {
 
     private String operationId;
     private Long transactionId;

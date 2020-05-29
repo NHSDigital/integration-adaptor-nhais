@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,18 +7,23 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.ZonedDateTime;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecepConsumerService {
 
     private final EdifactParser edifactParser;
     private final OutboundStateRepository outboundStateRepository;
+
+    @Autowired
+    public RecepConsumerService(EdifactParser edifactParser, OutboundStateRepository outboundStateRepository) {
+        this.edifactParser = edifactParser;
+        this.outboundStateRepository = outboundStateRepository;
+    }
 
     public void handleRecep(MeshMessage meshMessage) {
         LOGGER.info("Received RECEP message: {}", meshMessage);
@@ -34,10 +38,18 @@ public class RecepConsumerService {
             long messageSequence = referenceMessageRecep.getMessageSequenceNumber();
             ReferenceMessageRecep.RecepCode recepCode = referenceMessageRecep.getRecepCode();
 
-            var outboundState = new OutboundStateDAO()
+            var outboundState = new OutboundState()
                 .setRecepCode(recepCode)
                 .setRecepDateTime(zonedDateTime);
 
+            ReferenceMessageRecep.builder()
+                .messageSequenceNumber(123L)
+                .recepCode(ReferenceMessageRecep.RecepCode.CA)
+                .build();
+
+            outboundStateRepository.updateRecep(
+                sender, recipient, interchangeSequence, messageSequence,
+                zonedDateTime, recepCode);
             // update outbound state from the recep using
             // sender + recipient + interchangeSequence + messageSequence
         }

@@ -1,17 +1,35 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-@Getter @Setter
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReferenceTransactionType extends Reference {
+    public static final String QUALIFIER = "950";
+
     private @NonNull TransactionType transactionType;
 
-    public ReferenceTransactionType(@NonNull TransactionType transactionType) {
-        super("950", transactionType.getCode());
-        this.transactionType = transactionType;
+    public static ReferenceTransactionTypeBuilder builder() {
+        return new ReferenceTransactionTypeBuilder();
+    }
+
+    @Override
+    protected String getReference() {
+        return transactionType.getCode();
+    }
+
+    @Override
+    protected String getQualifier() {
+        return QUALIFIER;
     }
 
     @Override
@@ -42,5 +60,4 @@ public class ReferenceTransactionType extends Reference {
         private String abbreviation;
 
     }
-
 }
