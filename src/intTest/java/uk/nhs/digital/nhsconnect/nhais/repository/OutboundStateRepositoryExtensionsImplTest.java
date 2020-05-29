@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class OutboundStateRepositoryExtensionsImplTest {
 
     private static final String SENDER = "some_sender";
+    private static final String NON_EXISTING_SENDER = "non_existing_sender";
     private static final String OTHER_SENDER = "some_other_sender";
     private static final String RECIPIENT = "some_recipient";
     private static final Long INTERCHANGE_SEQUENCE = 123L;
@@ -34,6 +35,8 @@ public class OutboundStateRepositoryExtensionsImplTest {
 
     @Autowired
     OutboundStateRepository outboundStateRepository;
+
+
 
     @Test
     void whenUpdatingRecep_thenRecepDetailsAreUpdated() {
@@ -81,7 +84,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
             EntityNotFoundException.class,
             () -> outboundStateRepository.updateRecepDetails(
                 new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                    SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
+                    NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
                 new OutboundStateRepositoryExtensions.UpdateRecepDetails(
                     RECEP_CODE, RECEP_DATE_TIME)));
     }
