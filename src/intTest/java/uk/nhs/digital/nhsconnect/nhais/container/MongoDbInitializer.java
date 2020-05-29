@@ -13,9 +13,8 @@ public class MongoDbInitializer implements ApplicationContextInitializer<Configu
         mongoDbContainer.start();
 
         var newValues = new String[] {
-            "nhais.mongo.host=" + mongoDbContainer.getContainerIpAddress(),
-            "nhais.mongo.port=" + mongoDbContainer.getFirstMappedPort(),
-            "nhais.mongo.autoIndexCreation=true"
+            "spring.data.mongodb.uri=mongodb://" + mongoDbContainer.getContainerIpAddress() + ":" + mongoDbContainer.getFirstMappedPort(),
+            "spring.data.mongodb.autoIndexCreation=true"
         };
 
         LOGGER.info("Overriding Spring Properties for mongodb with: {}", String.join(", ", newValues));
