@@ -103,3 +103,5 @@ int ecrLogin(String aws_region) {
     String dockerLogin = sh (label: "Getting Docker login from ECR", script: ecrCommand, returnStdout: true).replace("-e none","") // some parameters that AWS provides and docker does not recognize
     return sh(label: "Logging in with Docker", script: dockerLogin, returnStatus: true)
 }
+
+
