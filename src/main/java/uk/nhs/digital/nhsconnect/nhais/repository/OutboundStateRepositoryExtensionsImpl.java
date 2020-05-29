@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -18,8 +17,7 @@ public class OutboundStateRepositoryExtensionsImpl implements OutboundStateRepos
     private final MongoOperations mongoOperations;
 
     @Override
-    @NonNull
-    public void updateRecepDetails(
+    public OutboundState updateRecepDetails(
         UpdateRecepDetailsQueryParams updateRecepDetailsQueryParams,
         UpdateRecepDetails updateRecepDetails) {
 
@@ -38,5 +36,7 @@ public class OutboundStateRepositoryExtensionsImpl implements OutboundStateRepos
         if (result == null) {
             throw new EntityNotFoundException(query.toString());
         }
+
+        return result;
     }
 }

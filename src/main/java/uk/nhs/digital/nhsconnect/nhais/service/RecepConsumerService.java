@@ -40,11 +40,13 @@ public class RecepConsumerService {
             ReferenceMessageRecep.RecepCode recepCode = referenceMessageRecep.getRecepCode();
 
             //TODO could be done in transaction
-            outboundStateRepository.updateRecepDetails(
-                new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                    sender, recipient, interchangeSequence, messageSequence),
-                new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                    recepCode, dateTimePeriod));
+            var queryParams = new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
+                sender, recipient, interchangeSequence, messageSequence);
+            var recepDetails = new OutboundStateRepositoryExtensions.UpdateRecepDetails(
+                recepCode, dateTimePeriod);
+
+            var updatedOutboundState = outboundStateRepository.updateRecepDetails(queryParams, recepDetails);
+            LOGGER.debug("Updated outbound state {} using query {} and recep details {}", updatedOutboundState, queryParams, recepDetails);
         }
     }
 }

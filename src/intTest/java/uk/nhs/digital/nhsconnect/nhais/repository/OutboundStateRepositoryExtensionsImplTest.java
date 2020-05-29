@@ -36,8 +36,6 @@ public class OutboundStateRepositoryExtensionsImplTest {
     @Autowired
     OutboundStateRepository outboundStateRepository;
 
-
-
     @Test
     void whenUpdatingRecep_thenRecepDetailsAreUpdated() {
 

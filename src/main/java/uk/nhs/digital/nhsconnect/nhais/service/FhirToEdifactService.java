@@ -145,17 +145,17 @@ public class FhirToEdifactService {
     }
 
     private void recordOutboundState(TranslationItems translationItems) {
-        OutboundState outboundState = new OutboundState();
-        outboundState.setRecipient(translationItems.recipient);
-        outboundState.setSender(translationItems.sender);
+        var outboundState = new OutboundState()
+            .setRecipient(translationItems.recipient)
+            .setSender(translationItems.sender)
 
-        outboundState.setSendInterchangeSequence(translationItems.sendInterchangeSequence);
-        outboundState.setSendMessageSequence(translationItems.sendMessageSequence);
-        outboundState.setTransactionId(translationItems.transactionNumber);
+            .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
+            .setSendMessageSequence(translationItems.sendMessageSequence)
+            .setTransactionId(translationItems.transactionNumber)
 
-        outboundState.setTransactionType(translationItems.transactionType.getAbbreviation());
-        outboundState.setTransactionTimestamp(Date.from(translationItems.translationTimestamp));
-        outboundState.setOperationId(translationItems.operationId);
+            .setTransactionType(translationItems.transactionType.getAbbreviation())
+            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+            .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
 
