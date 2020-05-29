@@ -35,7 +35,7 @@ locals {
     }
   ]
 
-  port_mappings = merge(local.application_mapping,local.healthcheck_mapping)
+  port_mappings = concat(local.application_mapping,local.healthcheck_mapping)
 }
 
 

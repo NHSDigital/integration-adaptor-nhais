@@ -14,8 +14,8 @@ resource "aws_lb_target_group" "service_target_group" {
     protocol = var.protocol
     timeout  = 30
     matcher = "200-299"
-    healthy_threshold   = 30
-    unhealthy_threshold = 30
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
   }
 
   tags = merge(local.default_tags, {
