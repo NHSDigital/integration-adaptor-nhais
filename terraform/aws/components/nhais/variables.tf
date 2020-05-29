@@ -69,3 +69,21 @@ variable "environment_variables" {
   description = "List of objects for Environment variables"
   default = []
 }
+
+variable "docdb_master_user" {
+  type = string
+  description = "Username for Document DB master user"
+  default = "master_user"
+}
+
+variable "docdb_master_password" {
+  type = string
+  description = "Password for Document DB master user"
+  default = "ChangeMe"
+}
+
+variable "nhais_log_level" {
+  type = string
+  description = "Level of logging for NHAIS application"
+  default = "INFO"
+}

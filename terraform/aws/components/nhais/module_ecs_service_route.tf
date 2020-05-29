@@ -20,9 +20,9 @@ module "nhais_ecs_service" {
 
   enable_load_balancing = false
   environment_variables = local.environment_variables
+  secret_variables = local.secret_variables
   port_mappings = local.port_mappings
   task_execution_role_arn = aws_iam_role.ecs_service_task_execution_role.arn
-  #task_execution_role_arn = data.aws_iam_role.mhs_task_execution_role.arn
   task_role_arn = data.aws_iam_role.ecs_service_task_role.arn
   task_scaling_role_arn = data.aws_iam_role.ecs_autoscale_role.arn
   
@@ -33,6 +33,4 @@ module "nhais_ecs_service" {
 
   vpc_id = data.terraform_remote_state.base.outputs.vpc_id
   subnet_ids = aws_subnet.service_subnet.*.id
-
-
 }

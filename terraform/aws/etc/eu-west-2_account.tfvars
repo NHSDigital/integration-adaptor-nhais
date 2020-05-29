@@ -1,1 +1,1 @@
-nhais_ecr_repository_name = "mhs/nhais"
+# nhais_ecr_repository_name = "mhs/nhais"
