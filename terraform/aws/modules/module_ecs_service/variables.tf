@@ -65,6 +65,23 @@ variable "container_port" {
   description = "(Required) Port Number on which service within container will be listening"
 }
 
+variable "application_port" {
+  type = number
+  description = "(Optional) Port Number on which the load balancer should be listening, default is 80"
+  default = 80
+}
+
+variable "container_healthcheck_port" {
+  type = number
+  description = "(Optional) Port number on which the container provides info about it's healthcheck, 0 indicates the same port as container port"
+}
+
+variable "container_protocol" {
+  type = string
+  description = "Protocol used by container 99% of cases TCP"
+  default = "tcp"
+}
+
 variable "health_check_grace_period" {
   type = number
   description = "(Optional) Seconds to ignore failing load balancer health checks on newly instantiated tasks to prevent premature shutdown, up to 2147483647. Only valid for services configured to use load balancers."
@@ -198,11 +215,11 @@ variable "secret_variables" {
   default = []
 }
 
-variable "port_mappings" {
-  type = list(object({containerPort=number, hostPort=number, protocol=string}))
-  description = "List of object for portMappings to pass to container"
-  default = []
-}
+# variable "port_mappings" {
+#   type = list(object({containerPort=number, hostPort=number, protocol=string}))
+#   description = "List of object for portMappings to pass to container"
+#   default = []
+# }
 
 variable "task_execution_role_arn" {
   type = string
@@ -223,4 +240,9 @@ variable "service_target_request_count" {
   type = number
   description = "The target number of requests per minute that an service should handle. The number of services will be autoscaled so each instance handles this number of requests. This value should be tuned based on the results of performance testing."
   default = 1200
+}
+
+variable "healthcheck_path" {
+  type = string
+  description = "Path on which the container provides info about its status"
 }

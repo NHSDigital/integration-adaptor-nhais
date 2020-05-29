@@ -88,6 +88,12 @@ variable "nhais_log_level" {
   default = "INFO"
 }
 
+variable "nhais_healthcheck_path" {
+  type = string
+  description = "Path on which the container provides info about its status"
+  default = "/healthcheck"
+}
+
 variable "nhais_db_parameters" {
   type = list(object({name=string, value=string}))
   description = "List of parameters for DocDB"

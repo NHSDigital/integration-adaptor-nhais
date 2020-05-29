@@ -15,13 +15,15 @@ module "nhais_ecs_service" {
   cluster_name      = data.terraform_remote_state.base.outputs.base_cluster_name
   desired_count     = var.nhais_service_desired_count
   container_port    = var.nhais_service_container_port
+  container_healthcheck_port = var.nhais_service_container_port
   launch_type       = var.nhais_service_launch_type
   log_stream_prefix = var.build_id
+  healthcheck_path  = var.nhais_healthcheck_path
 
-  enable_load_balancing = false
+  enable_load_balancing = true
   environment_variables = local.environment_variables
   secret_variables = local.secret_variables
-  port_mappings = local.port_mappings
+  # port_mappings = local.port_mappings
   task_execution_role_arn = aws_iam_role.ecs_service_task_execution_role.arn
   task_role_arn = data.aws_iam_role.ecs_service_task_role.arn
   task_scaling_role_arn = data.aws_iam_role.ecs_autoscale_role.arn

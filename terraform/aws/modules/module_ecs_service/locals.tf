@@ -17,16 +17,25 @@ locals {
 
   load_balancer_settings = var.enable_load_balancing ? local.load_balancer_default_settings : {}
 
-  # env_vars_list = [
-  #   for e in var.environment_variables : "\{ name = 'e.key' value = e.value \}"
-  # ]
+  healthcheck_port = var.container_healthcheck_port == 0 ? var.container_port : var.container_healthcheck_port
+
+  application_mapping = [
+    {
+      containerPort = var.container_port
+      hostPort = var.container_port
+      protocol = var.container_protocol
+    }
+  ]
+
+  healthcheck_mapping = local.healthcheck_port == var.container_healthcheck_port ? [] : [
+    {
+      containerPort = var.container_healthcheck_port
+      hostPort = var.container_healthcheck_port
+      protocol = var.container_protocol
+    }
+  ]
+
+  port_mappings = merge(local.application_mapping,local.healthcheck_mapping)
 }
 
 
-/*
-        {
-          name = "MHS_LOG_LEVEL"
-          value = var.mhs_log_level
-        },
-
-        */
