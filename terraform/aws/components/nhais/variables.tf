@@ -89,7 +89,7 @@ variable "nhais_log_level" {
 }
 
 variable "nhais_db_parameters" {
-  type = list(object{name=string, value=string})
+  type = list(object({name=string, value=string}))
   description = "List of parameters for DocDB"
   default = [
     {
