@@ -23,20 +23,22 @@ import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
 
 import java.nio.file.Files;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag("component")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AcceptanceController.class)
 public class AcceptanceControllerTest {
 
-    private static final String UUID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+    private static final String OPERATION_ID = UUID.randomUUID().toString();
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,20 +66,21 @@ public class AcceptanceControllerTest {
         String requestBody = new String(Files.readAllBytes(patientPayload.getFile().toPath()));
         TranslatedInterchange translatedInterchange = new TranslatedInterchange();
         translatedInterchange.setEdifact("EDI");
+        translatedInterchange.setOperationId(OPERATION_ID);
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent("EDI");
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOdsCode("odsCode");
 
         when(fhirParser.parsePatient(requestBody)).thenReturn(new Patient());
-        when(fhirToEdifactService.convertToEdifact(any(Patient.class), anyString(), any())).thenReturn(translatedInterchange);
+        when(fhirToEdifactService.convertToEdifact(any(Patient.class), any())).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/12345")
                 .contentType("application/json")
                 .content(requestBody))
                 .andExpect(status().isAccepted())
-                .andExpect(header().string("OperationId", org.hamcrest.Matchers.matchesPattern(UUID_PATTERN)));
+                .andExpect(header().string("OperationId", OPERATION_ID));
 
         verify(outboundMeshService).send(meshMessage);
     }
