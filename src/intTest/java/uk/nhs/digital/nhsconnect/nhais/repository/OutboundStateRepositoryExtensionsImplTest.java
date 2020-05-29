@@ -59,9 +59,11 @@ public class OutboundStateRepositoryExtensionsImplTest {
         assertNull(otherOutboundState.getRecepCode());
         assertNull(otherOutboundState.getRecepDateTime());
 
-        outboundStateRepository.updateRecep(
-            SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE,
-            RECEP_CODE, RECEP_DATE_TIME);
+        outboundStateRepository.updateRecepDetails(
+            new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
+                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
+            new OutboundStateRepositoryExtensions.UpdateRecepDetails(
+                RECEP_CODE, RECEP_DATE_TIME));
 
         outboundState = outboundStateRepository.findById(outboundState.getId()).orElseThrow();
         otherOutboundState = outboundStateRepository.findById(otherOutboundState.getId()).orElseThrow();
@@ -74,11 +76,13 @@ public class OutboundStateRepositoryExtensionsImplTest {
     }
 
     @Test
-    void whenUpdatingNonExistingEntity_thenThrowsExceptionthren() {
+    void whenUpdatingNonExistingEntity_thenThrowsException() {
         assertThrows(
             EntityNotFoundException.class,
-            () -> outboundStateRepository.updateRecep(
-                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE,
-                RECEP_CODE, RECEP_DATE_TIME));
+            () -> outboundStateRepository.updateRecepDetails(
+                new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
+                    SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
+                new OutboundStateRepositoryExtensions.UpdateRecepDetails(
+                    RECEP_CODE, RECEP_DATE_TIME)));
     }
 }

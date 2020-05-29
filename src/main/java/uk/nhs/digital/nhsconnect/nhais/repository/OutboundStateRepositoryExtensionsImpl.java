@@ -7,9 +7,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EntityNotFoundException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-
-import java.time.Instant;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -22,24 +19,20 @@ public class OutboundStateRepositoryExtensionsImpl implements OutboundStateRepos
 
     @Override
     @NonNull
-    public void updateRecep(
-        String sender,
-        String recipient,
-        Long interchangeSequence,
-        Long messageSequence,
-        ReferenceMessageRecep.RecepCode recepCode,
-        Instant recepDateTime) {
+    public void updateRecepDetails(
+        UpdateRecepDetailsQueryParams updateRecepDetailsQueryParams,
+        UpdateRecepDetails updateRecepDetails) {
 
-        var query = query(where("sender").is(sender)
-            .and("recipient").is(recipient)
-            .and("sendInterchangeSequence").is(interchangeSequence)
-            .and("sendMessageSequence").is(messageSequence));
+        var query = query(where("sender").is(updateRecepDetailsQueryParams.getSender())
+            .and("recipient").is(updateRecepDetailsQueryParams.getRecipient())
+            .and("sendInterchangeSequence").is(updateRecepDetailsQueryParams.getInterchangeSequence())
+            .and("sendMessageSequence").is(updateRecepDetailsQueryParams.getMessageSequence()));
 
         var result = mongoOperations.findAndModify(
             query,
             new Update()
-                .set("recepCode", recepCode)
-                .set("recepDateTime", recepDateTime),
+                .set("recepCode", updateRecepDetails.getRecepCode())
+                .set("recepDateTime", updateRecepDetails.getRecepDateTime()),
             OutboundState.class);
 
         if (result == null) {

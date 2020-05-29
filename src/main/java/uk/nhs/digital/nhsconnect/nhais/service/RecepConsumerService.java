@@ -7,8 +7,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensions;
 
 import java.time.Instant;
 
@@ -34,24 +34,17 @@ public class RecepConsumerService {
         String recipient = interchange.getInterchangeHeader().getRecipient();
         Instant dateTimePeriod = interchange.getDateTimePeriod().getTimestamp();
         long interchangeSequence = interchange.getInterchangeHeader().getSequenceNumber();
+
         for (ReferenceMessageRecep referenceMessageRecep : interchange.getReferenceMessageReceps()) {
             long messageSequence = referenceMessageRecep.getMessageSequenceNumber();
             ReferenceMessageRecep.RecepCode recepCode = referenceMessageRecep.getRecepCode();
 
-            var outboundState = new OutboundState()
-                .setRecepCode(recepCode)
-                .setRecepDateTime(dateTimePeriod);
-
-            ReferenceMessageRecep.builder()
-                .messageSequenceNumber(123L)
-                .recepCode(ReferenceMessageRecep.RecepCode.CA)
-                .build();
-
-            outboundStateRepository.updateRecep(
-                sender, recipient, interchangeSequence, messageSequence,
-                recepCode, dateTimePeriod);
-            // update outbound state from the recep using
-            // sender + recipient + interchangeSequence + messageSequence
+            //TODO could be done in transaction
+            outboundStateRepository.updateRecepDetails(
+                new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
+                    sender, recipient, interchangeSequence, messageSequence),
+                new OutboundStateRepositoryExtensions.UpdateRecepDetails(
+                    recepCode, dateTimePeriod));
         }
     }
 }
