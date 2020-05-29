@@ -29,12 +29,8 @@ locals {
       value = "nhais"
     },
     {
-      name = "NHAIS_MONGO_HOST"
-      value = aws_docdb_cluster.nhais_db_cluster.endpoint
-    },
-    {
-      name = "NHAIS_MONGO_PORT"
-      value = aws_docdb_cluster_instance.nhais_db_instance[0].port
+      name = "NHAIS_MONGO_URI"
+      value = "mongodb://${aws_docdb_cluster.nhais_db_cluster.endpoint}:${aws_docdb_cluster_instance.nhais_db_instance[0].port}"
     },
     {
       name  = "NHAIS_LOG_LEVEL"
