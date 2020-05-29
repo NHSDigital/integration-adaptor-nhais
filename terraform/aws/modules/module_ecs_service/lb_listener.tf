@@ -1,7 +1,7 @@
 resource "aws_lb_listener" "service_listener" {
   count = var.enable_load_balancing ? 1 : 0
   load_balancer_arn = aws_lb.service_load_balancer[0].arn
-  port              = var.container_port
+  port              = var.application_port
   protocol          = var.protocol
 
   default_action {

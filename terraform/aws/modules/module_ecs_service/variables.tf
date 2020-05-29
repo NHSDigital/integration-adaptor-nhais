@@ -247,3 +247,15 @@ variable "deregistration_delay" {
   description = "Time for draining connection before switching off the container, AWS Default is 300s, ours is 45s"
   default = 45
 }
+
+variable "lb_allowed_security_groups" {
+  type = list(string)
+  description = "List of SG IDs that will be allowed to access the Load Balancer"
+  default = []
+}
+
+variable "lb_allowed_cidrs" {
+  type = list(string)
+  description = "List of CIDRs that will be allowed to access the Load Balancer"
+  default = []
+}
