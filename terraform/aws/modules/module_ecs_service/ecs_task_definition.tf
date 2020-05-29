@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         image     = var.image_name
         #image = "lukaszkw/kainos:feauture-java-local"
         essential = true
-        portMappings = var.port_mappings
+        portMappings = local.port_mappings
         logConfiguration = {
           logDriver = "awslogs"
           options = {
