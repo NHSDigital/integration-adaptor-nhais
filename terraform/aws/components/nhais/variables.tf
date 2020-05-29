@@ -87,3 +87,18 @@ variable "nhais_log_level" {
   description = "Level of logging for NHAIS application"
   default = "INFO"
 }
+
+variable "nhais_db_parameters" {
+  type = list(object{name=string, value=string})
+  description = "List of parameters for DocDB"
+  default = [
+    {
+      name = "tls"
+      value = "disabled"
+    },
+    { 
+      name = "audit_logs"
+      value = "enabled"
+    }
+  ]
+}

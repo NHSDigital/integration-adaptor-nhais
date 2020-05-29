@@ -30,7 +30,7 @@ locals {
     },
     {
       name = "NHAIS_MONGO_URI"
-      value = "mongodb://${aws_docdb_cluster.nhais_db_cluster.endpoint}:${aws_docdb_cluster_instance.nhais_db_instance[0].port}"
+      value = "mongodb://${var.docdb_master_user}:${var.docdb_master_password}@${aws_docdb_cluster.nhais_db_cluster.endpoint}:${aws_docdb_cluster_instance.nhais_db_instance[0].port}"
     },
     {
       name  = "NHAIS_LOG_LEVEL"
