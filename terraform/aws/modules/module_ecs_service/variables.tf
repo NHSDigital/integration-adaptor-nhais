@@ -246,3 +246,9 @@ variable "healthcheck_path" {
   type = string
   description = "Path on which the container provides info about its status"
 }
+
+variable "deregistration_delay" {
+  type = number
+  description = "Time for draining connection before switching off the container, AWS Default is 300s, ours is 45s"
+  default = 45
+}
