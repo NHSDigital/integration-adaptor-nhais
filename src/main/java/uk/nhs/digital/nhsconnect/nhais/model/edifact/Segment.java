@@ -3,7 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 public abstract class Segment {
-
+    protected static final String PLUS_SEPARATOR = "+";
     private static final String TERMINATOR = "'";
 
     /**
@@ -33,7 +33,7 @@ public abstract class Segment {
 
     public String toEdifact() throws EdifactValidationException {
         this.validate();
-        return this.getKey() + "+" + this.getValue() + TERMINATOR;
+        return this.getKey() + PLUS_SEPARATOR + this.getValue() + TERMINATOR;
     }
 
 }
