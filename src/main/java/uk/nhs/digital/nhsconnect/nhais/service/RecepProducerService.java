@@ -4,7 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensions;
 

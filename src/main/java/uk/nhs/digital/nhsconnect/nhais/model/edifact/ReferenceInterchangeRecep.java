@@ -1,6 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
