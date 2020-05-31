@@ -1,10 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
@@ -13,14 +9,12 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 @Builder
 @AllArgsConstructor
 public class ReferenceMessageRecep extends Reference {
-
     public static final String QUALIFIER = "MIS";
-
     private @NonNull Long messageSequenceNumber;
     private @NonNull RecepCode recepCode;
 
     private String buildReferenceString() {
-        return messageSequenceNumber + " " + recepCode.name();
+        return String.format("%08d", messageSequenceNumber) + " " + recepCode.name();
     }
 
     @Override

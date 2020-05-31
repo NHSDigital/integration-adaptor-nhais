@@ -41,18 +41,6 @@ public class InterchangeHeader extends Segment {
     public String getValue() {
         String timestamp = DATE_FORMAT.format(translationTime);
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-//
-//        ImmutableList.builder()
-//                .add(UNOA_PREFIX)
-//                .add(sender)
-//                .add(recipient)
-//                .add(timestamp)
-//                .add(formattedSequenceNumber)
-//                .add(transferString)
-//                .build()
-//                .stream()
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.joining(PLUS_SEPARATOR));
 
         return List.of(UNOA_PREFIX, sender, recipient, timestamp, formattedSequenceNumber, transferString).stream()
                 .filter(StringUtils::isNotBlank)

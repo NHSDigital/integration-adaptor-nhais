@@ -4,8 +4,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,17 +41,17 @@ class RecepProducerServiceTest {
     @InjectMocks
     RecepProducerService recepProducerService;
 
+    @Mock
+    private OutboundStateRepository outboundStateRepository;
+
     @Test
     public void When_CreatingInterchange_Then_ItsTheSameAsExample() throws IOException {
         assertEquals(createInterchange().toString(), readFile(INBOUND_EXAMPLE_PATH));
     }
 
     @Test
-    public void when_then() throws IOException {
-        recepProducerService.mapEdifactToRecep(createInterchange()).stream()
-                .forEach(s -> System.out.println(s.toEdifact()));
-
-        assertEquals(createInterchange().toString(), readFile(RECEP_EXAMPLE_PATH));
+    public void When_MapToRecep_Then_ExpectCorrectMessage() throws IOException {
+        assertEquals(recepProducerService.produceRecep(createInterchange()).toString(), readFile(RECEP_EXAMPLE_PATH));
     }
 
     private Interchange createInterchange() {

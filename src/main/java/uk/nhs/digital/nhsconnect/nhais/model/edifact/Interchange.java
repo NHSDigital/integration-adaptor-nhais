@@ -23,6 +23,8 @@ public class Interchange {
     @Getter(lazy = true)
     private final MessageHeader messageHeader = findSegment(MessageHeader.class).orElseThrow();
     @Getter(lazy = true)
+    private final BeginningOfMessage beginningOfMessage = findSegment(BeginningOfMessage.class).orElseThrow();
+    @Getter(lazy = true)
     private final DateTimePeriod dateTimePeriod = findSegment(DateTimePeriod.class).orElseThrow();
     @Getter(lazy = true)
     private final ReferenceTransactionNumber referenceTransactionNumber = findSegment(ReferenceTransactionNumber.class).orElseThrow();
@@ -30,6 +32,10 @@ public class Interchange {
     private final ReferenceTransactionType referenceTransactionType = findSegment(ReferenceTransactionType.class).orElseThrow();
     @Getter(lazy = true)
     private final List<ReferenceMessageRecep> referenceMessageReceps = findMultipleSegments(ReferenceMessageRecep.class);
+    @Getter(lazy = true)
+    private final MessageTrailer messageTrailer = findSegment(MessageTrailer.class).orElseThrow();
+    @Getter(lazy = true)
+    private final InterchangeTrailer interchangeTrailer = findSegment(InterchangeTrailer.class).orElseThrow();
 
     public Interchange(List<Segment> segments) {
         this.segments = ImmutableList.copyOf(segments);
