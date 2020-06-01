@@ -62,7 +62,27 @@ pipeline {
             stages {
                 stage('Deploy using Terraform') {
                     steps {
-                        echo 'TODO deploy NHAIS using terraform'
+                      String tfCodeBranch  = "feature/NIAD-119-terraform-for-NHAIS"
+                      String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
+                      String tfProject     = "nia"
+                      String tfEnvironment = "build1" // change for ptl, vp, goes here
+                      String tfComponent   = "nhais"
+                      String tfRegion      = "eu-west-2"
+
+                      List<String> tfParams = []
+                      Map<String,String> tfVariables = ["build_id": BUILD_TAG]
+
+                      // Clone repository with terraform
+                      git (branch: tfCodeBranch, url: tfCodeRepo)
+
+                      // Run TF Init
+                      if (terraformInit(TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion) !=0) { error("Terraform init failed")}
+
+                      // Run TF Plan
+                      if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Plan failed")}
+
+                      //Run TF Apply
+                      if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Apply failed")}
                     }
                 }
                 stage('Run integration tests') {
@@ -94,4 +114,32 @@ void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
 }
 
+int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
+  println("Terraform Init for Environment: ${environment} Component: ${Component} in region: ${region} using bucket: ${tfStateBucket}")
+  String command = "terraform init -backend-config='bucket=${tfStateBucket}' -backend-config='region=${region}' -backend-config='key=${project}-${environment}-${component}.tfstate' -input=false -no-color"
+  dir("components/${component}") {
+    return( sh( label: "Terraform Init", script: command, returnStatus: true))
+  } // dir
+} // int TerraformInit
 
+int terraform(String action, String tfStateBucket, String project, String environment, String component, String region, Map<String, String> variables=[:], List<String> parameters=[]) {
+    println("Running Terraform ${action} in region ${region} with: \n Project: ${project} \n Environment: ${environment} \n Component: ${component}")
+    variablesMap = variables
+    variablesMap.put('region',region)
+    variablesMap.put('project', project)
+    variablesMap.put('environment', environment)
+    variablesMap.put('tf_state_bucket',tfStateBucket)
+    parametersList = parameters
+    parametersList.add("-no-color")
+    //parametersList.add("-compact-warnings")  /TODO update terraform to have this working
+    List<String> variableFilesList = [
+      "-var-file=../../etc/global.tfvars",
+      "-var-file=../../etc/${region}_${environment}.tfvars"
+    ]
+    if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
+    List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
+    String command = "terraform ${action} ${variableFilesList.join(" ")} ${parametersList.join(" ")} ${variablesList.join(" ")} "
+    dir("components/${component}") {
+      return sh(label:"Terraform: "+action, script: command, returnStatus: true)
+    } // dir
+} // int Terraform
