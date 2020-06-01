@@ -3,7 +3,8 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   vpc_id = aws_vpc.base_vpc.id
   service_name = "com.amazonaws.${var.region}.dynamodb"
   route_table_ids = [
-    aws_vpc.base_vpc.main_route_table_id
+    aws_vpc.base_vpc.main_route_table_id,
+    aws_route_table.private.id
   ]
 
   tags = merge(local.default_tags, {
@@ -45,7 +46,8 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   vpc_id = aws_vpc.base_vpc.id
   service_name = "com.amazonaws.${var.region}.s3"
   route_table_ids = [
-    aws_vpc.base_vpc.main_route_table_id
+    aws_vpc.base_vpc.main_route_table_id,
+    aws_route_table.private.id
   ]
   tags = merge(local.default_tags, {
     Name = "${local.resource_prefix}-s3-vpce"
