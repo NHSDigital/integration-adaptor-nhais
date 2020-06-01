@@ -14,7 +14,7 @@ pipeline {
     choice (name: "Environment", choices: ['build1', 'build2', 'build3', 'vp', 'ptl', 'account'], description: "Choose environment")
     choice (name: "Component",   choices: ['base', 'nhais', 'account'],                           description: "Choose component")
     choice (name: "Action",      choices: ['plan', 'apply', 'plan-destroy', 'destroy'],           description: "Choose Terraform action")
-    string (name: "Variables",   defaultValue: "",                                                description: "Terrafrom variables, format: variable1=value,variable2=value")
+    string (name: "Variables",   defaultValue: "",                                                description: "Terrafrom variables, format: variable1=value,variable2=value, no spaces")
     string (name: "Git_Branch",  defaultValue: "develop",                    description: "Git branch")
     string (name: "Git_Repo",    defaultValue: "https://github.com/nhsconnect/integration-adaptor-nhais.git", description: "Git Repo to clone")
   }
@@ -37,10 +37,16 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
+            // prepare variables map
+            Map<String,String> variablesMap = [:]
+            params.Variables.split(",").each{ it -> 
+              def nameAndValue = param.split("=")
+              variablesMap[nameAndValue[0]] = nameAndValue[1]
+            }
             List<String> tfParams = []
             if (params.Action == "destroy" || params.Action == "plan-destroy") {tfParams.add("-destroy")}
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
-            if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region, [:], tfParams) !=0 ) { error("Terraform Plan failed")}
+            if (terraform('plan', TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region, variablesMap, tfParams) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
@@ -55,7 +61,7 @@ pipeline {
       steps {
         dir("terraform/aws") {
           script {
-            if (terraform(params.Action, TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0 ) { error("Terraform Plan failed")}
+            if (terraform(params.Action, TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region, variablesMap) !=0 ) { error("Terraform Plan failed")}
           } // script
         } //dir terraform/aws
       } // steps
