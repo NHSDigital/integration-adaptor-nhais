@@ -38,11 +38,16 @@ pipeline {
         dir("terraform/aws") {
           script {
             // prepare variables map
-            Map<String,String> variablesMap = [:]
-            params.Variables.split(",").each{ one_var -> 
-              def nameAndValue = one_var.split("=")
-              variablesMap[nameAndValue[0]] = nameAndValue[1]
+            Map<String, String> variablesMap = [:]
+            List<String> variablesList = params.Variables.split(",")
+            variablesList.each {
+              def kvp = it.split("=")
+              if (kvp.length > 1) {
+                variablesMap.put(kvp[0],kvp[1])
+              }
             }
+            
+           
             List<String> tfParams = []
             if (params.Action == "destroy" || params.Action == "plan-destroy") {tfParams.add("-destroy")}
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
