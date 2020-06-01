@@ -27,25 +27,25 @@ pipeline {
                 //         }
                 //     }
                 // }
-                stage('Build Docker Images') {
-                    steps {
-                        script {
-                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
-                        }
-                    }
-                }
-                stage('Push image') {
-                    when {
-                        expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-                    }
-                    steps {
-                        script {
-                            if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
-                            String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
-                            if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
-                        }
-                    }
-                }
+                // stage('Build Docker Images') {
+                //     steps {
+                //         script {
+                //             sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
+                //         }
+                //     }
+                // }
+                // stage('Push image') {
+                //     when {
+                //         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+                //     }
+                //     steps {
+                //         script {
+                //             if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
+                //             String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
+                //             if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
+                //         }
+                //     }
+                // }
             }
             // post {
                 // always {
@@ -79,6 +79,7 @@ pipeline {
 
                             // Clone repository with terraform
                             git (branch: tfCodeBranch, url: tfCodeRepo)
+                            sh "ls -la"
 
                             dir ("integration-adaptors/terraform/aws") {
                                 // Run TF Init
