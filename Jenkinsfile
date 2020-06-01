@@ -19,14 +19,14 @@ pipeline {
     stages {
         stage('Build and Test Locally') {
             stages {
-                // stage('Run Tests') {
-                //     steps {
-                //         script {
-                //             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
-                //             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
-                //         }
-                //     }
-                // }
+                stage('Run Tests') {
+                    steps {
+                        script {
+                            sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
+                            sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
+                        }
+                    }
+                }
                 stage('Build Docker Images') {
                     steps {
                         script {
@@ -72,7 +72,7 @@ pipeline {
                             String tfProject     = "nia"
                             String tfEnvironment = "build1" // change for ptl, vp goes here
                             String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
-                            String tfRegion      = "eu-west-2"
+                            String tfRegion      = TF_STATE_BUCKET_REGION
 
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
