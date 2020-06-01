@@ -17,48 +17,48 @@ pipeline {
     }    
 
     stages {
-        stage('Build and Test Locally') {
-            stages {
-                // stage('Run Tests') {
-                //     steps {
-                //         script {
-                //             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
-                //             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
-                //         }
-                //     }
-                // }
-                // stage('Build Docker Images') {
-                //     steps {
-                //         script {
-                //             sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
-                //         }
-                //     }
-                // }
-                // stage('Push image') {
-                //     when {
-                //         expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-                //     }
-                //     steps {
-                //         script {
-                //             if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
-                //             String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
-                //             if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
-                //         }
-                //     }
-                // }
-            }
-            // post {
-                // always {
-                    // sh label: 'Create logs directory', script: 'mkdir logs'
-                    // sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
-                    // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
-                    // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
-                    // sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
-                    // archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                    // sh label: 'Stopping containers', script: 'docker-compose down -v'
-                // }
-            // }
-        }
+        // stage('Build and Test Locally') {
+        //     stages {
+        //         // stage('Run Tests') {
+        //         //     steps {
+        //         //         script {
+        //         //             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
+        //         //             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
+        //         //         }
+        //         //     }
+        //         // }
+        //         stage('Build Docker Images') {
+        //             steps {
+        //                 script {
+        //                     sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
+        //                 }
+        //             }
+        //         }
+        //         stage('Push image') {
+        //             when {
+        //                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+        //             }
+        //             steps {
+        //                 script {
+        //                     if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
+        //                     String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
+        //                     if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     // post {
+        //         // always {
+        //             // sh label: 'Create logs directory', script: 'mkdir logs'
+        //             // sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
+        //             // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
+        //             // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
+        //             // sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
+        //             // archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
+        //             // sh label: 'Stopping containers', script: 'docker-compose down -v'
+        //         // }
+        //     // }
+        // }
         stage('Deploy and Integration Test') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
