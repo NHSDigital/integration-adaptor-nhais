@@ -33,7 +33,7 @@ public class Interchange {
     @Getter(lazy = true)
     private final List<ReferenceMessageRecep> referenceMessageReceps = findMultipleSegments(ReferenceMessageRecep.class);
     @Getter(lazy = true)
-    private final MessageTrailer messageTrailer = findSegment(MessageTrailer.class).orElseThrow();
+    private final List<MessageTrailer> messageTrailer = findMultipleSegments(MessageTrailer.class);
     @Getter(lazy = true)
     private final InterchangeTrailer interchangeTrailer = findSegment(InterchangeTrailer.class).orElseThrow();
 

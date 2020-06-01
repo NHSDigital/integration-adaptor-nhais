@@ -18,6 +18,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensi
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -41,7 +42,7 @@ public class RecepProducerService {
         recepMessageSegments.add(receivedInterchangeFromHa.getDateTimePeriod());
         recepMessageSegments.addAll(mapToReferenceMessageRecep(receivedInterchangeFromHa));
         recepMessageSegments.add(mapToReferenceInterchangeRecep(receivedInterchangeFromHa));
-        recepMessageSegments.add(receivedInterchangeFromHa.getMessageTrailer());
+        recepMessageSegments.add(receivedInterchangeFromHa.getMessageTrailer().get(0));
         recepMessageSegments.add(receivedInterchangeFromHa.getInterchangeTrailer());
 
         return recepMessageSegments;
@@ -91,11 +92,12 @@ public class RecepProducerService {
     }
 
     private List<ReferenceMessageRecep> mapToReferenceMessageRecep(Interchange interchange) {
-        // Only 1 messageHeader -> 1 ReferenceMessageRecep
-        return List.of(ReferenceMessageRecep.builder()
-                .messageSequenceNumber(interchange.getMessageHeader().getSequenceNumber())
-                .recepCode(ReferenceMessageRecep.RecepCode.CP)
-                .build());
+        return interchange.getMessageTrailer().stream()
+                .map(messageTrailer -> ReferenceMessageRecep.builder()
+                        .messageSequenceNumber(messageTrailer.getSequenceNumber())
+                        .recepCode(ReferenceMessageRecep.RecepCode.CP)
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private ReferenceInterchangeRecep mapToReferenceInterchangeRecep(Interchange interchange) {

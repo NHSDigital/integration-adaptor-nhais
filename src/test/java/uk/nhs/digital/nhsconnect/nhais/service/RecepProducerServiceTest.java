@@ -25,8 +25,10 @@ class RecepProducerServiceTest {
     private static final String SENDER = "GP123";
     private static final String RECIPIENT = "HA456";
     private static final Long INTERCHANGE_SEQUENCE = 45L;
-    private static final Long MESSAGE_SEQUENCE = 56L;
-    private static final Long TRANSACTION_NUMBER = 5174L;
+    private static final Long MESSAGE_SEQUENCE_1 = 56L;
+    private static final Long TRANSACTION_NUMBER_1 = 5174L;
+    private static final Long MESSAGE_SEQUENCE_2 = 57L;
+    private static final Long TRANSACTION_NUMBER_2 = 5175L;
 
     private static final Instant FIXED_TIME = ZonedDateTime.of(
             2020,
@@ -58,28 +60,41 @@ class RecepProducerServiceTest {
         InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, FIXED_TIME);
         interchangeHeader.setSequenceNumber(INTERCHANGE_SEQUENCE);
 
-        MessageHeader messageHeader = new MessageHeader();
-        messageHeader.setSequenceNumber(MESSAGE_SEQUENCE);
+        MessageHeader messageHeader1 = new MessageHeader();
+        messageHeader1.setSequenceNumber(MESSAGE_SEQUENCE_1);
+        ReferenceTransactionNumber referenceTransactionNumber1 = new ReferenceTransactionNumber();
+        referenceTransactionNumber1.setTransactionNumber(TRANSACTION_NUMBER_1);
+        MessageTrailer messageTrailer1 = new MessageTrailer(8);
+        messageTrailer1.setSequenceNumber(MESSAGE_SEQUENCE_1);
 
-        ReferenceTransactionNumber referenceTransactionNumber = new ReferenceTransactionNumber();
-        referenceTransactionNumber.setTransactionNumber(TRANSACTION_NUMBER);
+        MessageHeader messageHeader2 = new MessageHeader();
+        messageHeader2.setSequenceNumber(MESSAGE_SEQUENCE_2);
+        ReferenceTransactionNumber referenceTransactionNumber2 = new ReferenceTransactionNumber();
+        referenceTransactionNumber2.setTransactionNumber(TRANSACTION_NUMBER_2);
+        MessageTrailer messageTrailer2 = new MessageTrailer(8);
+        messageTrailer2.setSequenceNumber(MESSAGE_SEQUENCE_2);
 
-        MessageTrailer messageTrailer = new MessageTrailer(8);
-        messageTrailer.setSequenceNumber(MESSAGE_SEQUENCE);
-
-        InterchangeTrailer interchangeTrailer = new InterchangeTrailer(1);
+        InterchangeTrailer interchangeTrailer = new InterchangeTrailer(2);
         interchangeTrailer.setSequenceNumber(INTERCHANGE_SEQUENCE);
 
         return Interchange.builder()
                 .segment(interchangeHeader)
-                .segment(messageHeader)
+                .segment(messageHeader1)
                 .segment(new BeginningOfMessage())
                 .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
                 .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
                 .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
                 .segment(new SegmentGroup(1))
-                .segment(referenceTransactionNumber)
-                .segment(messageTrailer)
+                .segment(referenceTransactionNumber1)
+                .segment(messageTrailer1)
+                .segment(messageHeader2)
+                .segment(new BeginningOfMessage())
+                .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
+                .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
+                .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
+                .segment(new SegmentGroup(1))
+                .segment(referenceTransactionNumber2)
+                .segment(messageTrailer2)
                 .segment(interchangeTrailer)
                 .build();
     }

@@ -42,9 +42,8 @@ public class InterchangeTrailer extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        // TODO https://gpitbjss.atlassian.net/browse/NIAD-224
-        if (numberOfMessages >= 1) {
-            throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required");
+        if (numberOfMessages < 1) {
+            throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required" + numberOfMessages);
         }
     }
 }
