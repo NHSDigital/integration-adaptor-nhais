@@ -91,8 +91,7 @@ public class RecepProducerService {
     }
 
     private List<ReferenceMessageRecep> mapToReferenceMessageRecep(Interchange interchange) {
-        // Please check InterchangeTrailer.java comment
-        // forEach might be needed here:
+        // Only 1 messageHeader -> 1 ReferenceMessageRecep
         return List.of(ReferenceMessageRecep.builder()
                 .messageSequenceNumber(interchange.getMessageHeader().getSequenceNumber())
                 .recepCode(ReferenceMessageRecep.RecepCode.CP)
