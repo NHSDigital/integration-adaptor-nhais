@@ -1,5 +1,5 @@
 output "loadbalancer_sg_id" {
-  value =  var.enable_load_balancing ? aws_securiy_group.service_lb_sg.id : null
+  value =  var.enable_load_balancing ? aws_security_group.service_lb_sg.id : null
 }
 
 output "loadbalancer_dns_name" {

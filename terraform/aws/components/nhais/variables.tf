@@ -65,11 +65,6 @@ variable "nhais_service_launch_type" {
   description = "Type of cluster on which this service will be run, FARGATE or EC2"
 }
 
-# variable "nhais_image_name" {
-#   type = string
-#   description = "Path to docker image to be used in task definition"
-# }
-
 variable "build_id" {
   type = string
   description = "Number of the current build, used for tagging the logs"
