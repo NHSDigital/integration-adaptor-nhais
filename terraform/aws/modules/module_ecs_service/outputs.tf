@@ -3,9 +3,9 @@ output "loadbalancer_sg_id" {
 }
 
 output "loadbalancer_dns_name" {
-  value =  var.enable_load_balancing ? aws_lb.service_load_balancer.dns_name : null
+  value =  var.enable_load_balancing ? aws_lb.service_load_balancer[0].dns_name : null
 }
 
 output "loadbalancer_zone_id" {
-  value =  var.enable_load_balancing ? aws_lb.service_load_balancer.zone_id : null
+  value =  var.enable_load_balancing ? aws_lb.service_load_balancer[0].zone_id : null
 }

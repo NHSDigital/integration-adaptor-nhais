@@ -18,6 +18,7 @@ module "nhais_ecs_service" {
   service_target_request_count = var.nhais_service_target_request_count
 
   container_port    = var.nhais_service_container_port
+  application_port  = var.nhais_service_application_port
   launch_type       = var.nhais_service_launch_type
   log_stream_prefix = var.build_id
   healthcheck_path  = var.nhais_healthcheck_path

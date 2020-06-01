@@ -54,6 +54,12 @@ variable "nhais_service_container_port" {
   description = "Port Number on which service within container will be listening"
 }
 
+variable "nhais_service_application_port" {
+  type = number
+  description = "Port number on which the service load balancer will listen"
+  default = 80
+}
+
 variable "nhais_service_launch_type" {
   type = string
   description = "Type of cluster on which this service will be run, FARGATE or EC2"
