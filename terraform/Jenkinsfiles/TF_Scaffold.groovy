@@ -39,8 +39,8 @@ pipeline {
           script {
             // prepare variables map
             Map<String,String> variablesMap = [:]
-            params.Variables.split(",").each{ it -> 
-              def nameAndValue = param.split("=")
+            params.Variables.split(",").each{ one_var -> 
+              def nameAndValue = one_var.split("=")
               variablesMap[nameAndValue[0]] = nameAndValue[1]
             }
             List<String> tfParams = []
