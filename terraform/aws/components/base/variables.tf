@@ -39,3 +39,9 @@ variable "mq_vpc_id" {
   type = string
   description = "VPC where MQ cluster is hosted"
 }
+
+variable "enable_internet_access" {
+  type = bool
+  description = "Enables internet access from private subnets by adding a route table to NAT Gateway"
+  default = false
+}

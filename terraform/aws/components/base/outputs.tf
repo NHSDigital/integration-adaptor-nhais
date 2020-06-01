@@ -29,3 +29,7 @@ output "ecr_vpce_id" {
 output "private_nat_gw_route_table" {
   value = aws_route_table.private.id
 }
+
+output "r53_zone_id" {
+  value = aws_route53_zone.base_zone.zone_id
+}

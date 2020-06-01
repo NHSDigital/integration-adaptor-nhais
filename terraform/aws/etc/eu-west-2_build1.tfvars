@@ -7,4 +7,5 @@ nhais_service_launch_type = "FARGATE"
 nhais_log_level = "DEBUG"
 cluster_container_insights = "enabled"
 build_id = "develop-2-6659f4e"
+docdb_instance_class = "db.r5.large"
 

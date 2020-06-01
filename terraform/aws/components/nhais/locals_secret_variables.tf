@@ -10,12 +10,3 @@ locals {
     }
   ]
 }
-
-    # {
-    #   name = "NHAIS_MONGO_USERNAME"
-    #   value = "user"
-    # },
-    # {
-    #   name = "NHAIS_MONGO_PASSWORD"
-    #   value = "pass"
-    # }

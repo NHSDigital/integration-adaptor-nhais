@@ -5,12 +5,12 @@ resource "aws_docdb_cluster_parameter_group" "nhais_db_parameters" {
 
   parameter {
     name = "tls"
-    value = "disabled"
+    value = var.docdb_tls
   }
 
   parameter {
     name = "audit_logs"
-    value = "enabled"
+    value = var.docdb_audit_logs
     apply_method = "immediate"
   }
 

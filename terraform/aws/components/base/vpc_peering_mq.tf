@@ -49,4 +49,3 @@ resource "aws_security_group_rule" "mhs_inbound_security_group_amazon_mq_egress_
     data.aws_vpc.mq_vpc.cidr_block]
   description = "Allow outbound requests to Amazon MQ inbound queue"
 }
-

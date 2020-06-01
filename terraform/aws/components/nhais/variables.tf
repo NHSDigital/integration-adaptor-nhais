@@ -94,17 +94,37 @@ variable "nhais_healthcheck_path" {
   default = "/healthcheck"
 }
 
-variable "nhais_db_parameters" {
-  type = list(object({name=string, value=string}))
-  description = "List of parameters for DocDB"
-  default = [
-    {
-      name = "tls"
-      value = "disabled"
-    },
-    { 
-      name = "audit_logs"
-      value = "enabled"
-    }
-  ]
+variable "docdb_tls" {
+  type = string
+  default = "disabled"
+  description = "Should the Document DB have a TLS enabled for incomming connections"
+}
+
+variable "docdb_audit_logs" {
+  type = string
+  default = "disabled"
+  description = "Should audit logs be enabled for Document DB"
+}
+
+variable "docdb_retention_period" {
+  type = number
+  description = "How many days should the backups be kept, default is 1 day"
+  default = 1
+}
+
+variable "docdb_instance_class" {
+  type = string
+  description = "Instance size to be used to Document DB instances"
+}
+
+variable "nhais_amqp_max_retries" {
+  type = number
+  description = "Max retries on connection to amqp"
+  default = 3
+}
+
+variable "nhais_amqp_retry_delay" {
+  type = number
+  description = "Delay on retries to connect to amqp"
+  default = 100
 }

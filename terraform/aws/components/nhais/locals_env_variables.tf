@@ -18,11 +18,11 @@ locals {
     },
     {
       name = "NHAIS_AMQP_MAX_RETRIES"
-      value = 3
+      value = var.nhais_amqp_max_retries
     },
     {
       name = "NHAIS_AMQP_RETRY_DELAY"
-      value = 100
+      value = var.nhais_amqp_retry_delay
     },
     {
       name = "NHAIS_MONGO_DATABASE_NAME"
