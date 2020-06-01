@@ -45,3 +45,8 @@ variable "enable_internet_access" {
   description = "Enables internet access from private subnets by adding a route table to NAT Gateway"
   default = false
 }
+
+variable "root_domain" {
+  type = string
+  description = "Name of the domain in which route53 records will be added"
+}
