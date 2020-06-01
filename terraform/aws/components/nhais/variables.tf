@@ -39,6 +39,16 @@ variable "nhais_service_desired_count" {
   description = "Number of containers to run in the service"
 }
 
+variable "nhais_service_minimal_count" {
+  type = number
+  description = "Minimal number of containers to run in the service"
+}
+
+variable "nhais_service_maximal_count" {
+  type = number
+  description = "Maximal number of containers to run in the service"
+}
+
 variable "nhais_service_container_port" {
   type = number
   description = "Port Number on which service within container will be listening"
@@ -117,6 +127,12 @@ variable "docdb_instance_class" {
   description = "Instance size to be used to Document DB instances"
 }
 
+variable "docdb_instance_count" {
+  type = number
+  description = "Number of instances in Document DB cluster"
+  default = 1
+}
+
 variable "nhais_amqp_max_retries" {
   type = number
   description = "Max retries on connection to amqp"
@@ -127,4 +143,9 @@ variable "nhais_amqp_retry_delay" {
   type = number
   description = "Delay on retries to connect to amqp"
   default = 100
+}
+variable "nhais_service_target_request_count" {
+  type = number
+  description = "The target number of requests per minute that an service should handle. The number of services will be autoscaled so each instance handles this number of requests. This value should be tuned based on the results of performance testing."
+  default = 1200
 }

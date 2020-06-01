@@ -44,6 +44,11 @@ variable "cluster_id" {
   description = "(Required) ID of the cluster to run the service on"
 }
 
+variable "maximal_count" {
+  type = number
+  description = "(Required) Maximal Number of containers to run in the service"
+}
+
 variable "desired_count" {
   type = number
   description = "(Required) Number of containers to run in the service"
@@ -123,11 +128,6 @@ variable "vpc_id" {
   type = string
   description = "(Required) ID of VPC in which this service will be running"
 }
-
-# variable "subnet_cidrs" {
-#   type = list(string)
-#   description = "(Required) List of CIDRs for subnets which this service will use"
-# }
 
 variable "subnet_ids" {
   type = list(string)
@@ -209,12 +209,6 @@ variable "secret_variables" {
   description = "list of objects for secret variables to pass to container"
   default = []
 }
-
-# variable "port_mappings" {
-#   type = list(object({containerPort=number, hostPort=number, protocol=string}))
-#   description = "List of object for portMappings to pass to container"
-#   default = []
-# }
 
 variable "task_execution_role_arn" {
   type = string

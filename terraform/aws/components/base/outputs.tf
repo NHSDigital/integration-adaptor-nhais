@@ -33,3 +33,7 @@ output "private_nat_gw_route_table" {
 output "r53_zone_id" {
   value = aws_route53_zone.base_zone.zone_id
 }
+
+output "r53_zone_name" {
+  value = aws_route53_zone.base_zone.name
+}
