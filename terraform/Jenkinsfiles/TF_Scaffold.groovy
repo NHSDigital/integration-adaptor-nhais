@@ -46,8 +46,7 @@ pipeline {
                 variablesMap.put(kvp[0],kvp[1])
               }
             }
-            
-           
+               
             List<String> tfParams = []
             if (params.Action == "destroy" || params.Action == "plan-destroy") {tfParams.add("-destroy")}
             if (terraformInit(TF_STATE_BUCKET, params.Project, params.Environment, params.Component, region) !=0) { error("Terraform init failed")}
@@ -92,9 +91,13 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     parametersList = parameters
     parametersList.add("-no-color")
     //parametersList.add("-compact-warnings")  /TODO update terraform to have this working
+    List<String> variableFilesList = [
+      "-var-file=../../etc/global.tfvars",
+      "-var-file=../../etc/${region}_${environment}.tfvars"
+    ]
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
     List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
-    String command = "terraform ${action} ${parametersList.join(" ")} ${variablesList.join(" ")} -var-file=../../etc/global.tfvars -var-file=../../etc/${region}_${environment}.tfvars"
+    String command = "terraform ${action} ${variableFilesList.join(" ")} ${parametersList.join(" ")} ${variablesList.join(" ")} "
     dir("components/${component}") {
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     } // dir
