@@ -12,8 +12,9 @@ public class ReferenceTransactionNumber extends Reference {
         return Long.decode(getReference());
     }
 
-    public void setTransactionNumber(Long transactionNumber) {
+    public ReferenceTransactionNumber setTransactionNumber(Long transactionNumber) {
         this.setReference(Long.toString(transactionNumber));
+        return this;
     }
 
     @Override

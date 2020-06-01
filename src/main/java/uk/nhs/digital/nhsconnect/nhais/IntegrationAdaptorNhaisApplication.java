@@ -9,7 +9,6 @@ import org.springframework.jms.annotation.EnableJms;
 public class IntegrationAdaptorNhaisApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IntegrationAdaptorNhaisApplication.class, args);
+	    SpringApplication.run(IntegrationAdaptorNhaisApplication.class, args);
 	}
-
 }

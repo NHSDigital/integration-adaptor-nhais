@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.controller;
+package uk.nhs.digital.nhsconnect.nhais.container;
 
 import org.testcontainers.containers.GenericContainer;
 

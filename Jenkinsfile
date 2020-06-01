@@ -12,6 +12,8 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         ENVIRONMENT_ID = "nhais-build"
+        ECR_REPO_DIR = "nhais"
+        DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
     }    
 
     stages {
@@ -28,7 +30,7 @@ pipeline {
                 stage('Build Docker Images') {
                     steps {
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t local/nhais:${BUILD_TAG} .'
+                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
                         }
                     }
                 }
@@ -38,7 +40,9 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh label: 'Pushing nhais image', script: "packer build -color=false pipeline/packer/nhais-push.json"
+                            if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
+                            String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
+                            if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
                         }
                     }
                 }
@@ -143,3 +147,9 @@ int terraform(String action, String tfStateBucket, String project, String enviro
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     } // dir
 } // int Terraform
+
+int ecrLogin(String aws_region) {
+    String ecrCommand = "aws ecr get-login --region ${aws_region}"
+    String dockerLogin = sh (label: "Getting Docker login from ECR", script: ecrCommand, returnStdout: true).replace("-e none","") // some parameters that AWS provides and docker does not recognize
+    return sh(label: "Logging in with Docker", script: dockerLogin, returnStatus: true)
+}

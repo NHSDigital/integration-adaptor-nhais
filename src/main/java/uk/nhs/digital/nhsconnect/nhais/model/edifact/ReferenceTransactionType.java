@@ -11,6 +11,7 @@ public class ReferenceTransactionType extends Reference {
 
     public ReferenceTransactionType(@NonNull TransactionType transactionType) {
         super("950", transactionType.getCode());
+        this.transactionType = transactionType;
     }
 
     @Override
