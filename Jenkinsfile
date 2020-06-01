@@ -66,29 +66,31 @@ pipeline {
             stages {
                 stage('Deploy using Terraform') {
                     steps {
-                      String tfCodeBranch  = "feature/NIAD-119-terraform-for-NHAIS"
-                      String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
-                      String tfProject     = "nia"
-                      String tfEnvironment = "build1" // change for ptl, vp, goes here
-                      String tfComponent   = "nhais"
-                      String tfRegion      = "eu-west-2"
+                        script {
+                            String tfCodeBranch  = "feature/NIAD-119-terraform-for-NHAIS"
+                            String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
+                            String tfProject     = "nia"
+                            String tfEnvironment = "build1" // change for ptl, vp goes here
+                            String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
+                            String tfRegion      = "eu-west-2"
 
-                      List<String> tfParams = []
-                      Map<String,String> tfVariables = ["build_id": BUILD_TAG]
+                            List<String> tfParams = []
+                            Map<String,String> tfVariables = ["build_id": BUILD_TAG]
 
-                      // Clone repository with terraform
-                      git (branch: tfCodeBranch, url: tfCodeRepo)
+                            // Clone repository with terraform
+                            git (branch: tfCodeBranch, url: tfCodeRepo)
 
-                      // Run TF Init
-                      if (terraformInit(TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion) !=0) { error("Terraform init failed")}
+                            // Run TF Init
+                            if (terraformInit(TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion) !=0) { error("Terraform init failed")}
 
-                      // Run TF Plan
-                      if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Plan failed")}
+                            // Run TF Plan
+                            if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Plan failed")}
 
-                      //Run TF Apply
-                      if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Apply failed")}
-                    }
-                }
+                            //Run TF Apply
+                            if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfParams) !=0 ) { error("Terraform Apply failed")}
+                        } //script
+                    } //steps
+                } //stage
                 stage('Run integration tests') {
                     steps {
                         echo 'TODO run integration tests'
