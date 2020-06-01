@@ -43,7 +43,7 @@ public class InterchangeTrailer extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (numberOfMessages < 1) {
-            throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required" + numberOfMessages);
+            throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required");
         }
     }
 }
