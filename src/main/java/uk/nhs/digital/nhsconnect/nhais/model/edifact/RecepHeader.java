@@ -1,8 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
@@ -10,20 +10,19 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-/**
- * A specialisation of a segment for the specific use case of an interchange header
- * takes in specific values required to generate an interchange header
- * example: UNB+UNOA:2+TES5+XX11+920113:1317+00000002'
- */
-@Getter @Setter @RequiredArgsConstructor
-public class InterchangeHeader extends Segment {
-
-    private static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(ZoneOffset.UTC);
+@Getter
+@Setter
+@AllArgsConstructor
+public class RecepHeader extends Segment {
+    private final static String DATE_TIME_FORMAT = "yyMMdd:HHmm";
+    private static String UNOA = "UNOA:2";
+    private static String TRANSFER = "+RECEP+++EDIFACT TRANSFER";
+    private static String PLUS_SEPARATOR = "+";
 
     private @NonNull String sender;
     private @NonNull String recipient;
     private @NonNull Instant translationTime;
-    private Long sequenceNumber;
+    private @NonNull Long sequenceNumber;
 
     @Override
     public String getKey() {
@@ -32,9 +31,22 @@ public class InterchangeHeader extends Segment {
 
     @Override
     public String getValue() {
-        String timestamp = DATE_FORMAT.format(translationTime);
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-        return "UNOA:2"+"+"+sender+"+"+recipient+"+"+timestamp+"+"+formattedSequenceNumber;
+        return UNOA
+                .concat(PLUS_SEPARATOR)
+                .concat(sender)
+                .concat(PLUS_SEPARATOR)
+                .concat(recipient)
+                .concat(PLUS_SEPARATOR)
+                .concat(getDateTimeFormat().format(translationTime))
+                .concat(PLUS_SEPARATOR)
+                .concat(formattedSequenceNumber)
+                .concat(PLUS_SEPARATOR)
+                .concat(TRANSFER);
+    }
+
+    private DateTimeFormatter getDateTimeFormat() {
+        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneOffset.UTC);
     }
 
     @Override
@@ -42,7 +54,7 @@ public class InterchangeHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
+        if (sequenceNumber <= 0) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
         }
     }
@@ -50,10 +62,10 @@ public class InterchangeHeader extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
 
-        if(sender.isEmpty()){
+        if (sender.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute sender is required");
         }
-        if(recipient.isEmpty()){
+        if (recipient.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute recipient is required");
         }
     }

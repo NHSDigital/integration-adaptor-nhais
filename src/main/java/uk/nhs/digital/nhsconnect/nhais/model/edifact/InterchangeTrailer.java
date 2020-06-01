@@ -11,7 +11,9 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
  * takes in specific values required to generate an interchange trailer
  * example: UNZ+1+00000002'
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class InterchangeTrailer extends Segment {
 
     private @NonNull Integer numberOfMessages;
@@ -25,7 +27,7 @@ public class InterchangeTrailer extends Segment {
     @Override
     public String getValue() {
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-        return numberOfMessages+"+"+formattedSequenceNumber;
+        return numberOfMessages + "+" + formattedSequenceNumber;
     }
 
     @Override
@@ -33,15 +35,15 @@ public class InterchangeTrailer extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
+        if (sequenceNumber <= 0) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
     }
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        // Is it always 1 ?
-        if(numberOfMessages != 1){
+        // TODO https://gpitbjss.atlassian.net/browse/NIAD-224
+        if (numberOfMessages >= 1) {
             throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required");
         }
     }

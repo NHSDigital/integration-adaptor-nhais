@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
@@ -23,12 +23,11 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class RecepProducerService {
-    private static final String UNB_TRANSFER_SUFFIX = "+RECEP+++EDIFACT TRANSFER";
     private final OutboundStateRepository outboundStateRepository;
 
     public Interchange produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
         Interchange recepInterchange = new Interchange(mapEdifactToRecep(receivedInterchangeFromHa));
-        recordOutboundState(recepInterchange);
+        recordOutboundState(receivedInterchangeFromHa);
 
         return recepInterchange;
     }
@@ -68,11 +67,12 @@ public class RecepProducerService {
         }
     }
 
-    private InterchangeHeader mapToRecipInterchangeHeader(Interchange interchange) {
-        InterchangeHeader interchangeHeader = interchange.getInterchangeHeader();
-        interchangeHeader.setTransferString(UNB_TRANSFER_SUFFIX);
-
-        return interchangeHeader;
+    private RecepHeader mapToRecipInterchangeHeader(Interchange interchange) {
+        return new RecepHeader(
+                interchange.getInterchangeHeader().getSender(),
+                interchange.getInterchangeHeader().getRecipient(),
+                interchange.getInterchangeHeader().getTranslationTime(),
+                interchange.getInterchangeHeader().getSequenceNumber());
     }
 
     private RecepMessageHeader mapToRecipMessageHeader(Interchange interchange) {

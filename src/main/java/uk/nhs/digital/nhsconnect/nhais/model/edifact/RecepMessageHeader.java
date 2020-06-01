@@ -24,13 +24,17 @@ public class RecepMessageHeader extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
-        // Do nothing
+        if (sequenceNumber == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
+        }
+        if (sequenceNumber <= 0) {
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
+        }
     }
 
     @Override
     public void preValidate() {
         // Do nothing
     }
-
 }
 
