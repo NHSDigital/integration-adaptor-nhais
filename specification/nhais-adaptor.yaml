@@ -259,7 +259,7 @@ paths:
                           version: '1'
                           code: unsupportedMediaType
                           display: "Must be 'application/json-patch+json'."
-  '/Patient/{id}':
+  '/Patient/{id}/$nhais.acceptance':
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
@@ -267,7 +267,15 @@ paths:
         ## Overview
         Use this endpoint to send an Acceptance to NHAIS.
 
-        ## Supported acceptance types and fields
+        ## Payload Description
+
+        The request payload is a Parameters list. The list must contain parameters with the following names and values:
+
+        * patient: a Patient `resource`, see below for details
+        * acceptanceType: simple parameter with `valueString` one of: birth, first, transferin, immigrant, exservices
+        * acceptanceCode: TODO
+
+        ## Patient Parameter
 
         Refer to the examples to see how the fields are represented in the request body.
 
@@ -443,18 +451,12 @@ paths:
       operationId: acceptance
       tags:
         - patients
-      parameters:
-        - in: query
-          name: acceptanceType
-          schema:
-            type: string
-            enum: [birth, first, transfer, immigrant, exservices]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: components/schemas/Patient.yaml
+              $ref: components/schemas/Parameters.yaml
             examples:
               acceptanceBirthMinimal:
                 summary: "Acceptance transaction, acceptanceType: birth, minimum required fields only"
