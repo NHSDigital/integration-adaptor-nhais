@@ -41,7 +41,6 @@ public class GpNameAndAddress extends Segment{
         if (StringUtils.isEmpty(identifier)) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
-        //Is below needed as it will always be populated
         if (StringUtils.isEmpty(code)) {
             throw new EdifactValidationException(getKey() + ": Attribute code is required");
         }

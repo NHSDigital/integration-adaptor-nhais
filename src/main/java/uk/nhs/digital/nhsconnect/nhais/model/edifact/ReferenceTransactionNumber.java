@@ -27,7 +27,7 @@ public class ReferenceTransactionNumber extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-
+        //NOP
     }
 
     public Long getTransactionNumber() {

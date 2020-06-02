@@ -56,7 +56,7 @@ class EdifactMessageTest {
     @Test
     void testParsingMessageHeader() {
         EdifactMessage edifactMessage = new EdifactMessage(exampleMessage);
-        System.out.println(edifactMessage.getMessageHeader().getValue());
+
         assertThat(edifactMessage.getMessageHeader().getValue()).isEqualTo("00000004+FHSREG:0:1:FH:FHS001");
         assertThat(edifactMessage.getMessageHeader().getSequenceNumber()).isEqualTo(4L);
     }
@@ -65,6 +65,7 @@ class EdifactMessageTest {
     void testParsingReferenceTransactionNumber() {
         EdifactMessage edifactMessage = new EdifactMessage(exampleMessage);
         ReferenceTransactionNumber referenceTransactionNumber = edifactMessage.getReferenceTransactionNumber();
+
         assertThat(referenceTransactionNumber.getValue()).isEqualTo("TN:18");
         assertThat(referenceTransactionNumber.getTransactionNumber()).isEqualTo(18L);
     }

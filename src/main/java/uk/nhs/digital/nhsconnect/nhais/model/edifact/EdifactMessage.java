@@ -65,6 +65,6 @@ public class EdifactMessage {
             .map(String::strip)
             .filter(segment -> segment.startsWith(key))
             .findFirst()
-            .orElseThrow(IllegalStateException::new);
+            .orElseThrow();
     }
 }
