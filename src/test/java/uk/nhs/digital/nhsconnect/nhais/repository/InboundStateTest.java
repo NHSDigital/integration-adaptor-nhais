@@ -7,16 +7,17 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InboundStateTest {
 
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
-    private static final ZonedDateTime TRANSLATION_TIMESTAMP = ZonedDateTime.now();
+    private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime.now().toInstant();
     private static final long INTERCHANGE_SEQUENCE = 123L;
     private static final long MESSAGE_SEQUENCE = 234L;
     private static final long TRANSACTION_NUMBER = 345L;
@@ -44,6 +45,6 @@ public class InboundStateTest {
     void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
         var inboundStateFromInterchange = InboundState.fromInterchange(INTERCHANGE);
 
-        assertEquals(inboundStateFromInterchange, INBOUND_STATE);
+        assertThat(inboundStateFromInterchange).isEqualTo(INBOUND_STATE);
     }
 }

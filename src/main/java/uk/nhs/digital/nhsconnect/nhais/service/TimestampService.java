@@ -1,15 +1,23 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.utils.TimestampUtils;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class TimestampService {
+    public static final ZoneId UKZone = ZoneId.of("Europe/London");
 
-    public ZonedDateTime getCurrentTimestamp() {
-        return TimestampUtils.getCurrentDateTimeAsUTC();
+    public Instant getCurrentTimestamp() {
+        var now = Instant.now();
+        return now.minusNanos(now.getNano());
     }
 
+    public String formatInISO(Instant timestamp) {
+        return DateTimeFormatter.ISO_DATE_TIME
+            .withZone(TimestampService.UKZone)
+            .format(timestamp);
+    }
 }

@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
@@ -28,19 +29,15 @@ public class ReferenceTransactionType extends Reference {
     }
 
     @Getter
+    @RequiredArgsConstructor
     public enum TransactionType {
         ACCEPTANCE("G1", "ACG"),
         AMENDMENT("G2", "AMG"),
         REMOVAL("G3", "REG"),
         DEDUCTION("G4", "DER");
 
-        TransactionType(String code, String abbreviation) {
-            this.code = code;
-        }
-
-        private String code;
-        private String abbreviation;
-
+        private final String code;
+        private final String abbreviation;
     }
 
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +34,7 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
+@DirtiesContext
 public class SequenceServiceIntegrationTest {
     private final static String SENDER_1 = "test-sender-1";
     private final static String SENDER_2 = "test-sender-2";
