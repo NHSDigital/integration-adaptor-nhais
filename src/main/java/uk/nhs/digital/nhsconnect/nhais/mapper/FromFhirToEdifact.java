@@ -6,7 +6,8 @@ import java.util.List;
 public class FromFhirToEdifact {
 
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
-        new PersonNameMapper()
+            new PersonNameMapper(),
+            new AcceptanceTypeMapper()
     );
 
 //    public Interchange map(Parameters parameters) {
