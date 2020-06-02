@@ -67,7 +67,7 @@ pipeline {
                 stage('Deploy using Terraform') {
                     steps {
                         script {
-                            String tfCodeBranch  = "feature/NIAD-119-terraform-for-NHAIS"
+                            String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
                             String tfProject     = "nia"
                             String tfEnvironment = "build1" // change for ptl, vp goes here
