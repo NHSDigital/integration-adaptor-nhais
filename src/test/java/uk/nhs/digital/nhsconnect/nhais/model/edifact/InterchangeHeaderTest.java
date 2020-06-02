@@ -19,51 +19,47 @@ public class InterchangeHeaderTest {
     private final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
         .of(2019, 5, 23, 9, 0, 0, 0, ZoneOffset.UTC)
         .toInstant();
+    private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
+    private final InterchangeHeader interchangeHeaderSummer = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
 
     @Test
     public void testValidInterchangeHeaderWithWinterTime() throws EdifactValidationException {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME);
-        interchangeHeader.setSequenceNumber(1L);
-
-        String edifact = interchangeHeader.toEdifact();
+        String edifact = interchangeHeaderWinter.toEdifact();
 
         assertThat(edifact).isEqualTo("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001'");
     }
 
     @Test
     public void testValidInterchangeHeaderWithSummerTime() throws EdifactValidationException {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME);
-        interchangeHeader.setSequenceNumber(1L);
-
-        String edifact = interchangeHeader.toEdifact();
+        String edifact = interchangeHeaderSummer.toEdifact();
 
         assertThat(edifact).isEqualTo("UNB+UNOA:2+SNDR+RECP+190523:1000+00000001'");
     }
 
     @Test
     public void testValidationStateful() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME);
-
-        assertThatThrownBy(interchangeHeader::validateStateful)
+        assertThatThrownBy(interchangeHeaderWinter::validateStateful)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sequenceNumber is required");
     }
 
     @Test
     public void testPreValidationSenderEmptyString() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("", "RECP", TRANSLATION_WINTER_DATE_TIME);
-
-        assertThatThrownBy(interchangeHeader::preValidate)
+        assertThatThrownBy(interchangeHeaderWinter::preValidate)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sender is required");
     }
 
     @Test
     public void testPreValidationRecipientEmptyString() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "", TRANSLATION_WINTER_DATE_TIME);
-
-        assertThatThrownBy(interchangeHeader::preValidate)
+        assertThatThrownBy(interchangeHeaderWinter::preValidate)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute recipient is required");
+    }
+
+    @Test
+    void testFromString() {
+        assertThat(InterchangeHeader.fromString("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001").getValue()).isEqualTo(interchangeHeaderWinter.getValue());
+        assertThatThrownBy(() -> InterchangeHeader.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }
