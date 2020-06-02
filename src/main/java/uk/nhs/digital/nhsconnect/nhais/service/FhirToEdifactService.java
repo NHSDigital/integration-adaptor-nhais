@@ -7,11 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -134,18 +145,18 @@ public class FhirToEdifactService {
     }
 
     private void recordOutboundState(TranslationItems translationItems) {
-        OutboundStateDAO outboundStateDAO = new OutboundStateDAO();
-        outboundStateDAO.setRecipient(translationItems.recipient);
-        outboundStateDAO.setSender(translationItems.sender);
+        var outboundState = new OutboundState()
+            .setRecipient(translationItems.recipient)
+            .setSender(translationItems.sender)
 
-        outboundStateDAO.setSendInterchangeSequence(translationItems.sendInterchangeSequence);
-        outboundStateDAO.setSendMessageSequence(translationItems.sendMessageSequence);
-        outboundStateDAO.setTransactionId(translationItems.transactionNumber);
+            .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
+            .setSendMessageSequence(translationItems.sendMessageSequence)
+            .setTransactionId(translationItems.transactionNumber)
 
-        outboundStateDAO.setTransactionType(translationItems.transactionType.getAbbreviation());
-        outboundStateDAO.setTransactionTimestamp(Date.from(translationItems.translationTimestamp.toInstant()));
-        outboundStateDAO.setOperationId(translationItems.operationId);
-        outboundStateRepository.save(outboundStateDAO);
+            .setTransactionType(translationItems.transactionType.getAbbreviation())
+            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+            .setOperationId(translationItems.operationId);
+        outboundStateRepository.save(outboundState);
     }
 
     private void addSequenceNumbersToSegments(TranslationItems translationItems) {
@@ -191,7 +202,6 @@ public class FhirToEdifactService {
         private Long sendMessageSequence;
         private Long sendInterchangeSequence;
         private Long transactionNumber;
-        private ZonedDateTime translationTimestamp;
+        private Instant translationTimestamp;
     }
-
 }

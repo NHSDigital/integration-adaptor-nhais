@@ -37,7 +37,7 @@ dependencies {
 	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.2.0'
 	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.2.0'
 	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.2.0'
-    implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'com.google.guava:guava:29.0-jre'
 //	implementation 'com.helger:ph-schematron:5.3.0', {
 //		exclude group: 'com.helger', module: 'ph-jaxb-pom'
 //	}
@@ -56,8 +56,9 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-	testImplementation "org.testcontainers:testcontainers:1.14.2"
-	testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+    testImplementation "org.testcontainers:testcontainers:1.14.2"
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+    testCompile("org.assertj:assertj-core:3.16.1")
 }
 
 lombok {
