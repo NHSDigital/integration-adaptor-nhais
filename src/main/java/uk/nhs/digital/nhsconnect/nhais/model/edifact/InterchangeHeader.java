@@ -1,6 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -15,9 +18,10 @@ import java.time.format.DateTimeFormatter;
  * takes in specific values required to generate an interchange header
  * example: UNB+UNOA:2+TES5+XX11+920113:1317+00000002'
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @NoArgsConstructor @RequiredArgsConstructor @AllArgsConstructor
 public class InterchangeHeader extends Segment {
 
+    public static final String KEY = "UNB";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone);
 
     private @NonNull String sender;
@@ -27,7 +31,7 @@ public class InterchangeHeader extends Segment {
 
     @Override
     public String getKey() {
-        return "UNB";
+        return KEY;
     }
 
     @Override
@@ -55,5 +59,14 @@ public class InterchangeHeader extends Segment {
         if (recipient.isEmpty()){
             throw new EdifactValidationException(getKey() + ": Attribute recipient is required");
         }
+    }
+
+    public static InterchangeHeader fromString(String edifactString) {
+        if(!edifactString.startsWith(InterchangeHeader.KEY)){
+            throw new IllegalArgumentException("Can't create " + InterchangeHeader.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\+");
+        ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
+        return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
     }
 }

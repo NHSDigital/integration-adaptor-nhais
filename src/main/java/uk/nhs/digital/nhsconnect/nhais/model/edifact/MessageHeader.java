@@ -1,7 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
@@ -10,14 +11,15 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
  * takes in specific values required to generate an message header
  * example: UNH+00000003+FHSREG:0:1:FH:FHS001'
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class MessageHeader extends Segment {
 
+    public static final String KEY = "UNH";
     private Long sequenceNumber;
 
     @Override
     public String getKey() {
-        return "UNH";
+        return KEY;
     }
 
     @Override
@@ -39,6 +41,14 @@ public class MessageHeader extends Segment {
     @Override
     public void preValidate() {
         // Do nothing
+    }
+
+    public static MessageHeader fromString(String edifactString) {
+        if(!edifactString.startsWith(MessageHeader.KEY)){
+            throw new IllegalArgumentException("Can't create " + MessageHeader.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\+");
+        return new MessageHeader(Long.valueOf(split[1]));
     }
 
 }

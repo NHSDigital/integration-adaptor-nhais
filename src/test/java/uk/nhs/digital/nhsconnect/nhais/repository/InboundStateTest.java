@@ -1,17 +1,20 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class InboundStateTest {
 
@@ -23,15 +26,7 @@ public class InboundStateTest {
     private static final long TRANSACTION_NUMBER = 345L;
     private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
 
-    public static final Interchange INTERCHANGE = new Interchange(List.of(
-        new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIMESTAMP)
-            .setSequenceNumber(INTERCHANGE_SEQUENCE),
-        new MessageHeader()
-            .setSequenceNumber(MESSAGE_SEQUENCE),
-        new ReferenceTransactionNumber()
-            .setTransactionNumber(TRANSACTION_NUMBER),
-        new ReferenceTransactionType(TRANSACTION_TYPE)));
-
+    public static final Interchange INTERCHANGE = Mockito.mock(Interchange.class);
     public static final InboundState INBOUND_STATE = new InboundState()
         .setSender(SENDER)
         .setRecipient(RECIPIENT)
@@ -40,6 +35,16 @@ public class InboundStateTest {
         .setTransactionNumber(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
+
+    @BeforeEach
+    void setUp() {
+        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE);
+        when(InboundStateTest.INTERCHANGE.getInterchangeHeader()).thenReturn(interchangeHeader);
+        when(InboundStateTest.INTERCHANGE.getMessageHeader()).thenReturn(new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
+        when(InboundStateTest.INTERCHANGE.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber().setTransactionNumber(TRANSACTION_NUMBER));
+        when(InboundStateTest.INTERCHANGE.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(TRANSACTION_TYPE));
+    }
+
 
     @Test
     void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
