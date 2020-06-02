@@ -3,18 +3,15 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 import uk.nhs.digital.nhsconnect.nhais.model.sequence.OutboundSequenceId;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceDao;
 import uk.nhs.digital.nhsconnect.nhais.service.SequenceService;
@@ -32,7 +29,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(initializers = SequenceServiceIntegrationTest.MongoDbInitializer.class)
+@ContextConfiguration(initializers = MongoDbInitializer.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
@@ -47,22 +44,12 @@ public class SequenceServiceIntegrationTest {
     private final static String INTERCHANGE_MESSAGE_KEY_1 = String.format("SMS-%s-%s", SENDER_1, RECIPIENT_1);
     private final static String INTERCHANGE_MESSAGE_KEY_2 = String.format("SMS-%s-%s", SENDER_2, RECIPIENT_2);
 
-    private static MongoDbContainer mongoDbContainer;
-    private static ActiveMqContainer activeMqContainer;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private SequenceService sequenceService;
     @Autowired
     private SequenceDao sequenceDao;
-
-    @BeforeAll
-    public static void startContainerAndPublicPortIsAvailable() {
-        mongoDbContainer = new MongoDbContainer();
-        mongoDbContainer.start();
-        activeMqContainer = new ActiveMqContainer();
-        activeMqContainer.start();
-    }
 
     @Test
     public void When_GenerateTransactionId_Then_IncreasedByOne() {
@@ -166,18 +153,5 @@ public class SequenceServiceIntegrationTest {
         return seqList.stream()
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    public static class MongoDbInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            LOGGER.info("Overriding Spring Properties for mongodb and activemq !!!!!!!!!");
-
-            TestPropertyValues values = TestPropertyValues.of("nhais.mongo.host=" + mongoDbContainer.getContainerIpAddress(),
-                    "nhais.mongo.port=" + mongoDbContainer.getFirstMappedPort(),
-                    "nhais.amqp.brokers=amqp://" + activeMqContainer.getContainerIpAddress() + ":" + activeMqContainer.getFirstMappedPort());
-
-            values.applyTo(configurableApplicationContext);
-        }
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${NHAIS_OUTBOUND_SERVER_PORT:8080}
 
 logging:
   level:
@@ -12,6 +12,11 @@ spring:
   jms:
     listener:
       acknowledge-mode: CLIENT
+  data:
+    mongodb:
+      database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
+      uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
+      autoIndexCreation: true
 
 management:
   endpoints:
@@ -34,9 +39,3 @@ nhais:
     password: ${NHAIS_AMQP_PASSWORD:}
     maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
     backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}
-  mongo:
-    databaseName: ${NHAIS_MONGO_DATABASE_NAME:nhais}
-    username: ${NHAIS_MONGO_USERNAME:}
-    password: ${NHAIS_MONGO_PASSWORD:}
-    host: ${NHAIS_MONGO_HOST:localhost}
-    port: ${NHAIS_MONGO_PORT:27017}
