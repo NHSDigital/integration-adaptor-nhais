@@ -19,7 +19,7 @@ class ReferenceMessageRecepTest {
     @Test
     void whenGettingKey_thenReturnsProperValue() {
         String key = new ReferenceMessageRecep(
-            123L, ReferenceMessageRecep.RecepCode.CA)
+            123L, ReferenceMessageRecep.RecepCode.ERROR)
             .getKey();
 
         assertThat(key).isEqualTo("RFF");
@@ -28,7 +28,7 @@ class ReferenceMessageRecepTest {
     @Test
     void whenGettingValue_thenReturnsProperValue() {
         String value = new ReferenceMessageRecep(
-            123L, ReferenceMessageRecep.RecepCode.CA)
+            123L, ReferenceMessageRecep.RecepCode.ERROR)
             .getValue();
 
         assertThat(value).isEqualTo("MIS:123 CA");
@@ -37,7 +37,7 @@ class ReferenceMessageRecepTest {
     @Test
     void whenPreValidatedDataViolatesNullChecks_thenThrowsException(SoftAssertions softly) {
         softly.assertThatThrownBy(
-            () -> new ReferenceMessageRecep(null, ReferenceMessageRecep.RecepCode.CA)
+            () -> new ReferenceMessageRecep(null, ReferenceMessageRecep.RecepCode.ERROR)
                 .preValidate())
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("RFF: Attribute messageSequenceNumber is required");

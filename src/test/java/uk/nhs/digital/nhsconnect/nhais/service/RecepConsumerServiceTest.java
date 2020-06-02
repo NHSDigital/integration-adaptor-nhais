@@ -32,8 +32,8 @@ class RecepConsumerServiceTest {
     private static final long INTERCHANGE_SEQUENCE = 345;
     private static final long MESSAGE_1_SEQUENCE = 123L;
     private static final long MESSAGE_2_SEQUENCE = 234;
-    private static final ReferenceMessageRecep.RecepCode MESSAGE_1_RECEP_CODE = ReferenceMessageRecep.RecepCode.CA;
-    private static final ReferenceMessageRecep.RecepCode MESSAGE_2_RECEP_CODE = ReferenceMessageRecep.RecepCode.CI;
+    private static final ReferenceMessageRecep.RecepCode MESSAGE_1_RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
+    private static final ReferenceMessageRecep.RecepCode MESSAGE_2_RECEP_CODE = ReferenceMessageRecep.RecepCode.INCOMPLETE;
     private static final Instant DATE_TIME_PERIOD = new TimestampService().getCurrentTimestamp();
     @Mock
     private EdifactParser edifactParser;

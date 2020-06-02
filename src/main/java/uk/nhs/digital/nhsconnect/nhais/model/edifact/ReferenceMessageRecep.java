@@ -43,9 +43,9 @@ public class ReferenceMessageRecep extends Segment {
     @Getter
     @RequiredArgsConstructor
     public enum RecepCode {
-        CP("CP", "Translation successful"),
-        CA("CA", "Translation error"),
-        CI("CI", "Translation incomplete due to a fatal error during translation");
+        SUCCESS("CP", "Translation successful"),
+        ERROR("CA", "Translation error"),
+        INCOMPLETE("CI", "Translation incomplete due to a fatal error during translation");
 
         private final String code;
         private final String description;

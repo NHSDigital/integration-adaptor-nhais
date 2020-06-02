@@ -28,7 +28,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private static final String RECIPIENT = "some_recipient";
     private static final Long INTERCHANGE_SEQUENCE = 123L;
     private static final Long MESSAGE_SEQUENCE = 234L;
-    private static final ReferenceMessageRecep.RecepCode RECEP_CODE = ReferenceMessageRecep.RecepCode.CA;
+    private static final ReferenceMessageRecep.RecepCode RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
     private static final Instant RECEP_DATE_TIME = Instant.ofEpochMilli(123123);
 
     @Autowired
