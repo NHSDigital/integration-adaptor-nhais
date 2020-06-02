@@ -117,7 +117,7 @@ public class FhirToEdifactService {
                 new BeginningOfMessage(),
                 new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType().setTransactionType(translationItems.transactionType),
+                new ReferenceTransactionType(translationItems.transactionType),
                 new SegmentGroup(1),
                 new ReferenceTransactionNumber(),
                 new MessageTrailer(8),
@@ -204,5 +204,4 @@ public class FhirToEdifactService {
         private Long transactionNumber;
         private Instant translationTimestamp;
     }
-
 }

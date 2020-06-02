@@ -19,7 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensi
 import java.time.Instant;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,21 +67,21 @@ class RecepConsumerServiceTest {
         var queryParamsValues = queryParamsArgumentCaptor.getAllValues();
         var detailsValues = detailsArgumentCaptor.getAllValues();
 
-        assertEquals(2, queryParamsValues.size());
-        assertEquals(2, detailsValues.size());
+        assertThat(queryParamsValues.size()).isEqualTo(2);
+        assertThat(detailsValues.size()).isEqualTo(2);
 
-        assertEquals(SENDER, queryParamsValues.get(0).getSender());
-        assertEquals(RECIPIENT, queryParamsValues.get(0).getRecipient());
-        assertEquals(INTERCHANGE_SEQUENCE, queryParamsValues.get(0).getInterchangeSequence());
-        assertEquals(MESSAGE_1_SEQUENCE, queryParamsValues.get(0).getMessageSequence());
-        assertEquals(MESSAGE_1_RECEP_CODE, detailsValues.get(0).getRecepCode());
-        assertEquals(DATE_TIME_PERIOD, detailsValues.get(0).getRecepDateTime());
+        assertThat(queryParamsValues.get(0).getSender()).isEqualTo(SENDER);
+        assertThat(queryParamsValues.get(0).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(0).getInterchangeSequence()).isEqualTo(INTERCHANGE_SEQUENCE);
+        assertThat(queryParamsValues.get(0).getMessageSequence()).isEqualTo(MESSAGE_1_SEQUENCE);
+        assertThat(detailsValues.get(0).getRecepCode()).isEqualTo(MESSAGE_1_RECEP_CODE);
+        assertThat(detailsValues.get(0).getRecepDateTime()).isEqualTo(DATE_TIME_PERIOD);
 
-        assertEquals(SENDER, queryParamsValues.get(1).getSender());
-        assertEquals(RECIPIENT, queryParamsValues.get(1).getRecipient());
-        assertEquals(INTERCHANGE_SEQUENCE, queryParamsValues.get(1).getInterchangeSequence());
-        assertEquals(MESSAGE_2_SEQUENCE, queryParamsValues.get(1).getMessageSequence());
-        assertEquals(MESSAGE_2_RECEP_CODE, detailsValues.get(1).getRecepCode());
-        assertEquals(DATE_TIME_PERIOD, detailsValues.get(1).getRecepDateTime());
+        assertThat(queryParamsValues.get(1).getSender()).isEqualTo(SENDER);
+        assertThat(queryParamsValues.get(1).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(1).getInterchangeSequence()).isEqualTo(INTERCHANGE_SEQUENCE);
+        assertThat(queryParamsValues.get(1).getMessageSequence()).isEqualTo(MESSAGE_2_SEQUENCE);
+        assertThat(detailsValues.get(1).getRecepCode()).isEqualTo(MESSAGE_2_RECEP_CODE);
+        assertThat(detailsValues.get(1).getRecepDateTime()).isEqualTo(DATE_TIME_PERIOD);
     }
 }

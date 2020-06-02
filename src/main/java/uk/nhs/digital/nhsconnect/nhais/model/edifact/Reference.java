@@ -1,14 +1,19 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-@Getter
-@NoArgsConstructor
+/**
+ *class declaration:
+ */
+@Getter @Setter @RequiredArgsConstructor
 public abstract class Reference extends Segment{
-    protected abstract String getReference();
-    protected abstract String getQualifier();
+
+    private @NonNull String qualifier;
+    private @NonNull String reference;
 
     @Override
     public String getKey() {
@@ -17,12 +22,12 @@ public abstract class Reference extends Segment{
 
     @Override
     public String getValue() {
-        return getQualifier() + ":" + getReference();
+        return qualifier + ":" + reference;
     }
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (getQualifier().isEmpty()) {
+        if (qualifier.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
     }

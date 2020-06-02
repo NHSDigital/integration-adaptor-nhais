@@ -5,9 +5,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @Getter @Setter @RequiredArgsConstructor
@@ -38,7 +38,8 @@ public class DateTimePeriod extends Segment{
         }
 
         public DateTimeFormatter getDateTimeFormat(){
-            return DateTimeFormatter.ofPattern(this.dateTimeFormat).withZone(ZoneOffset.UTC);
+            return DateTimeFormatter.ofPattern(this.dateTimeFormat)
+                .withZone(TimestampService.UKZone);
         }
     }
 

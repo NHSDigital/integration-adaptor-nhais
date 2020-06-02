@@ -1,46 +1,47 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-public class ReferenceMessageRecep extends Reference {
+@RequiredArgsConstructor
+public class ReferenceMessageRecep extends Segment {
 
+    public static final String KEY = "RFF";
     public static final String QUALIFIER = "MIS";
 
-    private @NonNull Long messageSequenceNumber;
-    private @NonNull RecepCode recepCode;
+    private final Long messageSequenceNumber;
+    private final RecepCode recepCode;
 
-    private String buildReferenceString() {
-        return messageSequenceNumber + " " + recepCode.name();
+    @Override
+    public String getKey() {
+        return KEY;
     }
 
     @Override
-    protected void validateStateful() throws EdifactValidationException {
-        if (StringUtils.isEmpty(getReference())) {
-            throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
+    public String getValue() {
+        return QUALIFIER + ":" + messageSequenceNumber + " " + recepCode.name();
+    }
+
+    @Override
+    protected void validateStateful() {
+    }
+
+    @Override
+    public void preValidate() throws EdifactValidationException {
+        if (messageSequenceNumber == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute messageSequenceNumber is required");
+        }
+        if (recepCode == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute recepCode is required");
         }
     }
 
-    @Override
-    protected String getReference() {
-        return buildReferenceString();
-    }
-
-    @Override
-    protected String getQualifier() {
-        return QUALIFIER;
-    }
-
     @Getter
+    @RequiredArgsConstructor
     public enum RecepCode {
         CP("CP", "Translation successful"),
         CA("CA", "Translation error"),
@@ -48,10 +49,5 @@ public class ReferenceMessageRecep extends Reference {
 
         private final String code;
         private final String description;
-
-        RecepCode(String code, String description) {
-            this.code = code;
-            this.description = description;
-        }
     }
 }

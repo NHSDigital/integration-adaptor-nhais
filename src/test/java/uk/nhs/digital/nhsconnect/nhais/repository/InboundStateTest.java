@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InboundStateTest {
 
@@ -45,6 +45,6 @@ public class InboundStateTest {
     void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
         var inboundStateFromInterchange = InboundState.fromInterchange(INTERCHANGE);
 
-        assertEquals(inboundStateFromInterchange, INBOUND_STATE);
+        assertThat(inboundStateFromInterchange).isEqualTo(INBOUND_STATE);
     }
 }

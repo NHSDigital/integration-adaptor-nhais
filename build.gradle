@@ -56,8 +56,9 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-	testImplementation "org.testcontainers:testcontainers:1.14.2"
-	testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+    testImplementation "org.testcontainers:testcontainers:1.14.2"
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+    testCompile("org.assertj:assertj-core:3.16.1")
 }
 
 lombok {

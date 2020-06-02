@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,11 @@ import java.time.Instant;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecepConsumerService {
 
     private final EdifactParser edifactParser;
     private final OutboundStateRepository outboundStateRepository;
-
-    @Autowired
-    public RecepConsumerService(EdifactParser edifactParser, OutboundStateRepository outboundStateRepository) {
-        this.edifactParser = edifactParser;
-        this.outboundStateRepository = outboundStateRepository;
-    }
 
     public void handleRecep(MeshMessage meshMessage) {
         LOGGER.info("Received RECEP message: {}", meshMessage);

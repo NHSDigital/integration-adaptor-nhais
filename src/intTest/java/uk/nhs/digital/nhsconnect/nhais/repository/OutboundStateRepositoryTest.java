@@ -10,8 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(initializers = MongoDbInitializer.class)
@@ -36,8 +36,9 @@ public class OutboundStateRepositoryTest {
             .setSendMessageSequence(234L);
 
         outboundStateRepository.save(outboundState);
-        assertTrue(outboundStateRepository.existsById(outboundState.getId()));
+        assertThat(outboundStateRepository.existsById(outboundState.getId())).isTrue();
 
-        assertThrows(DuplicateKeyException.class, () -> outboundStateRepository.save(duplicateOutboundState));
+        assertThatThrownBy(() -> outboundStateRepository.save(duplicateOutboundState))
+            .isInstanceOf(DuplicateKeyException.class);
     }
 }
