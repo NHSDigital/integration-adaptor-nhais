@@ -259,9 +259,7 @@ paths:
                           version: '1'
                           code: unsupportedMediaType
                           display: "Must be 'application/json-patch+json'."
-  '/Patient/{id}/$nhais.acceptance':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/Patient/$nhais.acceptance':
     post:
       description: |
         ## Overview
