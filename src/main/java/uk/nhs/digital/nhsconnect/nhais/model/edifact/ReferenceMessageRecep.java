@@ -23,7 +23,7 @@ public class ReferenceMessageRecep extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + ":" + messageSequenceNumber + " " + recepCode.name();
+        return QUALIFIER + ":" + messageSequenceNumber + " " + recepCode.getCode();
     }
 
     @Override
