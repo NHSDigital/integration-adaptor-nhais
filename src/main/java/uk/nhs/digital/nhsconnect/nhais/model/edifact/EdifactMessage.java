@@ -66,12 +66,6 @@ public class EdifactMessage {
         );
     }
 
-    public DateTimePeriod getDateTimePeriod() {
-        return DateTimePeriod.fromString(
-            extractSegment(header, DateTimePeriod.KEY)
-        );
-    }
-
     private String extractSegment(String[] header, String key) {
         return Arrays.stream(header)
             .map(String::strip)
