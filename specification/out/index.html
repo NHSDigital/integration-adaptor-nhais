@@ -218,8 +218,8 @@ In particular:</p>
   <div class="method-summary"></div>
   <h4><a href="#Patients">Patients</a></h4>
   <ul>
-  <li><a href="#acceptance"><code><span class="http-method">post</span> /Patient/{id}</code></a></li>
-  <li><a href="#amendment"><code><span class="http-method">patch</span> /Patient/{id}</code></a></li>
+  <li><a href="#acceptance"><code><span class="http-method">post</span> /Patient/$nhais.acceptance</code></a></li>
+  <li><a href="#amendment"><code><span class="http-method">patch</span> /Patient/$nhais.acceptance</code></a></li>
   <li><a href="#deduction"><code><span class="http-method">post</span> /Patient/{id}/$nhais.deduction</code></a></li>
   <li><a href="#removal"><code><span class="http-method">post</span> /Patient/{id}/$nhais.removal</code></a></li>
   </ul>
@@ -228,11 +228,18 @@ In particular:</p>
   <div class="method"><a name="acceptance"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /Patient/{id}</code></pre></div>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /Patient/$nhais.acceptance</code></pre></div>
     <div class="method-summary">Accept a new patient (Acceptance transaction) (<span class="nickname">acceptance</span>)</div>
     <div class="method-notes"><h2>Overview</h2>
 <p>Use this endpoint to send an Acceptance to NHAIS.</p>
-<h2>Supported acceptance types and fields</h2>
+<h2>Payload Description</h2>
+<p>The request payload is a Parameters list. The list must contain parameters with the following names and values:</p>
+<ul>
+<li>patient: a Patient <code>resource</code>, see below for details</li>
+<li>acceptanceType: simple parameter with <code>valueString</code> one of: birth, first, transferin, immigrant, exservices</li>
+<li>acceptanceCode: TODO</li>
+</ul>
+<h2>Patient Parameter</h2>
 <p>Refer to the examples to see how the fields are represented in the request body.</p>
 <p>The following is paraphrased from:</p>
 <p>HA/GP LINKS - REGISTRATION, GP SYSTEMS SPECIFICATION</p>
@@ -393,12 +400,6 @@ to match against the asynchronous reply from NHAIS</p>
 |                                     |                                                              |                                                  |</p>
 </div>
 
-    <h3 class="field-label">Path parameters</h3>
-    <div class="field-items">
-      <div class="param">id (required)</div>
-
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a <a href="https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp">valid NHS Number</a>. default: null </div>
-    </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
@@ -408,19 +409,13 @@ to match against the asynchronous reply from NHAIS</p>
 
     <h3 class="field-label">Request body</h3>
     <div class="field-items">
-      <div class="param">Patient <a href="#Patient">Patient</a> (required)</div>
+      <div class="param">Parameters <a href="#Parameters">Parameters</a> (required)</div>
 
       <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
 
     </div>  <!-- field-items -->
 
 
-    <h3 class="field-label">Query parameters</h3>
-    <div class="field-items">
-      <div class="param">acceptanceType (optional)</div>
-
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: null </div>
-    </div>  <!-- field-items -->
 
 
 
@@ -449,7 +444,7 @@ to match against the asynchronous reply from NHAIS</p>
   <div class="method"><a name="amendment"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="patch"><code class="huge"><span class="http-method">patch</span> /Patient/{id}</code></pre></div>
+    <pre class="patch"><code class="huge"><span class="http-method">patch</span> /Patient/$nhais.acceptance</code></pre></div>
     <div class="method-summary">Amend patient details (Amendment transaction) (<span class="nickname">amendment</span>)</div>
     <div class="method-notes"><h2>Overview</h2>
 <p>Use this endpoint to send an Amendment to NHAIS.</p>
@@ -489,12 +484,6 @@ or not use JSONPatch at all in favour or a PUT or a POST operation with a Patien
 |                                     |                                                              |                                                  |</p>
 </div>
 
-    <h3 class="field-label">Path parameters</h3>
-    <div class="field-items">
-      <div class="param">id (required)</div>
-
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a <a href="https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp">valid NHS Number</a>. default: null </div>
-    </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
