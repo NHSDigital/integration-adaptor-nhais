@@ -1,20 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +8,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RegistrationConsumerServiceTest {
@@ -74,7 +73,7 @@ public class RegistrationConsumerServiceTest {
         ArgumentCaptor<InboundState> inboundStateArgumentCaptor = ArgumentCaptor.forClass(InboundState.class);
         verify(inboundStateRepository).save(inboundStateArgumentCaptor.capture());
         InboundState savedInboundState = inboundStateArgumentCaptor.getValue();
-        Instant expectedTime = ZonedDateTime.parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone)).toInstant();
+        Instant expectedTime = ZonedDateTime.parse("199201141619", DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(TimestampService.UKZone)).toInstant();
         assertThat(savedInboundState.getSender()).isEqualTo("TES5");
         assertThat(savedInboundState.getRecipient()).isEqualTo("XX11");
         assertThat(savedInboundState.getReceiveInterchangeSequence()).isEqualTo(3L);

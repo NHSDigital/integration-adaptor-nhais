@@ -23,6 +23,7 @@ public class InterchangeHeader extends Segment {
 
     public static final String KEY = "UNB";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone);
+    private static final long MAX_INTERCHANGE_SEQUENCE = 99_999_999L;
 
     private @NonNull String sender;
     private @NonNull String recipient;
@@ -46,8 +47,9 @@ public class InterchangeHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
+        if (sequenceNumber < 1 || sequenceNumber > MAX_INTERCHANGE_SEQUENCE) {
+            throw new EdifactValidationException(
+                getKey() + ": Attribute sequenceNumber must be between 1 and " + MAX_INTERCHANGE_SEQUENCE);
         }
     }
 

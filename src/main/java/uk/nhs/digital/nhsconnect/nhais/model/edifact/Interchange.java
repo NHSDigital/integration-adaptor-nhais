@@ -1,7 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,10 +19,7 @@ public class Interchange {
     @Getter(lazy=true)
     private final ReferenceTransactionType referenceTransactionType = edifactMessage.getReferenceTransactionType();
     @Getter(lazy=true)
-    private final List<ReferenceMessageRecep> referenceMessageReceps = null;
-    @Getter(lazy=true)
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = edifactMessage.getHealthAuthorityNameAndAddress();
     @Getter(lazy=true)
     private final GpNameAndAddress gpNameAndAddress = edifactMessage.getGpNameAndAddress();
-
 }
