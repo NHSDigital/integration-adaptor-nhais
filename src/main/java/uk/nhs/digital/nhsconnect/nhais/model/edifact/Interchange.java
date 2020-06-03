@@ -17,11 +17,11 @@ public class Interchange {
     @Getter(lazy=true)
     private final ReferenceTransactionNumber referenceTransactionNumber = edifactMessage.getReferenceTransactionNumber();
     @Getter(lazy=true)
-    private final DateTimePeriod dateTimePeriod = findSegment(DateTimePeriod.class).orElseThrow();
+    private final DateTimePeriod translationDateTime = edifactMessage.getTranslationDateTime();
     @Getter(lazy=true)
     private final ReferenceTransactionType referenceTransactionType = edifactMessage.getReferenceTransactionType();
     @Getter(lazy=true)
-    private final List<ReferenceMessageRecep> referenceMessageReceps = findMultipleSegments(ReferenceMessageRecep.class);
+    private final List<ReferenceMessageRecep> referenceMessageReceps = null;
     @Getter(lazy=true)
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = edifactMessage.getHealthAuthorityNameAndAddress();
     @Getter(lazy=true)

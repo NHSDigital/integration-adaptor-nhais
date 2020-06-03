@@ -38,21 +38,24 @@ public class InterchangeHeaderTest {
 
     @Test
     public void testValidationStateful() {
-        assertThatThrownBy(interchangeHeaderWinter::validateStateful)
+        InterchangeHeader emptySequenceNumber = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME);
+        assertThatThrownBy(emptySequenceNumber::validateStateful)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sequenceNumber is required");
     }
 
     @Test
     public void testPreValidationSenderEmptyString() {
-        assertThatThrownBy(interchangeHeaderWinter::preValidate)
+        InterchangeHeader emptySender = new InterchangeHeader("", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
+        assertThatThrownBy(emptySender::preValidate)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sender is required");
     }
 
     @Test
     public void testPreValidationRecipientEmptyString() {
-        assertThatThrownBy(interchangeHeaderWinter::preValidate)
+        InterchangeHeader emptyRecipient = new InterchangeHeader("SNDR", "", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
+        assertThatThrownBy(emptyRecipient::preValidate)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute recipient is required");
     }

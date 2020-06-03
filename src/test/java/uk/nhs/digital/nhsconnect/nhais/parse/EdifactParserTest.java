@@ -43,5 +43,6 @@ class EdifactParserTest {
         Assertions.assertThat(interchange.getReferenceTransactionType().getValue()).isEqualTo("950:G1");
         Assertions.assertThat(interchange.getHealthAuthorityNameAndAddress().getValue()).isEqualTo("FHS+XX1:954");
         Assertions.assertThat(interchange.getGpNameAndAddress().getValue()).isEqualTo("GP+2750922,295:900");
+        Assertions.assertThat(interchange.getTranslationDateTime().getValue()).isEqualTo("137:199201141619:203");
     }
 }

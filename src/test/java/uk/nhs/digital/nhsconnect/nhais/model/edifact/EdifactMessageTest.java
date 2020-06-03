@@ -2,9 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.ZoneId;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -48,7 +50,8 @@ class EdifactMessageTest {
 
         assertThat(interchangeHeader.getSender()).isEqualTo("TES5");
         assertThat(interchangeHeader.getRecipient()).isEqualTo("XX11");
-        ZonedDateTime expectedTime = ZonedDateTime.parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(ZoneId.of("Europe/London")));
+
+        Instant expectedTime = ZonedDateTime.parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone)).toInstant();
         assertThat(interchangeHeader.getTranslationTime()).isEqualTo(expectedTime);
         assertThat(interchangeHeader.getSequenceNumber()).isEqualTo(3L);
     }
@@ -97,5 +100,16 @@ class EdifactMessageTest {
         softly.assertThat(gpNameAndAddress.getValue()).isEqualTo("GP+2750922,295:900");
         softly.assertThat(gpNameAndAddress.getIdentifier()).isEqualTo("2750922,295");
         softly.assertThat(gpNameAndAddress.getCode()).isEqualTo("900");
+    }
+
+    @Test
+    void testTranslationTimeDateTimePeriod(SoftAssertions softly) {
+        EdifactMessage edifactMessage = new EdifactMessage(exampleMessage);
+        DateTimePeriod dateTimePeriod = edifactMessage.getTranslationDateTime();
+
+        softly.assertThat(dateTimePeriod.getValue()).isEqualTo("137:199201141619:203");
+        Instant expectedTimestamp = ZonedDateTime.parse("199201141619", DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
+        softly.assertThat(dateTimePeriod.getTimestamp()).isEqualTo(expectedTimestamp);
+        softly.assertThat(dateTimePeriod.getTypeAndFormat()).isEqualTo(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
     }
 }

@@ -60,6 +60,12 @@ public class EdifactMessage {
         );
     }
 
+    public DateTimePeriod getTranslationDateTime() {
+        return DateTimePeriod.fromString(
+            extractSegment(header, DateTimePeriod.KEY)
+        );
+    }
+
     private String extractSegment(String[] header, String key) {
         return Arrays.stream(header)
             .map(String::strip)

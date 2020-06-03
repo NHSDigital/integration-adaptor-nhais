@@ -1,19 +1,22 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 import org.springframework.util.StringUtils;
 
+@Getter @Setter
 @RequiredArgsConstructor @NoArgsConstructor
 public class ReferenceTransactionNumber extends Segment {
 
     public static final String KEY = "RFF";
     public static final String QUALIFIER = "TN";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
-    private @NonNull String transactionNumber;
+    private @NonNull Long transactionNumber;
 
     @Override
     public String getKey() {
@@ -30,15 +33,6 @@ public class ReferenceTransactionNumber extends Segment {
         //NOP
     }
 
-    public Long getTransactionNumber() {
-        return Long.decode(transactionNumber);
-    }
-
-    public ReferenceTransactionNumber setTransactionNumber(Long transactionNumber) {
-        this.transactionNumber = Long.toString(transactionNumber);
-        return this;
-    }
-
     @Override
     protected void validateStateful() throws EdifactValidationException {
         if (StringUtils.isEmpty(transactionNumber)) {
@@ -51,6 +45,6 @@ public class ReferenceTransactionNumber extends Segment {
             throw new IllegalArgumentException("Can't create " + ReferenceTransactionNumber.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = edifactString.split("\\:");
-        return new ReferenceTransactionNumber(split[1]);
+        return new ReferenceTransactionNumber(Long.valueOf(split[1]));
     }
 }

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.ZoneId;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -74,7 +74,7 @@ public class RegistrationConsumerServiceTest {
         ArgumentCaptor<InboundState> inboundStateArgumentCaptor = ArgumentCaptor.forClass(InboundState.class);
         verify(inboundStateRepository).save(inboundStateArgumentCaptor.capture());
         InboundState savedInboundState = inboundStateArgumentCaptor.getValue();
-        ZonedDateTime expectedTime = ZonedDateTime.parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(ZoneId.of("Europe/London")));
+        Instant expectedTime = ZonedDateTime.parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone)).toInstant();
         assertThat(savedInboundState.getSender()).isEqualTo("TES5");
         assertThat(savedInboundState.getRecipient()).isEqualTo("XX11");
         assertThat(savedInboundState.getReceiveInterchangeSequence()).isEqualTo(3L);
