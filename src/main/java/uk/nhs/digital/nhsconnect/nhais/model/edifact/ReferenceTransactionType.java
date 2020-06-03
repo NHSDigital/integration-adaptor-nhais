@@ -1,5 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,25 +9,45 @@ import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 @Getter @Setter
-public class ReferenceTransactionType extends Reference {
+public class ReferenceTransactionType extends Segment {
+
+    public static final String KEY = "RFF";
+    public static final String QUALIFIER = "950";
+    public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
     private @NonNull TransactionType transactionType;
 
     public ReferenceTransactionType(@NonNull TransactionType transactionType) {
-        super("950", transactionType.getCode());
         this.transactionType = transactionType;
     }
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        super.preValidate();
-        if(getReference().isEmpty()){
-            throw new EdifactValidationException(getKey() + ": Attribute reference is required");
+        if(transactionType == null){
+            throw new EdifactValidationException(getKey() + ": Attribute transactionType is required");
         }
     }
 
     @Override
-    protected void validateStateful() throws EdifactValidationException {
+    public String getKey() {
+        return KEY;
+    }
+
+    @Override
+    public String getValue() {
+        return QUALIFIER + ":" + transactionType.getCode();
+    }
+
+    @Override
+    protected void validateStateful() {
         // no stateful properties to validate
+    }
+
+    public static ReferenceTransactionType fromString(String edifactString) {
+        if(!edifactString.startsWith(ReferenceTransactionType.KEY_QUALIFIER)){
+            throw new IllegalArgumentException("Can't create " + ReferenceTransactionType.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split(":");
+        return new ReferenceTransactionType(TransactionType.fromCode(split[1]));
     }
 
     @Getter
@@ -38,6 +60,14 @@ public class ReferenceTransactionType extends Reference {
 
         private final String code;
         private final String abbreviation;
+
+        public static TransactionType fromCode(String code){
+            return Arrays.stream(TransactionType.values())
+                .filter(transactionType1 -> transactionType1.code.equals(code))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
+        }
+
     }
 
 }

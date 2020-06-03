@@ -28,7 +28,7 @@ public class RecepConsumerService {
 
         String sender = interchange.getInterchangeHeader().getSender();
         String recipient = interchange.getInterchangeHeader().getRecipient();
-        Instant dateTimePeriod = interchange.getDateTimePeriod().getTimestamp();
+        Instant dateTimePeriod = interchange.getTranslationDateTime().getTimestamp();
         long interchangeSequence = interchange.getInterchangeHeader().getSequenceNumber();
 
         for (ReferenceMessageRecep referenceMessageRecep : interchange.getReferenceMessageReceps()) {

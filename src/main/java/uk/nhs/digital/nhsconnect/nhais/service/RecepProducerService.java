@@ -11,12 +11,12 @@ public class RecepProducerService {
     // TODO: extend from an abstraction of FhirToEdifactService
 
     public void produceRecep(Interchange receivedInterchangeFromHa) {
-        for(Segment segment : receivedInterchangeFromHa.getSegments()) {
-            // grab interchange and message identifiers
-        }
-
-        List<Segment> recepMessageSegment;
-        // add segments to produce recep message
+//        for(Segment segment : receivedInterchangeFromHa.getSegments()) {
+//            // grab interchange and message identifiers
+//        }
+//
+//        List<Segment> recepMessageSegment;
+//        // add segments to produce recep message
 
     }
 
