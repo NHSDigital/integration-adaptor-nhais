@@ -8,6 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AcceptanceTypeMapperTest {
+
     @Test
     void When_MappingAcceptanceType_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
