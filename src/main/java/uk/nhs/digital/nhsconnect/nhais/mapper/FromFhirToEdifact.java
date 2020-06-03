@@ -5,6 +5,7 @@ import java.util.List;
 
 public class FromFhirToEdifact {
 
+    //TODO work in progress
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
             new PersonNameMapper(),
             new AcceptanceTypeMapper()

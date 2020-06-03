@@ -11,6 +11,7 @@ public class FhirPayloadTest {
 
     @Test
     public void acceptance() {
+        //TODO in progress
         Patient patient = new Patient();
         HumanName humanName = new HumanName();
         humanName.setFamily("Surname");
