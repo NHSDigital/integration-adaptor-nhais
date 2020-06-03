@@ -9,7 +9,8 @@ public class FromFhirToEdifact {
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
             new PersonNameMapper(),
             new AcceptanceTypeMapper(),
-            new AcceptanceCodeMapper()
+            new AcceptanceCodeMapper(),
+            new PersonSexMapper()
     );
 
 //    public Interchange map(Parameters parameters) {
