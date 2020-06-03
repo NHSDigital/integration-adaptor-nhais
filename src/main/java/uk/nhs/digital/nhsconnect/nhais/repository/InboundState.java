@@ -51,7 +51,7 @@ public class InboundState {
         return new InboundState()
             .setDataType(DataType.INTERCHANGE)
             .setOperationId(OperationIdUtils.buildOperationId(sender, transactionNumber))
-            .setSender(interchangeHeader.getSender())
+            .setSender(sender)
             .setRecipient(interchangeHeader.getRecipient())
             .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setReceiveMessageSequence(messageHeader.getSequenceNumber())
