@@ -11,8 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(initializers = MongoDbInitializer.class)
@@ -25,21 +25,45 @@ public class InboundStateRepositoryTest {
     InboundStateRepository inboundStateRepository;
 
     @Test
-    void whenDuplicateInboundStateInserted_thenThrowsException() {
+    void whenDuplicateInterchangeInboundStateInserted_thenThrowsException() {
         var inboundState = new InboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L)
             .setReceiveMessageSequence(234L);
         var duplicateInboundState = new InboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L)
             .setReceiveMessageSequence(234L);
 
-        inboundStateRepository.save(inboundState);
-        assertTrue(inboundStateRepository.existsById(inboundState.getId()));
+        assertInsert(inboundState, duplicateInboundState);
+    }
 
-        assertThrows(DuplicateKeyException.class, () -> inboundStateRepository.save(duplicateInboundState));
+    @Test
+    void whenDuplicateRecepInboundStateInserted_thenThrowsException() {
+        var inboundState = new InboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setReceiveInterchangeSequence(123L);
+        var duplicateInboundState = new InboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setReceiveInterchangeSequence(123L);
+
+        assertInsert(inboundState, duplicateInboundState);
+    }
+
+    private void assertInsert(InboundState first, InboundState second) {
+        inboundStateRepository.save(first);
+
+        assertThat(inboundStateRepository.existsById(first.getId())).isTrue();
+
+        assertThatThrownBy(() -> inboundStateRepository.save(second))
+            .isInstanceOf(DuplicateKeyException.class);
     }
 }

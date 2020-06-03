@@ -23,22 +23,44 @@ public class OutboundStateRepositoryTest {
     OutboundStateRepository outboundStateRepository;
 
     @Test
-    void whenDuplicateOutboundStateInserted_thenThrowsException() {
+    void whenDuplicateInterchangeOutboundStateInserted_thenThrowsException() {
         var outboundState = new OutboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setSendInterchangeSequence(123L)
             .setSendMessageSequence(234L);
         var duplicateOutboundState = new OutboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setSendInterchangeSequence(123L)
             .setSendMessageSequence(234L);
 
-        outboundStateRepository.save(outboundState);
-        assertThat(outboundStateRepository.existsById(outboundState.getId())).isTrue();
+        assertInsert(outboundState, duplicateOutboundState);
+    }
 
-        assertThatThrownBy(() -> outboundStateRepository.save(duplicateOutboundState))
+    @Test
+    void whenDuplicateRecepOutboundStateInserted_thenThrowsException() {
+        var outboundState = new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setSendInterchangeSequence(123L);
+        var duplicateOutboundState = new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setSendInterchangeSequence(123L);
+
+        assertInsert(outboundState, duplicateOutboundState);
+    }
+
+    private void assertInsert(OutboundState first, OutboundState second) {
+        outboundStateRepository.save(first);
+        assertThat(outboundStateRepository.existsById(first.getId())).isTrue();
+
+        assertThatThrownBy(() -> outboundStateRepository.save(second))
             .isInstanceOf(DuplicateKeyException.class);
     }
 }
