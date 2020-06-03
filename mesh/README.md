@@ -1,5 +1,7 @@
 # MESH Command Line Tool
 
+A command line tool to use with [NHS Digital's MESH API](https://meshapi.docs.apiary.io/) for testing purposes.
+
 ## Setup
 
 Copy `env.example.sh` to `env.sh` and fill in the values as described in the comments and below.
@@ -46,3 +48,33 @@ Acknowledge a message to remove it from your inbox. The message id `202006031453
 is used in this example. Get the message id from the response of the `inbox` or `send` commands.
 
     ./mesh.sh ack 20200603145356720373_0D25C7
+
+## Using with fake-mesh
+
+Use the following additional 
+
+    export MAILBOX='anything' 
+    export MAILBOX_PASSWORD='password' 
+    export HOST='localhost:8829'
+    export SHARED_KEY='SharedKey'
+    export OPENTEST_ENDPOINT_PRIVATE_KEY='PATH_TO/fake-mesh/client.key.pem'
+    export OPENTEST_ENDPOINT_CERT='PATH_TO/fake-mesh/client.cert.pem'
+    
+The mailbox id can actually be anything you want.
+
+### Benchmarking
+
+Silence curl
+
+    CURL_FLAGS="-s -i -k -o /dev/null"
+
+Use xargs to run in parallel
+
+     $ time echo {0..1000} | xargs -n 1 -P 4 ./mesh.sh send @GPHA_SAMPLE.dat
+       echo {0..1000}  0.00s user 0.00s system 63% cpu 0.001 total
+       xargs -n 1 -P 4 ./mesh.sh send @GPHA_SAMPLE.dat  35.40s user 18.87s system 164% cpu 32.905 total
+
+Shows 1000 / 32.905 ~= 30 writes per second using 4 parallel processes. Note that the fake-mesh database 
+(LMDB) does not support parallel writes.
+
+Setting the option lock=False in the database driver doubles throughput, but I'm unsure if this is a good idea.

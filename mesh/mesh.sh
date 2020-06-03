@@ -9,7 +9,7 @@ HOST="${HOST:-msg.opentest.hscic.gov.uk}"
 OPENTEST_ENDPOINT_PRIVATE_KEY="${OPENTEST_ENDPOINT_PRIVATE_KEY:-${HOME}/opentest.private.key}"
 # "Your endpoint certificate" from your OpenTest registration e-mail
 OPENTEST_ENDPOINT_CERT="${OPENTEST_ENDPOINT_CERT:-${HOME}/opentest.endpoint.cert}"
-CURL_FLAGS='-k' # insecure, disable cert validation for fake-mesh
+CURL_FLAGS="${CURL_FLAGS:--i -k}" # insecure, disable cert validation for fake-mesh. Add -i for headers
 
 create_token() {
   local nonce
@@ -27,23 +27,23 @@ create_token() {
 }
 
 authorization() {
-  curl -i ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 inbox() {
-  curl -i ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 send() {
   local body
   body="$1"
-  curl -i ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}/outbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H 'Content-Type:application/octet-stream' -H "Mex-From: ${MAILBOX}" -H "Mex-To: ${TO_MAILBOX}" -H 'Mex-MessageType: DATA' -H 'Mex-WorkflowID: workflow1' -H 'Mex-FileName: test-filename.txt' -H 'Mex-Version: 1.0' -H "Authorization: ${TOKEN}" -d "${body}"
+  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}/outbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H 'Content-Type:application/octet-stream' -H "Mex-From: ${MAILBOX}" -H "Mex-To: ${TO_MAILBOX}" -H 'Mex-MessageType: DATA' -H 'Mex-WorkflowID: workflow1' -H 'Mex-FileName: test-filename.txt' -H 'Mex-Version: 1.0' -H "Authorization: ${TOKEN}" -d "${body}"
 }
 
 download() {
   local message_id
   message_id=$1
-  curl -i ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox/${message_id}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox/${message_id}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 ack() {

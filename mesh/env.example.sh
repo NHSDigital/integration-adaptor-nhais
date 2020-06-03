@@ -17,7 +17,10 @@ export SHARED_KEY=''
 #export HOST=''
 
 # (optional) path to the file containing the opentest private key. default: ~/opentest.private.key
-#export OPENTEST_PRIVATE_KEY=''
+#export OPENTEST_ENDPOINT_PRIVATE_KEY=''
 
 # (optional) path the file containg the opentest endpoint certificate. default: ~/opentest.endpoint.cert
 #export OPENTEST_ENDPOINT_CERT=''
+
+# (optional) provide different flags / options for the curl command
+#export CURL_FLAGS="-s -i -k -o /dev/null"
