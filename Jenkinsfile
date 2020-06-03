@@ -14,6 +14,10 @@ pipeline {
         ENVIRONMENT_ID = "nhais-build"
         ECR_REPO_DIR = "nhais"
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
+        tfProject     = "nia"
+        tfEnvironment = "build1" // change for ptl, vp goes here
+        tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
+        tfRegion      = TF_STATE_BUCKET_REGION
     }    
 
     stages {
@@ -64,15 +68,12 @@ pipeline {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
             }
             stages {
+              lock("${tfProject}-${tfEnvironment}-${tfComponent}") {
                 stage('Deploy using Terraform') {
                     steps {
                         script {
                             String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
-                            String tfProject     = "nia"
-                            String tfEnvironment = "build1" // change for ptl, vp goes here
-                            String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
-                            String tfRegion      = TF_STATE_BUCKET_REGION
 
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
@@ -99,8 +100,9 @@ pipeline {
                         echo 'TODO run integration tests'
                         echo 'TODO archive test results'
                     }
-                 }
-            }
+                 } //stage
+              } // lock
+            } //stages
 
         }
         // stage('Run SonarQube analysis') {
