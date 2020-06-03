@@ -39,9 +39,9 @@ public class SequenceRepositoryTest {
     @Test
     public void When_GetMaxNextKey_Expect_ValueReset() {
         when(mongoOperations.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class),
-                eq(OutboundSequenceId.class)))
-                .thenReturn(new OutboundSequenceId(MAX_KEY, 100000000L))
-                .thenReturn(new OutboundSequenceId(MAX_KEY, 1L));
+            eq(OutboundSequenceId.class)))
+            .thenReturn(new OutboundSequenceId(MAX_KEY, 100000000L))
+            .thenReturn(new OutboundSequenceId(MAX_KEY, 100000001L));
 
         assertThat(sequenceRepository.getNext(MAX_KEY)).isEqualTo(1L);
     }
