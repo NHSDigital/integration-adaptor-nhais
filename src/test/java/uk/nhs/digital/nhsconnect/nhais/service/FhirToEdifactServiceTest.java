@@ -11,16 +11,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateDAO;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,14 +46,16 @@ public class FhirToEdifactServiceTest {
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
 
-    private ZonedDateTime expectedTimestamp;
+    private Instant expectedTimestamp;
 
     @BeforeEach
     public void beforeEach() {
         when(sequenceService.generateMessageId(GP_CODE, HA_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
-        expectedTimestamp = ZonedDateTime.of(2020, 4, 27, 17, 37, 0, 0, UTC);
+        expectedTimestamp = ZonedDateTime
+            .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
+            .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
     }
 
@@ -69,14 +71,14 @@ public class FhirToEdifactServiceTest {
         verify(sequenceService).generateTransactionId();
         verify(timestampService).getCurrentTimestamp();
 
-        OutboundStateDAO expected = new OutboundStateDAO();
+        OutboundState expected = new OutboundState();
         expected.setRecipient(HA_CODE);
         expected.setSender(GP_CODE);
         expected.setSendInterchangeSequence(SIS);
         expected.setSendMessageSequence(SMS);
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
-        expected.setTransactionTimestamp(Date.from(expectedTimestamp.toInstant()));
+        expected.setTransactionTimestamp(Date.from(expectedTimestamp));
         expected.setOperationId(operationId);
         verify(outboundStateRepository).save(expected);
     }
@@ -99,7 +101,7 @@ public class FhirToEdifactServiceTest {
                 "UNT+8+00000056'\n" +
                 "UNZ+1+00000045'";
 
-        assertEquals(expected, translatedInterchange.getEdifact());
+        assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
     }
 
     private Patient createPatient() {

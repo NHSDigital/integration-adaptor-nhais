@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(
@@ -29,7 +29,7 @@ public class InboundState {
     private String sender;
     private String recipient;
     private Long transactionNumber;
-    private ZonedDateTime translationTimestamp;
+    private Instant translationTimestamp;
     private ReferenceTransactionType.TransactionType transactionType;
 
     public static InboundState fromInterchange(Interchange interchange) {
