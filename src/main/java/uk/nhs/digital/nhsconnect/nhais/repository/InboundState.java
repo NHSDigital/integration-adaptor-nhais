@@ -38,6 +38,7 @@ public class InboundState {
         //TODO initial assumption that interchange can have a single message only
 
         var interchangeHeader = interchange.getInterchangeHeader();
+        var translationDateTime = interchange.getTranslationDateTime();
         var messageHeader = interchange.getMessageHeader();
         var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
         var referenceTransactionType = interchange.getReferenceTransactionType();
@@ -50,17 +51,18 @@ public class InboundState {
             .setReceiveMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(referenceTransactionNumber.getTransactionNumber())
             .setTransactionType(referenceTransactionType.getTransactionType())
-            .setTranslationTimestamp(interchangeHeader.getTranslationTime());
+            .setTranslationTimestamp(translationDateTime.getTimestamp());
     }
 
     public static InboundState fromRecep(Recep recep) {
         var interchangeHeader = recep.getInterchangeHeader();
+        var dateTimePeriod = recep.getDateTimePeriod();
 
         return new InboundState()
             .setDataType(DataType.RECEP)
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
             .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setTranslationTimestamp(interchangeHeader.getTranslationTime());
+            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

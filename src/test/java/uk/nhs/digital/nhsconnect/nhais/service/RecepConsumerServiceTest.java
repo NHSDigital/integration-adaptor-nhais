@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
@@ -39,6 +40,7 @@ class RecepConsumerServiceTest {
     private static final ReferenceMessageRecep.RecepCode MESSAGE_1_RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
     private static final ReferenceMessageRecep.RecepCode MESSAGE_2_RECEP_CODE = ReferenceMessageRecep.RecepCode.INCOMPLETE;
     private static final Instant DATE_TIME_PERIOD = new TimestampService().getCurrentTimestamp();
+    private static final Instant INTERCHANGE_DATE_TIME_PERIOD = DATE_TIME_PERIOD.plusSeconds(10);
     @Mock
     private RecepParser recepParser;
     @Mock
@@ -57,8 +59,9 @@ class RecepConsumerServiceTest {
     @BeforeEach
     void setUp() {
         when(recep.getInterchangeHeader())
-            .thenReturn(new InterchangeHeader(SENDER, RECIPIENT, DATE_TIME_PERIOD)
-            .setSequenceNumber(INTERCHANGE_SEQUENCE));
+            .thenReturn(new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_DATE_TIME_PERIOD).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(recep.getDateTimePeriod())
+            .thenReturn(new DateTimePeriod(DATE_TIME_PERIOD, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
         when(recep.getReferenceMessageReceps())
             .thenReturn(List.of(
                 new ReferenceMessageRecep(REF_MESSAGE_1_SEQUENCE, MESSAGE_1_RECEP_CODE),
@@ -69,7 +72,7 @@ class RecepConsumerServiceTest {
     }
 
     @Test
-    void whenHandlingRecep_thenInboundStateIsRecordedOutboundStateIsUpdatedTwice() {
+    void whenHandlingRecep_thenOutboundStateIsUpdatedTwice() {
         when(recepParser.parse(MESSAGE_CONTENT)).thenReturn(recep);
 
         recepConsumerService.handleRecep(MESH_MESSAGE);
@@ -80,11 +83,11 @@ class RecepConsumerServiceTest {
 
         assertThat(inboundStateArgumentCaptor.getValue()).isEqualTo(
             new InboundState()
-            .setDataType(DataType.RECEP)
-            .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setSender(SENDER)
-            .setRecipient(RECIPIENT)
-            .setTranslationTimestamp(DATE_TIME_PERIOD));
+                .setDataType(DataType.RECEP)
+                .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
+                .setSender(SENDER)
+                .setRecipient(RECIPIENT)
+                .setTranslationTimestamp(DATE_TIME_PERIOD));
 
         var queryParamsArgumentCaptor = ArgumentCaptor.forClass(OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams.class);
         var detailsArgumentCaptor = ArgumentCaptor.forClass(OutboundStateRepositoryExtensions.UpdateRecepDetails.class);

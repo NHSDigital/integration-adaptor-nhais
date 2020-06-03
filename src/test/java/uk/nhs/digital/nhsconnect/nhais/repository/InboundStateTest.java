@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
@@ -23,7 +24,8 @@ public class InboundStateTest {
 
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
-    private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime.now().toInstant();
+    private static final Instant INTERCHANGE_TIMESTAMP = ZonedDateTime.now().toInstant();
+    private static final Instant TRANSLATION_TIMESTAMP = INTERCHANGE_TIMESTAMP.plusSeconds(10);
     private static final long INTERCHANGE_SEQUENCE = 123L;
     private static final long MESSAGE_SEQUENCE = 234L;
     private static final long TRANSACTION_NUMBER = 345L;
@@ -49,13 +51,21 @@ public class InboundStateTest {
 
     @BeforeEach
     void setUp() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE);
-        when(InboundStateTest.INTERCHANGE.getInterchangeHeader()).thenReturn(interchangeHeader);
-        when(InboundStateTest.INTERCHANGE.getMessageHeader()).thenReturn(new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
-        when(InboundStateTest.INTERCHANGE.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber().setTransactionNumber(TRANSACTION_NUMBER));
-        when(InboundStateTest.INTERCHANGE.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(TRANSACTION_TYPE));
+        when(InboundStateTest.INTERCHANGE.getInterchangeHeader()).thenReturn(
+            new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(InboundStateTest.INTERCHANGE.getMessageHeader()).thenReturn(
+            new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
+        when(InboundStateTest.INTERCHANGE.getReferenceTransactionNumber()).thenReturn(
+            new ReferenceTransactionNumber().setTransactionNumber(TRANSACTION_NUMBER));
+        when(InboundStateTest.INTERCHANGE.getReferenceTransactionType()).thenReturn(
+            new ReferenceTransactionType(TRANSACTION_TYPE));
+        when(InboundStateTest.INTERCHANGE.getTranslationDateTime()).thenReturn(
+            new DateTimePeriod(TRANSLATION_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
 
-        when(InboundStateTest.RECEP.getInterchangeHeader()).thenReturn(interchangeHeader);
+        when(InboundStateTest.RECEP.getInterchangeHeader()).thenReturn(
+            new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(InboundStateTest.RECEP.getDateTimePeriod()).thenReturn(
+            new DateTimePeriod(TRANSLATION_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
         when(InboundStateTest.RECEP.getReferenceInterchangeRecep()).thenReturn(
             new ReferenceInterchangeRecep(54343L, ReferenceInterchangeRecep.RecepCode.RECEIVED, 1));
         when(InboundStateTest.RECEP.getReferenceMessageReceps()).thenReturn(

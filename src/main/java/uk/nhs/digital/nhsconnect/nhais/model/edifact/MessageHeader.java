@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 /**
  * A specialisation of a segment for the specific use case of a message header
@@ -16,7 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 public class MessageHeader extends Segment {
 
     public static final String KEY = "UNH";
-    private static final Long MAX_MESSAGE_SEQUENCE = SequenceRepository.MAX_SEQUENCE_NUMBER - 1;
+    private static final long MAX_MESSAGE_SEQUENCE = 99_999_999L;
 
     private Long sequenceNumber;
 
