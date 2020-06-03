@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 /**
  * A specialisation of a segment for the specific use case of a message header
@@ -15,6 +16,8 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 public class MessageHeader extends Segment {
 
     public static final String KEY = "UNH";
+    private static final Long MAX_MESSAGE_SEQUENCE = SequenceRepository.MAX_SEQUENCE_NUMBER - 1;
+
     private Long sequenceNumber;
 
     @Override
@@ -33,8 +36,8 @@ public class MessageHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
+        if (sequenceNumber < 1 || sequenceNumber > MAX_MESSAGE_SEQUENCE) {
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be between 1 and " + MAX_MESSAGE_SEQUENCE);
         }
     }
 

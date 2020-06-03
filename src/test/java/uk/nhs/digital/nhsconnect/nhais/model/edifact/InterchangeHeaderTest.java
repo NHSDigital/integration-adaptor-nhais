@@ -45,6 +45,27 @@ public class InterchangeHeaderTest {
     }
 
     @Test
+    public void testValidationStatefulMinMaxSequenceNumber() throws EdifactValidationException {
+        var interchangeHeader = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME);
+
+        interchangeHeader.setSequenceNumber(0L);
+        assertThatThrownBy(interchangeHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
+
+        interchangeHeader.setSequenceNumber(100_000_000L);
+        assertThatThrownBy(interchangeHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
+
+        interchangeHeader.setSequenceNumber(1L);
+        interchangeHeader.validateStateful();
+
+        interchangeHeader.setSequenceNumber(99_999_999L);
+        interchangeHeader.validateStateful();
+    }
+
+    @Test
     public void testPreValidationSenderEmptyString() {
         InterchangeHeader emptySender = new InterchangeHeader("", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
         assertThatThrownBy(emptySender::preValidate)

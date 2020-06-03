@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import uk.nhs.digital.nhsconnect.nhais.model.sequence.OutboundSequenceId;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SequenceRepositoryTest {
@@ -38,7 +40,7 @@ public class SequenceRepositoryTest {
     public void When_GetMaxNextKey_Expect_ValueReset() {
         when(mongoOperations.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class),
                 eq(OutboundSequenceId.class)))
-                .thenReturn(new OutboundSequenceId(MAX_KEY, 10000000L))
+                .thenReturn(new OutboundSequenceId(MAX_KEY, 100000000L))
                 .thenReturn(new OutboundSequenceId(MAX_KEY, 1L));
 
         assertThat(sequenceRepository.getNext(MAX_KEY)).isEqualTo(1L);

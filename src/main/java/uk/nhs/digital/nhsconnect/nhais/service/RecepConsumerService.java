@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.parse.RecepParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensions;
 
@@ -18,20 +18,20 @@ import java.time.Instant;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecepConsumerService {
 
-    private final EdifactParser edifactParser;
+    private final RecepParser recepParser;
     private final OutboundStateRepository outboundStateRepository;
 
     public void handleRecep(MeshMessage meshMessage) {
         LOGGER.info("Received RECEP message: {}", meshMessage);
-        Interchange interchange = edifactParser.parse(meshMessage.getContent());
-        LOGGER.debug("Parsed registration message into interchange: {}", interchange);
+        Recep recep = recepParser.parse(meshMessage.getContent());
+        LOGGER.debug("Parsed RECEP message into: {}", recep);
 
-        String sender = interchange.getInterchangeHeader().getSender();
-        String recipient = interchange.getInterchangeHeader().getRecipient();
-        Instant dateTimePeriod = interchange.getTranslationDateTime().getTimestamp();
-        long interchangeSequence = interchange.getInterchangeHeader().getSequenceNumber();
+        String sender = recep.getInterchangeHeader().getSender();
+        String recipient = recep.getInterchangeHeader().getRecipient();
+        Instant dateTimePeriod = recep.getDateTimePeriod().getTimestamp();
+        long interchangeSequence = recep.getReferenceInterchangeRecep().getInterchangeSequenceNumber();
 
-        for (ReferenceMessageRecep referenceMessageRecep : interchange.getReferenceMessageReceps()) {
+        for (ReferenceMessageRecep referenceMessageRecep : recep.getReferenceMessageReceps()) {
             long messageSequence = referenceMessageRecep.getMessageSequenceNumber();
             ReferenceMessageRecep.RecepCode recepCode = referenceMessageRecep.getRecepCode();
 

@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
@@ -23,6 +24,7 @@ public class InterchangeHeader extends Segment {
 
     public static final String KEY = "UNB";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone);
+    private static final Long MAX_INTERCHANGE_SEQUENCE = SequenceRepository.MAX_SEQUENCE_NUMBER - 1;
 
     private @NonNull String sender;
     private @NonNull String recipient;
@@ -46,8 +48,9 @@ public class InterchangeHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
+        if (sequenceNumber < 1 || sequenceNumber > MAX_INTERCHANGE_SEQUENCE) {
+            throw new EdifactValidationException(
+                getKey() + ": Attribute sequenceNumber must be between 1 and " + MAX_INTERCHANGE_SEQUENCE);
         }
     }
 
