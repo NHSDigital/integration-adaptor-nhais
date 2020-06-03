@@ -13,9 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepositoryExtensions;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +26,7 @@ public class RecepProducerService {
 
     public Interchange produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
         Interchange recepInterchange = new Interchange(mapEdifactToRecep(receivedInterchangeFromHa));
+        //update header -> new interchange Id
         recordOutboundState(receivedInterchangeFromHa);
 
         return recepInterchange;
@@ -49,23 +48,9 @@ public class RecepProducerService {
     }
 
     private void recordOutboundState(Interchange interchange) {
-        String sender = interchange.getInterchangeHeader().getSender();
-        String recipient = interchange.getInterchangeHeader().getRecipient();
-        Instant dateTimePeriod = interchange.getDateTimePeriod().getTimestamp();
-        long interchangeSequence = interchange.getInterchangeHeader().getSequenceNumber();
+        // new OutboundState
 
-        for (ReferenceMessageRecep referenceMessageRecep : interchange.getReferenceMessageReceps()) {
-            long messageSequence = referenceMessageRecep.getMessageSequenceNumber();
-            ReferenceMessageRecep.RecepCode recepCode = referenceMessageRecep.getRecepCode();
 
-            var queryParams = new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                    sender, recipient, interchangeSequence, messageSequence);
-            var recepDetails = new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                    recepCode, dateTimePeriod);
-
-            var updatedOutboundState = outboundStateRepository.updateRecepDetails(queryParams, recepDetails);
-            LOGGER.debug("Updated outbound state {} using query {} and recep details {}", updatedOutboundState, queryParams, recepDetails);
-        }
     }
 
     private RecepHeader mapToRecipInterchangeHeader(Interchange interchange) {

@@ -19,6 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
@@ -146,6 +147,7 @@ public class FhirToEdifactService {
 
     private void recordOutboundState(TranslationItems translationItems) {
         var outboundState = new OutboundState()
+                .setDataType(DataType.MESSAGE)
             .setRecipient(translationItems.recipient)
             .setSender(translationItems.sender)
 
