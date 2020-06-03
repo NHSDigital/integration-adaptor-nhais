@@ -49,9 +49,9 @@ is used in this example. Get the message id from the response of the `inbox` or 
 
     ./mesh.sh ack 20200603145356720373_0D25C7
 
-## Using with fake-mesh
+## Using with Fake MESH
 
-Use the following additional 
+Use the following in your `env.sh`
 
     export MAILBOX='anything' 
     export MAILBOX_PASSWORD='password' 
