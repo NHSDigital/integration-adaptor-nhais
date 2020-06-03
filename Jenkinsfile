@@ -17,7 +17,7 @@ pipeline {
         tfProject     = "nia"
         tfEnvironment = "build1" // change for ptl, vp goes here
         tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
-        tfRegion      = TF_STATE_BUCKET_REGION
+        tfRegion      = "${TF_STATE_BUCKET_REGION}"
     }    
 
     stages {
@@ -63,12 +63,12 @@ pipeline {
                 // }
             // }
         }
-        stage('Deploy and Integration Test') {
+        lock("${tfProject}-${tfEnvironment}-${tfComponent}") {
+          stage('Deploy and Integration Test') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
             }
             stages {
-              lock("${tfProject}-${tfEnvironment}-${tfComponent}") {
                 stage('Deploy using Terraform') {
                     steps {
                         script {
@@ -101,10 +101,9 @@ pipeline {
                         echo 'TODO archive test results'
                     }
                  } //stage
-              } // lock
             } //stages
-
-        }
+        } //stage Deploy and Test
+      } // lock
         // stage('Run SonarQube analysis') {
         //     steps {
         //         runSonarQubeAnalysis()
