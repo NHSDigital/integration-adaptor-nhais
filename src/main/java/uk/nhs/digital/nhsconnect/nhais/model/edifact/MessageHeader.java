@@ -15,6 +15,8 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 public class MessageHeader extends Segment {
 
     public static final String KEY = "UNH";
+    private static final long MAX_MESSAGE_SEQUENCE = 99_999_999L;
+
     private Long sequenceNumber;
 
     @Override
@@ -33,8 +35,8 @@ public class MessageHeader extends Segment {
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if(sequenceNumber <= 0){
-            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to 1");
+        if (sequenceNumber < 1 || sequenceNumber > MAX_MESSAGE_SEQUENCE) {
+            throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be between 1 and " + MAX_MESSAGE_SEQUENCE);
         }
     }
 

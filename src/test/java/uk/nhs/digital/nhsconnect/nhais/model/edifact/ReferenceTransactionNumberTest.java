@@ -19,6 +19,27 @@ public class ReferenceTransactionNumberTest {
     }
 
     @Test
+    public void testValidationStatefulMinMaxTransactionNumber() throws EdifactValidationException {
+        var transactionNumber = new ReferenceTransactionNumber();
+
+        transactionNumber.setTransactionNumber(0L);
+        assertThatThrownBy(transactionNumber::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("RFF: Attribute transactionNumber must be between 1 and 9999999");
+
+        transactionNumber.setTransactionNumber(10_000_000L);
+        assertThatThrownBy(transactionNumber::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("RFF: Attribute transactionNumber must be between 1 and 9999999");
+
+        transactionNumber.setTransactionNumber(1L);
+        transactionNumber.validateStateful();
+
+        transactionNumber.setTransactionNumber(9_999_999L);
+        transactionNumber.validateStateful();
+    }
+
+    @Test
     void testFromString() {
         ReferenceTransactionNumber referenceTransactionNumber =
             new ReferenceTransactionNumber();

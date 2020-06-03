@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 public class DateTimePeriod extends Segment{
 
     public static final String KEY = "DTM";
+
     private @NonNull Instant timestamp;
     private @NonNull TypeAndFormat typeAndFormat;
 

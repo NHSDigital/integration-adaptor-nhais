@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-import org.springframework.util.StringUtils;
-
 @Getter @Setter
 @RequiredArgsConstructor @NoArgsConstructor
 public class ReferenceTransactionNumber extends Segment {
@@ -16,6 +14,8 @@ public class ReferenceTransactionNumber extends Segment {
     public static final String KEY = "RFF";
     public static final String QUALIFIER = "TN";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
+    private static final long MAX_TRANSACTION_NUMBER = 9_999_999L;
+
     private @NonNull Long transactionNumber;
 
     @Override
@@ -35,8 +35,12 @@ public class ReferenceTransactionNumber extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
-        if (StringUtils.isEmpty(transactionNumber)) {
+        if (transactionNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute reference is required");
+        }
+        if (transactionNumber < 1 || transactionNumber > MAX_TRANSACTION_NUMBER) {
+            throw new EdifactValidationException(
+                getKey() + ": Attribute transactionNumber must be between 1 and " + MAX_TRANSACTION_NUMBER);
         }
     }
 

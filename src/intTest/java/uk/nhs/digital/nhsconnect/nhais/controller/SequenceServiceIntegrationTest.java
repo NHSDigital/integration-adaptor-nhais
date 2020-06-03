@@ -81,8 +81,8 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateIdAfter9999999_Then_CounterReset() {
-        setCounter(TRANSACTION_KEY, 9999999L);
+    public void When_GenerateIdAfter_99_999_999_Then_CounterReset() {
+        setCounter(TRANSACTION_KEY, 99_999_999L);
 
         assertThat(sequenceService.generateTransactionId()).isEqualTo(1L);
     }
