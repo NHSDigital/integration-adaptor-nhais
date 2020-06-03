@@ -18,9 +18,8 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +54,7 @@ public class FhirToEdifactServiceTest {
         when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
-            .of(2020, 4, 27, 17, 37, 0, 0, UTC)
+            .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
     }
@@ -100,7 +99,7 @@ public class FhirToEdifactServiceTest {
                 "UNT+8+00000056'\n" +
                 "UNZ+1+00000045'";
 
-        assertEquals(expected, translatedInterchange.getEdifact());
+        assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
     }
 
     private Patient createPatient() {

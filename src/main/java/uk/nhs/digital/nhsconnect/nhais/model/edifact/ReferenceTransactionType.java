@@ -1,63 +1,73 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ReferenceTransactionType extends Reference {
-    public static final String QUALIFIER = "950";
+import java.util.Arrays;
 
+@Getter @Setter
+public class ReferenceTransactionType extends Segment {
+
+    public static final String KEY = "RFF";
+    public static final String QUALIFIER = "950";
+    public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
     private @NonNull TransactionType transactionType;
 
-    public static ReferenceTransactionTypeBuilder builder() {
-        return new ReferenceTransactionTypeBuilder();
-    }
-
-    @Override
-    protected String getReference() {
-        return transactionType.getCode();
-    }
-
-    @Override
-    protected String getQualifier() {
-        return QUALIFIER;
+    public ReferenceTransactionType(@NonNull TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        super.preValidate();
-        if(getReference().isEmpty()){
-            throw new EdifactValidationException(getKey() + ": Attribute reference is required");
+        if(transactionType == null){
+            throw new EdifactValidationException(getKey() + ": Attribute transactionType is required");
         }
     }
 
     @Override
-    protected void validateStateful() throws EdifactValidationException {
+    public String getKey() {
+        return KEY;
+    }
+
+    @Override
+    public String getValue() {
+        return QUALIFIER + ":" + transactionType.getCode();
+    }
+
+    @Override
+    protected void validateStateful() {
         // no stateful properties to validate
     }
 
+    public static ReferenceTransactionType fromString(String edifactString) {
+        if(!edifactString.startsWith(ReferenceTransactionType.KEY_QUALIFIER)){
+            throw new IllegalArgumentException("Can't create " + ReferenceTransactionType.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split(":");
+        return new ReferenceTransactionType(TransactionType.fromCode(split[1]));
+    }
+
     @Getter
+    @RequiredArgsConstructor
     public enum TransactionType {
         ACCEPTANCE("G1", "ACG"),
         AMENDMENT("G2", "AMG"),
         REMOVAL("G3", "REG"),
         DEDUCTION("G4", "DER");
 
-        TransactionType(String code, String abbreviation) {
-            this.code = code;
+        private final String code;
+        private final String abbreviation;
+
+        public static TransactionType fromCode(String code){
+            return Arrays.stream(TransactionType.values())
+                .filter(transactionType1 -> transactionType1.code.equals(code))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
         }
 
-        private String code;
-        private String abbreviation;
-
     }
+
 }

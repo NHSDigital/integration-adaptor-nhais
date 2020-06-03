@@ -22,7 +22,7 @@ public class OutboundMeshService {
 
     @SneakyThrows
     public void send(MeshMessage message) {
-        message.setMessageSentTimestamp(timestampService.getCurrentDateTimeInISOFormat());
+        message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.convertAndSend(meshOutboundQueueName, message);
     }
 

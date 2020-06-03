@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationIdUtils;
 
@@ -25,6 +26,7 @@ public class InboundState {
     @Id
     @Setter(AccessLevel.NONE)
     private String id;
+    private DataType dataType;
     private String operationId;
     private Long receiveInterchangeSequence;
     private Long receiveMessageSequence;
@@ -38,6 +40,7 @@ public class InboundState {
         //TODO initial assumption that interchange can have a single message only
 
         var interchangeHeader = interchange.getInterchangeHeader();
+        var translationDateTime = interchange.getTranslationDateTime();
         var messageHeader = interchange.getMessageHeader();
         var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
         var referenceTransactionType = interchange.getReferenceTransactionType();
@@ -46,6 +49,7 @@ public class InboundState {
         var transactionNumber = referenceTransactionNumber.getTransactionNumber();
 
         return new InboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setOperationId(OperationIdUtils.buildOperationId(sender, transactionNumber))
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
@@ -53,6 +57,18 @@ public class InboundState {
             .setReceiveMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(transactionNumber)
             .setTransactionType(referenceTransactionType.getTransactionType())
-            .setTranslationTimestamp(interchangeHeader.getTranslationTime());
+            .setTranslationTimestamp(translationDateTime.getTimestamp());
+    }
+
+    public static InboundState fromRecep(Recep recep) {
+        var interchangeHeader = recep.getInterchangeHeader();
+        var dateTimePeriod = recep.getDateTimePeriod();
+
+        return new InboundState()
+            .setDataType(DataType.RECEP)
+            .setSender(interchangeHeader.getSender())
+            .setRecipient(interchangeHeader.getRecipient())
+            .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

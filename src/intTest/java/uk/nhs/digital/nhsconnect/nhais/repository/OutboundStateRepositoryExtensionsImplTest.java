@@ -10,13 +10,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EntityNotFoundException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(initializers = MongoDbInitializer.class)
@@ -30,8 +28,8 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private static final String RECIPIENT = "some_recipient";
     private static final Long INTERCHANGE_SEQUENCE = 123L;
     private static final Long MESSAGE_SEQUENCE = 234L;
-    private static final ReferenceMessageRecep.RecepCode RECEP_CODE = ReferenceMessageRecep.RecepCode.CA;
-    private static final Instant RECEP_DATE_TIME = new TimestampService().getCurrentTimestamp();
+    private static final ReferenceMessageRecep.RecepCode RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
+    private static final Instant RECEP_DATE_TIME = Instant.ofEpochMilli(123123);
 
     @Autowired
     OutboundStateRepository outboundStateRepository;
@@ -54,11 +52,11 @@ public class OutboundStateRepositoryExtensionsImplTest {
         outboundState = outboundStateRepository.save(outboundState);
         otherOutboundState = outboundStateRepository.save(otherOutboundState);
 
-        assertNull(outboundState.getRecepCode());
-        assertNull(outboundState.getRecepDateTime());
+        assertThat(outboundState.getRecepCode()).isNull();
+        assertThat(outboundState.getRecepDateTime()).isNull();
 
-        assertNull(otherOutboundState.getRecepCode());
-        assertNull(otherOutboundState.getRecepDateTime());
+        assertThat(otherOutboundState.getRecepCode()).isNull();
+        assertThat(otherOutboundState.getRecepDateTime()).isNull();
 
         outboundStateRepository.updateRecepDetails(
             new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
@@ -69,21 +67,21 @@ public class OutboundStateRepositoryExtensionsImplTest {
         outboundState = outboundStateRepository.findById(outboundState.getId()).orElseThrow();
         otherOutboundState = outboundStateRepository.findById(otherOutboundState.getId()).orElseThrow();
 
-        assertEquals(outboundState.getRecepCode(), RECEP_CODE);
-        assertEquals(outboundState.getRecepDateTime(), RECEP_DATE_TIME);
+        assertThat(outboundState.getRecepCode()).isEqualTo(RECEP_CODE);
+        assertThat(outboundState.getRecepDateTime()).isEqualTo(RECEP_DATE_TIME);
 
-        assertNull(otherOutboundState.getRecepCode());
-        assertNull(otherOutboundState.getRecepDateTime());
+        assertThat(otherOutboundState.getRecepCode()).isNull();
+        assertThat(otherOutboundState.getRecepDateTime()).isNull();
     }
 
     @Test
     void whenUpdatingNonExistingEntity_thenThrowsException() {
-        assertThrows(
-            EntityNotFoundException.class,
+        assertThatThrownBy(
             () -> outboundStateRepository.updateRecepDetails(
                 new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
                     NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
                 new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                    RECEP_CODE, RECEP_DATE_TIME)));
+                    RECEP_CODE, RECEP_DATE_TIME)))
+            .isInstanceOf(EntityNotFoundException.class);
     }
 }

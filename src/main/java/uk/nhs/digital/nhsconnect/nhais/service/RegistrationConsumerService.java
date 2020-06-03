@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,23 +13,15 @@ import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 
 @Component @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RegistrationConsumerService {
 
-    @Autowired
-    private EdifactParser edifactParser;
-
-    @Autowired
-    private EdifactToFhirService edifactToFhirService;
-
-    @Autowired
-    private InboundGpSystemService inboundGpSystemService;
-
-    @Autowired
-    private InboundStateRepository inboundStateRepository;
+    private final InboundGpSystemService inboundGpSystemService;
+    private final InboundStateRepository inboundStateRepository;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        Interchange interchange = edifactParser.parse(meshMessage.getContent());
+        Interchange interchange = new EdifactParser().parse(meshMessage.getContent());
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
         var inboundState = InboundState.fromInterchange(interchange);
@@ -37,7 +30,7 @@ public class RegistrationConsumerService {
         }
 
         // recep producer service
-        Parameters outputParameters = edifactToFhirService.convertToFhir(interchange);
+        Parameters outputParameters = new EdifactToFhirService().convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
         LOGGER.debug("Published inbound registration message to gp supplier queue");

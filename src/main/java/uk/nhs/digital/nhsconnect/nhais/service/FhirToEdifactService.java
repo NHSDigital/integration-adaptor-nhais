@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -30,16 +31,12 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FhirToEdifactService {
 
-    @Autowired
-    private OutboundStateRepository outboundStateRepository;
-
-    @Autowired
-    private SequenceService sequenceService;
-
-    @Autowired
-    private TimestampService timestampService;
+    private final OutboundStateRepository outboundStateRepository;
+    private final SequenceService sequenceService;
+    private final TimestampService timestampService;
 
     public TranslatedInterchange convertToEdifact(Patient patient, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
@@ -122,7 +119,7 @@ public class FhirToEdifactService {
                 new BeginningOfMessage(),
                 new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType().setTransactionType(translationItems.transactionType),
+                new ReferenceTransactionType(translationItems.transactionType),
                 new SegmentGroup(1),
                 new ReferenceTransactionNumber(),
                 new MessageTrailer(8),
@@ -210,5 +207,4 @@ public class FhirToEdifactService {
         private Long transactionNumber;
         private Instant translationTimestamp;
     }
-
 }
