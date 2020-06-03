@@ -63,10 +63,12 @@ pipeline {
                 // }
             // }
         }
-        lock("${tfProject}-${tfEnvironment}-${tfComponent}") {
-          stage('Deploy and Integration Test') {
+        stage('Deploy and Integration Test') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }
+            options {
+              lock("${tfProject}-${tfEnvironment}-${tfComponent}")
             }
             stages {
                 stage('Deploy using Terraform') {
@@ -103,7 +105,6 @@ pipeline {
                  } //stage
             } //stages
         } //stage Deploy and Test
-      } // lock
         // stage('Run SonarQube analysis') {
         //     steps {
         //         runSonarQubeAnalysis()
