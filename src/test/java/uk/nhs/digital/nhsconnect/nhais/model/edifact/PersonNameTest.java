@@ -1,9 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PersonNameTest {
 
@@ -32,5 +34,19 @@ public class PersonNameTest {
                 .build();
 
         assertEquals(expectedValue, personName.toEdifact());
+    }
+
+    @Test
+    public void When_MappingToEdifactWithEmptySurname_Then_EdifactValidationExceptionIsThrown() {
+        var personName = PersonName.builder()
+                .surname(StringUtils.EMPTY)
+                .build();
+
+        assertThrows(EdifactValidationException.class, personName::toEdifact);
+    }
+
+    @Test
+    public void When_BuildingWithoutSurname_Then_NullPointerExceptionIsThrown() {
+        assertThrows(NullPointerException.class, () -> PersonName.builder().build());
     }
 }

@@ -1,8 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AcceptanceTypeTest {
 
@@ -15,5 +17,19 @@ public class AcceptanceTypeTest {
                 .build();
 
         assertEquals(expectedValue, acceptanceType.toEdifact());
+    }
+
+    @Test
+    public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
+        var acceptanceType = AcceptanceType.builder()
+                .type("")
+                .build();
+
+        assertThrows(EdifactValidationException.class, acceptanceType::toEdifact);
+    }
+
+    @Test
+    public void When_BuildingWithoutType_Then_IsThrown() {
+        assertThrows(NullPointerException.class, () -> AcceptanceType.builder().build());
     }
 }

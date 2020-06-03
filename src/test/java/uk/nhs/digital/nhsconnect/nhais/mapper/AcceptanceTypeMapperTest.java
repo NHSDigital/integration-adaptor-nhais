@@ -5,7 +5,10 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AcceptanceTypeMapperTest {
 
@@ -14,7 +17,7 @@ class AcceptanceTypeMapperTest {
         Parameters parameters = new Parameters();
         parameters.addParameter()
                 .setName("acceptanceType")
-                .setValue(new StringType("1"));
+                .setValue(new StringType("Birth"));
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         AcceptanceType acceptanceType = acceptanceTypeMapper.map(parameters);
@@ -24,5 +27,16 @@ class AcceptanceTypeMapperTest {
                 .build();
 
         assertEquals(exceptedAcceptanceType, acceptanceType);
+    }
+
+    @Test
+    public void When_MappingWithWrongType_Then_NoSuchElementExceptionIsThrown() {
+        Parameters parameters = new Parameters();
+        parameters.addParameter()
+                .setName("acceptanceType")
+                .setValue(new StringType("test-fails"));
+
+        var acceptanceTypeMapper = new AcceptanceTypeMapper();
+        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
     }
 }

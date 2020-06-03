@@ -5,15 +5,17 @@ import org.hl7.fhir.r4.model.Parameters;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceType> {
     private final static String ACCEPTANCE_TYPE = "acceptanceType";
-    private final static Map ACC_TYPE_MAPPING = ImmutableMap.of(
-            "1", "Birth",
-            "2", "1st Acceptance",
-            "3", "Transfer-in",
-            "4", "Immigrant",
-            "5", "Ex-services"
+    private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
+            "Birth", "1",
+            "1st Acceptance", "2",
+            "Transfer-in", "3",
+            "Immigrant", "4",
+            "Ex-services", "5"
     );
 
     public AcceptanceType map(Parameters parameters) {
@@ -23,14 +25,15 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
     }
 
     private String getAcceptanceType(Parameters parameters) {
-        System.out.println(parameters.getParameterFirstRep().getValue());
-
-        return parameters.getParameter()
+        String inputValue = parameters.getParameter()
                 .stream()
                 .filter(param -> ACCEPTANCE_TYPE.equals(param.getName()))
                 .map(Parameters.ParametersParameterComponent::getValue)
                 .map(Object::toString)
                 .findFirst()
                 .orElseThrow();
+
+        return Optional.ofNullable(ACC_TYPE_MAPPING.get(inputValue))
+                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
     }
 }

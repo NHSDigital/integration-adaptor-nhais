@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
+import java.util.Objects;
+
 @Builder
 @Data
 public class AcceptanceType extends Segment {
@@ -31,5 +33,8 @@ public class AcceptanceType extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
+        if (type.isEmpty() || Objects.isNull(type)) {
+            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+        }
     }
 }
