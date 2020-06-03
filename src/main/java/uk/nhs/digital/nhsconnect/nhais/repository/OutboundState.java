@@ -24,6 +24,7 @@ public class OutboundState {
     @Id
     @Setter(AccessLevel.NONE)
     private String id;
+    private DataType dataType;
     private String operationId;
     private Long transactionId;
     private Date transactionTimestamp;
