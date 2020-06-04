@@ -5,6 +5,8 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
@@ -29,16 +31,14 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FhirToEdifactService {
 
-    @Autowired
-    private OutboundStateRepository outboundStateRepository;
+    private final OutboundStateRepository outboundStateRepository;
 
-    @Autowired
-    private SequenceService sequenceService;
+    private final SequenceService sequenceService;
 
-    @Autowired
-    private TimestampService timestampService;
+    private final TimestampService timestampService;
 
     public TranslatedInterchange convertToEdifact(Patient patient, String operationId, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
