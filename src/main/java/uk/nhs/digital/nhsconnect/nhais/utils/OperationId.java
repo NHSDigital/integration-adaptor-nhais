@@ -5,7 +5,7 @@ import lombok.NonNull;
 
 import java.nio.charset.StandardCharsets;
 
-public class OperationIdUtils {
+public class OperationId {
     public static String buildOperationId(@NonNull String organization, @NonNull Long transactionNumber) {
         return Hashing.sha256()
             .hashString(organization + transactionNumber, StandardCharsets.UTF_8)

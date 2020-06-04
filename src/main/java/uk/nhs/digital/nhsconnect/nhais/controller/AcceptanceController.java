@@ -20,7 +20,7 @@ import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
-import uk.nhs.digital.nhsconnect.nhais.utils.Headers;
+import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
 
 import java.util.Collections;
 
@@ -47,7 +47,7 @@ public class AcceptanceController {
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
         outboundMeshService.send(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put(Headers.OPERATION_ID, Collections.singletonList(translatedInterchange.getOperationId()));
+        headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(translatedInterchange.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
     }
 

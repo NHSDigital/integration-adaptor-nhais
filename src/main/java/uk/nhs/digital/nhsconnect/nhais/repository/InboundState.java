@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.utils.OperationIdUtils;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 
@@ -50,7 +50,7 @@ public class InboundState {
 
         return new InboundState()
             .setDataType(DataType.INTERCHANGE)
-            .setOperationId(OperationIdUtils.buildOperationId(sender, transactionNumber))
+            .setOperationId(OperationId.buildOperationId(sender, transactionNumber))
             .setSender(sender)
             .setRecipient(interchangeHeader.getRecipient())
             .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())

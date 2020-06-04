@@ -22,7 +22,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.utils.OperationIdUtils;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class FhirToEdifactService {
     }
 
     private void setOperationId(TranslationItems translationItems) {
-        translationItems.operationId = OperationIdUtils.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
+        translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
     }
 
     private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {
