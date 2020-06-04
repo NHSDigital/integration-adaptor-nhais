@@ -40,27 +40,31 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
         .toInstant();
 
     @Value("classpath:edifact/interchange.dat")
-    private Resource edifact;
+    private Resource interchange;
 
     @Test
     @DirtiesContext
-    void whenMeshInboundQueueInterchangeMessageIsReceived_thenInboundStateIsSavedAndTranslatedDataPushedToGbInboundQueue(SoftAssertions softly) throws IOException, JMSException {
+    void whenMeshInboundQueueInterchangeMessageIsReceived_thenInterchangeHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setContent(new String(Files.readAllBytes(edifact.getFile().toPath())));
+            .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
 
         sendToMeshInboundQueue(meshMessage);
 
-        var inboundState = waitForInboundState(DataType.INTERCHANGE, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE);
+        var inboundState = waitFor(
+            () -> inboundStateRepository.findBy(DataType.INTERCHANGE, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE));
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
         assertInboundState(softly, inboundState);
 
         assertGpSystemInboundQueueMessage(softly, gpSystemInboundQueueMessage);
+
+        //TODO get recep from outbound queue and verify it's content
     }
 
     private void assertGpSystemInboundQueueMessage(SoftAssertions softly, Message gpSystemInboundQueueMessage) throws JMSException {
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
+
         var resource = parseMessage(gpSystemInboundQueueMessage);
         softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
         //TODO: other assertions on queue message

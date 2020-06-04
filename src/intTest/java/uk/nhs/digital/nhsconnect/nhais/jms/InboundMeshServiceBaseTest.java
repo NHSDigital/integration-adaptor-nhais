@@ -15,12 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.ActiveMqInitializer;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
-import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -69,16 +68,20 @@ public abstract class InboundMeshServiceBaseTest {
         return objectMapper.writeValueAsString(meshMessage);
     }
 
-    protected InboundState waitForInboundState(
-        DataType dataType, String sender, String recipient, long interchangeSequence, Long messageSequence) {
-
-        Supplier<InboundState> getData = () -> inboundStateRepository.findBy(dataType, sender, recipient, interchangeSequence, messageSequence);
-
+    protected <T> T waitFor(Supplier<T> supplier) {
+        var dataToReturn = new AtomicReference<T>();
         await()
             .atMost(WAIT_FOR_IN_SECONDS, SECONDS)
             .pollInterval(50, MILLISECONDS)
-            .until(() -> getData.get() != null);
+            .until(() -> {
+                var data = supplier.get();
+                if (data != null) {
+                    dataToReturn.set(data);
+                    return true;
+                }
+                return false;
+            });
 
-        return getData.get();
+        return dataToReturn.get();
     }
 }

@@ -18,12 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.function.Supplier;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
 
 public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
 
@@ -49,7 +43,8 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
             .setWorkflowId(WorkflowId.RECEP)
             .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
 
-        var inboundState = waitForInboundState(DataType.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null);
+        var inboundState = waitFor(
+            () -> inboundStateRepository.findBy(DataType.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null));
 
         assertInboundState(softly, inboundState);
 
@@ -57,29 +52,21 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
     }
 
     private void assertOutboundStateRecepUpdates(SoftAssertions softly) {
-        var expectedOutboundStateRef1 = new OutboundState()
-            .setDataType(DataType.RECEP)
-            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setSendMessageSequence(REF_MESSAGE_SEQUENCE_1)
-            .setSender(RECIPIENT)
-            .setRecipient(SENDER)
-            .setRecepCode(ReferenceMessageRecep.RecepCode.SUCCESS)
-            .setRecepDateTime(TRANSLATION_TIMESTAMP);
-        var expectedOutboundStateRef2 = new OutboundState()
-            .setDataType(DataType.RECEP)
-            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setSendMessageSequence(REF_MESSAGE_SEQUENCE_2)
-            .setSender(RECIPIENT)
-            .setRecipient(SENDER)
-            .setRecepCode(ReferenceMessageRecep.RecepCode.ERROR)
-            .setRecepDateTime(TRANSLATION_TIMESTAMP);
+        var expectedOutboundStateRef1 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_1, ReferenceMessageRecep.RecepCode.SUCCESS);
+        var expectedOutboundStateRef2 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_2, ReferenceMessageRecep.RecepCode.ERROR);
 
-        var outboundStates = waitForOutboundStateRecepUpdate();
+        var outboundStates = waitFor(() -> Lists.newArrayList(outboundStateRepository.findAll()));
         var outboundStateRef1 = outboundStates.get(0);
         var outboundStateRef2 = outboundStates.get(1);
 
         softly.assertThat(outboundStateRef1).isEqualToIgnoringGivenFields(expectedOutboundStateRef1, "id");
         softly.assertThat(outboundStateRef2).isEqualToIgnoringGivenFields(expectedOutboundStateRef2, "id");
+    }
+
+    private OutboundState buildExpectedOutboundState(long refMessageSequence1, ReferenceMessageRecep.RecepCode success) {
+        return buildOutboundState(refMessageSequence1)
+            .setRecepCode(success)
+            .setRecepDateTime(TRANSLATION_TIMESTAMP);
     }
 
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
@@ -94,28 +81,16 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
     }
 
     private void createOutboundStateRecords() {
-        outboundStateRepository.save(new OutboundState()
-            .setDataType(DataType.RECEP)
-            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setSendMessageSequence(REF_MESSAGE_SEQUENCE_1)
-            .setSender(RECIPIENT)
-            .setRecipient(SENDER));
-        outboundStateRepository.save(new OutboundState()
-            .setDataType(DataType.RECEP)
-            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setSendMessageSequence(REF_MESSAGE_SEQUENCE_2)
-            .setSender(RECIPIENT)
-            .setRecipient(SENDER));
+        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_1));
+        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_2));
     }
 
-    protected List<OutboundState> waitForOutboundStateRecepUpdate() {
-        Supplier<List<OutboundState>> getData = () -> Lists.newArrayList(outboundStateRepository.findAll());
-
-        await()
-            .atMost(WAIT_FOR_IN_SECONDS, SECONDS)
-            .pollInterval(50, MILLISECONDS)
-            .until(() -> getData.get().stream().filter(state -> state.getRecepCode() != null).count() == 2);
-
-        return getData.get();
+    private OutboundState buildOutboundState(long refMessageSequence1) {
+        return new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
+            .setSendMessageSequence(refMessageSequence1)
+            .setSender(RECIPIENT)
+            .setRecipient(SENDER);
     }
 }
