@@ -8,10 +8,16 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Example DTM+137:199201141619:203'
+ */
 @Getter @Setter @RequiredArgsConstructor
 public class DateTimePeriod extends Segment{
+
+    public static final String KEY = "DTM";
 
     private @NonNull Instant timestamp;
     private @NonNull TypeAndFormat typeAndFormat;
@@ -45,7 +51,7 @@ public class DateTimePeriod extends Segment{
 
     @Override
     public String getKey() {
-        return "DTM";
+        return KEY;
     }
 
     @Override
@@ -70,5 +76,15 @@ public class DateTimePeriod extends Segment{
 //        if (dateTimeFormat.isEmpty()) {
 //            throw new EdifactValidationException(getKey() + ": Attribute dateTimeFormat is required");
 //        }
+    }
+
+    public static DateTimePeriod fromString(String edifactString) {
+        if(!edifactString.startsWith(DateTimePeriod.KEY)){
+            throw new IllegalArgumentException("Can't create " + DateTimePeriod.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\+")[1]
+            .split(":");
+        Instant instant = ZonedDateTime.parse(split[1], TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
+        return new DateTimePeriod(instant, TypeAndFormat.TRANSLATION_TIMESTAMP);
     }
 }

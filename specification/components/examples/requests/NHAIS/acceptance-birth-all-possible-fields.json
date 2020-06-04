@@ -1,66 +1,78 @@
 {
-  "id": "54321",
-  "extension": [
+  "parameter": [
     {
-      "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-      "valueString": "TownOfBirth"
+      "name": "patient",
+      "resource": {
+        "id": "54321",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
+            "valueString": "TownOfBirth"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+            "valueBoolean": true
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+            "valueString": "ResidentialInstituteCode"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-GPNotes",
+            "valueString": "GP Notes Free Text"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "current house name",
+              "current number or road name",
+              "current locality",
+              "current town",
+              "current county"
+            ],
+            "postalCode": "SO15 2GB"
+          }
+        ],
+        "birthDate": "1990-01-01T09:33:00",
+        "gender": "male",
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "value": "GP123"
+            },
+            "type": "Organization"
+          }
+        ],
+        "managingOrganization": {
+          "identifier": {
+            "value": "HA456"
+          },
+          "type": "Organization"
+        },
+        "name": [
+          {
+            "family": "Surname",
+            "given": [
+              "FirstForename",
+              "SecondForename",
+              "OtherForename1 OtherForename2"
+            ],
+            "prefix": [
+              "Title"
+            ]
+          },
+          {
+            "family": "Previous Surname"
+          }
+        ],
+        "resourceType": "Patient"
+      }
     },
     {
-      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
-      "valueBoolean": true
-    },
-    {
-      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
-      "valueString": "ResidentialInstituteCode"
-    },
-    {
-      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-GPNotes",
-      "valueString": "GP Notes Free Text"
+      "name": "acceptanceType",
+      "valueString": "birth"
     }
   ],
-  "address": [
-    {
-      "line": [
-        "current house name",
-        "current number or road name",
-        "current locality",
-        "current town",
-        "current county"
-      ],
-      "postalCode": "SO15 2GB"
-    }
-  ],
-  "birthDate": "1990-01-01T09:33:00",
-  "gender": "male",
-  "generalPractitioner": [
-    {
-      "identifier": {
-        "value": "GP123"
-      },
-      "type": "Organization"
-    }
-  ],
-  "managingOrganization": {
-    "identifier": {
-      "value": "HA456"
-    },
-    "type": "Organization"
-  },
-  "name": [
-    {
-      "family": "Surname",
-      "given": [
-        "FirstForename",
-        "SecondForename",
-        "OtherForename1 OtherForename2"
-      ],
-      "prefix": [
-        "Title"
-      ]
-    },
-    {
-      "family": "Previous Surname"
-    }
-  ],
-  "resourceType": "Patient"
+  "resourceType": "Parameters"
 }

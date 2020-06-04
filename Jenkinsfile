@@ -1,3 +1,7 @@
+String tfProject     = "nia"
+String tfEnvironment = "build1" // change for ptl, vp goes here
+String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
+
 pipeline {
     agent{
         label 'jenkins-workers'
@@ -63,16 +67,16 @@ pipeline {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
             }
+            options {
+              lock("${tfProject}-${tfEnvironment}-${tfComponent}")
+            }
             stages {
                 stage('Deploy using Terraform') {
                     steps {
                         script {
                             String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
-                            String tfProject     = "nia"
-                            String tfEnvironment = "build1" // change for ptl, vp goes here
-                            String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
-                            String tfRegion      = TF_STATE_BUCKET_REGION
+                            String tfRegion      = "${TF_STATE_BUCKET_REGION}"
 
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
@@ -99,10 +103,9 @@ pipeline {
                         echo 'TODO run integration tests'
                         echo 'TODO archive test results'
                     }
-                 }
-            }
-
-        }
+                 } //stage
+            } //stages
+        } //stage Deploy and Test
         // stage('Run SonarQube analysis') {
         //     steps {
         //         runSonarQubeAnalysis()

@@ -1,29 +1,54 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-public class ReferenceTransactionNumber extends Reference {
+@Getter @Setter
+@RequiredArgsConstructor @NoArgsConstructor
+public class ReferenceTransactionNumber extends Segment {
 
-    public ReferenceTransactionNumber() {
-        super("TN", "");
+    public static final String KEY = "RFF";
+    public static final String QUALIFIER = "TN";
+    public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
+    private static final long MAX_TRANSACTION_NUMBER = 9_999_999L;
+
+    private @NonNull Long transactionNumber;
+
+    @Override
+    public String getKey() {
+        return KEY;
     }
 
-    public Long getTransactionNumber() {
-        return Long.decode(getReference());
+    @Override
+    public String getValue() {
+        return QUALIFIER + ":" + transactionNumber;
     }
 
-    public ReferenceTransactionNumber setTransactionNumber(Long transactionNumber) {
-        this.setReference(Long.toString(transactionNumber));
-        return this;
+    @Override
+    public void preValidate() throws EdifactValidationException {
+        //NOP
     }
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
-        if (getReference() == null) {
-            throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
+        if (transactionNumber == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute reference is required");
         }
-        if (getReference().isEmpty()) {
-            throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
+        if (transactionNumber < 1 || transactionNumber > MAX_TRANSACTION_NUMBER) {
+            throw new EdifactValidationException(
+                getKey() + ": Attribute transactionNumber must be between 1 and " + MAX_TRANSACTION_NUMBER);
         }
+    }
+
+    public static ReferenceTransactionNumber fromString(String edifactString) {
+        if(!edifactString.startsWith(ReferenceTransactionNumber.KEY_QUALIFIER)){
+            throw new IllegalArgumentException("Can't create " + ReferenceTransactionNumber.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\:");
+        return new ReferenceTransactionNumber(Long.valueOf(split[1]));
     }
 }
