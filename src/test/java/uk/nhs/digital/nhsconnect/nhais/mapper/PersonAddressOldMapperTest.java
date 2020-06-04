@@ -13,29 +13,13 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class PersonAddressMapperTest {
+class PersonAddressOldMapperTest {
 
     @Test
     void When_MappingAddress_Then_ExpectCorrectResult() {
-        /*
-            {
-                "use": "home",
-                "type": "both",
-                "text": "534 Erewhon St PeasantVille, Rainbow, Vic  3999",
-                "line": [
-                    "534 Erewhon St"
-                ],
-                "city": "PleasantVille",
-                "district": "Rainbow",
-                "state": "Vic",
-                "postalCode": "3999",
-                "period": {
-                "start": "1974-12-25"
-            }
-         */
         Patient patient = new Patient();
         Address address = new Address();
-        address.setUse(Address.AddressUse.HOME);
+        address.setUse(Address.AddressUse.OLD);
         address.setText("534 Erewhon St PeasantVille, Rainbow, Vic  3999");
         address.setLine(List.of(new StringType("534 Erewhon St")));
         patient.setAddress(List.of(address));
@@ -45,9 +29,9 @@ class PersonAddressMapperTest {
                 .setName(Patient.class.getSimpleName())
                 .setResource(patient);
 
-        var personAddressMapper = new PersonAddressMapper();
-        personAddressMapper.map(parameters);
-        PersonAddress personAddress = personAddressMapper.map(parameters);
+        var personAddressOldMapper = new PersonAddressOldMapper();
+        personAddressOldMapper.map(parameters);
+        PersonAddress personAddress = personAddressOldMapper.map(parameters);
 
         var expectedPersonAddress = PersonAddress
                 .builder()
@@ -62,7 +46,7 @@ class PersonAddressMapperTest {
     public void When_MappingWithoutAddress_Then_NoSuchElementExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
-        var personAddressMapper = new PersonAddressMapper();
-        assertThrows(NoSuchElementException.class, () -> personAddressMapper.map(parameters));
+        var addressOldMapper = new PersonAddressOldMapper();
+        assertThrows(NoSuchElementException.class, () -> addressOldMapper.map(parameters));
     }
 }

@@ -8,12 +8,13 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 
 import java.util.List;
 
-public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddress> {
-    private final static Address.AddressUse ADDRESS_USE_HOME = Address.AddressUse.HOME;
+public class PersonAddressOldMapper implements FromFhirToEdifactMapper<PersonAddress> {
+    private final static Address.AddressUse ADDRESS_USE_HOME = Address.AddressUse.OLD;
 
     public PersonAddress map(Parameters parameters) {
         Address address = getAddress(parameters);
 
+        //Not sure if OLD address needs any validation re-using PersonAddress for now
         return PersonAddress.builder()
                 .addressText(address.getText())
                 .addressLine1(getAddressLineOrNull(address.getLine(), 0))

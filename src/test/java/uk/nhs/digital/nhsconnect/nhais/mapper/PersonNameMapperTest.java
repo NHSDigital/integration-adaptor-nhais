@@ -41,7 +41,7 @@ class PersonNameMapperTest {
     public void When_MappingWithoutPatient_Then_NoSuchElementExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
-        var acceptanceCodeMapper = new AcceptanceCodeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
+        var personNameMapper = new PersonNameMapper();
+        assertThrows(NoSuchElementException.class, () -> personNameMapper.map(parameters));
     }
 }

@@ -45,12 +45,12 @@ class PersonSexMapperTest {
                 .setName(Patient.class.getSimpleName())
                 .setResource(patient);
 
-        var acceptanceTypeMapper = new AcceptanceTypeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
+        var personSexMapper = new PersonSexMapper();
+        assertThrows(NoSuchElementException.class, () -> personSexMapper.map(parameters));
     }
 
     @Test
-    public void When_MappingWithoutGender_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutGender_Then_NullPointerExceptionIsThrown() {
         Patient patient = new Patient();
 
         Parameters parameters = new Parameters();
@@ -58,7 +58,7 @@ class PersonSexMapperTest {
                 .setName(Patient.class.getSimpleName())
                 .setResource(patient);
 
-        var acceptanceTypeMapper = new AcceptanceTypeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
+        var personSexMapper = new PersonSexMapper();
+        assertThrows(NullPointerException.class, () -> personSexMapper.map(parameters));
     }
 }
