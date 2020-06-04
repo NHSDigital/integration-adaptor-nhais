@@ -30,6 +30,7 @@ public class PersonAddress extends Segment {
     private String addressLine2;
 
     @Override
+    //TODO Have no example of old address
     public String getKey() {
         return "NAD";
     }
