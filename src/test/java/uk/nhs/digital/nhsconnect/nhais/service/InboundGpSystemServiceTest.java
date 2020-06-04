@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,8 +13,9 @@ import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +28,12 @@ public class InboundGpSystemServiceTest {
 
     @Mock
     JmsTemplate jmsTemplate;
+
+    @Mock
+    Session session;
+
+    @Mock
+    TextMessage textMessage;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
@@ -42,8 +50,15 @@ public class InboundGpSystemServiceTest {
 
         inboundGpSystemService.publishToSupplierQueue(parameters, operationId);
 
-        verify(jmsTemplate).send(eq(gpSystemInboundQueueName), any(MessageCreator.class));
+        var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 
-        //TODO: how to check that message has been created with specific property?
+        verify(jmsTemplate).send(eq(gpSystemInboundQueueName), messageCreatorArgumentCaptor.capture());
+
+        when(session.createTextMessage(jsonEncodedFhir)).thenReturn(textMessage);
+
+        messageCreatorArgumentCaptor.getValue().createMessage(session);
+
+        verify(session).createTextMessage(eq(jsonEncodedFhir));
+        verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
     }
 }

@@ -54,9 +54,19 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
         var inboundState = waitForInboundState(DataType.INTERCHANGE, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE);
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
+        assertInboundState(softly, inboundState);
+
+        assertGpSystemInboundQueueMessage(softly, gpSystemInboundQueueMessage);
+    }
+
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly, Message gpSystemInboundQueueMessage) throws JMSException {
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
         var resource = parseMessage(gpSystemInboundQueueMessage);
+        softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
+        //TODO: other assertions on queue message
+    }
 
+    private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
             .setDataType(DataType.INTERCHANGE)
             .setOperationId(OPERATION_ID)
@@ -67,11 +77,7 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
             .setTransactionType(TRANSACTION_TYPE)
             .setTransactionNumber(TRANSACTION_NUMBER)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
-
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
-
-        softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
-        //TODO: other assertions on queue message
     }
 
     @SneakyThrows
