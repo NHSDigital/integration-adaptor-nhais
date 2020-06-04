@@ -48,4 +48,17 @@ class PersonSexMapperTest {
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
     }
+
+    @Test
+    public void When_MappingWithoutGender_Then_NoSuchElementExceptionIsThrown() {
+        Patient patient = new Patient();
+
+        Parameters parameters = new Parameters();
+        parameters.addParameter()
+                .setName(Patient.class.getSimpleName())
+                .setResource(patient);
+
+        var acceptanceTypeMapper = new AcceptanceTypeMapper();
+        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
+    }
 }

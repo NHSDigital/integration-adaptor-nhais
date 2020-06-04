@@ -51,7 +51,7 @@ public class PersonName extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (surname.isEmpty() || Objects.isNull(surname)) {
+        if (Objects.isNull(surname) || surname.isBlank()) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
     }

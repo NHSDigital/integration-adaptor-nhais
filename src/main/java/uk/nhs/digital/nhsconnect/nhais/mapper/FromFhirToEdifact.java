@@ -10,7 +10,8 @@ public class FromFhirToEdifact {
             new PersonNameMapper(),
             new AcceptanceTypeMapper(),
             new AcceptanceCodeMapper(),
-            new PersonSexMapper()
+            new PersonSexMapper(),
+            new PersonAddressMapper()
     );
 
 //    public Interchange map(Parameters parameters) {

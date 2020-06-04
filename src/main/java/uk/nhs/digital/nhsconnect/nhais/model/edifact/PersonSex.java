@@ -29,7 +29,7 @@ public class PersonSex extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (sexCode.isEmpty() || Objects.isNull(sexCode)) {
+        if (Objects.isNull(sexCode) || sexCode.isBlank()) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
     }

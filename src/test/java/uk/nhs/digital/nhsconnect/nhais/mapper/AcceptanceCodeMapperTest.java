@@ -39,4 +39,12 @@ class AcceptanceCodeMapperTest {
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
         assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
     }
+
+    @Test
+    public void When_MappingWithoutCode_Then_NoSuchElementExceptionIsThrown() {
+        Parameters parameters = new Parameters();
+
+        var acceptanceCodeMapper = new AcceptanceCodeMapper();
+        assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
+    }
 }

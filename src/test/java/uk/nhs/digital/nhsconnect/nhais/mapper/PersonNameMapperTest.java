@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonNameMapperTest {
 
@@ -33,5 +35,13 @@ class PersonNameMapperTest {
                 .build();
 
         assertEquals(expectedPersonName, personName);
+    }
+
+    @Test
+    public void When_MappingWithoutPatient_Then_NoSuchElementExceptionIsThrown() {
+        Parameters parameters = new Parameters();
+
+        var acceptanceCodeMapper = new AcceptanceCodeMapper();
+        assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
     }
 }

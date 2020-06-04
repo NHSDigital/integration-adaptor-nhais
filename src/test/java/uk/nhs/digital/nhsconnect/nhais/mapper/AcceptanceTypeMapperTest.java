@@ -39,4 +39,12 @@ class AcceptanceTypeMapperTest {
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
     }
+
+    @Test
+    public void When_MappingWithoutType_Then_NoSuchElementExceptionIsThrown() {
+        Parameters parameters = new Parameters();
+
+        var acceptanceTypeMapper = new AcceptanceTypeMapper();
+        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
+    }
 }

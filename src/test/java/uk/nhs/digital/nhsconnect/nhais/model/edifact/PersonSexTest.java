@@ -29,7 +29,7 @@ public class PersonSexTest {
     }
 
     @Test
-    public void When_BuildingWithoutType_Then_IsThrown() {
+    public void When_BuildingWithoutType_Then_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PersonSex.builder().build());
     }
 }
