@@ -195,6 +195,22 @@ the entire value be managed as a secured secret.
 
 The user must have the `readWrite` role or a custom role with specific privileges.
 
+## MESH API
+
+TODO: NHAIS Adaptor MESH configuration when MESH integration is implemented
+
+For local test scripts see [mesh/README.md](/mesh/README.md)
+
+### OpenTest
+
+TODO
+
+### Fake MESH
+
+Clone https://github.com/mattd-kainos/fake-mesh from our fork
+
+Follow the instructions in that repository's README.md to run it (using Docker is recommended)
+
 ## Running
 
 * Set and export environment variables defined in `nhais-env-example.yaml`
