@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
@@ -20,7 +21,7 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
     private String getNhsNumber(Patient patient) {
         return patient.getIdentifier().stream()
                 .filter(identifier -> identifier.getSystem().equals(NHS_SYSTEM))
-                .map(identifier -> identifier.getValue())
+                .map(Identifier::getValue)
                 .findFirst()
                 .orElseThrow();
     }

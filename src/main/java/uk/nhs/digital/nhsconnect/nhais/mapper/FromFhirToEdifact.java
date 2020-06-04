@@ -15,7 +15,9 @@ public class FromFhirToEdifact {
             new PersonAddressOldMapper(),
             new PersonDateOfBirthMapper(),
             new PersonGPMapper(),
-            new PersonHAMapper()
+            new PersonHAMapper(),
+            new PersonDateOfEntryMapper(),
+            new PersonGPPreviousMapper()
     );
 
 //    public Interchange map(Parameters parameters) {
