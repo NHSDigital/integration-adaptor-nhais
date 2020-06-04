@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.utils.FhirToJson;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Type;
 import org.junit.jupiter.api.Test;
 
 class EdifactToFhirServiceTest {
@@ -51,13 +53,11 @@ class EdifactToFhirServiceTest {
             .collect(Collectors.toList());
 
         assertThat(resources).hasOnlyElementsOfType(Patient.class);
-        Patient patient = resources.stream()
-            .filter(resource -> resource instanceof Patient)
-            .map(Patient.class::cast)
-            .findFirst()
-            .orElseThrow();
+
+        Patient patient = (Patient) parameters.getParameterFirstRep().getResource();
 
         assertThat(patient.getManagingOrganization().getResource().getIdElement().getIdPart()).isEqualTo("XX1");
         assertThat(patient.getGeneralPractitionerFirstRep().getResource().getIdElement().getIdPart()).isEqualTo("2750922,295");
+//        FhirToJson.printResource(parameters);
     }
 }

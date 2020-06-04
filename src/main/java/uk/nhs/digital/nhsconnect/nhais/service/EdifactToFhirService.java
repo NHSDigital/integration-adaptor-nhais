@@ -8,13 +8,15 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.SampledData;
+import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EdifactToFhirService {
 
     public Parameters convertToFhir(Interchange interchange) {
-        Patient patient = createPatient("example");
+        Patient patient = createPatient("PLACEHOLDER_FOR_PATIENT_ID"); //TODO: update placeholder with correct value
 
         Reference managingOrganization = createManagingOrganizationReference(interchange);
         Reference generalPractitioner = createGeneralPractitionerReference(interchange);
@@ -28,7 +30,11 @@ public class EdifactToFhirService {
     private Parameters createParameters(Resource... resources) {
         Parameters parameters = new Parameters();
         for (Resource resource : resources) {
-            parameters.addParameter(new Parameters.ParametersParameterComponent().setResource(resource));
+            var parameterComponent = new Parameters.ParametersParameterComponent().setResource(resource);
+            if(Patient.class.getSimpleName().equals(resource.fhirType())) {
+                parameterComponent.setName("patient");
+            }
+            parameters.addParameter(parameterComponent);
         }
         return parameters;
     }
