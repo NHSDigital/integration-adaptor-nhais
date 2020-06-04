@@ -169,11 +169,33 @@ when the service is run.
 | NHAIS_AMQP_PASSWORD              |                           | (Optional) password for the amqp server for outbound (to mesh) message queue
 | NHAIS_AMQP_MAX_RETRIES           | 3                         | The number of times a request to the outbound (to mesh) broker(s) will be retried
 | NHAIS_AMQP_RETRY_DELAY           | 100                       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
-| NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
-| NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
 | NHAIS_LOG_LEVEL                  |                           | The desired logging level
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
+
+### Mongodb Configuration Options
+
+The adaptor configuration for mongodb can be configured two ways: using a connection string or providing individual 
+properties. This is to accommodate differences in the capabilities of deployment automation frameworks and varying 
+environments.
+
+If any value is set for `NHAIS_MONGO_HOST` then the following properties will be used to create a connection string:
+
+| Environment Variable             | Default | Description 
+| ---------------------------------|---------|-------------
+| NHAIS_MONGO_DATABASE_NAME        | nhais   | Database name for Mongo
+| NHAIS_MONGO_HOST                 |         | Mongodb host
+| NHAIS_MONGO_PORT                 |         | Mongodb port
+| NHAIS_MONGO_USERNAME             |         | (Optional) Mongodb username. If set then password must also be set.
+| NHAIS_MONGO_PASSWORD             |         | (Optional) Mongodb password
+| NHAIS_MONGO_OPTIONS              |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?
+
+If no value is set for `NHAIS_MONGO_HOST` then the following properties are used:
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
+| NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
 
 ## Using AmazonMQ
 

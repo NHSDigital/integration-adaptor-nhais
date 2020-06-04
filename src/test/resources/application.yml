@@ -12,11 +12,6 @@ management:
     mongo:
       enabled: true
 
-spring:
-  data:
-    mongodb:
-      database: nhais
-      uri: mongodb://localhost:27017
 nhais:
   amqp:
     brokers: "localhost:5672"
@@ -28,3 +23,12 @@ nhais:
     password: ""
     maxAttempts: "3"
     backOffPeriod: "100"
+  mongodb:
+    uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
+    database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
+    host: ${NHAIS_MONGO_HOST:}
+    port: ${NHAIS_MONGO_PORT:}
+    username: ${NHAIS_MONGO_USERNAME:}
+    password: ${NHAIS_MONGO_PASSWORD:}
+    options: ${NHAIS_MONGO_OPTIONS:}
+    autoIndexCreation: true
