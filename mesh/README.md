@@ -19,7 +19,7 @@ MESH API docs says to do this first but our experience seems that its not needed
     
 ### List Inbox Messages
 
-List all messages in the inbox. The JSON response is printed to the console.
+Performs the "Check inbox" operation. The JSON response is printed to the console.
 
     ./mesh.sh inbox
     
