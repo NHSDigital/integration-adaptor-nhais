@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 @Data
 public class PersonName extends Segment {
 
-    private String nhsNumber;
-    private @NonNull String surname; // mandatory
+    private @NonNull String nhsNumber;
+    private @NonNull String surname;
     private String forename;
     private String title;
     private String middleName;
@@ -52,6 +52,10 @@ public class PersonName extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(surname) || surname.isBlank()) {
+            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+        }
+
+        if (Objects.isNull(nhsNumber) || nhsNumber.isBlank()) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
     }

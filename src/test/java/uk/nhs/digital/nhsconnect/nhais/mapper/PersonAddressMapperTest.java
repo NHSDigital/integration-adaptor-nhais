@@ -60,7 +60,12 @@ class PersonAddressMapperTest {
 
     @Test
     public void When_MappingWithoutAddress_Then_NoSuchElementExceptionIsThrown() {
+        Patient patient = new Patient();
+
         Parameters parameters = new Parameters();
+        parameters.addParameter()
+                .setName(Patient.class.getSimpleName())
+                .setResource(patient);
 
         var personAddressMapper = new PersonAddressMapper();
         assertThrows(NoSuchElementException.class, () -> personAddressMapper.map(parameters));

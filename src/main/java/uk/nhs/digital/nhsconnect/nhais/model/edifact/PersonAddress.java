@@ -30,7 +30,8 @@ public class PersonAddress extends Segment {
     private String addressLine2;
 
     @Override
-    //TODO Have no example of old address
+    // This segment may be used to provide the usual address of the patient.
+    // A second repeat of the segment may be used to provide the previous address of the patient
     public String getKey() {
         return "NAD";
     }
