@@ -2,12 +2,12 @@
 # configuration option then comment that line. Don't use empty string '' or you'll likely to break things
 
 # Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail
-export MAILBOX=''
+export MAILBOX_ID=''
 
-# The password for MAILBOX can be found in your OpenTest welcome e-mail
+# The password for MAILBOX_ID can be found in your OpenTest welcome e-mail
 export MAILBOX_PASSWORD=''
 
-# (optional) mailbox is to send messages to (recipient). If not provided all messages are sent to MAILBOX
+# (optional) mailbox is to send messages to (recipient). If not provided all messages are sent to MAILBOX_ID
 #export TO_MAILBOX=''
 
 # Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)

@@ -53,7 +53,7 @@ is used in this example. Get the message id from the response of the `inbox` or 
 
 Use the following in your `env.sh`
 
-    export MAILBOX='anything' 
+    export MAILBOX_ID='anything' 
     export MAILBOX_PASSWORD='password' 
     export HOST='localhost:8829'
     export SHARED_KEY='SharedKey'

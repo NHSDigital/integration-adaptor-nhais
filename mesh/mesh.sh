@@ -2,7 +2,7 @@
 
 source env.sh
 
-TO_MAILBOX=${TO_MAILBOX:-${MAILBOX}}
+TO_MAILBOX=${TO_MAILBOX:-${MAILBOX_ID}}
 TOKEN=''
 HOST="${HOST:-msg.opentest.hscic.gov.uk}"
 # "Your endpoint private key" from your OpenTest registration e-mail
@@ -21,35 +21,35 @@ create_token() {
   nonce=$(echo "${nonce}" | tr '[:upper:]' '[:lower:]')  # to lowercase
   nonce_count='001'
   timestamp=$(date +"%Y%m%d%H%M")
-  hash_content="${MAILBOX}:${nonce}:${nonce_count}:${MAILBOX_PASSWORD}:${timestamp}"
+  hash_content="${MAILBOX_ID}:${nonce}:${nonce_count}:${MAILBOX_PASSWORD}:${timestamp}"
   hash_value=$(echo -n "${hash_content}" | openssl dgst -sha256 -hmac "${SHARED_KEY}")
-  TOKEN="NHSMESH ${MAILBOX}:${nonce}:${nonce_count}:${timestamp}:${hash_value}"
+  TOKEN="NHSMESH ${MAILBOX_ID}:${nonce}:${nonce_count}:${timestamp}:${hash_value}"
 }
 
 authorization() {
-  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX_ID}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 inbox() {
-  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 send() {
   local body
   body="$1"
-  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX}/outbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H 'Content-Type:application/octet-stream' -H "Mex-From: ${MAILBOX}" -H "Mex-To: ${TO_MAILBOX}" -H 'Mex-MessageType: DATA' -H 'Mex-WorkflowID: workflow1' -H 'Mex-FileName: test-filename.txt' -H 'Mex-Version: 1.0' -H "Authorization: ${TOKEN}" -d "${body}"
+  curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX_ID}/outbox" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H 'Content-Type:application/octet-stream' -H "Mex-From: ${MAILBOX_ID}" -H "Mex-To: ${TO_MAILBOX}" -H 'Mex-MessageType: DATA' -H 'Mex-WorkflowID: workflow1' -H 'Mex-FileName: test-filename.txt' -H 'Mex-Version: 1.0' -H "Authorization: ${TOKEN}" -d "${body}"
 }
 
 download() {
   local message_id
   message_id=$1
-  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX}/inbox/${message_id}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox/${message_id}" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 ack() {
   local message_id
   message_id=$1
-  curl -i ${CURL_FLAGS} -X PUT "https://${HOST}/messageexchange/${MAILBOX}/inbox/${message_id}/status/acknowledged" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
+  curl -i ${CURL_FLAGS} -X PUT "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox/${message_id}/status/acknowledged" --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H 'Mex-ClientVersion: 1.0' -H 'Mex-OSVersion: 1.0' -H 'Mex-OSName: MacOS' -H "Authorization: ${TOKEN}"
 }
 
 create_token
