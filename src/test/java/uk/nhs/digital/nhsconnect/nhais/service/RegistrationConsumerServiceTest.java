@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +17,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -25,6 +25,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RegistrationConsumerServiceTest {
+
+    private static final String OPERATION_ID = "70086e87f012c1e9776bd59589726d3722420823e2b5ceb2f7c7441c4044ffba";
+
+    @Mock
+    EdifactToFhirService edifactToFhirService;
 
     @Mock
     InboundGpSystemService inboundGpSystemService;
@@ -82,7 +87,7 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo("G1");
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(expectedTime);
 
-        verify(inboundGpSystemService).publishToSupplierQueue(any(Parameters.class));
+        verify(inboundGpSystemService).publishToSupplierQueue(any(), eq(OPERATION_ID));
     }
 
     @Test

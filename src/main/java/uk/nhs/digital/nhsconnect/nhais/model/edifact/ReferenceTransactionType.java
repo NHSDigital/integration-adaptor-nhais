@@ -1,12 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import java.util.Arrays;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+
+import java.util.Arrays;
 
 @Getter @Setter
 public class ReferenceTransactionType extends Segment {

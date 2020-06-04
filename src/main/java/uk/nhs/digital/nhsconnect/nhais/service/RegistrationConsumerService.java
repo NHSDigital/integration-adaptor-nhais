@@ -32,7 +32,7 @@ public class RegistrationConsumerService {
         // recep producer service
         Parameters outputParameters = new EdifactToFhirService().convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
-        inboundGpSystemService.publishToSupplierQueue(outputParameters);
+        inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
         LOGGER.debug("Published inbound registration message to gp supplier queue");
     }
 

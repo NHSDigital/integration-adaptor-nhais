@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -23,6 +24,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -35,24 +37,26 @@ import java.util.List;
 public class FhirToEdifactService {
 
     private final OutboundStateRepository outboundStateRepository;
-
     private final SequenceService sequenceService;
-
     private final TimestampService timestampService;
 
-    public TranslatedInterchange convertToEdifact(Patient patient, String operationId, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Patient patient, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.patient = patient;
-        translationItems.operationId = operationId;
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
         generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
         generateSequenceNumbers(translationItems);
+        setOperationId(translationItems);
         recordOutboundState(translationItems);
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
+    }
+
+    private void setOperationId(TranslationItems translationItems) {
+        translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
     }
 
     private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {
@@ -189,6 +193,7 @@ public class FhirToEdifactService {
         TranslatedInterchange interchange = new TranslatedInterchange();
         interchange.setEdifact(edifact);
         interchange.setInterchangeType(TranslatedInterchange.InterchangeType.REGISTRATION);
+        interchange.setOperationId(translationItems.operationId);
         return interchange;
     }
 
