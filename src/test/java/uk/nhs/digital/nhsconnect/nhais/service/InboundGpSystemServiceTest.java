@@ -3,21 +3,19 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessagePostProcessor;
+import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +26,6 @@ public class InboundGpSystemServiceTest {
 
     @Mock
     JmsTemplate jmsTemplate;
-
-    @Mock
-    Message message;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
@@ -47,13 +42,8 @@ public class InboundGpSystemServiceTest {
 
         inboundGpSystemService.publishToSupplierQueue(parameters, operationId);
 
-        var messagePostProcessorArgumentCaptor = ArgumentCaptor.forClass(MessagePostProcessor.class);
+        verify(jmsTemplate).send(eq(gpSystemInboundQueueName), any(MessageCreator.class));
 
-        verify(jmsTemplate).convertAndSend(eq(gpSystemInboundQueueName), eq(jsonEncodedFhir), messagePostProcessorArgumentCaptor.capture());
-
-        messagePostProcessorArgumentCaptor.getValue().postProcessMessage(message);
-
-        verify(message).setStringProperty("OperationId", operationId);
-        verifyNoMoreInteractions(message);
+        //TODO: how to check that message has been created with specific property?
     }
 }

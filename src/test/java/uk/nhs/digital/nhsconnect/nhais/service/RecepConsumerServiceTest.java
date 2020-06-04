@@ -100,15 +100,15 @@ class RecepConsumerServiceTest {
         assertThat(queryParamsValues.size()).isEqualTo(2);
         assertThat(detailsValues.size()).isEqualTo(2);
 
-        assertThat(queryParamsValues.get(0).getSender()).isEqualTo(SENDER);
-        assertThat(queryParamsValues.get(0).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(0).getSender()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(0).getRecipient()).isEqualTo(SENDER);
         assertThat(queryParamsValues.get(0).getInterchangeSequence()).isEqualTo(REF_INTERCHANGE_SEQUENCE);
         assertThat(queryParamsValues.get(0).getMessageSequence()).isEqualTo(REF_MESSAGE_1_SEQUENCE);
         assertThat(detailsValues.get(0).getRecepCode()).isEqualTo(MESSAGE_1_RECEP_CODE);
         assertThat(detailsValues.get(0).getRecepDateTime()).isEqualTo(DATE_TIME_PERIOD);
 
-        assertThat(queryParamsValues.get(1).getSender()).isEqualTo(SENDER);
-        assertThat(queryParamsValues.get(1).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(1).getSender()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(1).getRecipient()).isEqualTo(SENDER);
         assertThat(queryParamsValues.get(1).getInterchangeSequence()).isEqualTo(REF_INTERCHANGE_SEQUENCE);
         assertThat(queryParamsValues.get(1).getMessageSequence()).isEqualTo(REF_MESSAGE_2_SEQUENCE);
         assertThat(detailsValues.get(1).getRecepCode()).isEqualTo(MESSAGE_2_RECEP_CODE);

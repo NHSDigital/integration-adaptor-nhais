@@ -54,6 +54,10 @@ public class FhirParser {
         }
     }
 
+    public IBaseResource parse(String body) {
+        return parser.parseResource(body);
+    }
+
     public String encodeToString(IBaseResource resource) {
         return parser.encodeResourceToString(resource);
     }
