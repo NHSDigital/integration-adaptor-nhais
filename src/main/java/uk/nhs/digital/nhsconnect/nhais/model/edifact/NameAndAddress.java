@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 @Getter @Setter @RequiredArgsConstructor
 public class NameAndAddress extends Segment{
 
+    public static final String KEY = "NAD";
     private @NonNull String identifier;
     private @NonNull QualifierAndCode partyQualifierAndCode;
 
@@ -37,7 +38,7 @@ public class NameAndAddress extends Segment{
 
     @Override
     public String getKey() {
-        return "NAD";
+        return KEY;
     }
 
     @Override
@@ -62,5 +63,9 @@ public class NameAndAddress extends Segment{
         if(partyQualifierAndCode.getQualifier().isEmpty()){
             throw new EdifactValidationException(getKey() + ": Attribute qualifier is required");
         }
+    }
+
+    public static NameAndAddress fromString(String edifactString) {
+        return null;
     }
 }

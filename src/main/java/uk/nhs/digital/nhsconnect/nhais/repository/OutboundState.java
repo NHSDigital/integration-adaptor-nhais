@@ -7,10 +7,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 
 import java.time.Instant;
-import java.util.Date;
 
 @CompoundIndexes({
     @CompoundIndex(
@@ -27,7 +27,7 @@ public class OutboundState {
     private DataType dataType;
     private String operationId;
     private Long transactionId;
-    private Date transactionTimestamp;
+    private Instant transactionTimestamp;
     private String transactionType;
     private Long sendInterchangeSequence;
     private Long sendMessageSequence;
@@ -35,4 +35,16 @@ public class OutboundState {
     private String recipient;
     private ReferenceMessageRecep.RecepCode recepCode;
     private Instant recepDateTime;
+
+    public static OutboundState fromRecep(Recep recep) {
+        var interchangeHeader = recep.getInterchangeHeader();
+        var dateTimePeriod = recep.getDateTimePeriod();
+
+        return new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSendInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setSender(interchangeHeader.getSender())
+            .setRecipient(interchangeHeader.getRecipient())
+            .setTransactionTimestamp(dateTimePeriod.getTimestamp());
+    }
 }

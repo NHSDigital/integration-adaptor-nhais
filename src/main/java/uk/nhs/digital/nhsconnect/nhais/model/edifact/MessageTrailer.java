@@ -14,12 +14,13 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 @Getter @Setter @RequiredArgsConstructor
 public class MessageTrailer extends Segment{
 
+    public static final String KEY = "UNT";
     private @NonNull Integer numberOfSegments;
     private Long sequenceNumber;
 
     @Override
     public String getKey() {
-        return "UNT";
+        return KEY;
     }
 
     @Override
@@ -44,5 +45,9 @@ public class MessageTrailer extends Segment{
     @Override
     public void preValidate() throws EdifactValidationException {
         //Do nothing
+    }
+
+    public static MessageTrailer fromString(String edifactString) {
+        return null;
     }
 }

@@ -8,59 +8,82 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InterchangeHeaderTest {
 
-    private final Instant translationDateTime = ZonedDateTime
-        .of(2019, 4, 23, 9, 0, 0, 0, ZoneOffset.UTC)
+    private final Instant TRANSLATION_WINTER_DATE_TIME = ZonedDateTime
+        .of(2019, 3, 23, 9, 0, 0, 0, ZoneOffset.UTC)
         .toInstant();
+    private final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
+        .of(2019, 5, 23, 9, 0, 0, 0, ZoneOffset.UTC)
+        .toInstant();
+    private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
+    private final InterchangeHeader interchangeHeaderSummer = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
 
     @Test
-    public void testValidInterchangeHeader() throws EdifactValidationException {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", translationDateTime);
-        interchangeHeader.setSequenceNumber(1L);
+    public void testValidInterchangeHeaderWithWinterTime() throws EdifactValidationException {
+        String edifact = interchangeHeaderWinter.toEdifact();
 
-        String edifact = interchangeHeader.toEdifact();
+        assertThat(edifact).isEqualTo("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001'");
+    }
 
-        assertEquals("UNB+UNOA:2+SNDR+RECP+190423:0900+00000001'", edifact);
+    @Test
+    public void testValidInterchangeHeaderWithSummerTime() throws EdifactValidationException {
+        String edifact = interchangeHeaderSummer.toEdifact();
+
+        assertThat(edifact).isEqualTo("UNB+UNOA:2+SNDR+RECP+190523:1000+00000001'");
     }
 
     @Test
     public void testValidationStateful() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "RECP", translationDateTime);
+        InterchangeHeader emptySequenceNumber = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME);
+        assertThatThrownBy(emptySequenceNumber::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sequenceNumber is required");
+    }
 
-        Exception exception = assertThrows(EdifactValidationException.class, interchangeHeader::validateStateful);
+    @Test
+    public void testValidationStatefulMinMaxSequenceNumber() throws EdifactValidationException {
+        var interchangeHeader = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME);
 
-        String expectedMessage = "UNB: Attribute sequenceNumber is required";
-        String actualMessage = exception.getMessage();
+        interchangeHeader.setSequenceNumber(0L);
+        assertThatThrownBy(interchangeHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
 
-        assertTrue(actualMessage.contains(expectedMessage));
+        interchangeHeader.setSequenceNumber(100_000_000L);
+        assertThatThrownBy(interchangeHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
+
+        interchangeHeader.setSequenceNumber(1L);
+        interchangeHeader.validateStateful();
+
+        interchangeHeader.setSequenceNumber(99_999_999L);
+        interchangeHeader.validateStateful();
     }
 
     @Test
     public void testPreValidationSenderEmptyString() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("", "RECP", translationDateTime);
-
-        Exception exception = assertThrows(EdifactValidationException.class, interchangeHeader::preValidate);
-
-        String expectedMessage = "UNB: Attribute sender is required";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        InterchangeHeader emptySender = new InterchangeHeader("", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
+        assertThatThrownBy(emptySender::preValidate)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute sender is required");
     }
 
     @Test
     public void testPreValidationRecipientEmptyString() {
-        InterchangeHeader interchangeHeader = new InterchangeHeader("SNDR", "", translationDateTime);
+        InterchangeHeader emptyRecipient = new InterchangeHeader("SNDR", "", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
+        assertThatThrownBy(emptyRecipient::preValidate)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNB: Attribute recipient is required");
+    }
 
-        Exception exception = assertThrows(EdifactValidationException.class, interchangeHeader::preValidate);
-
-        String expectedMessage = "UNB: Attribute recipient is required";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+    @Test
+    void testFromString() {
+        assertThat(InterchangeHeader.fromString("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001").getValue()).isEqualTo(interchangeHeaderWinter.getValue());
+        assertThatThrownBy(() -> InterchangeHeader.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }

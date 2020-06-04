@@ -10,8 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(initializers = MongoDbInitializer.class)
@@ -23,21 +23,44 @@ public class OutboundStateRepositoryTest {
     OutboundStateRepository outboundStateRepository;
 
     @Test
-    void whenDuplicateOutboundStateInserted_thenThrowsException() {
+    void whenDuplicateInterchangeOutboundStateInserted_thenThrowsException() {
         var outboundState = new OutboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setSendInterchangeSequence(123L)
             .setSendMessageSequence(234L);
         var duplicateOutboundState = new OutboundState()
+            .setDataType(DataType.INTERCHANGE)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setSendInterchangeSequence(123L)
             .setSendMessageSequence(234L);
 
-        outboundStateRepository.save(outboundState);
-        assertTrue(outboundStateRepository.existsById(outboundState.getId()));
+        assertInsert(outboundState, duplicateOutboundState);
+    }
 
-        assertThrows(DuplicateKeyException.class, () -> outboundStateRepository.save(duplicateOutboundState));
+    @Test
+    void whenDuplicateRecepOutboundStateInserted_thenThrowsException() {
+        var outboundState = new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setSendInterchangeSequence(123L);
+        var duplicateOutboundState = new OutboundState()
+            .setDataType(DataType.RECEP)
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setSendInterchangeSequence(123L);
+
+        assertInsert(outboundState, duplicateOutboundState);
+    }
+
+    private void assertInsert(OutboundState first, OutboundState second) {
+        outboundStateRepository.save(first);
+        assertThat(outboundStateRepository.existsById(first.getId())).isTrue();
+
+        assertThatThrownBy(() -> outboundStateRepository.save(second))
+            .isInstanceOf(DuplicateKeyException.class);
     }
 }

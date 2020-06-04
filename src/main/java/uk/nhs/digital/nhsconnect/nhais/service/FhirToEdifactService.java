@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -22,38 +23,38 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FhirToEdifactService {
 
-    @Autowired
-    private OutboundStateRepository outboundStateRepository;
+    private final OutboundStateRepository outboundStateRepository;
+    private final SequenceService sequenceService;
+    private final TimestampService timestampService;
 
-    @Autowired
-    private SequenceService sequenceService;
-
-    @Autowired
-    private TimestampService timestampService;
-
-    public TranslatedInterchange convertToEdifact(Patient patient, String operationId, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Patient patient, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.patient = patient;
-        translationItems.operationId = operationId;
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
         generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
         generateSequenceNumbers(translationItems);
+        setOperationId(translationItems);
         recordOutboundState(translationItems);
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
+    }
+
+    private void setOperationId(TranslationItems translationItems) {
+        translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
     }
 
     private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {
@@ -118,7 +119,7 @@ public class FhirToEdifactService {
                 new BeginningOfMessage(),
                 new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType().setTransactionType(translationItems.transactionType),
+                new ReferenceTransactionType(translationItems.transactionType),
                 new SegmentGroup(1),
                 new ReferenceTransactionNumber(),
                 new MessageTrailer(8),
@@ -147,7 +148,7 @@ public class FhirToEdifactService {
 
     private void recordOutboundState(TranslationItems translationItems) {
         var outboundState = new OutboundState()
-                .setDataType(DataType.MESSAGE)
+            .setDataType(DataType.INTERCHANGE)
             .setRecipient(translationItems.recipient)
             .setSender(translationItems.sender)
 
@@ -156,7 +157,7 @@ public class FhirToEdifactService {
             .setTransactionId(translationItems.transactionNumber)
 
             .setTransactionType(translationItems.transactionType.getAbbreviation())
-            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+            .setTransactionTimestamp(translationItems.translationTimestamp)
             .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
@@ -191,6 +192,7 @@ public class FhirToEdifactService {
         TranslatedInterchange interchange = new TranslatedInterchange();
         interchange.setEdifact(edifact);
         interchange.setInterchangeType(TranslatedInterchange.InterchangeType.REGISTRATION);
+        interchange.setOperationId(translationItems.operationId);
         return interchange;
     }
 
@@ -206,5 +208,4 @@ public class FhirToEdifactService {
         private Long transactionNumber;
         private Instant translationTimestamp;
     }
-
 }

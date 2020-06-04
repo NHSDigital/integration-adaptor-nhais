@@ -16,12 +16,13 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 @RequiredArgsConstructor
 public class InterchangeTrailer extends Segment {
 
+    public static final String KEY = "UNZ";
     private @NonNull Integer numberOfMessages;
     private Long sequenceNumber;
 
     @Override
     public String getKey() {
-        return "UNZ";
+        return KEY;
     }
 
     @Override
@@ -45,5 +46,9 @@ public class InterchangeTrailer extends Segment {
         if (numberOfMessages < 1) {
             throw new EdifactValidationException(getKey() + ": Attribute numberOfMessages is required");
         }
+    }
+
+    public static InterchangeTrailer fromString(String edifactString) {
+        return null;
     }
 }

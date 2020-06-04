@@ -3,7 +3,9 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageHeaderTest {
 
@@ -21,11 +23,38 @@ public class MessageHeaderTest {
     public void testValidationStateful() {
         MessageHeader messageHeader = new MessageHeader();
 
-        Exception exception = assertThrows(EdifactValidationException.class, messageHeader::validateStateful);
+        assertThatThrownBy(messageHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNH: Attribute sequenceNumber is required");
+    }
 
-        String expectedMessage = "UNH: Attribute sequenceNumber is required";
-        String actualMessage = exception.getMessage();
+    @Test
+    public void testValidationStatefulMinMaxSequenceNumber() throws EdifactValidationException {
+        var messageHeader = new MessageHeader();
 
-        assertTrue(actualMessage.contains(expectedMessage));
+        messageHeader.setSequenceNumber(0L);
+        assertThatThrownBy(messageHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNH: Attribute sequenceNumber must be between 1 and 99999999");
+
+        messageHeader.setSequenceNumber(100_000_000L);
+        assertThatThrownBy(messageHeader::validateStateful)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("UNH: Attribute sequenceNumber must be between 1 and 99999999");
+
+        messageHeader.setSequenceNumber(1L);
+        messageHeader.validateStateful();
+
+        messageHeader.setSequenceNumber(99_999_999L);
+        messageHeader.validateStateful();
+    }
+
+    @Test
+    void testFromString() {
+        MessageHeader messageHeader = new MessageHeader();
+        messageHeader.setSequenceNumber(3L);
+
+        assertThat(MessageHeader.fromString("UNH+00000003+FHSREG:0:1:FH:FHS001").getValue()).isEqualTo(messageHeader.getValue());
+        assertThatThrownBy(() -> MessageHeader.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }

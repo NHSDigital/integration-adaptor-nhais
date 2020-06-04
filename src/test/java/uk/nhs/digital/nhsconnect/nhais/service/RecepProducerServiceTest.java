@@ -6,7 +6,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.io.IOException;
@@ -17,6 +25,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecepProducerServiceTest {
@@ -77,26 +87,30 @@ class RecepProducerServiceTest {
         InterchangeTrailer interchangeTrailer = new InterchangeTrailer(2);
         interchangeTrailer.setSequenceNumber(INTERCHANGE_SEQUENCE);
 
-        return Interchange.builder()
-                .segment(interchangeHeader)
-                .segment(messageHeader1)
-                .segment(new BeginningOfMessage())
-                .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
-                .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
-                .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
-                .segment(new SegmentGroup(1))
-                .segment(referenceTransactionNumber1)
-                .segment(messageTrailer1)
-                .segment(messageHeader2)
-                .segment(new BeginningOfMessage())
-                .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
-                .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
-                .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
-                .segment(new SegmentGroup(1))
-                .segment(referenceTransactionNumber2)
-                .segment(messageTrailer2)
-                .segment(interchangeTrailer)
-                .build();
+        var interchange = mock(Interchange.class);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
+        when(interchange.getMessageHeader()).thenReturn(messageHeader1);
+//                .segment(new BeginningOfMessage())
+        when(interchange.getNameAndAddress()).thenReturn(
+            new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS));
+        when(interchange.getTranslationDateTime()).thenReturn(
+            new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(interchange.getReferenceTransactionType()).thenReturn(
+            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE));
+//                .segment(new SegmentGroup(1))
+        when(interchange.getReferenceTransactionNumber()).thenReturn(referenceTransactionNumber1);
+//                .segment(messageTrailer1)
+//                .segment(messageHeader2)
+//                .segment(new BeginningOfMessage())
+//                .segment(new NameAndAddress(RECIPIENT, NameAndAddress.QualifierAndCode.FHS))
+//                .segment(new DateTimePeriod(FIXED_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP))
+//                .segment(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE))
+//                .segment(new SegmentGroup(1))
+//                .segment(referenceTransactionNumber2)
+//                .segment(messageTrailer2)
+//                .segment(interchangeTrailer)
+//                .build();
+        return interchange;
     }
 
     private String readFile(String path) throws IOException {
