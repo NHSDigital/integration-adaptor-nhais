@@ -21,15 +21,12 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
     }
 
     private Address getAddress(Parameters parameters) {
-        Patient patient = parameters.getParameter()
-                .stream()
-                .filter(param -> Patient.class.getSimpleName().equals(param.getName()))
-                .map(Parameters.ParametersParameterComponent::getResource)
-                .map(Patient.class::cast)
+        Patient patient = getPatient(parameters);
+
+        return patient.getAddress().stream()
+                .filter(address -> address.getUse().equals(Address.AddressUse.HOME))
                 .findFirst()
                 .orElseThrow();
-
-        return patient.getAddressFirstRep();
     }
 
     private String getAddressLineOrEmpty(List<StringType> addressLines, int index) {

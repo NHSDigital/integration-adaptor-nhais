@@ -28,13 +28,7 @@ public class PersonSexMapper implements FromFhirToEdifactMapper<PersonSex> {
     }
 
     private String getPersonSex(Parameters parameters) {
-        Patient patient = parameters.getParameter()
-                .stream()
-                .filter(param -> Patient.class.getSimpleName().equals(param.getName()))
-                .map(Parameters.ParametersParameterComponent::getResource)
-                .map(Patient.class::cast)
-                .findFirst()
-                .orElseThrow();
+        Patient patient = getPatient(parameters);
 
         return Optional.ofNullable(PATIENT_SEX_CODE.get(patient.getGender()))
                 .orElseThrow(() -> new NoSuchElementException("sex code not found: " + patient.getGender().getDisplay()));

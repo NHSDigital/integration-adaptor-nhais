@@ -35,6 +35,7 @@ class PersonAddressMapperTest {
          */
         Patient patient = new Patient();
         Address address = new Address();
+        address.setUse(Address.AddressUse.HOME);
         address.setText("534 Erewhon St PeasantVille, Rainbow, Vic  3999");
         address.setLine(List.of(new StringType("534 Erewhon St")));
         address.setCity("PleasantVille");
