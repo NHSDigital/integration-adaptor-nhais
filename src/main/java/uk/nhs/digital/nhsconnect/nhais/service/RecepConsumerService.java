@@ -35,8 +35,9 @@ public class RecepConsumerService {
             return;
         }
 
-        String sender = recep.getInterchangeHeader().getSender();
-        String recipient = recep.getInterchangeHeader().getRecipient();
+        //sender is swapped with recipient as communication is done the other way
+        String outbound_sender = recep.getInterchangeHeader().getRecipient();
+        String outbound_recipient = recep.getInterchangeHeader().getSender();
         Instant dateTimePeriod = recep.getDateTimePeriod().getTimestamp();
         long interchangeSequence = recep.getReferenceInterchangeRecep().getInterchangeSequenceNumber();
 
@@ -46,7 +47,7 @@ public class RecepConsumerService {
 
             //TODO could be done in transaction
             var queryParams = new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                sender, recipient, interchangeSequence, messageSequence);
+                outbound_sender, outbound_recipient, interchangeSequence, messageSequence);
             var recepDetails = new OutboundStateRepositoryExtensions.UpdateRecepDetails(
                 recepCode, dateTimePeriod);
 
