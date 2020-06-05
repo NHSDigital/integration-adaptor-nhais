@@ -23,7 +23,11 @@ public class OutboundMeshService {
     @SneakyThrows
     public void send(MeshMessage message) {
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
-        jmsTemplate.convertAndSend(meshOutboundQueueName, message);
+        jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
 
+    @SneakyThrows
+    private String serializeMeshMessage(MeshMessage meshMessage) {
+        return objectMapper.writeValueAsString(meshMessage);
+    }
 }

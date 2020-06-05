@@ -8,11 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.sequence.OutboundSequenceId;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceDao;
 import uk.nhs.digital.nhsconnect.nhais.service.SequenceService;
@@ -29,12 +27,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(initializers = MongoDbInitializer.class)
+//import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
+
+@ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
-@DirtiesContext
 public class SequenceServiceIntegrationTest {
     private final static String SENDER_1 = "test-sender-1";
     private final static String SENDER_2 = "test-sender-2";

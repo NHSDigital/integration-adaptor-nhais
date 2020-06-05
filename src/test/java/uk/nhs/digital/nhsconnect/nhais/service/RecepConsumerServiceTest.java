@@ -13,8 +13,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.RecepParser;
-import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -83,7 +83,7 @@ class RecepConsumerServiceTest {
 
         assertThat(inboundStateArgumentCaptor.getValue()).isEqualTo(
             new InboundState()
-                .setDataType(DataType.RECEP)
+                .setWorkflowId(WorkflowId.RECEP)
                 .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
                 .setSender(SENDER)
                 .setRecipient(RECIPIENT)
@@ -100,15 +100,15 @@ class RecepConsumerServiceTest {
         assertThat(queryParamsValues.size()).isEqualTo(2);
         assertThat(detailsValues.size()).isEqualTo(2);
 
-        assertThat(queryParamsValues.get(0).getSender()).isEqualTo(SENDER);
-        assertThat(queryParamsValues.get(0).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(0).getSender()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(0).getRecipient()).isEqualTo(SENDER);
         assertThat(queryParamsValues.get(0).getInterchangeSequence()).isEqualTo(REF_INTERCHANGE_SEQUENCE);
         assertThat(queryParamsValues.get(0).getMessageSequence()).isEqualTo(REF_MESSAGE_1_SEQUENCE);
         assertThat(detailsValues.get(0).getRecepCode()).isEqualTo(MESSAGE_1_RECEP_CODE);
         assertThat(detailsValues.get(0).getRecepDateTime()).isEqualTo(DATE_TIME_PERIOD);
 
-        assertThat(queryParamsValues.get(1).getSender()).isEqualTo(SENDER);
-        assertThat(queryParamsValues.get(1).getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(1).getSender()).isEqualTo(RECIPIENT);
+        assertThat(queryParamsValues.get(1).getRecipient()).isEqualTo(SENDER);
         assertThat(queryParamsValues.get(1).getInterchangeSequence()).isEqualTo(REF_INTERCHANGE_SEQUENCE);
         assertThat(queryParamsValues.get(1).getMessageSequence()).isEqualTo(REF_MESSAGE_2_SEQUENCE);
         assertThat(detailsValues.get(1).getRecepCode()).isEqualTo(MESSAGE_2_RECEP_CODE);
