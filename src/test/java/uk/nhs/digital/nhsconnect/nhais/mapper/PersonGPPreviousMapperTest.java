@@ -16,7 +16,7 @@ class PersonGPPreviousMapperTest {
     void When_MappingGPPrevious_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("previousGP")
+                .setName("previousGPName")
                 .setValue(new StringType("Practitioner/Old-One"));
 
         var personGPPreviousMapper = new PersonGPPreviousMapper();
