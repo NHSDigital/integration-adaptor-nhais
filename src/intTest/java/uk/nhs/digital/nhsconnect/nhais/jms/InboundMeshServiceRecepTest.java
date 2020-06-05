@@ -9,7 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
@@ -44,7 +43,7 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
             .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
 
         var inboundState = waitFor(
-            () -> inboundStateRepository.findBy(DataType.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null));
+            () -> inboundStateRepository.findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null));
 
         assertInboundState(softly, inboundState);
 
@@ -77,7 +76,7 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
 
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
-            .setDataType(DataType.RECEP)
+            .setWorkflowId(WorkflowId.RECEP)
             .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
@@ -93,7 +92,7 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
 
     private OutboundState buildOutboundState(long refMessageSequence1) {
         return new OutboundState()
-            .setDataType(DataType.RECEP)
+            .setWorkflowId(WorkflowId.RECEP)
             .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
             .setSendMessageSequence(refMessageSequence1)
             .setSender(RECIPIENT)

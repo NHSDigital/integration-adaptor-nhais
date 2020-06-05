@@ -13,8 +13,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.RecepParser;
-import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -83,7 +83,7 @@ class RecepConsumerServiceTest {
 
         assertThat(inboundStateArgumentCaptor.getValue()).isEqualTo(
             new InboundState()
-                .setDataType(DataType.RECEP)
+                .setWorkflowId(WorkflowId.RECEP)
                 .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
                 .setSender(SENDER)
                 .setRecipient(RECIPIENT)

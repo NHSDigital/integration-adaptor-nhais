@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.repository.DataType;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
@@ -26,7 +25,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTest {
+public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 3;
     private static final long MESSAGE_SEQUENCE = 4;
@@ -39,12 +38,12 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
         .of(1992, 1, 14, 16, 19, 0, 0, TimestampService.UKZone)
         .toInstant();
 
-    @Value("classpath:edifact/interchange.dat")
+    @Value("classpath:edifact/registration.dat")
     private Resource interchange;
 
     @Test
     @DirtiesContext
-    void whenMeshInboundQueueInterchangeMessageIsReceived_thenInterchangeHandled(SoftAssertions softly) throws IOException, JMSException {
+    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
@@ -52,7 +51,7 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
         sendToMeshInboundQueue(meshMessage);
 
         var inboundState = waitFor(
-            () -> inboundStateRepository.findBy(DataType.INTERCHANGE, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE));
+            () -> inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE));
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
         assertInboundState(softly, inboundState);
@@ -72,7 +71,7 @@ public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTes
 
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
-            .setDataType(DataType.INTERCHANGE)
+            .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(OPERATION_ID)
             .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
             .setReceiveMessageSequence(MESSAGE_SEQUENCE)

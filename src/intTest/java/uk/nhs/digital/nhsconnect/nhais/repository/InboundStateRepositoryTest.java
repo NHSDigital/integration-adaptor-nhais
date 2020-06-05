@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,13 +24,13 @@ public class InboundStateRepositoryTest {
     @Test
     void whenDuplicateInterchangeInboundStateInserted_thenThrowsException() {
         var inboundState = new InboundState()
-            .setDataType(DataType.INTERCHANGE)
+            .setWorkflowId(WorkflowId.REGISTRATION)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L)
             .setReceiveMessageSequence(234L);
         var duplicateInboundState = new InboundState()
-            .setDataType(DataType.INTERCHANGE)
+            .setWorkflowId(WorkflowId.REGISTRATION)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L)
@@ -41,12 +42,12 @@ public class InboundStateRepositoryTest {
     @Test
     void whenDuplicateRecepInboundStateInserted_thenThrowsException() {
         var inboundState = new InboundState()
-            .setDataType(DataType.RECEP)
+            .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L);
         var duplicateInboundState = new InboundState()
-            .setDataType(DataType.RECEP)
+            .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
             .setReceiveInterchangeSequence(123L);
