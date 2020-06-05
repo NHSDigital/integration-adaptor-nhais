@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EntityNotFoundException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 
@@ -16,10 +14,8 @@ import java.time.Instant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ExtendWith({SpringExtension.class})
-@ContextConfiguration(initializers = MongoDbInitializer.class)
+@ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
-@DirtiesContext
 public class OutboundStateRepositoryExtensionsImplTest {
 
     private static final String SENDER = "some_sender";
