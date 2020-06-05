@@ -17,7 +17,7 @@ class AcceptanceTypeMapperTest {
         Parameters parameters = new Parameters();
         parameters.addParameter()
                 .setName("acceptanceType")
-                .setValue(new StringType("Birth"));
+                .setValue(new StringType("birth"));
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         AcceptanceType acceptanceType = acceptanceTypeMapper.map(parameters);

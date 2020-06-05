@@ -11,11 +11,11 @@ import java.util.Optional;
 public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceType> {
     private final static String ACCEPTANCE_TYPE = "acceptanceType";
     private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
-            "Birth", "1",
-            "1st Acceptance", "2",
-            "Transfer-in", "3",
-            "Immigrant", "4",
-            "Ex-services", "5"
+            "birth", "1",
+            "first", "2",
+            "transferin", "3",
+            "immigrant", "4",
+            "exservices", "5"
     );
 
     public AcceptanceType map(Parameters parameters) {
