@@ -16,7 +16,7 @@ spring:
     mongodb:
       database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
       uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
-      autoIndexCreation: true
+      autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
 
 management:
   endpoints:

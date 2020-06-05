@@ -14,16 +14,17 @@ management:
 spring:
   data:
     mongodb:
-      database: nhais
-      uri: mongodb://localhost:27017
+      database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
+      uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
+      autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
 nhais:
   amqp:
-    brokers: "localhost:5672"
-    meshOutboundQueueName: nhais_mesh_outbound
-    meshInboundQueueName: nhais_mesh_inbound
-    gpSystemInboundQueueName: nahis_gp_system_inbound
+    brokers: ${NHAIS_AMQP_BROKERS:amqp://localhost:5672}
+    meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:nhais_mesh_outbound}
+    meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:nhais_mesh_inbound}
+    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:nahis_gp_system_inbound}
     exchange: amq.direct
-    username: ""
-    password: ""
-    maxAttempts: "3"
-    backOffPeriod: "100"
+    username: ${NHAIS_AMQP_USERNAME:}
+    password: ${NHAIS_AMQP_PASSWORD:}
+    maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
+    backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}
