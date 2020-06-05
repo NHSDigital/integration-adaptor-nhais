@@ -57,7 +57,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getInterchangeHeader() {
+    void testInterchangeHeaderMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getInterchangeHeader)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -65,7 +65,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getMessageHeader() {
+    void testMessageHeaderMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getMessageHeader)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -73,7 +73,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getReferenceTransactionNumber() {
+    void testReferenceTransactionNumberMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getReferenceTransactionNumber)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -81,7 +81,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getTranslationDateTime() {
+    void testTranslationDateTimeMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getTranslationDateTime)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -89,7 +89,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getReferenceTransactionType() {
+    void testReferenceTransactionTypeMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getReferenceTransactionType)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -97,7 +97,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getHealthAuthorityNameAndAddress() {
+    void testHealthAuthorityNameAndAddressMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getHealthAuthorityNameAndAddress)
             .isExactlyInstanceOf(MissingSegmentException.class)
@@ -105,7 +105,7 @@ class InterchangeTest {
     }
 
     @Test
-    void getGpNameAndAddress() {
+    void testGpNameAndAddressMissing() {
         Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
         assertThatThrownBy(interchange::getGpNameAndAddress)
             .isExactlyInstanceOf(MissingSegmentException.class)
