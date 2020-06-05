@@ -1,11 +1,31 @@
 package uk.nhs.digital.nhsconnect.nhais.parse;
 
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.EdifactMessage;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class EdifactParser {
     public Interchange parse(String edifact) {
         EdifactMessage edifactMessage = new EdifactMessage(edifact);
-        return new Interchange(edifactMessage);
+        Interchange interchange = new Interchange(edifactMessage);
+        validateInterchange(interchange);
+
+        return interchange;
+    }
+
+    private void validateInterchange(Interchange interchange) {
+        List<ToEdifactParsingException> exceptions = interchange.validate();
+        String errorList = exceptions.stream()
+            .map(Exception::getMessage)
+            .collect(Collectors.joining(", "));
+
+        if(StringUtils.isNotEmpty(errorList)) {
+            throw new ToEdifactParsingException(errorList);
+        }
     }
 }

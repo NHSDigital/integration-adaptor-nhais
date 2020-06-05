@@ -1,16 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class EdifactMessageTest {

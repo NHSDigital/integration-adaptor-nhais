@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
@@ -17,6 +19,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -27,9 +30,6 @@ import static org.mockito.Mockito.when;
 public class RegistrationConsumerServiceTest {
 
     private static final String OPERATION_ID = "70086e87f012c1e9776bd59589726d3722420823e2b5ceb2f7c7441c4044ffba";
-
-    @Mock
-    EdifactToFhirService edifactToFhirService;
 
     @Mock
     InboundGpSystemService inboundGpSystemService;
@@ -101,5 +101,21 @@ public class RegistrationConsumerServiceTest {
         registrationConsumerService.handleRegistration(meshMessage);
 
         verifyNoInteractions(inboundGpSystemService);
+    }
+
+    @Test
+    void testErrorsDuringParsingMesh() {
+        String messageWithEmptySegments = "S01+1'\n" +
+            "S02+2'\n" +
+            "UNT+24+00000004'\n" +
+            "UNZ+1+00000003'";
+
+        MeshMessage meshMessage = new MeshMessage();
+        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
+        meshMessage.setContent(messageWithEmptySegments);
+
+        assertThatThrownBy(() -> registrationConsumerService.handleRegistration(meshMessage))
+            .isExactlyInstanceOf(ToEdifactParsingException.class)
+            .hasMessage("Segment group [] is missing segment UNB, Segment group [] is missing segment UNH, Segment group [S01+1] is missing segment RFF+TN, Segment group [] is missing segment DTM, Segment group [] is missing segment RFF+950, Segment group [] is missing segment NAD+FHS, Segment group [S01+1] is missing segment NAD+GP");
     }
 }
