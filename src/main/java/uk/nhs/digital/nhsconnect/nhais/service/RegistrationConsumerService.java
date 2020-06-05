@@ -26,8 +26,8 @@ public class RegistrationConsumerService {
         try {
             interchange = new EdifactParser().parse(meshMessage.getContent());
         } catch (ToEdifactParsingException ex) {
-            createNackRecep(ex); //TODO implementation of that
-            return;
+            LOGGER.error("Errors during parsing MESH message into EDIFACT", ex);
+            throw ex;
         }
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
@@ -43,12 +43,6 @@ public class RegistrationConsumerService {
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
         LOGGER.debug("Published inbound registration message to gp supplier queue");
-    }
-
-    private void createNackRecep(ToEdifactParsingException ex) {
-        //this exception should be passed to RECEP producer to create NACK RECEP
-        LOGGER.error("Errors during parsing MESH message into EDIFACT", ex);
-        throw ex;
     }
 
     private void sendSequenceNumbersToInboundSequenceManager(InboundState inboundState) {
