@@ -55,7 +55,13 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
         var expectedOutboundStateRef1 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_1, ReferenceMessageRecep.RecepCode.SUCCESS);
         var expectedOutboundStateRef2 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_2, ReferenceMessageRecep.RecepCode.ERROR);
 
-        var outboundStates = waitFor(() -> Lists.newArrayList(outboundStateRepository.findAll()));
+        var outboundStates = waitFor(() -> {
+            var all = Lists.newArrayList(outboundStateRepository.findAll());
+            if (all.stream().allMatch(outboundState -> outboundState.getRecepCode() != null && outboundState.getRecepDateTime() != null)) {
+                return all;
+            }
+            return null;
+        });
         var outboundStateRef1 = outboundStates.get(0);
         var outboundStateRef2 = outboundStates.get(1);
 
