@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 public class InboundStateTest {
 
+    private static final String OPERATION_ID = "bd0327c35d94d2972b4e0c99e355a8bb5ea2453eb27777d9e1985af38c9c2cf2";
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
     private static final Instant INTERCHANGE_TIMESTAMP = ZonedDateTime.now().toInstant();
@@ -35,6 +36,7 @@ public class InboundStateTest {
     public static final Recep RECEP = Mockito.mock(Recep.class);
     public static final InboundState INBOUND_INTERCHANGE_STATE = new InboundState()
         .setDataType(DataType.INTERCHANGE)
+        .setOperationId(OPERATION_ID)
         .setSender(SENDER)
         .setRecipient(RECIPIENT)
         .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)

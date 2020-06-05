@@ -2,9 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-
-import java.util.List;
 
 @Component
 public class RecepProducerService {

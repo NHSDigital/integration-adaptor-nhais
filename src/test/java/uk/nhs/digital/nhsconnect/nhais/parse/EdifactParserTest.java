@@ -1,9 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.parse;
 
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 
 class EdifactParserTest {
 

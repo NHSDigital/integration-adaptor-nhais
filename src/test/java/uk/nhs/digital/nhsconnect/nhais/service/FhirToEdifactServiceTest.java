@@ -17,7 +17,6 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
 
+    private static final String OPERATION_ID = "4297001d94b41d2e604059879d45123880760cb0262d28f85394a08de5e761b8";
     private static final String NHS_NUMBER = "54321";
     private static final String GP_CODE = "GP123";
     private static final String HA_CODE = "HA456";
@@ -62,9 +62,8 @@ public class FhirToEdifactServiceTest {
     @Test
     public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
         Patient patient = createPatient();
-        String operationId = UUID.randomUUID().toString();
 
-        fhirToEdifactService.convertToEdifact(patient, operationId, ReferenceTransactionType.TransactionType.ACCEPTANCE);
+        fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         verify(sequenceService).generateInterchangeId(GP_CODE, HA_CODE);
         verify(sequenceService).generateMessageId(GP_CODE, HA_CODE);
@@ -79,16 +78,15 @@ public class FhirToEdifactServiceTest {
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
         expected.setTransactionTimestamp(Date.from(expectedTimestamp));
-        expected.setOperationId(operationId);
+        expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
     }
 
     @Test
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
         Patient patient = createPatient();
-        String operationId = UUID.randomUUID().toString();
 
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, operationId, ReferenceTransactionType.TransactionType.ACCEPTANCE);
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
                 "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +

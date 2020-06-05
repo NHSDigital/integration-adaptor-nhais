@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 
@@ -26,6 +27,7 @@ public class InboundState {
     @Setter(AccessLevel.NONE)
     private String id;
     private DataType dataType;
+    private String operationId;
     private Long receiveInterchangeSequence;
     private Long receiveMessageSequence;
     private String sender;
@@ -43,13 +45,17 @@ public class InboundState {
         var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
         var referenceTransactionType = interchange.getReferenceTransactionType();
 
+        var sender = interchangeHeader.getSender();
+        var transactionNumber = referenceTransactionNumber.getTransactionNumber();
+
         return new InboundState()
             .setDataType(DataType.INTERCHANGE)
-            .setSender(interchangeHeader.getSender())
+            .setOperationId(OperationId.buildOperationId(sender, transactionNumber))
+            .setSender(sender)
             .setRecipient(interchangeHeader.getRecipient())
             .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setReceiveMessageSequence(messageHeader.getSequenceNumber())
-            .setTransactionNumber(referenceTransactionNumber.getTransactionNumber())
+            .setTransactionNumber(transactionNumber)
             .setTransactionType(referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }

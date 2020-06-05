@@ -1,16 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
-
 import org.springframework.util.StringUtils;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
 /**
  * Example NAD+FHS+XX1:954'
