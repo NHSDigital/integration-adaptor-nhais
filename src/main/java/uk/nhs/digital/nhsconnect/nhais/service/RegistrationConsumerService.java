@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
@@ -21,7 +22,13 @@ public class RegistrationConsumerService {
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        Interchange interchange = new EdifactParser().parse(meshMessage.getContent());
+        Interchange interchange;
+        try {
+            interchange = new EdifactParser().parse(meshMessage.getContent());
+        } catch (ToEdifactParsingException ex) {
+            LOGGER.error("Errors during parsing MESH message into EDIFACT", ex);
+            throw ex;
+        }
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
         var inboundState = InboundState.fromInterchange(interchange);
@@ -29,11 +36,19 @@ public class RegistrationConsumerService {
             return;
         }
 
+        sendSequenceNumbersToInboundSequenceManager(inboundState); //TODO implementation of that
+
         // recep producer service
         Parameters outputParameters = new EdifactToFhirService().convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
         LOGGER.debug("Published inbound registration message to gp supplier queue");
+    }
+
+    private void sendSequenceNumbersToInboundSequenceManager(InboundState inboundState) {
+        //sequence numbers for Inbound Sequence Number Manager can be extracted from InboundState
+        LOGGER.debug("Interchange sequence number: " + inboundState.getReceiveInterchangeSequence());
+        LOGGER.debug("Message sequence number: " + inboundState.getReceiveMessageSequence());
     }
 
     private boolean saveState(InboundState inboundState) {
