@@ -18,7 +18,7 @@ spring:
       uri: mongodb://localhost:27017
 nhais:
   amqp:
-    brokers: "localhost:5672"
+    brokers:
     meshOutboundQueueName: nhais_mesh_outbound
     meshInboundQueueName: nhais_mesh_inbound
     gpSystemInboundQueueName: nahis_gp_system_inbound

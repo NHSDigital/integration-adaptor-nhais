@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+@DirtiesContext
 public class InboundMeshServiceInterchangeTest extends InboundMeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 3;

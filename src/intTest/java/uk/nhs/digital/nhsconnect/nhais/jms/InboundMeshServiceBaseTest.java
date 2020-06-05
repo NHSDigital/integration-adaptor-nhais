@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.ActiveMqInitializer;
@@ -30,7 +29,6 @@ import static org.awaitility.Awaitility.await;
 @ContextConfiguration(initializers = { ActiveMqInitializer.class, MongoDbInitializer.class })
 @SpringBootTest
 @Slf4j
-@DirtiesContext
 public abstract class InboundMeshServiceBaseTest {
 
     protected static final int WAIT_FOR_IN_SECONDS = 5;
