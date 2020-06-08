@@ -159,21 +159,43 @@ Select a message ID to display information of message
 The service is configured using environment variables. Variables without a default value and not marked optional are *required* to be provided
 when the service is run.
 
-| Environment Variable             | Default                   | Description 
-| ---------------------------------|---------------------------|-------------
-| NHAIS_OUTBOUND_SERVER_PORT       | 80                        | The port on which the outbound FHIR REST API will run
-| NHAIS_AMQP_BROKERS               | amqp://localhost:5672     | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
-| NHAIS_MESH_OUTBOUND_QUEUE_NAME   | nhais_mesh_outbound       | The name of the outbound (to mesh) message queue
-| NHAIS_MESH_INBOUND_QUEUE_NAME    | nhais_mesh_inbound        | The name of the inbound (from mesh) message queue
-| NHAIS_AMQP_USERNAME              |                           | (Optional) username for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_PASSWORD              |                           | (Optional) password for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_MAX_RETRIES           | 3                         | The number of times a request to the outbound (to mesh) broker(s) will be retried
-| NHAIS_AMQP_RETRY_DELAY           | 100                       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
-| NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
-| NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
-| NHAIS_LOG_LEVEL                  |                           | The desired logging level
+| Environment Variable               | Default                   | Description 
+| -----------------------------------|---------------------------|-------------
+| NHAIS_OUTBOUND_SERVER_PORT         | 80                        | The port on which the outbound FHIR REST API will run
+| NHAIS_AMQP_BROKERS                 | amqp://localhost:5672     | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
+| NHAIS_MESH_OUTBOUND_QUEUE_NAME     | nhais_mesh_outbound       | The name of the outbound (to mesh) message queue
+| NHAIS_MESH_INBOUND_QUEUE_NAME      | nhais_mesh_inbound        | The name of the inbound (from mesh) message queue
+| NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME | nahis_gp_system_inbound   | The name of the inbound (to gp system) message queue
+| NHAIS_AMQP_USERNAME                |                           | (Optional) username for the amqp server for outbound (to mesh) message queue
+| NHAIS_AMQP_PASSWORD                |                           | (Optional) password for the amqp server for outbound (to mesh) message queue
+| NHAIS_AMQP_MAX_RETRIES             | 3                         | The number of times a request to the outbound (to mesh) broker(s) will be retried
+| NHAIS_AMQP_RETRY_DELAY             | 100                       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
+
+### Mongodb Configuration Options
+
+The adaptor configuration for mongodb can be configured two ways: using a connection string or providing individual 
+properties. This is to accommodate differences in the capabilities of deployment automation frameworks and varying 
+environments.
+
+If any value is set for `NHAIS_MONGO_HOST` then the following properties will be used to create a connection string:
+
+| Environment Variable             | Default | Description 
+| ---------------------------------|---------|-------------
+| NHAIS_MONGO_DATABASE_NAME        | nhais   | Database name for Mongo
+| NHAIS_MONGO_HOST                 |         | Mongodb host
+| NHAIS_MONGO_PORT                 |         | Mongodb port
+| NHAIS_MONGO_USERNAME             |         | (Optional) Mongodb username. If set then password must also be set.
+| NHAIS_MONGO_PASSWORD             |         | (Optional) Mongodb password
+| NHAIS_MONGO_OPTIONS              |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?
+
+If no value is set for `NHAIS_MONGO_HOST` then the following properties are used:
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
+| NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
 
 ## Using AmazonMQ
 
@@ -252,23 +274,6 @@ To run the integration tests use:
 
     ./gradlew integrationTest
 
-
-### Configuration
-
-The following additional configuration is used by integration tests
-
-| Environment Variable             | Default          | Description 
-| ---------------------------------|------------------|-------------
-| NHAIS_OUTBOUND_ADDRESS           | http://localhost | The URL where the NHAIS service can be accessed
-
-**Prerequisites**
-
-* Run dynamo and rabbitmq locally using docker-compose from repository root
-* Set and export environment variables defined in `nhais-env-example.yaml`
-* Run `main.py`
-
-
-    pipenv run inttests
 
 ### IntelliJ Configuration 
 

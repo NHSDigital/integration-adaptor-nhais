@@ -11,12 +11,6 @@ management:
   health:
     mongo:
       enabled: true
-spring:
-  data:
-    mongodb:
-      database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
-      uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
-      autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
 nhais:
   amqp:
     brokers: ${NHAIS_AMQP_BROKERS:amqp://localhost:5672}
@@ -28,3 +22,12 @@ nhais:
     password: ${NHAIS_AMQP_PASSWORD:}
     maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
     backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}
+  mongodb:
+    uri: ${NHAIS_MONGO_URI}
+    database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
+    host: ${NHAIS_MONGO_HOST:}
+    port: ${NHAIS_MONGO_PORT:}
+    username: ${NHAIS_MONGO_USERNAME:}
+    password: ${NHAIS_MONGO_PASSWORD:}
+    options: ${NHAIS_MONGO_OPTIONS:}
+    autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
