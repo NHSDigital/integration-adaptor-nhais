@@ -44,6 +44,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
+        LOGGER.info("Configuring mongo client settings...");
         builder.applyConnectionString(new ConnectionString(this.createConnectionString()));
     }
 
@@ -54,6 +55,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     }
 
     public String createConnectionString() {
+        LOGGER.info("Creating a connection string for mongo client settings...");
         if(!Strings.isNullOrEmpty(host)) {
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
@@ -69,12 +71,15 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     private String createConnectionStringFromProperties() {
         String cs = "mongodb://";
         if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+            LOGGER.debug("Including a username and password in the mongo connection string");
             cs += username + ":" + password + "@";
         } else {
             LOGGER.info("No mongodb username or password is configured. Will use an anonymous connection.");
         }
+        LOGGER.debug("The generated connection string will used host '{}' and port '{}'", host, port);
         cs += host + ":" + port;
         if(!Strings.isNullOrEmpty(options)) {
+            LOGGER.debug("The generated connection will use use options '{}'", options);
             cs += "?" + options;
         } else {
             LOGGER.warn("No options for the mongodb connection string were provided. If connecting to a cluster the driver may not work as expected.");
