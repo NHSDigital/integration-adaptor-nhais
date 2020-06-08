@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 
 import java.util.Arrays;
@@ -23,13 +22,9 @@ public class FromFhirToEdifact {
             new PersonGPPreviousMapper()
     );
 
-    public Interchange map(Parameters parameters) {
-        List<Segment> segments = MAPPERS.stream()
+    public List<Segment> map(Parameters parameters) {
+        return MAPPERS.stream()
                 .map(mapper -> mapper.map(parameters))
                 .collect(Collectors.toList());
-
-        segments.forEach(s -> System.out.println(s.toEdifact()));
-
-        return new Interchange(null);
     }
 }

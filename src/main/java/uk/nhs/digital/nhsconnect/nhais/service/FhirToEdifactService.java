@@ -2,26 +2,16 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifact;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
@@ -36,17 +26,18 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FhirToEdifactService {
 
+    private final FhirParser fhirParser;
     private final OutboundStateRepository outboundStateRepository;
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
 
-    public TranslatedInterchange convertToEdifact(Patient patient, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
-        translationItems.patient = patient;
+        translationItems.patient = fhirParser.getPatientFromParams(parameters);
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
         generateTimestamp(translationItems);
-        createSegments(translationItems);
+        createSegments(parameters, translationItems);
         prevalidateSegments(translationItems);
         generateSequenceNumbers(translationItems);
         setOperationId(translationItems);
@@ -91,46 +82,57 @@ public class FhirToEdifactService {
     }
 
     private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if(value == null) {
+        if (value == null) {
             throw new FhirValidationException("Missing element at " + path);
         }
-        if(value instanceof List) {
+        if (value instanceof List) {
             List list = (List) value;
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
-        } else if(value instanceof String) {
+        } else if (value instanceof String) {
             String str = (String) value;
-            if(str.isBlank()) {
+            if (str.isBlank()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
         }
     }
 
     private <T> T castOrError(String path, Class<T> type, Object value) throws FhirValidationException {
-        if(!type.isAssignableFrom(value.getClass())) {
+        if (!type.isAssignableFrom(value.getClass())) {
             throw new FhirValidationException("Expected " + type.getSimpleName() + " at " + path + " but found " + value.getClass().getSimpleName());
         }
         return type.cast(value);
     }
 
-    private void createSegments(TranslationItems translationItems) {
+    private void createSegments(Parameters parameters, TranslationItems translationItems) {
+        FromFhirToEdifact fromFhirToEdifact = new FromFhirToEdifact();
+        List<Segment> segmentsFromFhir = fromFhirToEdifact.map(parameters);
+
         translationItems.segments = Arrays.asList(
                 new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp),
                 new MessageHeader(),
-                new BeginningOfMessage(),
-                new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
-                new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType(translationItems.transactionType),
+                new BeginningOfMessage());
+        translationItems.segments.addAll(segmentsFromFhir);
+        translationItems.segments.addAll(Arrays.asList(
                 new SegmentGroup(1),
                 new ReferenceTransactionNumber(),
                 new MessageTrailer(8),
                 new InterchangeTrailer(1)
-        );
+        ));
+
+//                new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
+//                new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+//                new ReferenceTransactionType(translationItems.transactionType),
+//                new SegmentGroup(1),
+//                new ReferenceTransactionNumber(),
+//                new MessageTrailer(8),
+//                new InterchangeTrailer(1)
+//        );
     }
 
     private void prevalidateSegments(TranslationItems translationItems) throws EdifactValidationException {
-        for(Segment segment : translationItems.segments) {
+        for (Segment segment : translationItems.segments) {
             segment.preValidate();
         }
     }
@@ -150,34 +152,34 @@ public class FhirToEdifactService {
 
     private void recordOutboundState(TranslationItems translationItems) {
         var outboundState = new OutboundState()
-            .setRecipient(translationItems.recipient)
-            .setSender(translationItems.sender)
+                .setRecipient(translationItems.recipient)
+                .setSender(translationItems.sender)
 
-            .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
-            .setSendMessageSequence(translationItems.sendMessageSequence)
-            .setTransactionId(translationItems.transactionNumber)
+                .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
+                .setSendMessageSequence(translationItems.sendMessageSequence)
+                .setTransactionId(translationItems.transactionNumber)
 
-            .setTransactionType(translationItems.transactionType.getAbbreviation())
-            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
-            .setOperationId(translationItems.operationId);
+                .setTransactionType(translationItems.transactionType.getAbbreviation())
+                .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+                .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
 
     private void addSequenceNumbersToSegments(TranslationItems translationItems) {
-        for(Segment segment : translationItems.segments) {
-            if(segment instanceof InterchangeHeader) {
+        for (Segment segment : translationItems.segments) {
+            if (segment instanceof InterchangeHeader) {
                 InterchangeHeader interchangeHeader = (InterchangeHeader) segment;
                 interchangeHeader.setSequenceNumber(translationItems.sendInterchangeSequence);
-            } else if(segment instanceof InterchangeTrailer) {
+            } else if (segment instanceof InterchangeTrailer) {
                 InterchangeTrailer interchangeTrailer = (InterchangeTrailer) segment;
                 interchangeTrailer.setSequenceNumber(translationItems.sendInterchangeSequence);
-            } else if(segment instanceof MessageHeader) {
+            } else if (segment instanceof MessageHeader) {
                 MessageHeader messageHeader = (MessageHeader) segment;
                 messageHeader.setSequenceNumber(translationItems.sendMessageSequence);
-            } else if(segment instanceof MessageTrailer) {
+            } else if (segment instanceof MessageTrailer) {
                 MessageTrailer messageTrailer = (MessageTrailer) segment;
                 messageTrailer.setSequenceNumber(translationItems.sendMessageSequence);
-            } else if(segment instanceof ReferenceTransactionNumber) {
+            } else if (segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.transactionNumber);
             }
@@ -186,7 +188,7 @@ public class FhirToEdifactService {
 
     private TranslatedInterchange translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
         List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
-        for(Segment segment : translationItems.segments) {
+        for (Segment segment : translationItems.segments) {
             segmentStrings.add(segment.toEdifact());
         }
         String edifact = String.join("\n", segmentStrings);
