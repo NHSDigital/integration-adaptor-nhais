@@ -54,7 +54,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         return Boolean.parseBoolean(this.autoIndexCreation);
     }
 
-    public String createConnectionString() {
+    private String createConnectionString() {
         LOGGER.info("Creating a connection string for mongo client settings...");
         if(!Strings.isNullOrEmpty(host)) {
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
