@@ -23,7 +23,7 @@ nhais:
     maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
     backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}
   mongodb:
-    uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
+    uri: ${NHAIS_MONGO_URI}
     database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
     host: ${NHAIS_MONGO_HOST:}
     port: ${NHAIS_MONGO_PORT:}
