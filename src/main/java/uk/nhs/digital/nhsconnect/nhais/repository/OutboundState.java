@@ -42,7 +42,7 @@ public class OutboundState {
         var dateTimePeriod = recep.getDateTimePeriod();
 
         return new OutboundState()
-            .setDataType(DataType.RECEP)
+            .setWorkflowId(WorkflowId.RECEP)
             .setSendInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
