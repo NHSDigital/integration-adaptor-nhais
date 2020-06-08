@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -42,6 +42,6 @@ public class RecepBeginningOfMessage extends Segment {
     }
 
     private DateTimeFormatter getDateTimeFormat() {
-        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneOffset.UTC);
+        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UKZone);
     }
 }

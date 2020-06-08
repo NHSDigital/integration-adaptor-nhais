@@ -39,7 +39,7 @@ public class InterchangeHeader extends Segment {
     public String getValue() {
         String timestamp = DATE_FORMAT.format(translationTime);
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-        return "UNOA:2"+"+"+sender+"+"+recipient+"+"+timestamp+"+"+formattedSequenceNumber;
+        return "UNOA:2" + "+" + sender + "+" + recipient + "+" + timestamp + "+" + formattedSequenceNumber;
     }
 
     @Override

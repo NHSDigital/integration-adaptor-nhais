@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class EdifactMessage {
@@ -74,20 +75,20 @@ public class EdifactMessage {
         );
     }
 
-    public List<MessageTrailer> getMessageTrailers() {
-        return extractSegments(firstGroup, MessageTrailer.KEY).stream()
-            .map(MessageTrailer::fromString)
-            .collect(Collectors.toList());
-    }
-
     public InterchangeTrailer getInterchangeTrailer() {
         return InterchangeTrailer.fromString(
-            extractSegment(header, InterchangeTrailer.KEY)
+            extractSegment(secondGroup, InterchangeTrailer.KEY)
         );
     }
 
     private String extractSegment(String[] header, String key) {
-        return extractSegments(header, key).get(0);
+        var segment = extractSegments(header, key);
+        if (segment.isEmpty()) {
+            throw new NoSuchElementException("Missing segment for key " + key);
+        } else if (segment.size() > 1) {
+            throw new IllegalStateException("There are more than 1 segments for key " + key);
+        }
+        return segment.get(0);
     }
 
     private List<String> extractSegments(String[] header, String key) {

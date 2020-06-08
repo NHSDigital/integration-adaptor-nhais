@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 
+import java.util.Arrays;
+
 /**
  *class declaration:
+ * example: NAD+FHS+HA456:954'
  */
 @Getter @Setter @RequiredArgsConstructor
 public class NameAndAddress extends Segment{
@@ -66,6 +69,16 @@ public class NameAndAddress extends Segment{
     }
 
     public static NameAndAddress fromString(String edifactString) {
-        return null;
+        if(!edifactString.startsWith(NameAndAddress.KEY)){
+            throw new IllegalArgumentException("Can't create " + NameAndAddress.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\+");
+
+        var qualifierAndCode = Arrays.stream(QualifierAndCode.values())
+            .filter(x -> x.getCode().equals(split[3]))
+            .findFirst()
+            .orElseThrow();
+
+        return new NameAndAddress(split[2], qualifierAndCode);
     }
 }

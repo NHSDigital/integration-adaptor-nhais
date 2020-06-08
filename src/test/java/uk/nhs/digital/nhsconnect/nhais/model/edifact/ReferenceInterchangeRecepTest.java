@@ -25,7 +25,7 @@ class ReferenceInterchangeRecepTest {
             123L, ReferenceInterchangeRecep.RecepCode.RECEIVED, 3)
             .getValue();
 
-        assertThat(value).isEqualTo("RIS:123 OK:3");
+        assertThat("RIS:00000123 OK:3").isEqualTo(value);
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
@@ -70,6 +71,7 @@ public class FhirToEdifactServiceTest {
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
+        expected.setWorkflowId(WorkflowId.REGISTRATION);
         expected.setRecipient(HA_CODE);
         expected.setSender(GP_CODE);
         expected.setSendInterchangeSequence(SIS);

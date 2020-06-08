@@ -2,11 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -24,37 +24,43 @@ public class RegistrationConsumerService {
     private final OutboundStateRepository outboundStateRepository;
     private final OutboundMeshService outboundMeshService;
     private final RecepProducerService recepProducerService;
+    private final EdifactParser edifactParser;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        Interchange interchange = new EdifactParser().parse(meshMessage.getContent());
+        Interchange interchange = edifactParser.parse(meshMessage.getContent());
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
         var inboundState = InboundState.fromInterchange(interchange);
-        if (!saveState(inboundState)) {
+        if (!saveInboundState(inboundState)) {
             return;
         }
-        LOGGER.debug("Saved interchange in inbound state: {}", inboundState);
 
         var recep = recepProducerService.produceRecep(interchange);
-        var outboundState = OutboundState.fromRecep(recep);
-        outboundStateRepository.save(outboundState);
-        LOGGER.debug("Saved recep in outbound state: {}", inboundState);
+        var recepOutboundState = OutboundState.fromRecep(recep);
+        outboundStateRepository.save(recepOutboundState);
+        LOGGER.debug("Saved recep in outbound state: {}", recepOutboundState);
 
-        Parameters outputParameters = new EdifactToFhirService().convertToFhir(interchange);
+        var outputParameters = new EdifactToFhirService().convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
         LOGGER.debug("Published inbound registration message to gp supplier queue");
 
-        var recepMeshMessage = new MeshMessage()
-            //TODO: set other fields
-            .setWorkflowId(WorkflowId.RECEP)
-            .setContent(recep.toEdifact());
-        outboundMeshService.send(recepMeshMessage);
+        var recepMeshMessage = buildRecepMeshMessage(recep);
+        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
+        outboundMeshService.publishToOutboundQueue(recepMeshMessage);
         LOGGER.debug("Published recep to outbound queue");
     }
 
-    private boolean saveState(InboundState inboundState) {
+    private MeshMessage buildRecepMeshMessage(Recep recep) {
+        return new MeshMessage()
+            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
+            .setOdsCode("ods123")
+            .setWorkflowId(WorkflowId.RECEP)
+            .setContent(recep.toEdifact());
+    }
+
+    private boolean saveInboundState(InboundState inboundState) {
         try {
             inboundStateRepository.save(inboundState); // this can detect duplicates as there is an unique compound index
             LOGGER.debug("Saved inbound state: {}", inboundState);

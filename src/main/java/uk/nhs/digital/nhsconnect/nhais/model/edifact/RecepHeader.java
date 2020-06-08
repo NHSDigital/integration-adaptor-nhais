@@ -1,18 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RecepHeader extends Segment {
     private final static String DATE_TIME_FORMAT = "yyMMdd:HHmm";
     private static String UNOA = "UNOA:2";
@@ -22,7 +22,7 @@ public class RecepHeader extends Segment {
     private @NonNull String sender;
     private @NonNull String recipient;
     private @NonNull Instant translationTime;
-    private @NonNull Long sequenceNumber;
+    private Long sequenceNumber;
 
     @Override
     public String getKey() {
@@ -46,7 +46,7 @@ public class RecepHeader extends Segment {
     }
 
     private DateTimeFormatter getDateTimeFormat() {
-        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneOffset.UTC);
+        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UKZone);
     }
 
     @Override

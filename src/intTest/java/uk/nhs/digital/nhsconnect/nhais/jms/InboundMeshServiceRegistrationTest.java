@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -61,7 +62,7 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
         //TODO get recep from outbound queue and verify it's content
     }
 
-    private void assertGpSystemInboundQueueMessage(SoftAssertions softly, Message gpSystemInboundQueueMessage) throws JMSException {
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly, @NonNull Message gpSystemInboundQueueMessage) throws JMSException {
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
 
         var resource = parseMessage(gpSystemInboundQueueMessage);

@@ -30,7 +30,7 @@ public class ReferenceMessageRecep extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + ":" + messageSequenceNumber + " " + recepCode.getCode();
+        return String.format("%s:%08d %s", QUALIFIER, messageSequenceNumber, recepCode.getCode());
     }
 
     @Override

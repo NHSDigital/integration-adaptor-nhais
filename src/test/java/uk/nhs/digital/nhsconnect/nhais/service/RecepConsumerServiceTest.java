@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecepConsumerServiceTest {
-    private static final String MESSAGE_CONTENT = "some_message_content";
+    private static final String CONTENT = "some_content";
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
     private static final long INTERCHANGE_SEQUENCE = 123;
@@ -47,17 +47,18 @@ class RecepConsumerServiceTest {
     private OutboundStateRepository outboundStateRepository;
     @Mock
     private InboundStateRepository inboundStateRepository;
+    @Mock
+    private Recep recep;
 
     @InjectMocks
     private RecepConsumerService recepConsumerService;
 
-    private final MeshMessage MESH_MESSAGE = new MeshMessage().setContent(MESSAGE_CONTENT);
-
-    @Mock
-    private Recep recep;
+    private final MeshMessage MESH_MESSAGE = new MeshMessage().setContent(CONTENT);
 
     @BeforeEach
     void setUp() {
+        when(recepParser.parse(CONTENT)).thenReturn(recep);
+
         when(recep.getInterchangeHeader())
             .thenReturn(new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_DATE_TIME_PERIOD).setSequenceNumber(INTERCHANGE_SEQUENCE));
         when(recep.getDateTimePeriod())
@@ -73,8 +74,6 @@ class RecepConsumerServiceTest {
 
     @Test
     void whenHandlingRecep_thenOutboundStateIsUpdatedTwice() {
-        when(recepParser.parse(MESSAGE_CONTENT)).thenReturn(recep);
-
         recepConsumerService.handleRecep(MESH_MESSAGE);
 
         ArgumentCaptor<InboundState> inboundStateArgumentCaptor = ArgumentCaptor.forClass(InboundState.class);

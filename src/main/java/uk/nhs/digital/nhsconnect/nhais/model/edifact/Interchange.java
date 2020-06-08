@@ -3,8 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Getter @RequiredArgsConstructor
 public class Interchange {
 
@@ -26,8 +24,6 @@ public class Interchange {
     private final GpNameAndAddress gpNameAndAddress = edifactMessage.getGpNameAndAddress();
     @Getter(lazy=true)
     private final NameAndAddress nameAndAddress = edifactMessage.getNameAndAddress();
-    @Getter(lazy=true)
-    private final List<MessageTrailer> messageTrailer = edifactMessage.getMessageTrailers();
     @Getter(lazy=true)
     private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 }

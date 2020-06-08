@@ -35,7 +35,7 @@ public class RecepConsumerService {
             return;
         }
 
-        //sender is swapped with recipient as communication is done the other way
+        //sender is swapped with recipient as communication is done the opposite way
         String outbound_sender = recep.getInterchangeHeader().getRecipient();
         String outbound_recipient = recep.getInterchangeHeader().getSender();
         Instant dateTimePeriod = recep.getDateTimePeriod().getTimestamp();
