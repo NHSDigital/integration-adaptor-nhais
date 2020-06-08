@@ -5,6 +5,7 @@ import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
@@ -36,6 +37,10 @@ public class FhirParser {
 
     public Patient parsePatient(String body) throws FhirValidationException {
         return parse(Patient.class, body);
+    }
+
+    public Parameters parseParameters(String body) throws FhirValidationException {
+        return parse(Parameters.class, body);
     }
 
 //    private void validate(String resource) throws FhirValidationException {
