@@ -2,7 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,8 +46,8 @@ public class AcceptanceControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value("classpath:patient.json")
-    private Resource patientPayload;
+    @Value("classpath:/patient/parameters.json")
+    private Resource paramsPayload;
 
     @MockBean
     private OutboundMeshService outboundMeshService;
@@ -63,7 +63,7 @@ public class AcceptanceControllerTest {
 
     @Test
     void whenValidInput_thenReturns202() throws Exception {
-        String requestBody = new String(Files.readAllBytes(patientPayload.getFile().toPath()));
+        String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
         TranslatedInterchange translatedInterchange = new TranslatedInterchange();
         translatedInterchange.setEdifact("EDI");
         translatedInterchange.setOperationId(OPERATION_ID);
@@ -72,11 +72,11 @@ public class AcceptanceControllerTest {
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOdsCode("odsCode");
 
-        when(fhirParser.parsePatient(requestBody)).thenReturn(new Patient());
-        when(fhirToEdifactService.convertToEdifact(any(Patient.class), any())).thenReturn(translatedInterchange);
+        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
+        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
-        mockMvc.perform(post("/fhir/Patient/12345")
+        mockMvc.perform(post("/fhir/Patient")
                 .contentType("application/json")
                 .content(requestBody))
                 .andExpect(status().isAccepted())
@@ -88,11 +88,11 @@ public class AcceptanceControllerTest {
     @Test
     void whenInvalidInput_thenReturns400() throws Exception {
         String requestBody = "{}";
-        when(fhirParser.parsePatient(requestBody)).thenThrow(new FhirValidationException("the message"));
+        when(fhirParser.parseParameters(requestBody)).thenThrow(new FhirValidationException("the message"));
         String expectedResponse = "{\"expected\":\"response\"}";
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
-        mockMvc.perform(post("/fhir/Patient/12345")
+        mockMvc.perform(post("/fhir/Patient")
                 .contentType("application/json")
                 .content(requestBody))
                 .andExpect(status().isBadRequest())
@@ -102,11 +102,11 @@ public class AcceptanceControllerTest {
     @Test
     void whenUnhandledException_thenReturns500() throws Exception {
         String requestBody = "{}";
-        when(fhirParser.parsePatient(requestBody)).thenThrow(new RuntimeException("the message"));
+        when(fhirParser.parseParameters(requestBody)).thenThrow(new RuntimeException("the message"));
         String expectedResponse = "{\"expected\":\"response\"}";
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
-        mockMvc.perform(post("/fhir/Patient/12345")
+        mockMvc.perform(post("/fhir/Patient")
                 .contentType("application/json")
                 .content(requestBody))
                 .andExpect(status().isInternalServerError())

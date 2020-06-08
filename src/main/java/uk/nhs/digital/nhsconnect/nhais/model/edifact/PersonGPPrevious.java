@@ -3,7 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
 

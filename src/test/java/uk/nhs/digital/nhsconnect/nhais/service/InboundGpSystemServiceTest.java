@@ -9,15 +9,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessagePostProcessor;
+import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +30,10 @@ public class InboundGpSystemServiceTest {
     JmsTemplate jmsTemplate;
 
     @Mock
-    Message message;
+    Session session;
+
+    @Mock
+    TextMessage textMessage;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
@@ -47,13 +50,15 @@ public class InboundGpSystemServiceTest {
 
         inboundGpSystemService.publishToSupplierQueue(parameters, operationId);
 
-        var messagePostProcessorArgumentCaptor = ArgumentCaptor.forClass(MessagePostProcessor.class);
+        var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 
-        verify(jmsTemplate).convertAndSend(eq(gpSystemInboundQueueName), eq(jsonEncodedFhir), messagePostProcessorArgumentCaptor.capture());
+        verify(jmsTemplate).send(eq(gpSystemInboundQueueName), messageCreatorArgumentCaptor.capture());
 
-        messagePostProcessorArgumentCaptor.getValue().postProcessMessage(message);
+        when(session.createTextMessage(jsonEncodedFhir)).thenReturn(textMessage);
 
-        verify(message).setStringProperty("OperationId", operationId);
-        verifyNoMoreInteractions(message);
+        messageCreatorArgumentCaptor.getValue().createMessage(session);
+
+        verify(session).createTextMessage(eq(jsonEncodedFhir));
+        verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
     }
 }

@@ -1,6 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 public abstract class Segment {
     protected static final String PLUS_SEPARATOR = "+";

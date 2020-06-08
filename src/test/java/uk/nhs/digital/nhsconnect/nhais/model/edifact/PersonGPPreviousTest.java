@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

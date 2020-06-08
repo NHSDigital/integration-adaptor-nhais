@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -35,7 +36,7 @@ public class InboundStateTest {
     public static final Interchange INTERCHANGE = Mockito.mock(Interchange.class);
     public static final Recep RECEP = Mockito.mock(Recep.class);
     public static final InboundState INBOUND_INTERCHANGE_STATE = new InboundState()
-        .setDataType(DataType.INTERCHANGE)
+        .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)
         .setSender(SENDER)
         .setRecipient(RECIPIENT)
@@ -45,7 +46,7 @@ public class InboundStateTest {
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
     public static final InboundState INBOUND_RECEP_STATE = new InboundState()
-        .setDataType(DataType.RECEP)
+        .setWorkflowId(WorkflowId.RECEP)
         .setSender(SENDER)
         .setRecipient(RECIPIENT)
         .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)

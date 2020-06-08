@@ -24,7 +24,8 @@ public class InboundGpSystemService {
     public void publishToSupplierQueue(Parameters parameters, String operationId) {
         String jsonMessage = fhirParser.encodeToString(parameters);
         LOGGER.debug("Encoded FHIR to string: {}", jsonMessage);
-        jmsTemplate.convertAndSend(gpSystemInboundQueueName, jsonMessage, message -> {
+        jmsTemplate.send(gpSystemInboundQueueName, session -> {
+            var message = session.createTextMessage(jsonMessage);
             message.setStringProperty(JmsHeaders.OPERATION_ID, operationId);
             return message;
         });

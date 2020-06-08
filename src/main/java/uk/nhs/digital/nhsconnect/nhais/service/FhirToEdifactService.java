@@ -1,16 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifact;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -18,7 +17,6 @@ import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -56,79 +54,29 @@ public class FhirToEdifactService {
         translationItems.recipient = getRecipient(translationItems.patient);
     }
 
-    private String getSender(Patient patient) throws FhirValidationException {
-        String path = "patient.generalPractitioner";
-        exceptionIfMissingOrEmpty(path, patient.getGeneralPractitioner());
-        Reference gpReference = patient.getGeneralPractitioner().get(0);
-        return getOrganizationIdentifier(path, gpReference);
+    private String getSender(Patient patient) {
+        return getOrganizationIdentifier(patient.getGeneralPractitionerFirstRep());
     }
 
-    private String getRecipient(Patient patient) throws FhirValidationException {
-        String path = "patient.managingOrganization";
-        exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
-        Reference haReference = patient.getManagingOrganization();
-        return getOrganizationIdentifier(path, haReference);
+    private String getRecipient(Patient patient) {
+        return getOrganizationIdentifier(patient.getManagingOrganization());
     }
 
-    private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
-        exceptionIfMissingOrEmpty(path, reference);
-        path += ".identifier";
-        exceptionIfMissingOrEmpty(path, reference.getIdentifier());
-        Identifier gpId = reference.getIdentifier();
-        exceptionIfMissingOrEmpty(path, gpId);
-        path += ".value";
-        exceptionIfMissingOrEmpty(path, gpId.getValue());
-        return gpId.getValue();
-    }
-
-    private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if (value == null) {
-            throw new FhirValidationException("Missing element at " + path);
-        }
-        if (value instanceof List) {
-            List list = (List) value;
-            if (list.isEmpty()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        } else if (value instanceof String) {
-            String str = (String) value;
-            if (str.isBlank()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        }
-    }
-
-    private <T> T castOrError(String path, Class<T> type, Object value) throws FhirValidationException {
-        if (!type.isAssignableFrom(value.getClass())) {
-            throw new FhirValidationException("Expected " + type.getSimpleName() + " at " + path + " but found " + value.getClass().getSimpleName());
-        }
-        return type.cast(value);
+    private String getOrganizationIdentifier(Reference gpReference) {
+        return gpReference.getReference().split("/")[1];
     }
 
     private void createSegments(Parameters parameters, TranslationItems translationItems) {
         FromFhirToEdifact fromFhirToEdifact = new FromFhirToEdifact();
-        List<Segment> segmentsFromFhir = fromFhirToEdifact.map(parameters);
 
-        translationItems.segments = Arrays.asList(
-                new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp),
-                new MessageHeader(),
-                new BeginningOfMessage());
-        translationItems.segments.addAll(segmentsFromFhir);
-        translationItems.segments.addAll(Arrays.asList(
-                new SegmentGroup(1),
-                new ReferenceTransactionNumber(),
-                new MessageTrailer(8),
-                new InterchangeTrailer(1)
-        ));
-
-//                new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
-//                new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-//                new ReferenceTransactionType(translationItems.transactionType),
-//                new SegmentGroup(1),
-//                new ReferenceTransactionNumber(),
-//                new MessageTrailer(8),
-//                new InterchangeTrailer(1)
-//        );
+        translationItems.segments.add(new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp));
+        translationItems.segments.add(new MessageHeader());
+        translationItems.segments.add(new BeginningOfMessage());
+        translationItems.segments.addAll(fromFhirToEdifact.map(parameters));
+        translationItems.segments.add(new SegmentGroup(1));
+        translationItems.segments.add(new ReferenceTransactionNumber());
+        translationItems.segments.add(new MessageTrailer(8));
+        translationItems.segments.add(new InterchangeTrailer(1));
     }
 
     private void prevalidateSegments(TranslationItems translationItems) throws EdifactValidationException {

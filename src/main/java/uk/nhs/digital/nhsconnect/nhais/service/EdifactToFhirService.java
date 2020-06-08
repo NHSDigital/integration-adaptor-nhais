@@ -32,7 +32,7 @@ public class EdifactToFhirService {
         for (Resource resource : resources) {
             var parameterComponent = new Parameters.ParametersParameterComponent().setResource(resource);
             if(Patient.class.getSimpleName().equals(resource.fhirType())) {
-                parameterComponent.setName("patient");
+                parameterComponent.setName(resource.fhirType().toLowerCase());
             }
             parameters.addParameter(parameterComponent);
         }
