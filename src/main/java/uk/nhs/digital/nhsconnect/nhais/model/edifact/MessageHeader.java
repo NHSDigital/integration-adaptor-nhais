@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 /**
  * A specialisation of a segment for the specific use case of a message header

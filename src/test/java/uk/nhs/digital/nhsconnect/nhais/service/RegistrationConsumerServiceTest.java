@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -30,9 +30,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -78,33 +78,6 @@ public class RegistrationConsumerServiceTest {
     @InjectMocks
     RegistrationConsumerService registrationConsumerService;
 
-//    private final String exampleMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
-//        "UNH+00000004+FHSREG:0:1:FH:FHS001'\n" +
-//        "BGM+++507'\n" +
-//        "NAD+FHS+XX1:954'\n" +
-//        "DTM+137:199201141619:203'\n" +
-//        "RFF+950:G1'\n" +
-//        "S01+1'\n" +
-//        "RFF+TN:18'\n" +
-//        "NAD+GP+2750922,295:900'\n" +
-//        "NAD+RIC+RT:956'\n" +
-//        "QTY+951:6'\n" +
-//        "QTY+952:3'\n" +
-//        "HEA+ACD+A:ZZZ'\n" +
-//        "HEA+ATP+2:ZZZ'\n" +
-//        "HEA+BM+S:ZZZ'\n" +
-//        "HEA+DM+Y:ZZZ'\n" +
-//        "DTM+956:19920114:102'\n" +
-//        "LOC+950+GLASGOW'\n" +
-//        "FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'\n" +
-//        "S02+2'\n" +
-//        "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
-//        "DTM+329:19911209:102'\n" +
-//        "PDI+2'\n" +
-//        "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
-//        "UNT+24+00000004'\n" +
-//        "UNZ+1+00000003'";
-
     @Mock
     Recep recep;
 
@@ -114,8 +87,7 @@ public class RegistrationConsumerServiceTest {
     @Mock
     EdifactParser edifactParser;
 
-    @BeforeEach
-    void setUp() {
+    private void mockInterchangeSegments() {
         when(edifactParser.parse(CONTENT)).thenReturn(interchange);
 
         when(interchange.getInterchangeHeader()).thenReturn(
@@ -128,21 +100,27 @@ public class RegistrationConsumerServiceTest {
             new ReferenceTransactionType(TRANSACTION_TYPE));
         when(interchange.getTranslationDateTime()).thenReturn(
             new DateTimePeriod(TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
-        lenient().when(interchange.getHealthAuthorityNameAndAddress()).thenReturn(
+    }
+
+    private void mockInterchangeRecepRequiredSegments() {
+        when(interchange.getHealthAuthorityNameAndAddress()).thenReturn(
             new HealthAuthorityNameAndAddress("identifier", "code"));
-        lenient().when(interchange.getGpNameAndAddress()).thenReturn(
+        when(interchange.getGpNameAndAddress()).thenReturn(
             new GpNameAndAddress("identifier", "code"));
 
-        lenient().when(recep.getInterchangeHeader()).thenReturn(
+        when(recep.getInterchangeHeader()).thenReturn(
             new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
-        lenient().when(recep.getDateTimePeriod()).thenReturn(
+        when(recep.getDateTimePeriod()).thenReturn(
             new DateTimePeriod(TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
 
-        lenient().when(recep.toEdifact()).thenReturn(RECEP_AS_EDIFACT);
+        when(recep.toEdifact()).thenReturn(RECEP_AS_EDIFACT);
     }
 
     @Test
     public void registrationMessage_publishedToSupplierQueue() {
+        mockInterchangeSegments();
+        mockInterchangeRecepRequiredSegments();
+
         when(recepProducerService.produceRecep(interchange)).thenReturn(recep);
 
         var meshInterchangeMessage = new MeshMessage();
@@ -184,6 +162,20 @@ public class RegistrationConsumerServiceTest {
 
     @Test
     public void whenDuplicateMessageErrorOnInboundStateSave_thenNotPublishedToSupplierQueue() {
+        mockInterchangeSegments();
+
+        when(interchange.getInterchangeHeader()).thenReturn(
+            new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIME).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(interchange.getMessageHeader()).thenReturn(
+            new MessageHeader(MESSAGE_SEQUENCE));
+        when(interchange.getReferenceTransactionNumber()).thenReturn(
+            new ReferenceTransactionNumber(TRANSACTION_NUMBER));
+        when(interchange.getReferenceTransactionType()).thenReturn(
+            new ReferenceTransactionType(TRANSACTION_TYPE));
+        when(interchange.getTranslationDateTime()).thenReturn(
+            new DateTimePeriod(TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+
+
         var meshInterchangeMessage = new MeshMessage();
         meshInterchangeMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshInterchangeMessage.setContent(CONTENT);
@@ -191,6 +183,18 @@ public class RegistrationConsumerServiceTest {
         when(inboundStateRepository.save(any())).thenThrow(DuplicateKeyException.class);
 
         registrationConsumerService.handleRegistration(meshInterchangeMessage);
+
+        verifyNoInteractions(inboundGpSystemService);
+        verifyNoInteractions(outboundStateRepository);
+        verifyNoInteractions(outboundMeshService);
+    }
+
+    @Test
+    void testErrorsDuringParsingMesh() {
+        when(edifactParser.parse(any())).thenThrow(ToEdifactParsingException.class);
+
+        assertThatThrownBy(() -> registrationConsumerService.handleRegistration(new MeshMessage()))
+            .isExactlyInstanceOf(ToEdifactParsingException.class);
 
         verifyNoInteractions(inboundGpSystemService);
         verifyNoInteractions(outboundStateRepository);

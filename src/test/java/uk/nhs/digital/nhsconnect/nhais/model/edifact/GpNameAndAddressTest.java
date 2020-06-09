@@ -1,12 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class GpNameAndAddressTest {
 
@@ -31,7 +31,7 @@ class GpNameAndAddressTest {
     void testPreValidate() {
         GpNameAndAddress emptyIdentifier = new GpNameAndAddress("", "x");
         GpNameAndAddress emptyCode = new GpNameAndAddress("x", "");
-        SoftAssertions.assertSoftly( softly -> {
+        assertSoftly( softly -> {
             softly.assertThatThrownBy(emptyIdentifier::preValidate)
                 .isExactlyInstanceOf(EdifactValidationException.class)
                 .hasMessage("NAD: Attribute identifier is required");

@@ -50,7 +50,7 @@ class EdifactToFhirServiceTest {
             .collect(Collectors.toList());
 
         assertThat(resources).hasOnlyElementsOfType(Patient.class);
-
+        assertThat(parameters.getParameterFirstRep().getName()).isEqualTo("patient");
         Patient patient = (Patient) parameters.getParameterFirstRep().getResource();
 
         assertThat(patient.getManagingOrganization().getResource().getIdElement().getIdPart()).isEqualTo("XX1");
