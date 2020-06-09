@@ -77,10 +77,10 @@ pipeline {
                             String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
                             String tfRegion      = "${TF_STATE_BUCKET_REGION}"
-
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
-                            
+                            tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
+                            tfVariables.put('docdb_master_password',DOCDB_MASTER_PASSWORD)                           
                             dir ("integration-adaptors") {
                               // Clone repository with terraform
                               git (branch: tfCodeBranch, url: tfCodeRepo)
@@ -141,8 +141,6 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     variablesMap.put('project', project)
     variablesMap.put('environment', environment)
     variablesMap.put('tf_state_bucket',tfStateBucket)
-    variablesMap.put('docdb_master_user',DOCDB_MASTER_USER)
-    variablesMap.put('docdb_master_password',DOCDB_MASTER_PASSWORD)
     parametersList = parameters
     parametersList.add("-no-color")
     //parametersList.add("-compact-warnings")  /TODO update terraform to have this working
