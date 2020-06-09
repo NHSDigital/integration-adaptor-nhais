@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 public class FromFhirToEdifact {
     //TODO fix mapper order if needed
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
-            new PersonHAMapper(),
-            new PersonGPMapper(),
-            new AcceptanceCodeMapper(),
-            new AcceptanceTypeMapper(),
-            new PersonNameMapper(),
-            new PersonDateOfBirthMapper(),
-            new PersonSexMapper(),
-            new PersonAddressMapper(),
-            new PersonAddressOldMapper(),
-            new PersonDateOfEntryMapper(),
-            new PersonGPPreviousMapper()
+        new PersonHAMapper(),
+        new PersonGPMapper(),
+        new AcceptanceCodeMapper(),
+        new AcceptanceTypeMapper(),
+        new PersonNameMapper(),
+        new PersonDateOfBirthMapper(),
+        new PersonSexMapper(),
+        new PersonAddressMapper(),
+        new PersonAddressOldMapper(),
+        new PersonDateOfEntryMapper(),
+        new PersonGPPreviousMapper()
     );
 
     public List<Segment> map(Parameters parameters) {
         return MAPPERS.stream()
-                .map(mapper -> mapper.map(parameters))
-                .collect(Collectors.toList());
+            .map(mapper -> mapper.map(parameters))
+            .collect(Collectors.toList());
     }
 }

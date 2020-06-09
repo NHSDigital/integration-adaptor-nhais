@@ -16,16 +16,16 @@ class PersonGPPreviousMapperTest {
     void When_MappingGPPrevious_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("previousGPName")
-                .setValue(new StringType("Practitioner/Old-One"));
+            .setName("previousGPName")
+            .setValue(new StringType("Practitioner/Old-One"));
 
         var personGPPreviousMapper = new PersonGPPreviousMapper();
         PersonGPPrevious personGPPrevious = personGPPreviousMapper.map(parameters);
 
         var expectedPersonGPPrevious = PersonGPPrevious
-                .builder()
-                .practitioner("Old-One")
-                .build();
+            .builder()
+            .practitioner("Old-One")
+            .build();
 
         assertEquals(expectedPersonGPPrevious, personGPPrevious);
 

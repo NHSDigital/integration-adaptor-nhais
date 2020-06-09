@@ -20,16 +20,16 @@ class PersonHAMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personHAMapper = new PersonHAMapper();
         PersonHA personHA = personHAMapper.map(parameters);
 
         var expectedPersonHA = PersonHA
-                .builder()
-                .organization("XX1")
-                .build();
+            .builder()
+            .organization("XX1")
+            .build();
 
         assertEquals(expectedPersonHA, personHA);
 
@@ -41,8 +41,8 @@ class PersonHAMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personHAMapper = new PersonHAMapper();
         assertThrows(NullPointerException.class, () -> personHAMapper.map(parameters));

@@ -13,8 +13,8 @@ public class PersonSexTest {
         var expectedValue = "PDI+1'";
 
         var personSex = PersonSex.builder()
-                .sexCode("1")
-                .build();
+            .sexCode("1")
+            .build();
 
         assertEquals(expectedValue, personSex.toEdifact());
     }
@@ -22,8 +22,8 @@ public class PersonSexTest {
     @Test
     public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
         var personSex = PersonSex.builder()
-                .sexCode("abc")
-                .build();
+            .sexCode("abc")
+            .build();
 
         assertThrows(EdifactValidationException.class, personSex::toEdifact);
     }
@@ -31,8 +31,8 @@ public class PersonSexTest {
     @Test
     public void When_MappingToEdifactWithEmptySexCode_Then_EdifactValidationExceptionIsThrown() {
         var personSex = PersonSex.builder()
-                .sexCode("")
-                .build();
+            .sexCode("")
+            .build();
 
         assertThrows(EdifactValidationException.class, personSex::toEdifact);
     }

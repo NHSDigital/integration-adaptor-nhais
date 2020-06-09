@@ -42,9 +42,9 @@ public class AcceptanceCode extends Segment {
     @Override
     public String getValue() {
         return ACD_PREFIX
-                .concat(PLUS_SEPARATOR)
-                .concat(code)
-                .concat(ZZZ_SUFFIX);
+            .concat(PLUS_SEPARATOR)
+            .concat(code)
+            .concat(ZZZ_SUFFIX);
     }
 
     @Override

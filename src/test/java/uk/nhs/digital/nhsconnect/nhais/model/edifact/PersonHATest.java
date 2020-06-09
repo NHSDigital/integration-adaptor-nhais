@@ -13,8 +13,8 @@ public class PersonHATest {
         var expectedValue = "NAD+FHS+XX1:954'";
 
         var personHA = PersonHA.builder()
-                .organization("XX1")
-                .build();
+            .organization("XX1")
+            .build();
 
         assertEquals(expectedValue, personHA.toEdifact());
     }
@@ -22,8 +22,8 @@ public class PersonHATest {
     @Test
     public void When_MappingToEdifactWithEmptyHA_Then_EdifactValidationExceptionIsThrown() {
         var personHA = PersonHA.builder()
-                .organization("")
-                .build();
+            .organization("")
+            .build();
 
         assertThrows(EdifactValidationException.class, personHA::toEdifact);
     }

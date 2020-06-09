@@ -38,7 +38,7 @@ public class AcceptanceControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
 
         mockMvc.perform(post("/fhir/Patient").contentType("application/json").content(requestBody))
-                .andExpect(status().isAccepted());
+            .andExpect(status().isAccepted());
 
         Iterable<OutboundState> outboundState = outboundStateRepository.findAll();
 

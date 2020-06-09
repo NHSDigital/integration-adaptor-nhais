@@ -22,16 +22,16 @@ class PersonGPMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personGPMapper = new PersonGPMapper();
         PersonGP personGP = personGPMapper.map(parameters);
 
         var expectedPersonGP = PersonGP
-                .builder()
-                .practitioner("2750922,295")
-                .build();
+            .builder()
+            .practitioner("2750922,295")
+            .build();
 
         assertEquals(expectedPersonGP, personGP);
 
@@ -43,8 +43,8 @@ class PersonGPMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personGPMapper = new PersonGPMapper();
         assertThrows(NullPointerException.class, () -> personGPMapper.map(parameters));

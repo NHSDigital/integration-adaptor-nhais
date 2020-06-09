@@ -13,26 +13,26 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter @RequiredArgsConstructor
+@Getter
+@RequiredArgsConstructor
 @ToString
 public class Interchange {
 
     @Getter(AccessLevel.NONE)
     private final EdifactMessage edifactMessage;
-
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final InterchangeHeader interchangeHeader = edifactMessage.getInterchangeHeader();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final MessageHeader messageHeader = edifactMessage.getMessageHeader();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final ReferenceTransactionNumber referenceTransactionNumber = edifactMessage.getReferenceTransactionNumber();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final DateTimePeriod translationDateTime = edifactMessage.getTranslationDateTime();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final ReferenceTransactionType referenceTransactionType = edifactMessage.getReferenceTransactionType();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = edifactMessage.getHealthAuthorityNameAndAddress();
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final GpNameAndAddress gpNameAndAddress = edifactMessage.getGpNameAndAddress();
 
     public List<ToEdifactParsingException> validate() {
@@ -49,7 +49,7 @@ public class Interchange {
             .collect(Collectors.toList());
     }
 
-    private Optional<ToEdifactParsingException> checkData(Supplier<? extends Segment> segment){
+    private Optional<ToEdifactParsingException> checkData(Supplier<? extends Segment> segment) {
         try {
             segment.get().validate();
         } catch (ToEdifactParsingException ex) {

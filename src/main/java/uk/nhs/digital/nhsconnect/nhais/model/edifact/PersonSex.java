@@ -17,10 +17,10 @@ import java.util.Optional;
 @Data
 public class PersonSex extends Segment {
     private final static Map<Enumerations.AdministrativeGender, String> PATIENT_SEX_CODE = ImmutableMap.of(
-            Enumerations.AdministrativeGender.UNKNOWN, "0",
-            Enumerations.AdministrativeGender.MALE, "1",
-            Enumerations.AdministrativeGender.FEMALE, "2",
-            Enumerations.AdministrativeGender.OTHER, "9"
+        Enumerations.AdministrativeGender.UNKNOWN, "0",
+        Enumerations.AdministrativeGender.MALE, "1",
+        Enumerations.AdministrativeGender.FEMALE, "2",
+        Enumerations.AdministrativeGender.OTHER, "9"
     );
 
     //PDI+1'
@@ -28,7 +28,7 @@ public class PersonSex extends Segment {
 
     public static String getGenderCode(Patient patient) {
         return Optional.ofNullable(PATIENT_SEX_CODE.get(patient.getGender()))
-                .orElseThrow(() -> new NoSuchElementException("sex code not found: " + patient.getGender().getDisplay()));
+            .orElseThrow(() -> new NoSuchElementException("sex code not found: " + patient.getGender().getDisplay()));
     }
 
     @Override

@@ -20,16 +20,16 @@ class PersonSexMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personSexMapper = new PersonSexMapper();
         PersonSex personSex = personSexMapper.map(parameters);
 
         var expectedPersonSex = PersonSex
-                .builder()
-                .sexCode("2")
-                .build();
+            .builder()
+            .sexCode("2")
+            .build();
 
         assertEquals(expectedPersonSex, personSex);
     }
@@ -41,8 +41,8 @@ class PersonSexMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personSexMapper = new PersonSexMapper();
         assertThrows(NoSuchElementException.class, () -> personSexMapper.map(parameters));
@@ -54,8 +54,8 @@ class PersonSexMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personSexMapper = new PersonSexMapper();
         assertThrows(NullPointerException.class, () -> personSexMapper.map(parameters));

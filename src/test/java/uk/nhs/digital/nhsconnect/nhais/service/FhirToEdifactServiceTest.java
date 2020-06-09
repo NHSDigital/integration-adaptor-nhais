@@ -35,14 +35,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
     private static final Instant FIXED_TIME = ZonedDateTime.of(
-            1991,
-            11,
-            6,
-            23,
-            55,
-            0,
-            0,
-            ZoneId.of("Europe/London")).toInstant();
+        1991,
+        11,
+        6,
+        23,
+        55,
+        0,
+        0,
+        ZoneId.of("Europe/London")).toInstant();
 
     private static final String OPERATION_ID = "4297001d94b41d2e604059879d45123880760cb0262d28f85394a08de5e761b8";
     private static final String NHS_NUMBER = "54321";
@@ -75,8 +75,8 @@ public class FhirToEdifactServiceTest {
         when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
-                .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
-                .toInstant();
+            .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
+            .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
     }
 
@@ -110,23 +110,23 @@ public class FhirToEdifactServiceTest {
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
-                "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
-                "BGM+++507'\n" +
-                "S01+1'\n" +
-                "RFF+TN:5174'\n" +
-                "NAD+FHS+HA456:954'\n" +
-                "NAD+GP+GP123,281:900'\n" +
-                "HEA+ACD+S:ZZZ'\n" +
-                "HEA+ATP+1:ZZZ'\n" +
-                "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
-                "DTM+329:19911106:102'\n" +
-                "PDI+2'\n" +
-                "NAD+PAT++534 EREWHON ST PEASANTVILLE:RAINBOW:VIC  3999'\n" +
-                "NAD+PAT++31 TEST ST PEASANTVILLE:TEST-RAINBOW:VIC  3999'\n" +
-                "DTM+957:19911106:102'\n" +
-                "NAD+PGP+Old-One,281:900'\n" +
-                "UNT+8+00000056'\n" +
-                "UNZ+1+00000045'";
+            "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
+            "BGM+++507'\n" +
+            "S01+1'\n" +
+            "RFF+TN:5174'\n" +
+            "NAD+FHS+HA456:954'\n" +
+            "NAD+GP+GP123,281:900'\n" +
+            "HEA+ACD+S:ZZZ'\n" +
+            "HEA+ATP+1:ZZZ'\n" +
+            "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
+            "DTM+329:19911106:102'\n" +
+            "PDI+2'\n" +
+            "NAD+PAT++534 EREWHON ST PEASANTVILLE:RAINBOW:VIC  3999'\n" +
+            "NAD+PAT++31 TEST ST PEASANTVILLE:TEST-RAINBOW:VIC  3999'\n" +
+            "DTM+957:19911106:102'\n" +
+            "NAD+PGP+Old-One,281:900'\n" +
+            "UNT+8+00000056'\n" +
+            "UNZ+1+00000045'";
 
         assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
     }
@@ -168,20 +168,20 @@ public class FhirToEdifactServiceTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("patient")
-                .setResource(patient);
+            .setName("patient")
+            .setResource(patient);
         parameters.addParameter()
-                .setName("acceptanceType")
-                .setValue(new StringType("birth"));
+            .setName("acceptanceType")
+            .setValue(new StringType("birth"));
         parameters.addParameter()
-                .setName("acceptanceCode")
-                .setValue(new StringType("S"));
+            .setName("acceptanceCode")
+            .setValue(new StringType("S"));
         parameters.addParameter()
-                .setName("entryDate")
-                .setValue(new StringType(FIXED_TIME.toString()));
+            .setName("entryDate")
+            .setValue(new StringType(FIXED_TIME.toString()));
         parameters.addParameter()
-                .setName("previousGPName")
-                .setValue(new StringType("Practitioner/Old-One"));
+            .setName("previousGPName")
+            .setValue(new StringType("Practitioner/Old-One"));
 
         return parameters;
     }

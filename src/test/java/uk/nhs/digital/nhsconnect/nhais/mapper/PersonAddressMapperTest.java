@@ -42,18 +42,18 @@ class PersonAddressMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personAddressMapper = new PersonAddressMapper();
         personAddressMapper.map(parameters);
         PersonAddress personAddress = personAddressMapper.map(parameters);
 
         var expectedPersonAddress = PersonAddress
-                .builder()
-                .addressText("534 Erewhon St PeasantVille, Rainbow, Vic  3999")
-                .addressLine1("534 Erewhon St")
-                .build();
+            .builder()
+            .addressText("534 Erewhon St PeasantVille, Rainbow, Vic  3999")
+            .addressLine1("534 Erewhon St")
+            .build();
 
         assertEquals(expectedPersonAddress, personAddress);
     }
@@ -64,8 +64,8 @@ class PersonAddressMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personAddressMapper = new PersonAddressMapper();
         assertThrows(NoSuchElementException.class, () -> personAddressMapper.map(parameters));

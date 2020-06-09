@@ -24,9 +24,9 @@ public class PersonHA extends Segment {
     @Override
     public String getValue() {
         return HA_PREFIX
-                .concat(PLUS_SEPARATOR)
-                .concat(organization)
-                .concat(HA_SUFFIX);
+            .concat(PLUS_SEPARATOR)
+            .concat(organization)
+            .concat(HA_SUFFIX);
     }
 
     @Override

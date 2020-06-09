@@ -41,9 +41,9 @@ public class PersonAddress extends Segment {
         addressText = addressText.replace(", ", ":");
 
         return PAT_PREFIX
-                .concat(PLUS_SEPARATOR)
-                .concat(PLUS_SEPARATOR)
-                .concat(StringUtils.upperCase(addressText));
+            .concat(PLUS_SEPARATOR)
+            .concat(PLUS_SEPARATOR)
+            .concat(StringUtils.upperCase(addressText));
     }
 
     @Override

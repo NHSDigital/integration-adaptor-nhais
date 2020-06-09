@@ -16,15 +16,15 @@ class AcceptanceCodeMapperTest {
     void When_MappingAcceptanceCode_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("acceptanceCode")
-                .setValue(new StringType("S"));
+            .setName("acceptanceCode")
+            .setValue(new StringType("S"));
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
         AcceptanceCode acceptanceCode = acceptanceCodeMapper.map(parameters);
 
         var exceptedAcceptanceCode = AcceptanceCode.builder()
-                .code("S")
-                .build();
+            .code("S")
+            .build();
 
         assertEquals(exceptedAcceptanceCode, acceptanceCode);
     }
@@ -33,8 +33,8 @@ class AcceptanceCodeMapperTest {
     public void When_MappingWithWrongType_Then_NoSuchElementExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("acceptanceCode")
-                .setValue(new StringType("test-fails"));
+            .setName("acceptanceCode")
+            .setValue(new StringType("test-fails"));
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
         assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));

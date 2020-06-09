@@ -15,14 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfBirthMapperTest {
     private static final Instant FIXED_TIME = ZonedDateTime.of(
-            1991,
-            11,
-            6,
-            23,
-            55,
-            0,
-            0,
-            ZoneId.of("Europe/London")).toInstant();
+        1991,
+        11,
+        6,
+        23,
+        55,
+        0,
+        0,
+        ZoneId.of("Europe/London")).toInstant();
 
 
     @Test
@@ -32,16 +32,16 @@ class PersonDateOfBirthMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personDobMapper = new PersonDateOfBirthMapper();
         PersonDateOfBirth personDateOfBirth = personDobMapper.map(parameters);
 
         var expectedPersonDob = PersonDateOfBirth
-                .builder()
-                .timestamp(FIXED_TIME)
-                .build();
+            .builder()
+            .timestamp(FIXED_TIME)
+            .build();
 
         assertEquals(expectedPersonDob, personDateOfBirth);
 
@@ -53,8 +53,8 @@ class PersonDateOfBirthMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName(Patient.class.getSimpleName())
-                .setResource(patient);
+            .setName(Patient.class.getSimpleName())
+            .setResource(patient);
 
         var personDobMapper = new PersonDateOfBirthMapper();
         assertThrows(NullPointerException.class, () -> personDobMapper.map(parameters));

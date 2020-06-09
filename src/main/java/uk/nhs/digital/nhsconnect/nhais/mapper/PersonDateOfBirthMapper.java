@@ -10,8 +10,8 @@ public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDa
 
     public PersonDateOfBirth map(Parameters parameters) {
         return PersonDateOfBirth.builder()
-                .timestamp(getPersonDob(parameters))
-                .build();
+            .timestamp(getPersonDob(parameters))
+            .build();
     }
 
     private Instant getPersonDob(Parameters parameters) {

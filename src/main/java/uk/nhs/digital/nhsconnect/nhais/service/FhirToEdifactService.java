@@ -7,7 +7,16 @@ import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifact;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
@@ -85,11 +94,11 @@ public class FhirToEdifactService {
 
     private void generateSequenceNumbers(TranslationItems translationItems) {
         translationItems.sendInterchangeSequence =
-                sequenceService.generateInterchangeId(translationItems.sender, translationItems.recipient);
+            sequenceService.generateInterchangeId(translationItems.sender, translationItems.recipient);
         translationItems.sendMessageSequence =
-                sequenceService.generateMessageId(translationItems.sender, translationItems.recipient);
+            sequenceService.generateMessageId(translationItems.sender, translationItems.recipient);
         translationItems.transactionNumber =
-                sequenceService.generateTransactionId();
+            sequenceService.generateTransactionId();
     }
 
     private void generateTimestamp(TranslationItems translationItems) {
@@ -98,16 +107,16 @@ public class FhirToEdifactService {
 
     private void recordOutboundState(TranslationItems translationItems) {
         var outboundState = new OutboundState()
-                .setRecipient(translationItems.recipient)
-                .setSender(translationItems.sender)
+            .setRecipient(translationItems.recipient)
+            .setSender(translationItems.sender)
 
-                .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
-                .setSendMessageSequence(translationItems.sendMessageSequence)
-                .setTransactionId(translationItems.transactionNumber)
+            .setSendInterchangeSequence(translationItems.sendInterchangeSequence)
+            .setSendMessageSequence(translationItems.sendMessageSequence)
+            .setTransactionId(translationItems.transactionNumber)
 
-                .setTransactionType(translationItems.transactionType.getAbbreviation())
-                .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
-                .setOperationId(translationItems.operationId);
+            .setTransactionType(translationItems.transactionType.getAbbreviation())
+            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+            .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
 

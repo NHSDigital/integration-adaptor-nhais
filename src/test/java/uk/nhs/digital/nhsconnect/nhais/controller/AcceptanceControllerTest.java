@@ -77,10 +77,10 @@ public class AcceptanceControllerTest {
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient")
-                .contentType("application/json")
-                .content(requestBody))
-                .andExpect(status().isAccepted())
-                .andExpect(header().string("OperationId", OPERATION_ID));
+            .contentType("application/json")
+            .content(requestBody))
+            .andExpect(status().isAccepted())
+            .andExpect(header().string("OperationId", OPERATION_ID));
 
         verify(outboundMeshService).send(meshMessage);
     }
@@ -93,10 +93,10 @@ public class AcceptanceControllerTest {
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
         mockMvc.perform(post("/fhir/Patient")
-                .contentType("application/json")
-                .content(requestBody))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(expectedResponse));
+            .contentType("application/json")
+            .content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().json(expectedResponse));
     }
 
     @Test
@@ -107,9 +107,9 @@ public class AcceptanceControllerTest {
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
         mockMvc.perform(post("/fhir/Patient")
-                .contentType("application/json")
-                .content(requestBody))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().json(expectedResponse));
+            .contentType("application/json")
+            .content(requestBody))
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().json(expectedResponse));
     }
 }

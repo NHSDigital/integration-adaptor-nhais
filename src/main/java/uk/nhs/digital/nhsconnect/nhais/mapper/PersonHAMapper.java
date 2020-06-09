@@ -8,14 +8,14 @@ public class PersonHAMapper implements FromFhirToEdifactMapper<PersonHA> {
 
     public PersonHA map(Parameters parameters) {
         return PersonHA.builder()
-                .organization(getPersonHA(parameters))
-                .build();
+            .organization(getPersonHA(parameters))
+            .build();
     }
 
     private String getPersonHA(Parameters parameters) {
         Patient patient = getPatient(parameters);
         var reference = patient.getManagingOrganization().getReference();
-       
+
         return reference.split("/")[1];
     }
 }

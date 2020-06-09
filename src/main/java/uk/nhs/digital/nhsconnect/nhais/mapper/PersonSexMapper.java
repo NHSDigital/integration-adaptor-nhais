@@ -9,8 +9,8 @@ public class PersonSexMapper implements FromFhirToEdifactMapper<PersonSex> {
 
     public PersonSex map(Parameters parameters) {
         return PersonSex.builder()
-                .sexCode(getPersonSex(parameters))
-                .build();
+            .sexCode(getPersonSex(parameters))
+            .build();
     }
 
     private String getPersonSex(Parameters parameters) {

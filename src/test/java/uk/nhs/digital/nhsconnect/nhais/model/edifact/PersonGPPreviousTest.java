@@ -13,8 +13,8 @@ public class PersonGPPreviousTest {
         var expectedValue = "NAD+PGP+4826940,281:900'";
 
         var personGPPrevious = PersonGPPrevious.builder()
-                .practitioner("4826940")
-                .build();
+            .practitioner("4826940")
+            .build();
 
         assertEquals(expectedValue, personGPPrevious.toEdifact());
     }
@@ -22,8 +22,8 @@ public class PersonGPPreviousTest {
     @Test
     public void When_MappingToEdifactWithEmptyPractitioner_Then_EdifactValidationExceptionIsThrown() {
         var personGPPrevious = PersonGPPrevious.builder()
-                .practitioner("")
-                .build();
+            .practitioner("")
+            .build();
 
         assertThrows(EdifactValidationException.class, personGPPrevious::toEdifact);
     }

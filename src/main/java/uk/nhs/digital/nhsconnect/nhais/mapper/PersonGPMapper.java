@@ -8,8 +8,8 @@ public class PersonGPMapper implements FromFhirToEdifactMapper<PersonGP> {
 
     public PersonGP map(Parameters parameters) {
         return PersonGP.builder()
-                .practitioner(getPersonGP(parameters))
-                .build();
+            .practitioner(getPersonGP(parameters))
+            .build();
     }
 
     private String getPersonGP(Parameters parameters) {

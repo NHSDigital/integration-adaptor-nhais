@@ -31,17 +31,17 @@ class PersonNameMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("patient")
-                .setResource(patient);
+            .setName("patient")
+            .setResource(patient);
 
         var personNameMapper = new PersonNameMapper();
         PersonName personName = personNameMapper.map(parameters);
 
         var expectedPersonName = PersonName
-                .builder()
-                .nhsNumber("1234567890")
-                .surname("Smith")
-                .build();
+            .builder()
+            .nhsNumber("1234567890")
+            .surname("Smith")
+            .build();
 
         assertEquals(expectedPersonName, personName);
     }
@@ -56,8 +56,8 @@ class PersonNameMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("patient")
-                .setResource(patient);
+            .setName("patient")
+            .setResource(patient);
 
         var personNameMapper = new PersonNameMapper();
         assertThrows(NoSuchElementException.class, () -> personNameMapper.map(parameters));
@@ -75,8 +75,8 @@ class PersonNameMapperTest {
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("patient")
-                .setResource(patient);
+            .setName("patient")
+            .setResource(patient);
 
         var personNameMapper = new PersonNameMapper();
         assertThrows(UnsupportedOperationException.class, () -> personNameMapper.map(parameters));

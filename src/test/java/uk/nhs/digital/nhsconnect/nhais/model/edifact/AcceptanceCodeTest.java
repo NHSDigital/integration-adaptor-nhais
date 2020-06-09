@@ -13,8 +13,8 @@ public class AcceptanceCodeTest {
         var expectedValue = "HEA+ACD+A:ZZZ'";
 
         var acceptanceCode = AcceptanceCode.builder()
-                .code("A")
-                .build();
+            .code("A")
+            .build();
 
         assertEquals(expectedValue, acceptanceCode.toEdifact());
     }
@@ -22,8 +22,8 @@ public class AcceptanceCodeTest {
     @Test
     public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
         var acceptanceCode = AcceptanceCode.builder()
-                .code("B")
-                .build();
+            .code("B")
+            .build();
 
         assertThrows(EdifactValidationException.class, acceptanceCode::toEdifact);
     }
@@ -31,8 +31,8 @@ public class AcceptanceCodeTest {
     @Test
     public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
         var acceptanceCode = AcceptanceCode.builder()
-                .code("")
-                .build();
+            .code("")
+            .build();
 
         assertThrows(EdifactValidationException.class, acceptanceCode::toEdifact);
     }

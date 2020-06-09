@@ -32,17 +32,17 @@ public class PersonName extends Segment {
         String otherNamesConcatenated = otherNames == null ? StringUtils.EMPTY : String.join(" ", otherNames);
 
         return Stream.of(
-                "PAT",
-                StringUtils.isEmpty(nhsNumber) ? StringUtils.EMPTY : (nhsNumber + ":OPI"),
-                "", // not used by design
-                "", // not used by design
-                "SU:" + surname,
-                StringUtils.isEmpty(forename) ? StringUtils.EMPTY : ("FO:" + forename),
-                StringUtils.isEmpty(title) ? StringUtils.EMPTY : ("TI:" + title),
-                StringUtils.isEmpty(middleName) ? StringUtils.EMPTY : ("MI:" + middleName),
-                StringUtils.isEmpty(otherNamesConcatenated) ? StringUtils.EMPTY : ("FS:" + otherNamesConcatenated))
-                .map(x -> Optional.ofNullable(x).orElse(""))
-                .collect(Collectors.joining("+"));
+            "PAT",
+            StringUtils.isEmpty(nhsNumber) ? StringUtils.EMPTY : (nhsNumber + ":OPI"),
+            "", // not used by design
+            "", // not used by design
+            "SU:" + surname,
+            StringUtils.isEmpty(forename) ? StringUtils.EMPTY : ("FO:" + forename),
+            StringUtils.isEmpty(title) ? StringUtils.EMPTY : ("TI:" + title),
+            StringUtils.isEmpty(middleName) ? StringUtils.EMPTY : ("MI:" + middleName),
+            StringUtils.isEmpty(otherNamesConcatenated) ? StringUtils.EMPTY : ("FS:" + otherNamesConcatenated))
+            .map(x -> Optional.ofNullable(x).orElse(""))
+            .collect(Collectors.joining("+"));
     }
 
     @Override

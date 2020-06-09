@@ -14,9 +14,9 @@ public class PersonAddressTest {
         var expectedValue = "NAD+PAT++MOORSIDE FARM:OLD LANE:ST PAULS CRAY:ORPINGTON:KENT'";
 
         var personAddress = PersonAddress.builder()
-                .addressText("Moorside Farm, Old Lane, St Pauls Cray, Orpington, Kent")
-                .addressLine1("Moorside Farm")
-                .build();
+            .addressText("Moorside Farm, Old Lane, St Pauls Cray, Orpington, Kent")
+            .addressLine1("Moorside Farm")
+            .build();
 
         assertEquals(expectedValue, personAddress.toEdifact());
     }
@@ -24,8 +24,8 @@ public class PersonAddressTest {
     @Test
     public void When_MappingToEdifactWithEmptyAddressLines_Then_EdifactValidationExceptionIsThrown() {
         var personAddress = PersonAddress.builder()
-                .addressText("test value")
-                .build();
+            .addressText("test value")
+            .build();
 
         assertThrows(EdifactValidationException.class, personAddress::toEdifact);
     }
@@ -33,10 +33,10 @@ public class PersonAddressTest {
     @Test
     public void When_MappingToEdifactWithBlankAddressLines_Then_EdifactValidationExceptionIsThrown() {
         var personAddress = PersonAddress.builder()
-                .addressText("test value")
-                .addressLine1("")
-                .addressLine2("   ")
-                .build();
+            .addressText("test value")
+            .addressLine1("")
+            .addressLine2("   ")
+            .build();
 
         assertThrows(EdifactValidationException.class, personAddress::toEdifact);
     }

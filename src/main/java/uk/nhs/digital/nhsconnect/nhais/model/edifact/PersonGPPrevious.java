@@ -24,9 +24,9 @@ public class PersonGPPrevious extends Segment {
     @Override
     public String getValue() {
         return PGP_PREFIX
-                .concat(PLUS_SEPARATOR)
-                .concat(practitioner)
-                .concat(PGP_SUFFIX);
+            .concat(PLUS_SEPARATOR)
+            .concat(practitioner)
+            .concat(PGP_SUFFIX);
     }
 
     @Override

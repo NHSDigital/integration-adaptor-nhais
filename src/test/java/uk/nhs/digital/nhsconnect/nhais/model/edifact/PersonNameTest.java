@@ -14,13 +14,13 @@ public class PersonNameTest {
         var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN MARK'";
 
         var personName = PersonName.builder()
-                .nhsNumber("1234567890")
-                .surname("STEVENS")
-                .forename("CHARLES")
-                .title("MR")
-                .middleName("ANTHONY")
-                .otherNames(new String[]{"JOHN", "MARK"})
-                .build();
+            .nhsNumber("1234567890")
+            .surname("STEVENS")
+            .forename("CHARLES")
+            .title("MR")
+            .middleName("ANTHONY")
+            .otherNames(new String[]{"JOHN", "MARK"})
+            .build();
 
         assertEquals(expectedValue, personName.toEdifact());
     }
@@ -30,9 +30,9 @@ public class PersonNameTest {
         var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS++++'";
 
         var personName = PersonName.builder()
-                .surname("STEVENS")
-                .nhsNumber("1234567890")
-                .build();
+            .surname("STEVENS")
+            .nhsNumber("1234567890")
+            .build();
 
         assertEquals(expectedValue, personName.toEdifact());
     }
@@ -40,9 +40,9 @@ public class PersonNameTest {
     @Test
     public void When_MappingToEdifactWithEmptySurnameAndNhs_Then_EdifactValidationExceptionIsThrown() {
         var personName = PersonName.builder()
-                .surname(StringUtils.EMPTY)
-                .nhsNumber(StringUtils.EMPTY)
-                .build();
+            .surname(StringUtils.EMPTY)
+            .nhsNumber(StringUtils.EMPTY)
+            .build();
 
         assertThrows(EdifactValidationException.class, personName::toEdifact);
     }

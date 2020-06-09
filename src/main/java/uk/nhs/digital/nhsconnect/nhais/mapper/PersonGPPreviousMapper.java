@@ -10,19 +10,19 @@ public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPP
 
     public PersonGPPrevious map(Parameters parameters) {
         return PersonGPPrevious.builder()
-                .practitioner(getPersonPreviousGP(parameters))
-                .build();
+            .practitioner(getPersonPreviousGP(parameters))
+            .build();
     }
 
     private String getPersonPreviousGP(Parameters parameters) {
         return parameters.getParameter()
-                .stream()
-                .filter(param -> PREVIOUS_GP_PARAM.equalsIgnoreCase(param.getName()))
-                .map(Parameters.ParametersParameterComponent::getValue)
-                .map(Objects::toString)
-                .map(this::splitPractitionerString)
-                .findFirst()
-                .orElseThrow();
+            .stream()
+            .filter(param -> PREVIOUS_GP_PARAM.equalsIgnoreCase(param.getName()))
+            .map(Parameters.ParametersParameterComponent::getValue)
+            .map(Objects::toString)
+            .map(this::splitPractitionerString)
+            .findFirst()
+            .orElseThrow();
     }
 
     private String splitPractitionerString(String value) {

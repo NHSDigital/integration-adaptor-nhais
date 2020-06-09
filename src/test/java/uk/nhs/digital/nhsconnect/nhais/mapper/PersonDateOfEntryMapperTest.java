@@ -16,30 +16,30 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfEntryMapperTest {
     private static final Instant FIXED_TIME = ZonedDateTime.of(
-            1991,
-            11,
-            6,
-            23,
-            55,
-            0,
-            0,
-            ZoneId.of("Europe/London")).toInstant();
+        1991,
+        11,
+        6,
+        23,
+        55,
+        0,
+        0,
+        ZoneId.of("Europe/London")).toInstant();
 
 
     @Test
     void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("entryDate")
-                .setValue(new StringType(FIXED_TIME.toString()));
+            .setName("entryDate")
+            .setValue(new StringType(FIXED_TIME.toString()));
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
         PersonDateOfEntry personDateOfEntry = personDateOfEntryMapper.map(parameters);
 
         var expectedPersonDateOfEntry = PersonDateOfEntry
-                .builder()
-                .timestamp(FIXED_TIME)
-                .build();
+            .builder()
+            .timestamp(FIXED_TIME)
+            .build();
 
         assertEquals(expectedPersonDateOfEntry, personDateOfEntry);
 
@@ -49,8 +49,8 @@ class PersonDateOfEntryMapperTest {
     public void When_MappingWithWrongDate_Then_DateTimeParseExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-                .setName("entryDate")
-                .setValue(new StringType(""));
+            .setName("entryDate")
+            .setValue(new StringType(""));
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
         assertThrows(DateTimeParseException.class, () -> personDateOfEntryMapper.map(parameters));

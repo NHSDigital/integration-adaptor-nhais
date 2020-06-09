@@ -11,14 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PersonDateOfBirthTest {
     private static final Instant FIXED_TIME = ZonedDateTime.of(
-            1991,
-            11,
-            6,
-            23,
-            55,
-            0,
-            0,
-            ZoneId.of("Europe/London")).toInstant();
+        1991,
+        11,
+        6,
+        23,
+        55,
+        0,
+        0,
+        ZoneId.of("Europe/London")).toInstant();
 
 
     @Test
@@ -26,8 +26,8 @@ public class PersonDateOfBirthTest {
         var expectedValue = "DTM+329:19911106:102'";
 
         var personDob = PersonDateOfBirth.builder()
-                .timestamp(FIXED_TIME)
-                .build();
+            .timestamp(FIXED_TIME)
+            .build();
 
         assertEquals(expectedValue, personDob.toEdifact());
     }

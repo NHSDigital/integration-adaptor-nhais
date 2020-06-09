@@ -27,8 +27,8 @@ public class PersonDateOfEntry extends Segment {
     @Override
     public String getValue() {
         return DOB_PREFIX
-                .concat(DATE_TIME_FORMATTER.format(timestamp))
-                .concat(DOB_SUFFIX);
+            .concat(DATE_TIME_FORMATTER.format(timestamp))
+            .concat(DOB_SUFFIX);
     }
 
     @Override

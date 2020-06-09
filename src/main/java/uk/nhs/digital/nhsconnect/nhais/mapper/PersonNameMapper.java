@@ -13,16 +13,16 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
         Patient patient = getPatient(parameters);
 
         return PersonName.builder()
-                .nhsNumber(getNhsNumber(patient))
-                .surname(patient.getNameFirstRep().getFamily())
-                .build();
+            .nhsNumber(getNhsNumber(patient))
+            .surname(patient.getNameFirstRep().getFamily())
+            .build();
     }
 
     private String getNhsNumber(Patient patient) {
         return patient.getIdentifier().stream()
-                .filter(identifier -> identifier.getSystem().equals(NHS_SYSTEM))
-                .map(Identifier::getValue)
-                .findFirst()
-                .orElseThrow();
+            .filter(identifier -> identifier.getSystem().equals(NHS_SYSTEM))
+            .map(Identifier::getValue)
+            .findFirst()
+            .orElseThrow();
     }
 }

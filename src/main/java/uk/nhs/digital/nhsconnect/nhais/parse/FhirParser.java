@@ -41,12 +41,12 @@ public class FhirParser {
 
     public Patient getPatientFromParams(Parameters parameters) {
         return parameters.getParameter()
-                .stream()
-                .filter(param -> Patient.class.getSimpleName().equalsIgnoreCase(param.getName()))
-                .map(Parameters.ParametersParameterComponent::getResource)
-                .map(Patient.class::cast)
-                .findFirst()
-                .orElseThrow();
+            .stream()
+            .filter(param -> Patient.class.getSimpleName().equalsIgnoreCase(param.getName()))
+            .map(Parameters.ParametersParameterComponent::getResource)
+            .map(Patient.class::cast)
+            .findFirst()
+            .orElseThrow();
     }
 
 

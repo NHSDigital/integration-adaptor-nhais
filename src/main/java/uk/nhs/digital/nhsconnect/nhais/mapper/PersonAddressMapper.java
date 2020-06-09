@@ -15,19 +15,19 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
         Address address = getAddress(parameters);
 
         return PersonAddress.builder()
-                .addressText(address.getText())
-                .addressLine1(getAddressLineOrNull(address.getLine(), 0))
-                .addressLine2(getAddressLineOrNull(address.getLine(), 1))
-                .build();
+            .addressText(address.getText())
+            .addressLine1(getAddressLineOrNull(address.getLine(), 0))
+            .addressLine2(getAddressLineOrNull(address.getLine(), 1))
+            .build();
     }
 
     private Address getAddress(Parameters parameters) {
         Patient patient = getPatient(parameters);
 
         return patient.getAddress().stream()
-                .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
-                .findFirst()
-                .orElseThrow();
+            .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
+            .findFirst()
+            .orElseThrow();
     }
 
     private String getAddressLineOrNull(List<StringType> addressLines, int index) {
