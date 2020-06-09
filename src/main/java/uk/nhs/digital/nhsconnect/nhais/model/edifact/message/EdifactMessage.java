@@ -1,4 +1,14 @@
-package uk.nhs.digital.nhsconnect.nhais.model.edifact;
+package uk.nhs.digital.nhsconnect.nhais.model.edifact.message;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
 import java.util.Arrays;
 import java.util.List;

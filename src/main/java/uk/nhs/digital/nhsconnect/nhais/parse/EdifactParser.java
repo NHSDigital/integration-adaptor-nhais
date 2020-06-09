@@ -1,8 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.parse;
 
 import lombok.NonNull;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 
 public class EdifactParser {
     public Interchange parse(@NonNull String edifact) {

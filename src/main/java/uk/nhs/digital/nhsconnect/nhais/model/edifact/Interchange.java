@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 
 @Getter @RequiredArgsConstructor
 public class Interchange {
