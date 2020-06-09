@@ -52,11 +52,11 @@ public class PersonName extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(surname) || surname.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": surname is required");
         }
 
         if (Objects.isNull(nhsNumber) || nhsNumber.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": nhsNumber identifier is required");
         }
     }
 }

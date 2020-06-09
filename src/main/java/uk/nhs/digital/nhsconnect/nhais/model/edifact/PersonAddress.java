@@ -53,7 +53,7 @@ public class PersonAddress extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(addressText) || addressText.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": addressText is required");
         }
 
         if (Objects.isNull(addressLine1) && Objects.isNull(addressLine2)) {

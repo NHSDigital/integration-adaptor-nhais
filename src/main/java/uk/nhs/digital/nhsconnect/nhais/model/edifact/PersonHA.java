@@ -36,7 +36,7 @@ public class PersonHA extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(organization) || organization.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": organization is required");
         }
     }
 }

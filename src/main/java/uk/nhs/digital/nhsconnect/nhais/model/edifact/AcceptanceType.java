@@ -50,7 +50,7 @@ public class AcceptanceType extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(type) || type.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
         }
 
         if (!ACC_TYPE_MAPPING.containsValue(type)) {

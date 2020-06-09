@@ -48,11 +48,11 @@ public class PersonSex extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(sexCode) || sexCode.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": Gender code is required");
         }
 
         if (!PATIENT_SEX_CODE.containsValue(sexCode)) {
-            throw new EdifactValidationException("Gender code not known: " + sexCode);
+            throw new EdifactValidationException(getKey() + "Gender code not known: " + sexCode);
         }
     }
 }

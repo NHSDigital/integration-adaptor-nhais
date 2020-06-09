@@ -37,7 +37,7 @@ public class PersonGP extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(practitioner) || practitioner.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": practitioner is required");
         }
     }
 }

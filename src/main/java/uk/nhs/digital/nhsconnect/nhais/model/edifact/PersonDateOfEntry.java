@@ -38,7 +38,7 @@ public class PersonDateOfEntry extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(timestamp)) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": Date of entry is required");
         }
     }
 }

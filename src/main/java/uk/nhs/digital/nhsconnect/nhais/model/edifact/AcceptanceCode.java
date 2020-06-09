@@ -54,7 +54,7 @@ public class AcceptanceCode extends Segment {
     @Override
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(code) || code.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+            throw new EdifactValidationException(getKey() + ": Acceptance Code is required");
         }
 
         if (!isCodeAllowed(code)) {
