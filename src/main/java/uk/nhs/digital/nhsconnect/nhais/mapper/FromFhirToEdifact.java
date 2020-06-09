@@ -8,16 +8,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FromFhirToEdifact {
+    //TODO fix mapper order if needed
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
-            new PersonNameMapper(),
-            new AcceptanceTypeMapper(),
+            new PersonHAMapper(),
+            new PersonGPMapper(),
             new AcceptanceCodeMapper(),
+            new AcceptanceTypeMapper(),
+            new PersonNameMapper(),
+            new PersonDateOfBirthMapper(),
             new PersonSexMapper(),
             new PersonAddressMapper(),
             new PersonAddressOldMapper(),
-            new PersonDateOfBirthMapper(),
-            new PersonGPMapper(),
-            new PersonHAMapper(),
             new PersonDateOfEntryMapper(),
             new PersonGPPreviousMapper()
     );

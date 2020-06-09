@@ -104,38 +104,27 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
+    public void when_convertedSuccessfully_edifactIsCorrect() {
         Parameters parameters = createParameters();
 
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
-//        String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
-//                "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
-//                "BGM+++507'\n" +
-//                "NAD+FHS+HA456:954'\n" +
-//                "DTM+137:202004271737:203'\n" +
-//                "RFF+950:G1'\n" +
-//                "S01+1'\n" +
-//                "RFF+TN:5174'\n" +
-//                "UNT+8+00000056'\n" +
-//                "UNZ+1+00000045'";
-
         String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
                 "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
                 "BGM+++507'\n" +
-                "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
-                "HEA+ATP+1:ZZZ'\n" +
+                "S01+1'\n" +
+                "RFF+TN:5174'\n" +
+                "NAD+FHS+HA456:954'\n" +
+                "NAD+GP+GP123,281:900'\n" +
                 "HEA+ACD+S:ZZZ'\n" +
+                "HEA+ATP+1:ZZZ'\n" +
+                "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
+                "DTM+329:19911106:102'\n" +
                 "PDI+Female'\n" +
                 "NAD+PAT++534 EREWHON ST PEASANTVILLE:RAINBOW:VIC  3999'\n" +
                 "NAD+PAT++31 TEST ST PEASANTVILLE:TEST-RAINBOW:VIC  3999'\n" +
-                "DTM+329:19911106:102'\n" +
-                "NAD+GP+GP123,281:900'\n" +
-                "NAD+FHS+HA456:954'\n" +
                 "DTM+957:19911106:102'\n" +
                 "NAD+PGP+Old-One,281:900'\n" +
-                "S01+1'\n" +
-                "RFF+TN:5174'\n" +
                 "UNT+8+00000056'\n" +
                 "UNZ+1+00000045'";
 

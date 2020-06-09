@@ -6,7 +6,6 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifact;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
@@ -29,7 +28,7 @@ public class FhirToEdifactService {
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
 
-    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.patient = fhirParser.getPatientFromParams(parameters);
         translationItems.transactionType = transactionType;
@@ -48,8 +47,7 @@ public class FhirToEdifactService {
         translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
     }
 
-    private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {
-        // set sender and recipient
+    private void extractDetailsFromPatient(TranslationItems translationItems) {
         translationItems.sender = getSender(translationItems.patient);
         translationItems.recipient = getRecipient(translationItems.patient);
     }
@@ -72,9 +70,9 @@ public class FhirToEdifactService {
         translationItems.segments.add(new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp));
         translationItems.segments.add(new MessageHeader());
         translationItems.segments.add(new BeginningOfMessage());
-        translationItems.segments.addAll(fromFhirToEdifact.map(parameters));
         translationItems.segments.add(new SegmentGroup(1));
         translationItems.segments.add(new ReferenceTransactionNumber());
+        translationItems.segments.addAll(fromFhirToEdifact.map(parameters));
         translationItems.segments.add(new MessageTrailer(8));
         translationItems.segments.add(new InterchangeTrailer(1));
     }
