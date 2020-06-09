@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.SneakyThrows;
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Parameters;
@@ -26,8 +25,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@DirtiesContext
 public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 3;
@@ -54,8 +52,6 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
 
-        Instant timeBeforeSending = Instant.now();
-
         sendToMeshInboundQueue(meshMessage);
 
         var inboundState = waitFor(
@@ -65,19 +61,17 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
 
         assertGpSystemInboundQueueMessage(softly);
 
-        assertOutboundQueueRecepMessage(softly, timeBeforeSending);
+        assertOutboundQueueRecepMessage(softly);
     }
 
-    private void assertOutboundQueueRecepMessage(SoftAssertions softly, Instant timeBeforeSending) throws JMSException, IOException {
-        var gpSystemInboundQueueMessage = getOutboundQueueRecepMessage();
+    private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
+        var gpSystemInboundQueueMessage = getOutboundQueueMessage();
 
         var meshMessage = parseOutboundMessage(gpSystemInboundQueueMessage);
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        var messageSentTimestamp = new TimestampService().parseFromISO(meshMessage.getMessageSentTimestamp());
-        assertThat(messageSentTimestamp.isAfter(timeBeforeSending)).isTrue();
-        assertThat(messageSentTimestamp.isBefore(Instant.now())).isTrue();
+        softly.assertThat(meshMessage.getMessageSentTimestamp()).isNotNull();
         //TODO: other assertions on recep message
     }
 
@@ -103,16 +97,6 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
             .setTransactionNumber(TRANSACTION_NUMBER)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
-    }
-
-    @SneakyThrows
-    private Message getGpSystemInboundQueueMessage() {
-        return jmsTemplate.receive(gpSystemInboundQueueName);
-    }
-
-    @SneakyThrows
-    private Message getOutboundQueueRecepMessage() {
-        return jmsTemplate.receive(meshOutboundQueueName);
     }
 
     private IBaseResource parseInboundMessage(Message message) throws JMSException {
