@@ -20,6 +20,15 @@ public class PersonSexTest {
     }
 
     @Test
+    public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
+        var personSex = PersonSex.builder()
+                .sexCode("abc")
+                .build();
+
+        assertThrows(EdifactValidationException.class, personSex::toEdifact);
+    }
+
+    @Test
     public void When_MappingToEdifactWithEmptySexCode_Then_EdifactValidationExceptionIsThrown() {
         var personSex = PersonSex.builder()
                 .sexCode("")

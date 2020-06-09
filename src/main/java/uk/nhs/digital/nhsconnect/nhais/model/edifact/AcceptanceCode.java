@@ -1,11 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Builder
 @Data
@@ -23,9 +25,14 @@ public class AcceptanceCode extends Segment {
         "I" = "Internal transfer within partnership"
         "S" = "Acceptance with same GP new FHSA"
      */
+    private final static Set<String> ALLOWED_CODES = ImmutableSet.of("A", "D", "R", "I", "S");
     private final static String ACD_PREFIX = "ACD";
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private @NonNull String code;
+
+    public static boolean isCodeAllowed(String inputCode) {
+        return ALLOWED_CODES.contains(inputCode);
+    }
 
     @Override
     public String getKey() {
@@ -48,6 +55,10 @@ public class AcceptanceCode extends Segment {
     public void preValidate() throws EdifactValidationException {
         if (Objects.isNull(code) || code.isBlank()) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
+        }
+
+        if (!isCodeAllowed(code)) {
+            throw new EdifactValidationException("Acceptance Code not allowed: " + code);
         }
     }
 }

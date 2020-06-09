@@ -20,6 +20,15 @@ public class AcceptanceTypeTest {
     }
 
     @Test
+    public void When_MappingWithWrongType_Then_EdifactValidationExceptionIsThrown() {
+        var acceptanceType = AcceptanceType.builder()
+                .type("a")
+                .build();
+
+        assertThrows(EdifactValidationException.class, acceptanceType::toEdifact);
+    }
+
+    @Test
     public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
         var acceptanceType = AcceptanceType.builder()
                 .type("")

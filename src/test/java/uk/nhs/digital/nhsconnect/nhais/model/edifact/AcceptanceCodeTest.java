@@ -20,6 +20,15 @@ public class AcceptanceCodeTest {
     }
 
     @Test
+    public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
+        var acceptanceCode = AcceptanceCode.builder()
+                .code("B")
+                .build();
+
+        assertThrows(EdifactValidationException.class, acceptanceCode::toEdifact);
+    }
+
+    @Test
     public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
         var acceptanceCode = AcceptanceCode.builder()
                 .code("")

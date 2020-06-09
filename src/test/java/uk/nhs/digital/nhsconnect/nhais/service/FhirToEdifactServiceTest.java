@@ -120,7 +120,7 @@ public class FhirToEdifactServiceTest {
                 "HEA+ATP+1:ZZZ'\n" +
                 "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
                 "DTM+329:19911106:102'\n" +
-                "PDI+Female'\n" +
+                "PDI+2'\n" +
                 "NAD+PAT++534 EREWHON ST PEASANTVILLE:RAINBOW:VIC  3999'\n" +
                 "NAD+PAT++31 TEST ST PEASANTVILLE:TEST-RAINBOW:VIC  3999'\n" +
                 "DTM+957:19911106:102'\n" +

@@ -28,11 +28,10 @@ class PersonSexMapperTest {
 
         var expectedPersonSex = PersonSex
                 .builder()
-                .sexCode("Female")
+                .sexCode("2")
                 .build();
 
         assertEquals(expectedPersonSex, personSex);
-
     }
 
     @Test
