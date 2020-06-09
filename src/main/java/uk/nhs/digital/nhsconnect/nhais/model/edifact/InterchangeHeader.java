@@ -18,17 +18,32 @@ import java.time.format.DateTimeFormatter;
  * takes in specific values required to generate an interchange header
  * example: UNB+UNOA:2+TES5+XX11+920113:1317+00000002'
  */
-@Getter @Setter @NoArgsConstructor @RequiredArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class InterchangeHeader extends Segment {
 
     public static final String KEY = "UNB";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone);
     private static final long MAX_INTERCHANGE_SEQUENCE = 99_999_999L;
+    private static final String RECEP_ENDING = "+RECEP+++EDIFACT TRANSFER";
 
     private @NonNull String sender;
     private @NonNull String recipient;
     private @NonNull Instant translationTime;
     private Long sequenceNumber;
+
+    public static InterchangeHeader fromString(String edifactString) {
+        if (!edifactString.startsWith(InterchangeHeader.KEY)) {
+            throw new IllegalArgumentException("Can't create " + InterchangeHeader.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] split = edifactString.split("\\+");
+
+        ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
+        return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
+    }
 
     @Override
     public String getKey() {
@@ -55,20 +70,11 @@ public class InterchangeHeader extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (sender.isEmpty()){
+        if (sender.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute sender is required");
         }
-        if (recipient.isEmpty()){
+        if (recipient.isEmpty()) {
             throw new EdifactValidationException(getKey() + ": Attribute recipient is required");
         }
-    }
-
-    public static InterchangeHeader fromString(String edifactString) {
-        if(!edifactString.startsWith(InterchangeHeader.KEY)){
-            throw new IllegalArgumentException("Can't create " + InterchangeHeader.class.getSimpleName() + " from " + edifactString);
-        }
-        String[] split = edifactString.split("\\+");
-        ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
-        return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
     }
 }
