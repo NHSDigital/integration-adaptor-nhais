@@ -52,7 +52,7 @@ public class InterchangeTrailer extends Segment {
         if(!edifactString.startsWith(InterchangeTrailer.KEY)){
             throw new IllegalArgumentException("Can't create " + InterchangeTrailer.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+");
+        String[] split = edifactString.split("'")[0].split("\\+");
         return new InterchangeTrailer(Integer.parseInt(split[1]))
             .setSequenceNumber(Long.parseLong(split[2]));
     }

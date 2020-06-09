@@ -51,7 +51,7 @@ public class MessageTrailer extends Segment{
         if(!edifactString.startsWith(MessageTrailer.KEY)){
             throw new IllegalArgumentException("Can't create " + MessageTrailer.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+");
+        String[] split = edifactString.split("'")[0].split("\\+");
         return new MessageTrailer(Integer.parseInt(split[1]))
             .setSequenceNumber(Long.parseLong(split[2]));
     }

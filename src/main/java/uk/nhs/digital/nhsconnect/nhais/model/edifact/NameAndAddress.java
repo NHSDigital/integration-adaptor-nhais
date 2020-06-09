@@ -72,13 +72,13 @@ public class NameAndAddress extends Segment{
         if(!edifactString.startsWith(NameAndAddress.KEY)){
             throw new IllegalArgumentException("Can't create " + NameAndAddress.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+");
+        String[] split = edifactString.split("'")[0].split("\\+");
 
         var qualifierAndCode = Arrays.stream(QualifierAndCode.values())
-            .filter(x -> x.getCode().equals(split[3]))
+            .filter(qc -> qc.getCode().equals(split[2].split(":")[1]) && qc.getQualifier().equals(split[1]))
             .findFirst()
             .orElseThrow();
 
-        return new NameAndAddress(split[2], qualifierAndCode);
+        return new NameAndAddress(split[2].split(":")[0], qualifierAndCode);
     }
 }

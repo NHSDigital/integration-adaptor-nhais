@@ -49,10 +49,13 @@ public abstract class InboundMeshServiceBaseTest {
     protected OutboundStateRepository outboundStateRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
 
     @Value("${nhais.amqp.meshInboundQueueName}")
     protected String meshInboundQueueName;
+
+    @Value("${nhais.amqp.meshOutboundQueueName}")
+    protected String meshOutboundQueueName;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     protected String gpSystemInboundQueueName;
