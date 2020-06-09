@@ -80,6 +80,8 @@ pipeline {
 
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
+                            Map<String,String> tfVariables = ["docdb_master_user": DOCDB_MASTER_USER]
+                            Map<String,String> tfVariables = ["docdb_master_password": DOCDB_MASTER_PASSWORD]
 
                             dir ("integration-adaptors") {
                               // Clone repository with terraform
