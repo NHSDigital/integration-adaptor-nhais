@@ -19,6 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.jms.Message;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -29,7 +30,6 @@ import static org.awaitility.Awaitility.await;
 @ExtendWith({SpringExtension.class, SoftAssertionsExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @Slf4j
-
 public abstract class InboundMeshServiceBaseTest {
 
     protected static final int WAIT_FOR_IN_SECONDS = 5;
@@ -49,10 +49,13 @@ public abstract class InboundMeshServiceBaseTest {
     protected OutboundStateRepository outboundStateRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
 
     @Value("${nhais.amqp.meshInboundQueueName}")
     protected String meshInboundQueueName;
+
+    @Value("${nhais.amqp.meshOutboundQueueName}")
+    protected String meshOutboundQueueName;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     protected String gpSystemInboundQueueName;
@@ -70,6 +73,16 @@ public abstract class InboundMeshServiceBaseTest {
 
     protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
         jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(serializeMeshMessage(meshMessage)));
+    }
+
+    @SneakyThrows
+    protected Message getGpSystemInboundQueueMessage() {
+        return jmsTemplate.receive(gpSystemInboundQueueName);
+    }
+
+    @SneakyThrows
+    protected Message getOutboundQueueMessage() {
+        return jmsTemplate.receive(meshOutboundQueueName);
     }
 
     @SneakyThrows

@@ -26,7 +26,7 @@ class ReferenceMessageRecepTest {
             123L, ReferenceMessageRecep.RecepCode.ERROR)
             .getValue();
 
-        assertThat(value).isEqualTo("MIS:123 CA");
+        assertThat("MIS:00000123 CA").isEqualTo(value);
     }
 
     @Test

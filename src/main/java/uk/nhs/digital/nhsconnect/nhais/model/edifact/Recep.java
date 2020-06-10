@@ -18,4 +18,8 @@ public class Recep {
     private final ReferenceInterchangeRecep referenceInterchangeRecep = recepMessage.getReferenceInterchangeRecep();
     @Getter(lazy = true)
     private final DateTimePeriod dateTimePeriod = recepMessage.getDateTimePeriod();
+
+    public String toEdifact() {
+        return recepMessage.getEdifact();
+    }
 }

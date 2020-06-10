@@ -21,7 +21,7 @@ public class OutboundMeshService {
     private String meshOutboundQueueName;
 
     @SneakyThrows
-    public void send(MeshMessage message) {
+    public void publishToOutboundQueue(MeshMessage message) {
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }

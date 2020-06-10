@@ -31,7 +31,7 @@ public class ReferenceInterchangeRecep extends Segment {
 
     @Override
     public String getValue() {
-        return String.format("%s:%s %s:%s", QUALIFIER, interchangeSequenceNumber, recepCode.getCode(), messageCount);
+        return String.format("%s:%08d %s:%s", QUALIFIER, interchangeSequenceNumber, recepCode.getCode(), messageCount);
     }
 
     @Override

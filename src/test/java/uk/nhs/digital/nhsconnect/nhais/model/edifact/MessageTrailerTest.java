@@ -3,7 +3,10 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessageTrailerTest {
 
@@ -40,5 +43,17 @@ public class MessageTrailerTest {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testFromString() {
+        var expectedMessageTrailer = new MessageTrailer(18).setSequenceNumber(3L);
+        var edifact = "UNT+18+00000003'";
+
+        var messageTrailer = MessageTrailer.fromString(edifact);
+
+        assertThat(messageTrailer).isExactlyInstanceOf(MessageTrailer.class);
+        assertThat(messageTrailer).isEqualToComparingFieldByField(expectedMessageTrailer);
+        assertThat(messageTrailer.toEdifact()).isEqualTo(edifact);
     }
 }
