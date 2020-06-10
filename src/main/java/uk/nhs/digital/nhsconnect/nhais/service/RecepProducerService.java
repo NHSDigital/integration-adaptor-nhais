@@ -108,8 +108,7 @@ public class RecepProducerService {
         var recepSender = interchange.getInterchangeHeader().getRecipient();
         var recepRecipient = interchange.getInterchangeHeader().getSender();
 
-        return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime())
-            .setSequenceNumber(sequenceService.generateInterchangeId(recepSender, recepRecipient));
+        return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime());
     }
 
     private RecepMessageHeader mapToRecipMessageHeader(Interchange interchange) {
