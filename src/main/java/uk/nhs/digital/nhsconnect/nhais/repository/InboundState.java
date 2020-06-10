@@ -63,13 +63,15 @@ public class InboundState {
 
     public static InboundState fromRecep(Recep recep) {
         var interchangeHeader = recep.getInterchangeHeader();
+        var messageHeader = recep.getMessageHeader();
         var dateTimePeriod = recep.getDateTimePeriod();
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
+            .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setReceiveMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
-            .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

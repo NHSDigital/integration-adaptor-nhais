@@ -29,6 +29,13 @@ public class RecepMessage {
             .orElseThrow();
     }
 
+    public MessageHeader getMessageHeader() {
+        return extractSegments(MessageHeader.KEY)
+            .map(MessageHeader::fromString)
+            .findFirst()
+            .orElseThrow();
+    }
+
     public List<ReferenceMessageRecep> getReferenceMessageReceps() {
         return extractSegments(ReferenceMessageRecep.KEY_QUALIFIER)
             .map(ReferenceMessageRecep::fromString)

@@ -39,11 +39,13 @@ public class OutboundState {
 
     public static OutboundState fromRecep(Recep recep) {
         var interchangeHeader = recep.getInterchangeHeader();
+        var messageHeader = recep.getMessageHeader();
         var dateTimePeriod = recep.getDateTimePeriod();
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setSendInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setSendMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
             .setTransactionTimestamp(dateTimePeriod.getTimestamp());
