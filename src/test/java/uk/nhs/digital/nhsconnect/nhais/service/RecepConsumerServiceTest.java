@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
@@ -33,10 +34,11 @@ class RecepConsumerServiceTest {
     private static final String CONTENT = "some_content";
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
-    private static final long INTERCHANGE_SEQUENCE = 123;
-    private static final long REF_INTERCHANGE_SEQUENCE = 234;
-    private static final long REF_MESSAGE_1_SEQUENCE = 345;
-    private static final long REF_MESSAGE_2_SEQUENCE = 456;
+    private static final long INTERCHANGE_SEQUENCE = 100;
+    private static final long MESSAGE_SEQUENCE = 200;
+    private static final long REF_INTERCHANGE_SEQUENCE = 300;
+    private static final long REF_MESSAGE_1_SEQUENCE = 400;
+    private static final long REF_MESSAGE_2_SEQUENCE = 500;
     private static final ReferenceMessageRecep.RecepCode MESSAGE_1_RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
     private static final ReferenceMessageRecep.RecepCode MESSAGE_2_RECEP_CODE = ReferenceMessageRecep.RecepCode.INCOMPLETE;
     private static final Instant DATE_TIME_PERIOD = new TimestampService().getCurrentTimestamp();
@@ -61,6 +63,8 @@ class RecepConsumerServiceTest {
 
         when(recep.getInterchangeHeader())
             .thenReturn(new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_DATE_TIME_PERIOD).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(recep.getMessageHeader())
+            .thenReturn(new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
         when(recep.getDateTimePeriod())
             .thenReturn(new DateTimePeriod(DATE_TIME_PERIOD, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
         when(recep.getReferenceMessageReceps())
@@ -84,6 +88,7 @@ class RecepConsumerServiceTest {
             new InboundState()
                 .setWorkflowId(WorkflowId.RECEP)
                 .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
+                .setReceiveMessageSequence(MESSAGE_SEQUENCE)
                 .setSender(SENDER)
                 .setRecipient(RECIPIENT)
                 .setTranslationTimestamp(DATE_TIME_PERIOD));

@@ -35,7 +35,7 @@ public class InboundStateTest {
 
     public static final Interchange INTERCHANGE = Mockito.mock(Interchange.class);
     public static final Recep RECEP = Mockito.mock(Recep.class);
-    public static final InboundState INBOUND_INTERCHANGE_STATE = new InboundState()
+    public static final InboundState INTERCHANGE_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)
         .setSender(SENDER)
@@ -45,11 +45,12 @@ public class InboundStateTest {
         .setTransactionNumber(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
-    public static final InboundState INBOUND_RECEP_STATE = new InboundState()
+    public static final InboundState EXPECTED_RECEP_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.RECEP)
         .setSender(SENDER)
         .setRecipient(RECIPIENT)
         .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
+        .setReceiveMessageSequence(MESSAGE_SEQUENCE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 
     @BeforeEach
@@ -67,6 +68,8 @@ public class InboundStateTest {
 
         when(InboundStateTest.RECEP.getInterchangeHeader()).thenReturn(
             new InterchangeHeader(SENDER, RECIPIENT, INTERCHANGE_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(InboundStateTest.RECEP.getMessageHeader()).thenReturn(
+            new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
         when(InboundStateTest.RECEP.getDateTimePeriod()).thenReturn(
             new DateTimePeriod(TRANSLATION_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
         when(InboundStateTest.RECEP.getReferenceInterchangeRecep()).thenReturn(
@@ -79,13 +82,13 @@ public class InboundStateTest {
     void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
         var inboundStateFromInterchange = InboundState.fromInterchange(INTERCHANGE);
 
-        assertThat(inboundStateFromInterchange).isEqualTo(INBOUND_INTERCHANGE_STATE);
+        assertThat(inboundStateFromInterchange).isEqualTo(INTERCHANGE_INBOUND_STATE);
     }
 
     @Test
     void whenFromRecepCalled_thenInboundStateObjectIsCreated() {
         var inboundStateFromInterchange = InboundState.fromRecep(RECEP);
 
-        assertThat(inboundStateFromInterchange).isEqualTo(INBOUND_RECEP_STATE);
+        assertThat(inboundStateFromInterchange).isEqualTo(EXPECTED_RECEP_INBOUND_STATE);
     }
 }

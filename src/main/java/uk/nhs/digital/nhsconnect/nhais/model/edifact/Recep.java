@@ -13,6 +13,8 @@ public class Recep {
     @Getter(lazy = true)
     private final InterchangeHeader interchangeHeader = recepMessage.getInterchangeHeader();
     @Getter(lazy = true)
+    private final MessageHeader messageHeader = recepMessage.getMessageHeader();
+    @Getter(lazy = true)
     private final List<ReferenceMessageRecep> referenceMessageReceps = recepMessage.getReferenceMessageReceps();
     @Getter(lazy = true)
     private final ReferenceInterchangeRecep referenceInterchangeRecep = recepMessage.getReferenceInterchangeRecep();

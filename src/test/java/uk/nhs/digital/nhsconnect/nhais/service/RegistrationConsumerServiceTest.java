@@ -51,6 +51,7 @@ public class RegistrationConsumerServiceTest {
     public static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
 
     public static final long RECEP_INTERCHANGE_SEQUENCE = 100L;
+    public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
     public static final String RECEP_RECIPIENT = SENDER;
 
@@ -110,6 +111,8 @@ public class RegistrationConsumerServiceTest {
 
         when(recep.getInterchangeHeader()).thenReturn(
             new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
+        when(recep.getMessageHeader()).thenReturn(
+            new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
         when(recep.getDateTimePeriod()).thenReturn(
             new DateTimePeriod(TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
 
@@ -143,12 +146,16 @@ public class RegistrationConsumerServiceTest {
 
         var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
         verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
-        var savedOutboundState = outboundStateArgumentCaptor.getValue();
-        assertThat(savedOutboundState.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        assertThat(savedOutboundState.getSender()).isEqualTo(RECEP_SENDER);
-        assertThat(savedOutboundState.getRecipient()).isEqualTo(RECEP_RECIPIENT);
-        assertThat(savedOutboundState.getSendInterchangeSequence()).isEqualTo(RECEP_INTERCHANGE_SEQUENCE);
-        assertThat(savedOutboundState.getTransactionTimestamp()).isEqualTo(TRANSLATION_TIME);
+        var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
+        var expectedRecepOutboundState = new OutboundState()
+            .setWorkflowId(WorkflowId.RECEP)
+            .setSender(RECEP_SENDER)
+            .setRecipient(RECEP_RECIPIENT)
+            .setSendInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
+            .setSendMessageSequence(RECEP_MESSAGE_SEQUENCE)
+            .setTransactionTimestamp(TRANSLATION_TIME);
+
+        assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
         verify(inboundGpSystemService).publishToSupplierQueue(any(), eq(OPERATION_ID));
 
