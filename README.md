@@ -197,16 +197,31 @@ If no value is set for `NHAIS_MONGO_HOST` then the following properties are used
 | NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
 | NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
 
-## Using AmazonMQ
+## Configuring your AMQP Broker
+
+* Your broker must be configured with a limited number of retries and deadletter queues
+* Your broker must use persistent queues to avoid loss of data
+
+### Using AmazonMQ
+
+A persistent broker (not in-memory) must be used to avoid data loss.
+
+A configuration profile that includes settings for retry and deadletter must be applied: https://activemq.apache.org/message-redelivery-and-dlq-handling.html
 
 Amazon gives their Amazon MQ endpoint with the scheme `amqp+ssl://` but this is not supported / recognised by Java.
 
 You will need to change the scheme to `amqps://`
 
-## Using ActiveMQ in a local container (for development)
+### Using Azure Service Bus
+
+Your Azure Service Bus must use MaxDeliveryCount and dead-lettering: https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues#exceeding-maxdeliverycount
+
+### Using ActiveMQ in a local container / docker-compose (for development)
 
 Admin UI is at http://localhost:8161/
 Login is admin/admin
+
+**Note**: this broker will not have limited retries or deadletter enabled. Purge the queue using the web console to clear any errors.
 
 ## AWS Document DB
 
@@ -243,21 +258,17 @@ Follow the instructions in that repository's README.md to run it (using Docker i
 ### Running with Docker Compose
 
     docker-compose build
-    docker-compose up activemq mongodb nhais
-    
-There is also a container that will run all types of tests
-
-    docker-compose up nhais-tests
+    docker-compose up
 
 ### Running Tests
 
 Ensure development dependencies are installed before running the tests
 
-    pipenv install -d
+    ./gradlew check
 
 #### Unit Tests
 
-    pipenv run unittests
+    ./gradlew test
     
 #### Component Tests
 
@@ -274,51 +285,19 @@ To run the integration tests use:
 
     ./gradlew integrationTest
 
+## Management endpoints:
 
-### IntelliJ Configuration 
-
-Open integration-adaptor-nhais in IDE  
-
-File → Project Structure → SDK → Add new Python SDK → Select Pipenv Environment and provide a path to the executable of my pipenv.
-
-Select File → New → Module from existing sources
-
-Point to NHAIS folder
-
-Select “Create module from existing sources"
-
-Click through wizard and select correct pipenv environment for NHAIS if it asks for one
-
-Select main.py in root directory, click `configure pipenv interperator`
-
-Now you can add configurations to run component. Just make sure configuration uses correct Python interpreter and set EnvFile:
-`nhais-env.yaml` copy and paste example. 
-
-Run → Edit configurations → plus arrow (add new configuration) → python 
-
-Configuration tab:
-
-Script path should be integration-adaptor-nhais → main.py
-
-Working directory should be integration-adaptor-nhais
-
-EnvFile tab:
-
-Check box enable EnvFile
-
-Add previously created yaml file `nhais-env.yaml`
-
-### Management endpoints:
 Healthcheck:
 
     curl localhost:8080/healthcheck
+
 Metrics:
 
     curl localhost:8080/metrics
+
 Info:
 
     curl localhost:8080/info
-
 
 ### Common Issues
 
@@ -329,18 +308,13 @@ Info:
     
 Check your imports and ensure you're using JUnit5 `org.junit.jupiter.api.*` classes instead of the older JUnit4 `org.junit.*` ones.
 
-#### Application repeatedly throws exceptions about a missing queue
+#### Application repeatedly throws exceptions
 
     com.rabbitmq.client.ShutdownSignalException: channel error; protocol method: #method<channel.close>(reply-code=404, reply-text=NOT_FOUND - no queue 'nhais_mesh_inbound' in vhost '/', class-id=50, method-id=10)
     
-You need to create this queue.
+You need to clear invalid messages from the inbound mesh queue.
 
-* Browse: http://localhost:15672/
-* Login: guest/guest
+* Browse: http://localhost:8161/
+* Login: admin/admin
 * Click 'Queues' tab
-* Expand 'Add a queue'
-* Name: nhais_mesh_inbound
-* Durability: Durable
-* Click 'Add queue'
-
-The errors should stop without needing to restart the app.
+* On the `nhais_mesh_inbound` click 'Purge'
