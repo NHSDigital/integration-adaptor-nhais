@@ -20,6 +20,8 @@ import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,6 +53,11 @@ class RecepProducerServiceTest {
         var recep = recepProducerService.produceRecep(createInterchange());
 
         assertEquals(recep.toEdifact(), readFile(RECEP_EXAMPLE_PATH));
+
+        verify(sequenceService).generateInterchangeId(REF_SENDER, REF_RECIPIENT);
+        verify(sequenceService).generateMessageId(REF_SENDER, REF_RECIPIENT);
+
+        verifyNoMoreInteractions(sequenceService);
     }
 
     private Interchange createInterchange() {
