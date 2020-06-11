@@ -80,7 +80,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         cs += host + ":" + port;
         if(!Strings.isNullOrEmpty(options)) {
             LOGGER.debug("The generated connection will use use options '{}'", options);
-            cs += "?" + options;
+            cs += "/?" + options;
         } else {
             LOGGER.warn("No options for the mongodb connection string were provided. If connecting to a cluster the driver may not work as expected.");
         }
