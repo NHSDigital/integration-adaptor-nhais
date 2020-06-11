@@ -1,13 +1,14 @@
 {
-  "id": "SEQ12",
-  "gpCode": "2750922,295",
+  "id": "123/23/123",
+  "gpCode": "4826940,281",
   "gpCipher": "TES5",
   "haCipher": "XX11",
-  "gpFreeText": "NOW AT THE ARTHUR ANDREWS CENTRE",
+  "healthcarePartyCode": "XX1",
   "patches": [
-    // add and replace operations are treated exactly the same
-    // The path must match the example exactly. Any logically equivalent alternatives are not supported
-    { "op": "replace", "path": "/name/0/prefix/0", "value": "MRS" },
-
+    { "op": "replace", "path": "/address/0/line/0", "value": "FLAT 49"},
+    { "op": "replace", "path": "/address/0/line/1", "value": "23 JACKSON SQUARE"},
+    { "op": "replace", "path": "/address/0/line/2", "value": "ST PAULS CRAY"},
+    { "op": "replace", "path": "/address/0/line/3", "value": "ORPINGTON"},
+    { "op": "replace", "path": "/address/0/line/4", "value": "KENT"},
   ]
 }
