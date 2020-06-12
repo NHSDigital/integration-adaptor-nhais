@@ -14,15 +14,24 @@ public class RecepMessage {
      */
     public static final String ROW_DELIMITER = "((?<!\\?)')";
 
-    private final String[] rows;
+    private final List<String> rows;
 
     public RecepMessage(String recepMessage) {
-        this.rows = recepMessage.strip().split(ROW_DELIMITER);
+        this.rows = Arrays.stream(recepMessage.strip().split(ROW_DELIMITER))
+            .map(String::trim)
+            .collect(Collectors.toList());
     }
 
     public InterchangeHeader getInterchangeHeader() {
         return extractSegments(InterchangeHeader.KEY)
             .map(InterchangeHeader::fromString)
+            .findFirst()
+            .orElseThrow();
+    }
+
+    public MessageHeader getMessageHeader() {
+        return extractSegments(MessageHeader.KEY)
+            .map(MessageHeader::fromString)
             .findFirst()
             .orElseThrow();
     }
@@ -48,8 +57,12 @@ public class RecepMessage {
     }
 
     private Stream<String> extractSegments(@NonNull String key) {
-        return Arrays.stream(rows)
+        return this.rows.stream()
             .map(String::strip)
             .filter(segment -> segment.startsWith(key));
+    }
+
+    public String getEdifact() {
+        return String.join("'\n", this.rows) + "'";
     }
 }

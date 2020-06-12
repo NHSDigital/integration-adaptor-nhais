@@ -1,18 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
+import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.utils.FhirToJson;
-
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.Type;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class EdifactToFhirServiceTest {
 

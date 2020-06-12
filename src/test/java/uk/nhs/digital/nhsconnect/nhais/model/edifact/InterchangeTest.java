@@ -1,13 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import static org.assertj.core.api.Assertions.*;
-
+import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentGroupException;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InterchangeTest {
 

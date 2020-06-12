@@ -1,15 +1,17 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact.message;
 
-import java.util.Arrays;
-
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+
+import java.util.Arrays;
 
 public class EdifactMessage {
 
@@ -67,6 +69,18 @@ public class EdifactMessage {
     public DateTimePeriod getTranslationDateTime() {
         return DateTimePeriod.fromString(
             extractSegment(getHeader(), DateTimePeriod.KEY)
+        );
+    }
+
+    public NameAndAddress getNameAndAddress() {
+        return NameAndAddress.fromString(
+            extractSegment(getHeader(), NameAndAddress.KEY)
+        );
+    }
+
+    public InterchangeTrailer getInterchangeTrailer() {
+        return InterchangeTrailer.fromString(
+            extractSegment(getSecondGroup(), InterchangeTrailer.KEY)
         );
     }
 
