@@ -1,16 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.SampledData;
-import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 
 @Component
 public class EdifactToFhirService {

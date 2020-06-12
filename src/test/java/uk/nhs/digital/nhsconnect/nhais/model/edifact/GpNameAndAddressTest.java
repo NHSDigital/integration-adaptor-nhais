@@ -1,13 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-
-import org.junit.jupiter.api.Test;
 
 class GpNameAndAddressTest {
 

@@ -11,12 +11,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,13 +71,14 @@ public class FhirToEdifactServiceTest {
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
+        expected.setWorkflowId(WorkflowId.REGISTRATION);
         expected.setRecipient(HA_CODE);
         expected.setSender(GP_CODE);
         expected.setSendInterchangeSequence(SIS);
         expected.setSendMessageSequence(SMS);
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
-        expected.setTransactionTimestamp(Date.from(expectedTimestamp));
+        expected.setTransactionTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
     }

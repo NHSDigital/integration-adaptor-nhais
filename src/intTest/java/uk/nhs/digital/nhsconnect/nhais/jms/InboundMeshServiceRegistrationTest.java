@@ -1,6 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
-import lombok.SneakyThrows;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Parameters;
@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+@DirtiesContext
 public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 3;
@@ -41,6 +42,9 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
     @Value("classpath:edifact/registration.dat")
     private Resource interchange;
 
+    @Value("classpath:edifact/registration_recep.dat")
+    private Resource recep;
+
     @Test
     @DirtiesContext
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
@@ -52,21 +56,33 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
 
         var inboundState = waitFor(
             () -> inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE));
-        var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
         assertInboundState(softly, inboundState);
 
-        assertGpSystemInboundQueueMessage(softly, gpSystemInboundQueueMessage);
+        assertGpSystemInboundQueueMessage(softly);
 
-        //TODO get recep from outbound queue and verify it's content
+        assertOutboundQueueRecepMessage(softly);
     }
 
-    private void assertGpSystemInboundQueueMessage(SoftAssertions softly, Message gpSystemInboundQueueMessage) throws JMSException {
+    private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
+        var gpSystemInboundQueueMessage = getOutboundQueueMessage();
+
+        var meshMessage = parseOutboundMessage(gpSystemInboundQueueMessage);
+
+        softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
+        softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
+        softly.assertThat(meshMessage.getMessageSentTimestamp()).isNotNull();
+        //TODO: other assertions on recep message
+    }
+
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException {
+        var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
+
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
 
-        var resource = parseMessage(gpSystemInboundQueueMessage);
+        var resource = parseInboundMessage(gpSystemInboundQueueMessage);
         softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
-        //TODO: other assertions on queue message
+        //TODO: other assertions on FHIR message
     }
 
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
@@ -83,16 +99,16 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }
 
-    @SneakyThrows
-    private Message getGpSystemInboundQueueMessage() {
-        return jmsTemplate.receive(gpSystemInboundQueueName);
-    }
-
-    private IBaseResource parseMessage(Message message) throws JMSException {
+    private IBaseResource parseInboundMessage(Message message) throws JMSException {
         if (message == null) {
             return null;
         }
         var body = InboundMeshService.readMessage(message);
         return new FhirParser().parse(body);
+    }
+
+    private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
+        var body = InboundMeshService.readMessage(message);
+        return objectMapper.readValue(body, MeshMessage.class);
     }
 }

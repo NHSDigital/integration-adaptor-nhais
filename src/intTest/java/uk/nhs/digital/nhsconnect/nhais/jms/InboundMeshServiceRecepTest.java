@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
+    private static final long MESSAGE_SEQUENCE = 28;
     private static final long REF_INTERCHANGE_SEQUENCE_1 = 1;
     private static final long REF_MESSAGE_SEQUENCE_1 = 100;
     private static final long REF_MESSAGE_SEQUENCE_2 = 200;
@@ -78,6 +79,7 @@ public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setReceiveMessageSequence(MESSAGE_SEQUENCE)
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);

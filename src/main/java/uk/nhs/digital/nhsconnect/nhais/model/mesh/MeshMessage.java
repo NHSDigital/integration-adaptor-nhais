@@ -19,5 +19,4 @@ public class MeshMessage {
      * The timestamp (ISO format, UTC) when this message was sent - used for debugging and tracing
      */
     private String messageSentTimestamp;
-
 }

@@ -18,3 +18,4 @@ build
 .vscode/
 bin/
 /out/
+/test-scripts/export-env-vars.sh

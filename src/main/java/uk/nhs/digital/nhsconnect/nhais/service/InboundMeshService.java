@@ -36,13 +36,15 @@ public class InboundMeshService {
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
             // TODO: get the correlation id and attach to logger?
-            if(WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
+
+            if (WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
                 registrationConsumerService.handleRegistration(meshMessage);
-            } else if(WorkflowId.RECEP.equals(meshMessage.getWorkflowId())) {
+            } else if (WorkflowId.RECEP.equals(meshMessage.getWorkflowId())) {
                 recepConsumerService.handleRecep(meshMessage);
             } else {
                 throw new UnknownWorkflowException(meshMessage.getWorkflowId());
             }
+
             message.acknowledge();
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);

@@ -1,17 +1,17 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter @RequiredArgsConstructor
 @ToString
@@ -34,6 +34,10 @@ public class Interchange {
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = edifactMessage.getHealthAuthorityNameAndAddress();
     @Getter(lazy=true)
     private final GpNameAndAddress gpNameAndAddress = edifactMessage.getGpNameAndAddress();
+    @Getter(lazy=true)
+    private final NameAndAddress nameAndAddress = edifactMessage.getNameAndAddress();
+    @Getter(lazy=true)
+    private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 
     public List<ToEdifactParsingException> validate() {
 
@@ -43,7 +47,9 @@ public class Interchange {
             (Supplier<? extends Segment>) this::getTranslationDateTime,
             (Supplier<? extends Segment>) this::getReferenceTransactionType,
             (Supplier<? extends Segment>) this::getHealthAuthorityNameAndAddress,
-            (Supplier<? extends Segment>) this::getGpNameAndAddress)
+            (Supplier<? extends Segment>) this::getGpNameAndAddress,
+            (Supplier<? extends Segment>) this::getNameAndAddress,
+            (Supplier<? extends Segment>) this::getInterchangeTrailer)
             .map(this::checkData)
             .flatMap(Optional::stream)
             .collect(Collectors.toList());
