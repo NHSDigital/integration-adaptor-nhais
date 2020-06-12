@@ -79,8 +79,8 @@ pipeline {
                             String tfRegion      = "${TF_STATE_BUCKET_REGION}"
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
-                            String tfVariables      = "${DOCDB_MASTER_USER}"
-                            String tfVariables      = "${DOCDB_MASTER_PASSWORD}"
+                            Map<String> tfVariables      = "${DOCDB_MASTER_USER}"
+                            Map<String> tfVariables      = "${DOCDB_MASTER_PASSWORD}"
                             // tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
                             // tfVariables.put('docdb_master_password',DOCDB_MASTER_PASSWORD)                           
                             dir ("integration-adaptors") {
