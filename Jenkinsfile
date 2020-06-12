@@ -77,8 +77,8 @@ pipeline {
                             String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
                             String tfRegion      = "${TF_STATE_BUCKET_REGION}"
-                            String tfdocdbuser     = "${DOCDB_MASTER_USER}"
-                            String tfdocdbpw       = "${DOCDB_MASTER_PASSWORD}"
+                            String tfdocdbuser   = "${DOCDB_MASTER_USER}"
+                            String tfdocdbpw     = "${DOCDB_MASTER_PASSWORD}"
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
                             // tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
