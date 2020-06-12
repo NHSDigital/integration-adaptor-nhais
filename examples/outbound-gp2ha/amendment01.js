@@ -17,9 +17,10 @@
     { "op": "replace", "path": "/name/0/prefix/0", "value": "MRS" },
     { "op": "replace", "path": "/name/0/family", "value": "PATTERSON" },
     { "op": "replace", "path": "/name/1/family", "value": "SMYTHE" },
+    // If any address line is updated then all five address lines must be provided
     { "op": "replace", "path": "/address/0/line/0", "value": "HOLLY COTTAGE" },
     { "op": "replace", "path": "/address/0/line/1", "value": "12 LONG LANE" },
-    // Note that /address/0/line/2 is omitted - there is no Locality
+    { "op": "replace", "path": "/address/0/line/2", "value": "" },
     { "op": "replace", "path": "/address/0/line/3", "value": "BROMLEY" },
     { "op": "replace", "path": "/address/0/line/4", "value": "KENT" },
     { "op": "replace", "path": "/address/0/postalCode", "value": "BR5  4ER" },
