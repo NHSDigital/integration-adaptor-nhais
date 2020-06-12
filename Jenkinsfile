@@ -94,7 +94,7 @@ pipeline {
                                 if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfdocdbuser, tfdocdbpw) !=0 ) { error("Terraform Plan failed")}
 
                                 //Run TF Apply
-                                if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables,tfdocdbuser tfdocdbpw) !=0 ) { error("Terraform Apply failed")}
+                                if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfdocdbuser, tfdocdbpw) !=0 ) { error("Terraform Apply failed")}
                               } // dir terraform/aws
                             } // dir integration-adaptors
                         } //script
