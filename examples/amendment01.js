@@ -1,6 +1,6 @@
 {
   /* The following parameters are required for every Amendment transaction */
-  /* TODO: Should they be required for every transaction? */
+  /* TODO: We need to standardise these across all transactions */
   "id": "SEQ12",
   "gpCode": "2750922,295",
   "gpCipher": "TES5",
