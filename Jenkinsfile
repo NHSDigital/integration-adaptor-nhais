@@ -77,12 +77,10 @@ pipeline {
                             String tfCodeBranch  = "develop"
                             String tfCodeRepo    = "https://github.com/nhsconnect/integration-adaptors"
                             String tfRegion      = "${TF_STATE_BUCKET_REGION}"
-                            String tfdocdbuser   = "${DOCDB_MASTER_USER}"
-                            String tfdocdbpw     = "${DOCDB_MASTER_PASSWORD}"
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["build_id": BUILD_TAG]
-                            // tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
-                            // tfVariables.put('docdb_master_password',DOCDB_MASTER_PASSWORD)                           
+                            tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
+                            tfVariables.put('docdb_master_password',DOCDB_MASTER_PASSWORD)                           
                             dir ("integration-adaptors") {
                               // Clone repository with terraform
                               git (branch: tfCodeBranch, url: tfCodeRepo)
@@ -91,10 +89,10 @@ pipeline {
                                 if (terraformInit(TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion) !=0) { error("Terraform init failed")}
 
                                 // Run TF Plan
-                                if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfdocdbuser, tfdocdbpw) !=0 ) { error("Terraform Plan failed")}
+                                if (terraform('plan', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables) !=0 ) { error("Terraform Plan failed")}
 
                                 //Run TF Apply
-                                if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables, tfdocdbuser, tfdocdbpw) !=0 ) { error("Terraform Apply failed")}
+                                if (terraform('apply', TF_STATE_BUCKET, tfProject, tfEnvironment, tfComponent, tfRegion, tfVariables) !=0 ) { error("Terraform Apply failed")}
                               } // dir terraform/aws
                             } // dir integration-adaptors
                         } //script
