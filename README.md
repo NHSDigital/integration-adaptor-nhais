@@ -197,6 +197,8 @@ If no value is set for `NHAIS_MONGO_HOST` then the following properties are used
 | NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
 | NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
 
+**Note**: If the characters ':' or '@' are used in the mongo username or password they must be URL encoded.
+
 ## Configuring your AMQP Broker
 
 * Your broker must be configured with a limited number of retries and deadletter queues

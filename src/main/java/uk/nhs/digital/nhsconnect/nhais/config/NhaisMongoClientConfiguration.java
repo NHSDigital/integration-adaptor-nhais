@@ -84,7 +84,6 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         } else {
             LOGGER.warn("No options for the mongodb connection string were provided. If connecting to a cluster the driver may not work as expected.");
         }
-        LOGGER.debug("GENERATED CONNECTION STRING\n{}", cs);
         return cs;
     }
 }
