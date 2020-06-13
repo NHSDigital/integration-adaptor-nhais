@@ -1,4 +1,8 @@
-{
+var headers = {
+    'TransactionType': 'amendment'
+}
+
+var body = {
   "id": "9999999999",
   "gpCode": "4826940,281",
   "gpCipher": "TES5",
