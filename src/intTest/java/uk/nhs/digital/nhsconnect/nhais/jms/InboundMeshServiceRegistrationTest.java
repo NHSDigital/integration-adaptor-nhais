@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +10,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
-import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import javax.jms.JMSException;
@@ -78,9 +75,12 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
     private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException {
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
-        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
+        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("OperationId"))
+            .isEqualTo(OPERATION_ID);
+        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("TransactionType"))
+            .isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
 
-        var resource = parseInboundMessage(gpSystemInboundQueueMessage);
+        var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
         softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
         //TODO: other assertions on FHIR message
     }
@@ -97,14 +97,6 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
             .setTransactionNumber(TRANSACTION_NUMBER)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
-    }
-
-    private IBaseResource parseInboundMessage(Message message) throws JMSException {
-        if (message == null) {
-            return null;
-        }
-        var body = InboundMeshService.readMessage(message);
-        return new FhirParser().parse(body);
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {

@@ -28,7 +28,7 @@ public class EdifactToFhirService {
         Parameters parameters = new Parameters();
         for (Resource resource : resources) {
             var parameterComponent = new Parameters.ParametersParameterComponent().setResource(resource);
-            if(Patient.class.getSimpleName().equals(resource.fhirType())) {
+            if (Patient.class.getSimpleName().equals(resource.fhirType())) {
                 parameterComponent.setName(resource.fhirType().toLowerCase());
             }
             parameters.addParameter(parameterComponent);
@@ -39,15 +39,15 @@ public class EdifactToFhirService {
     private Reference createGeneralPractitionerReference(Interchange interchange) {
         String gpId = interchange.getGpNameAndAddress().getIdentifier();
         return new Reference(
-                new Practitioner().setId(gpId)
-            );
+            new Practitioner().setId(gpId)
+        );
     }
 
     private Reference createManagingOrganizationReference(Interchange interchange) {
         String organizationId = interchange.getHealthAuthorityNameAndAddress().getIdentifier();
         return new Reference(
-                new Organization().setId(organizationId)
-            );
+            new Organization().setId(organizationId)
+        );
     }
 
     private Patient createPatient(String patientId) {

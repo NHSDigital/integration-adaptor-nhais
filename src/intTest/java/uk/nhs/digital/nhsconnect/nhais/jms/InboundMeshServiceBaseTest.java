@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.Timeout;
@@ -14,11 +15,14 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -83,6 +87,14 @@ public abstract class InboundMeshServiceBaseTest {
     @SneakyThrows
     protected Message getOutboundQueueMessage() {
         return jmsTemplate.receive(meshOutboundQueueName);
+    }
+
+    protected IBaseResource parseGpInboundQueueMessage(Message message) throws JMSException {
+        if (message == null) {
+            return null;
+        }
+        var body = InboundMeshService.readMessage(message);
+        return new FhirParser().parse(body);
     }
 
     @SneakyThrows

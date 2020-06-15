@@ -15,7 +15,8 @@ import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
-@Component @Slf4j
+@Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RegistrationConsumerService {
 
@@ -43,7 +44,10 @@ public class RegistrationConsumerService {
 
         var outputParameters = new EdifactToFhirService().convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
-        inboundGpSystemService.publishToSupplierQueue(outputParameters, inboundState.getOperationId());
+        inboundGpSystemService.publishToSupplierQueue(
+            outputParameters,
+            inboundState.getOperationId(),
+            interchange.getReferenceTransactionType().getTransactionType());
         LOGGER.debug("Published inbound registration message to gp supplier queue");
 
         var recepMeshMessage = buildRecepMeshMessage(recep);

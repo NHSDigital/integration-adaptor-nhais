@@ -75,7 +75,7 @@ public class FhirParser {
     }
 
     public String encodeToString(IBaseResource resource) {
-        return parser.encodeResourceToString(resource);
+        return parser.setPrettyPrint(true).encodeResourceToString(resource);
     }
 }
 

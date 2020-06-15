@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import javax.jms.JMSException;
@@ -34,21 +35,20 @@ public class InboundGpSystemServiceTest {
 
     @Mock
     TextMessage textMessage;
-
-    @Value("${nhais.amqp.gpSystemInboundQueueName}")
-    private String gpSystemInboundQueueName;
-
     @InjectMocks
     InboundGpSystemService inboundGpSystemService;
+    @Value("${nhais.amqp.gpSystemInboundQueueName}")
+    private String gpSystemInboundQueueName;
 
     @Test
     public void testPublishToGpSupplierQueue() throws JMSException {
         Parameters parameters = new Parameters();
         String operationId = "123";
+        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.TransactionType.ACCEPTANCE;
         String jsonEncodedFhir = "{\"resourceType\":\"Parameters\"}";
         when(fhirParser.encodeToString(parameters)).thenReturn(jsonEncodedFhir);
 
-        inboundGpSystemService.publishToSupplierQueue(parameters, operationId);
+        inboundGpSystemService.publishToSupplierQueue(parameters, operationId, transactionType);
 
         var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 
@@ -60,5 +60,6 @@ public class InboundGpSystemServiceTest {
 
         verify(session).createTextMessage(eq(jsonEncodedFhir));
         verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
+        verify(textMessage).setStringProperty(eq("TransactionType"), eq(transactionType.name().toLowerCase()));
     }
 }
