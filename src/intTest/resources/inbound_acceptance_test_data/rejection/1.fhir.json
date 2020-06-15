@@ -1,0 +1,20 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "patient",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PLACEHOLDER_FOR_PATIENT_ID",
+        "generalPractitioner": [
+          {
+            "reference": "Practitioner/2750922,295"
+          }
+        ],
+        "managingOrganization": {
+          "reference": "Organization/XX1"
+        }
+      }
+    }
+  ]
+}
