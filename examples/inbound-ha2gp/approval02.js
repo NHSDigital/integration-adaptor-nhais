@@ -1,9 +1,9 @@
 var headers = {
     'TransactionType': 'approval',
-    // an approval is always a reply to a previous outbound Acceptance and needs to include an OperationId matching the
+    // a rejection is always a reply to a previous outbound Acceptance and needs to include an OperationId matching the
     // OperationId from the Acceptance that solicited the reply
     // OperationId should be treated as case-insensitive
-    'OperationId': '30C28CBD81D5F8071D104DB54F645465EC9033AB8A047A97853677F2BDB431DC'
+    'OperationId': '6BA3016176936E006FF0B81D5AFE3AA18B701AA6A51712ED784FFF7678BC32EA'
 }
 
 var body = {
@@ -21,12 +21,6 @@ var body = {
         "generalPractitioner": [
           {
             "reference": "2750922,295"
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "RAT56"
           }
         ]
         "resourceType": "Patient"
