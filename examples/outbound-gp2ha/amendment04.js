@@ -1,7 +1,7 @@
 {
-  "id": "9999999999",
+  "nhsNumber": "9999999999",
   "gpCode": "8880232,G82697",
-  "gpCipher": "CHC5",
+  "gpTradingPartnerCode": "CHC5",
   "haCipher": "KC01",
   "healthcarePartyCode": "KC",
   "patches": [

@@ -1,12 +1,11 @@
 {
   /* The following parameters are required for every Amendment transaction */
   /* TODO: We need to standardise these across all transactions */
-  "id": "SEQ12",
+  "nhsNumber": "SEQ12",
   "gpCode": "2750922,295",
-  "gpCipher": "TES5",
-  "haCipher": "XX11",
+  "gpTradingPartnerCode": "TES5",
   "healthcarePartyCode": "XX1",
-  "gpFreeText": "NOW AT THE ARTHUR ANDREWS CENTRE",
+  "freeText": "NOW AT THE ARTHUR ANDREWS CENTRE",
   /* The list of JSONPatches to amend the patient record. Only add, replace, and remove operations are allowed. The add
      and replace operations are treated exactly the same way; that data items will be set to the valid provided
      whether it exists already or not.
