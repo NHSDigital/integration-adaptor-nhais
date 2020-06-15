@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-
 import org.springframework.util.StringUtils;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 /**
  * Example NAD+FHS+XX1:954'

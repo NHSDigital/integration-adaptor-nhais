@@ -33,7 +33,7 @@ public abstract class Segment {
 
     public String toEdifact() throws EdifactValidationException {
         this.validate();
-        return this.getKey() + "+" + this.getValue() + TERMINATOR;
+        return this.getKey() + PLUS_SEPARATOR + this.getValue() + TERMINATOR;
     }
 
 }

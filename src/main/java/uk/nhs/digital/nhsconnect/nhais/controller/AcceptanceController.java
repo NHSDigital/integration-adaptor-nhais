@@ -43,7 +43,7 @@ public class AcceptanceController {
         Parameters parameters = fhirParser.parseParameters(body);
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.TransactionType.ACCEPTANCE);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
-        outboundMeshService.send(meshMessage);
+        outboundMeshService.publishToOutboundQueue(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(translatedInterchange.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);

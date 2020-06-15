@@ -82,7 +82,7 @@ public class AcceptanceControllerTest {
             .andExpect(status().isAccepted())
             .andExpect(header().string("OperationId", OPERATION_ID));
 
-        verify(outboundMeshService).send(meshMessage);
+        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
     }
 
     @Test

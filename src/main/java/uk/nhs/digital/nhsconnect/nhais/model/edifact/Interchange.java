@@ -34,6 +34,10 @@ public class Interchange {
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = edifactMessage.getHealthAuthorityNameAndAddress();
     @Getter(lazy = true)
     private final GpNameAndAddress gpNameAndAddress = edifactMessage.getGpNameAndAddress();
+    @Getter(lazy = true)
+    private final NameAndAddress nameAndAddress = edifactMessage.getNameAndAddress();
+    @Getter(lazy = true)
+    private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 
     public List<ToEdifactParsingException> validate() {
 
@@ -43,7 +47,9 @@ public class Interchange {
             (Supplier<? extends Segment>) this::getTranslationDateTime,
             (Supplier<? extends Segment>) this::getReferenceTransactionType,
             (Supplier<? extends Segment>) this::getHealthAuthorityNameAndAddress,
-            (Supplier<? extends Segment>) this::getGpNameAndAddress)
+            (Supplier<? extends Segment>) this::getGpNameAndAddress,
+            (Supplier<? extends Segment>) this::getNameAndAddress,
+            (Supplier<? extends Segment>) this::getInterchangeTrailer)
             .map(this::checkData)
             .flatMap(Optional::stream)
             .collect(Collectors.toList());

@@ -18,6 +18,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -25,7 +26,6 @@ import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -107,6 +107,7 @@ public class FhirToEdifactService {
 
     private void recordOutboundState(TranslationItems translationItems) {
         var outboundState = new OutboundState()
+            .setWorkflowId(WorkflowId.REGISTRATION)
             .setRecipient(translationItems.recipient)
             .setSender(translationItems.sender)
 
@@ -115,7 +116,7 @@ public class FhirToEdifactService {
             .setTransactionId(translationItems.transactionNumber)
 
             .setTransactionType(translationItems.transactionType.getAbbreviation())
-            .setTransactionTimestamp(Date.from(translationItems.translationTimestamp))
+            .setTransactionTimestamp(translationItems.translationTimestamp)
             .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
     }
