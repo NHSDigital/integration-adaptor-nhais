@@ -40,21 +40,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class RegistrationConsumerServiceTest {
 
-    private static final String OPERATION_ID = "70086e87f012c1e9776bd59589726d3722420823e2b5ceb2f7c7441c4044ffba";
-    private static final String CONTENT = "some_content";
-
     public static final long INTERCHANGE_SEQUENCE = 3L;
     public static final long MESSAGE_SEQUENCE = 4L;
     public static final String SENDER = "TES5";
     public static final String RECIPIENT = "XX11";
     public static final long TRANSACTION_NUMBER = 18L;
     public static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
-
     public static final long RECEP_INTERCHANGE_SEQUENCE = 100L;
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
     public static final String RECEP_RECIPIENT = SENDER;
-
+    private static final String OPERATION_ID = "70086e87f012c1e9776bd59589726d3722420823e2b5ceb2f7c7441c4044ffba";
+    private static final String CONTENT = "some_content";
     private static final Instant TRANSLATION_TIME = ZonedDateTime
         .parse("199201141619", DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(TimestampService.UKZone))
         .toInstant();
@@ -157,7 +154,7 @@ public class RegistrationConsumerServiceTest {
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
-        verify(inboundGpSystemService).publishToSupplierQueue(any(), eq(OPERATION_ID));
+        verify(inboundGpSystemService).publishToSupplierQueue(any(), eq(OPERATION_ID), eq(TRANSACTION_TYPE));
 
         var meshRecepMessageArgumentCaptor = ArgumentCaptor.forClass(MeshMessage.class);
         verify(outboundMeshService).publishToOutboundQueue(meshRecepMessageArgumentCaptor.capture());
