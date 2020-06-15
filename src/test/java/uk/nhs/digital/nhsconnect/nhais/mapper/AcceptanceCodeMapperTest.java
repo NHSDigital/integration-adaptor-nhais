@@ -5,8 +5,6 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
 
-import java.util.NoSuchElementException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -37,7 +35,7 @@ class AcceptanceCodeMapperTest {
             .setValue(new StringType("test-fails"));
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> acceptanceCodeMapper.map(parameters));
     }
 
     @Test
@@ -45,6 +43,6 @@ class AcceptanceCodeMapperTest {
         Parameters parameters = new Parameters();
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceCodeMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> acceptanceCodeMapper.map(parameters));
     }
 }

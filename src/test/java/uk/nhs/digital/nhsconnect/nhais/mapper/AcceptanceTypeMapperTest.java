@@ -45,6 +45,6 @@ class AcceptanceTypeMapperTest {
         Parameters parameters = new Parameters();
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
-        assertThrows(NoSuchElementException.class, () -> acceptanceTypeMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> acceptanceTypeMapper.map(parameters));
     }
 }

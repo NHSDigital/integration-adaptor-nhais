@@ -60,7 +60,7 @@ class PersonNameMapperTest {
             .setResource(patient);
 
         var personNameMapper = new PersonNameMapper();
-        assertThrows(NoSuchElementException.class, () -> personNameMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> personNameMapper.map(parameters));
     }
 
     @Test

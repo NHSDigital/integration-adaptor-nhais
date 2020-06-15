@@ -15,9 +15,11 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
         Address address = getAddress(parameters);
 
         return PersonAddress.builder()
-            .addressText(address.getText())
             .addressLine1(getAddressLineOrNull(address.getLine(), 0))
             .addressLine2(getAddressLineOrNull(address.getLine(), 1))
+            .addressLine3(getAddressLineOrNull(address.getLine(), 2))
+            .addressLine4(getAddressLineOrNull(address.getLine(), 3))
+            .addressLine5(getAddressLineOrNull(address.getLine(), 4))
             .build();
     }
 
@@ -27,7 +29,7 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
         return patient.getAddress().stream()
             .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new IllegalStateException("Address mapping problem"));
     }
 
     private String getAddressLineOrNull(List<StringType> addressLines, int index) {

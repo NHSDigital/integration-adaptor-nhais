@@ -13,14 +13,13 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
     }
 
     private String getAcceptanceType(Parameters parameters) {
-        String inputValue = parameters.getParameter()
+        return parameters.getParameter()
             .stream()
             .filter(param -> ACCEPTANCE_TYPE.equals(param.getName()))
             .map(Parameters.ParametersParameterComponent::getValue)
             .map(Object::toString)
+            .map(AcceptanceType::getTypeValue)
             .findFirst()
-            .orElseThrow();
-
-        return AcceptanceType.getTypeValue(inputValue);
+            .orElseThrow(() -> new IllegalStateException("Acceptance Type not supported"));
     }
 }

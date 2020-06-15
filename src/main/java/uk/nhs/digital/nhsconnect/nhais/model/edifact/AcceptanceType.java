@@ -20,8 +20,7 @@ public class AcceptanceType extends Segment {
         "birth", "1",
         "first", "2",
         "transferin", "3",
-        "immigrant", "4",
-        "exservices", "5"
+        "immigrant", "4"
     );
     private @NonNull String type;
 

@@ -5,8 +5,6 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
 
-import java.util.NoSuchElementException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -36,6 +34,6 @@ class PersonGPPreviousMapperTest {
         Parameters parameters = new Parameters();
 
         var personGPPreviousMapper = new PersonGPPreviousMapper();
-        assertThrows(NoSuchElementException.class, () -> personGPPreviousMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> personGPPreviousMapper.map(parameters));
     }
 }

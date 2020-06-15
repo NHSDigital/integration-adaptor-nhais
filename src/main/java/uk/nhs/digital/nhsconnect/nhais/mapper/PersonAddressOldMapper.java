@@ -4,31 +4,32 @@ import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
 
 import java.util.List;
 
-public class PersonAddressOldMapper implements FromFhirToEdifactMapper<PersonAddress> {
-    private final static Address.AddressUse ADDRESS_USE_HOME = Address.AddressUse.OLD;
+public class PersonAddressOldMapper implements FromFhirToEdifactMapper<PersonOldAddress> {
+    private final static Address.AddressUse ADDRESS_USE_OLD = Address.AddressUse.OLD;
 
-    public PersonAddress map(Parameters parameters) {
-        Address address = getAddress(parameters);
+    public PersonOldAddress map(Parameters parameters) {
+        Address address = getOldAddress(parameters);
 
-        //Not sure if OLD address needs any validation re-using PersonAddress for now
-        return PersonAddress.builder()
-            .addressText(address.getText())
+        return PersonOldAddress.builder()
             .addressLine1(getAddressLineOrNull(address.getLine(), 0))
             .addressLine2(getAddressLineOrNull(address.getLine(), 1))
+            .addressLine3(getAddressLineOrNull(address.getLine(), 2))
+            .addressLine4(getAddressLineOrNull(address.getLine(), 3))
+            .addressLine5(getAddressLineOrNull(address.getLine(), 4))
             .build();
     }
 
-    private Address getAddress(Parameters parameters) {
+    private Address getOldAddress(Parameters parameters) {
         Patient patient = getPatient(parameters);
 
         return patient.getAddress().stream()
-            .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
+            .filter(address -> address.getUse().equals(ADDRESS_USE_OLD))
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new IllegalStateException("Previous Address mapping problem"));
     }
 
     private String getAddressLineOrNull(List<StringType> addressLines, int index) {

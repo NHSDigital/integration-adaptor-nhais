@@ -22,7 +22,7 @@ public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPP
             .map(Objects::toString)
             .map(this::splitPractitionerString)
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new IllegalStateException("Previous GP mapping problem"));
     }
 
     private String splitPractitionerString(String value) {

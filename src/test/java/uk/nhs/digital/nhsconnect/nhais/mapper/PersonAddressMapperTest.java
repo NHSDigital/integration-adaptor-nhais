@@ -3,12 +3,10 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,27 +15,13 @@ class PersonAddressMapperTest {
 
     @Test
     void When_MappingAddress_Then_ExpectCorrectResult() {
-        /*
-            {
-                "use": "home",
-                "type": "both",
-                "text": "534 Erewhon St PeasantVille, Rainbow, Vic  3999",
-                "line": [
-                    "534 Erewhon St"
-                ],
-                "city": "PleasantVille",
-                "district": "Rainbow",
-                "state": "Vic",
-                "postalCode": "3999",
-                "period": {
-                "start": "1974-12-25"
-            }
-         */
         Patient patient = new Patient();
         Address address = new Address();
         address.setUse(Address.AddressUse.HOME);
-        address.setText("534 Erewhon St PeasantVille, Rainbow, Vic  3999");
-        address.setLine(List.of(new StringType("534 Erewhon St")));
+        address.addLine("534 Erewhon St")
+            .addLine("PeasantVille")
+            .addLine("Rainbow")
+            .addLine("Vic 3999");
         patient.setAddress(List.of(address));
 
         Parameters parameters = new Parameters();
@@ -51,8 +35,10 @@ class PersonAddressMapperTest {
 
         var expectedPersonAddress = PersonAddress
             .builder()
-            .addressText("534 Erewhon St PeasantVille, Rainbow, Vic  3999")
             .addressLine1("534 Erewhon St")
+            .addressLine2("PeasantVille")
+            .addressLine3("Rainbow")
+            .addressLine4("Vic 3999")
             .build();
 
         assertEquals(expectedPersonAddress, personAddress);
@@ -68,6 +54,6 @@ class PersonAddressMapperTest {
             .setResource(patient);
 
         var personAddressMapper = new PersonAddressMapper();
-        assertThrows(NoSuchElementException.class, () -> personAddressMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> personAddressMapper.map(parameters));
     }
 }

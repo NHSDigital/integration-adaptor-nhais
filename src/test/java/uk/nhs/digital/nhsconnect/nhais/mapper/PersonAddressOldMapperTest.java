@@ -3,12 +3,10 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,8 +18,11 @@ class PersonAddressOldMapperTest {
         Patient patient = new Patient();
         Address address = new Address();
         address.setUse(Address.AddressUse.OLD);
-        address.setText("534 Erewhon St PeasantVille, Rainbow, Vic  3999");
-        address.setLine(List.of(new StringType("534 Erewhon St")));
+        address.addLine("Moorside Farm")
+            .addLine("Old Lane")
+            .addLine("St Pauls Cray")
+            .addLine("Orpington")
+            .addLine("Kent");
         patient.setAddress(List.of(address));
 
         Parameters parameters = new Parameters();
@@ -31,15 +32,18 @@ class PersonAddressOldMapperTest {
 
         var personAddressOldMapper = new PersonAddressOldMapper();
         personAddressOldMapper.map(parameters);
-        PersonAddress personAddress = personAddressOldMapper.map(parameters);
+        PersonOldAddress personOldAddress = personAddressOldMapper.map(parameters);
 
-        var expectedPersonAddress = PersonAddress
+        var expectedPersonOldAddress = PersonOldAddress
             .builder()
-            .addressText("534 Erewhon St PeasantVille, Rainbow, Vic  3999")
-            .addressLine1("534 Erewhon St")
+            .addressLine1("Moorside Farm")
+            .addressLine2("Old Lane")
+            .addressLine3("St Pauls Cray")
+            .addressLine4("Orpington")
+            .addressLine5("Kent")
             .build();
 
-        assertEquals(expectedPersonAddress, personAddress);
+        assertEquals(expectedPersonOldAddress, personOldAddress);
     }
 
     @Test
@@ -52,6 +56,6 @@ class PersonAddressOldMapperTest {
             .setResource(patient);
 
         var addressOldMapper = new PersonAddressOldMapper();
-        assertThrows(NoSuchElementException.class, () -> addressOldMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> addressOldMapper.map(parameters));
     }
 }

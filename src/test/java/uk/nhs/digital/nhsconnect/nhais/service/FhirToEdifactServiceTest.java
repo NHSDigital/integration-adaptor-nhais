@@ -81,7 +81,7 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
+    public void when_convertedSuccessfully_dependenciesCalledCorrectly() {
         Parameters parameters = createParameters();
 
         fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.TransactionType.ACCEPTANCE);
@@ -122,8 +122,8 @@ public class FhirToEdifactServiceTest {
             "PNA+PAT+54321:OPI+++SU:FamilyName++++'\n" +
             "DTM+329:19911106:102'\n" +
             "PDI+2'\n" +
-            "NAD+PAT++534 EREWHON ST PEASANTVILLE:RAINBOW:VIC  3999'\n" +
-            "NAD+PAT++31 TEST ST PEASANTVILLE:TEST-RAINBOW:VIC  3999'\n" +
+            "NAD+PAT++534 EREWHON ST:PEASANTVILLE:RAINBOW:VIC 3999'\n" +
+            "NAD+PER++31 TEST ST:PEASANTVILLE:TEST-RAINBOW:VIC 3999'\n" +
             "DTM+957:19911106:102'\n" +
             "NAD+PGP+Old-One,281:900'\n" +
             "UNT+8+00000056'\n" +
@@ -156,13 +156,18 @@ public class FhirToEdifactServiceTest {
 
         Address address = new Address();
         address.setUse(Address.AddressUse.HOME);
-        address.setText("534 Erewhon St PeasantVille, Rainbow, Vic  3999");
-        address.setLine(List.of(new StringType("534 Erewhon St")));
+        address.addLine("534 Erewhon St")
+            .addLine("PeasantVille")
+            .addLine("Rainbow")
+            .addLine("Vic 3999");
 
         Address oldAddress = new Address();
         oldAddress.setUse(Address.AddressUse.OLD);
-        oldAddress.setText("31 Test St PeasantVille, test-Rainbow, Vic  3999");
-        oldAddress.setLine(List.of(new StringType("534 Erewhon St")));
+        oldAddress.addLine("31 Test St")
+            .addLine("PeasantVille")
+            .addLine("test-Rainbow")
+            .addLine("Vic 3999");
+
         patient.setAddress(List.of(address, oldAddress));
 
         patient.setBirthDate(java.sql.Date.from(FIXED_TIME));

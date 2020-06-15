@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,6 +60,6 @@ class PersonDateOfEntryMapperTest {
         Parameters parameters = new Parameters();
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
-        assertThrows(NoSuchElementException.class, () -> personDateOfEntryMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> personDateOfEntryMapper.map(parameters));
     }
 }

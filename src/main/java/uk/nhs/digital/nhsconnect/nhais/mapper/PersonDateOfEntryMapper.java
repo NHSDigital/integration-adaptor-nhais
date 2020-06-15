@@ -24,7 +24,7 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
             .map(Objects::toString)
             .map(this::parseInstant)
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new IllegalStateException("Entry Date mapping problem"));
     }
 
     private Instant parseInstant(String value) {

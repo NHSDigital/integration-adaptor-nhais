@@ -10,9 +10,9 @@ import java.util.stream.Stream;
 
 @Builder
 @Data
-public class PersonAddress extends Segment {
+public class PersonOldAddress extends Segment {
     private final static String NAME_AND_ADDRESS = "NAD";
-    private final static String PAT_CODE = "PAT";
+    private final static String PAT_CODE = "PER";
     private final static String COLON_SEPARATOR = ":";
     private String addressLine1;
     private String addressLine2;
