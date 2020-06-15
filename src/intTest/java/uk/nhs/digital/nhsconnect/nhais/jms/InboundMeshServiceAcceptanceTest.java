@@ -15,8 +15,10 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 import javax.jms.JMSException;
+import javax.jms.Message;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -37,16 +39,26 @@ public class InboundMeshServiceAcceptanceTest extends InboundMeshServiceBaseTest
     void test(String category, String edifactInput, String fhirOutput) throws JMSException {
         sendToMeshInboundQueue(edifactInput);
 
-        assertThat(getGpInboundQueueFhir()).isEqualTo(fhirOutput);
-    }
+        var expectedTransactionType = category.split("/")[0];
 
-    private String getGpInboundQueueFhir() throws JMSException {
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
+        assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
+        assertMessageBody(gpSystemInboundQueueMessage, fhirOutput);
+    }
+
+    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedFhir) throws JMSException {
         var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
         assertThat(resource).isExactlyInstanceOf(Parameters.class);
 
-        return fhirParser.encodeToString(resource);
+        String fhir = fhirParser.encodeToString(resource);
+
+        assertThat(fhir).isEqualTo(expectedFhir);
+    }
+
+    private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {
+        String transactionType = gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.TRANSACTION_TYPE);
+        assertThat(transactionType).isEqualTo(expectedTransactionType);
     }
 
     private void sendToMeshInboundQueue(String edifact) {

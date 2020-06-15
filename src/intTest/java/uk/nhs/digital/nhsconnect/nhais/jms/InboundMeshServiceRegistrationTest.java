@@ -13,7 +13,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
-import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import javax.jms.JMSException;
@@ -76,7 +75,10 @@ public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTe
     private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException {
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
-        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.OPERATION_ID)).isEqualTo(OPERATION_ID);
+        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("OperationId"))
+            .isEqualTo(OPERATION_ID);
+        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("TransactionType"))
+            .isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
 
         var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
         softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
