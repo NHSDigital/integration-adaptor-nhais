@@ -5,23 +5,16 @@
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
+        "id": "PLACEHOLDER_FOR_PATIENT_ID",
         "generalPractitioner": [
           {
-            "reference": "Practitioner/4826940,281"
+            "reference": "Practitioner/2750922,295"
           }
         ],
         "managingOrganization": {
           "reference": "Organization/XX1"
         }
       }
-    },
-    {
-      "name": "gpTradingPartnerCode",
-      "valueString": "TEST5"
-    },
-    {
-      "name": "freeText",
-      "valueString": "WRONG HA - TRY SURREY"
     }
   ]
 }
