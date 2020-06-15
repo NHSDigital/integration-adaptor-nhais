@@ -3,15 +3,35 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
+
+    @Mock
+    private TransactionMapper transactionMapper1;
+    @Mock
+    private TransactionMapper transactionMapper2;
 
     private final String exampleMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
         "UNH+00000004+FHSREG:0:1:FH:FHS001'\n" +
@@ -40,10 +60,16 @@ class EdifactToFhirServiceTest {
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
 
+    @BeforeEach
+    void setUp() {
+        when(transactionMapper1.getTransactionType()).thenReturn(ReferenceTransactionType.TransactionType.REJECTION);
+        when(transactionMapper2.getTransactionType()).thenReturn(ReferenceTransactionType.TransactionType.ACCEPTANCE);
+    }
+
     @Test
     void convertToFhir() {
-
-        Parameters parameters = new EdifactToFhirService().convertToFhir(new EdifactParser().parse(exampleMessage));
+        Parameters parameters = new EdifactToFhirService(Set.of(transactionMapper1, transactionMapper2))
+            .convertToFhir(new EdifactParser().parse(exampleMessage));
 
         List<Resource> resources = parameters.getParameter().stream()
             .map(Parameters.ParametersParameterComponent::getResource)
@@ -55,6 +81,8 @@ class EdifactToFhirServiceTest {
 
         assertThat(patient.getManagingOrganization().getResource().getIdElement().getIdPart()).isEqualTo("XX1");
         assertThat(patient.getGeneralPractitionerFirstRep().getResource().getIdElement().getIdPart()).isEqualTo("2750922,295");
-//        FhirToJson.printResource(parameters);
+
+        verify(transactionMapper1, never()).map(any(), any());
+        verify(transactionMapper2).map(any(), any());
     }
 }

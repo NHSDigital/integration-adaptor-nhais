@@ -7,13 +7,21 @@
         "resourceType": "Patient",
         "generalPractitioner": [
           {
-            "reference": "Practitioner/2750922,295"
+            "reference": "Practitioner/4826940,281"
           }
         ],
         "managingOrganization": {
           "reference": "Organization/XX1"
         }
       }
+    },
+    {
+      "name": "freeText",
+      "valueString": "WRONG HA - TRY SURREY"
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TEST5"
     }
   ]
 }
