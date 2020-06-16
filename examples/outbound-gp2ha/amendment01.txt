@@ -1,0 +1,11 @@
+NHS Number SEQ12.
+New Title : Mrs.
+New Surname : Patterson.
+New Previous Surname : Smythe.
+New Address : Holly Cottage, 12 Long Lane, Bromley, Kent, BR5 4ER.
+Registered with GP 295 (GMC National GP Code 2750922) - now a dispensing GP for this patient.
+--DEPRECATED-- New Address has an RPP Mileage of  7, a Special District classification, Walking Units of 6 --DEPRECATED--
+and a Residential Institute Code of AA.
+The GP has added some free text (GP Notes) at the time of registration.
+
+# RPP Mileage, Special District, and Walking Units are deprecated and not incl
