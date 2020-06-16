@@ -76,7 +76,7 @@ public class AcceptanceControllerTest {
         when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
         when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
 
-        mockMvc.perform(post("/fhir/Patient")
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("application/json")
             .content(requestBody))
             .andExpect(status().isAccepted())
@@ -92,7 +92,7 @@ public class AcceptanceControllerTest {
         String expectedResponse = "{\"expected\":\"response\"}";
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
-        mockMvc.perform(post("/fhir/Patient")
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("application/json")
             .content(requestBody))
             .andExpect(status().isBadRequest())
@@ -106,7 +106,7 @@ public class AcceptanceControllerTest {
         String expectedResponse = "{\"expected\":\"response\"}";
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 
-        mockMvc.perform(post("/fhir/Patient")
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("application/json")
             .content(requestBody))
             .andExpect(status().isInternalServerError())

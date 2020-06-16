@@ -37,7 +37,7 @@ public class AcceptanceControllerIntegrationTest {
     void whenValidInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
 
-        mockMvc.perform(post("/fhir/Patient").contentType("application/json").content(requestBody))
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isAccepted());
 
         Iterable<OutboundState> outboundState = outboundStateRepository.findAll();
