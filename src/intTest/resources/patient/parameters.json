@@ -51,7 +51,17 @@
         "gender": "male",
         "generalPractitioner": [
           {
-            "reference": "Practitioner/2750922,295"
+            "id": "254406A3",
+            "type": "Organization",
+            "reference": "https://directory.spineservices.nhs.uk/STU3/Organization/Y12345",
+            "identifier": {
+              "system": "https://digital.nhs.uk/services/organisation-data-service",
+              "value": "Y12345",
+              "period": {
+                "start": "2020-01-01",
+                "end": "2021-12-31"
+              }
+            }
           }
         ],
         "id": "54321",
@@ -62,7 +72,10 @@
           }
         ],
         "managingOrganization": {
-          "reference": "Organization/XX1"
+          "identifier": {
+            "value": "HA456"
+          },
+          "type": "Organization"
         },
         "name": [
           {
