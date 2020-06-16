@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -8,26 +9,28 @@ import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
-import java.util.Set;
+import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EdifactToFhirService {
 
-    public final Set<TransactionMapper> transactionMappers;
+    public final Map<ReferenceTransactionType.TransactionType, TransactionMapper> transactionMappers;
 
     public Parameters convertToFhir(Interchange interchange) {
-        Patient patient = createPatient(interchange); //TODO: update placeholder with correct value
+        Patient patient = createPatient(interchange);
 
         var parameters = createParameters(patient);
 
-        transactionMappers.stream()
-            .filter(transactionMapper -> transactionMapper.getTransactionType() == interchange.getReferenceTransactionType().getTransactionType())
-            .forEach(transactionMapper -> transactionMapper.map(parameters, interchange));
+        transactionMappers
+            .get(interchange.getReferenceTransactionType().getTransactionType())
+            .map(parameters, interchange);
 
         return parameters;
     }

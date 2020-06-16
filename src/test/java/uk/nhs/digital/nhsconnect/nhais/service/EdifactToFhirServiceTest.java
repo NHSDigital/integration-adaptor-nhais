@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -13,14 +12,13 @@ import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
@@ -56,15 +54,13 @@ class EdifactToFhirServiceTest {
     @Mock
     private TransactionMapper transactionMapper2;
 
-    @BeforeEach
-    void setUp() {
-        when(transactionMapper1.getTransactionType()).thenReturn(ReferenceTransactionType.TransactionType.REJECTION);
-        when(transactionMapper2.getTransactionType()).thenReturn(ReferenceTransactionType.TransactionType.ACCEPTANCE);
-    }
-
     @Test
     void convertToFhir() {
-        Parameters parameters = new EdifactToFhirService(Set.of(transactionMapper1, transactionMapper2))
+        var transactionMappers = Map.of(
+            ReferenceTransactionType.TransactionType.REJECTION, transactionMapper1,
+            ReferenceTransactionType.TransactionType.ACCEPTANCE, transactionMapper2);
+
+        Parameters parameters = new EdifactToFhirService(transactionMappers)
             .convertToFhir(new EdifactParser().parse(exampleMessage));
 
         List<Resource> resources = parameters.getParameter().stream()
