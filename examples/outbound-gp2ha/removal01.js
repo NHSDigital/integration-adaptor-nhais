@@ -12,11 +12,17 @@
       "name": "patient",
       "resource": {
         "managingOrganization": {
-          "reference": "XX1"
+          "identifier": [{
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }]
         },
         "generalPractitioner": [
           {
-            "reference": "4826940,281"
+           "identifier": {
+             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+             "value": "4826940,281"
+           }
           }
         ],
         "identifier": [
