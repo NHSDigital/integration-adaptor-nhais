@@ -9,24 +9,25 @@ import java.util.Objects;
 
 @Builder
 @Data
-public class PersonHA extends Segment {
-    private final static String HA_PREFIX = "FHS";
-    private final static String HA_SUFFIX = ":954";
+public class PartyQualifier extends Segment {
+    private final static String KEY = "NAD";
+    private final static String CODE = "FHS";
+    private final static String REGISTRATION_ID = ":954";
 
     //NAD+FHS+XX1:954'
     private @NonNull String organization;
 
     @Override
     public String getKey() {
-        return "NAD";
+        return KEY;
     }
 
     @Override
     public String getValue() {
-        return HA_PREFIX
+        return CODE
             .concat(PLUS_SEPARATOR)
             .concat(organization)
-            .concat(HA_SUFFIX);
+            .concat(REGISTRATION_ID);
     }
 
     @Override

@@ -11,9 +11,8 @@ import java.util.stream.Stream;
 @Builder
 @Data
 public class PersonOldAddress extends Segment {
-    private final static String NAME_AND_ADDRESS = "NAD";
+    private final static String KEY = "NAD";
     private final static String PAT_CODE = "PER";
-    private final static String COLON_SEPARATOR = ":";
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -22,7 +21,7 @@ public class PersonOldAddress extends Segment {
 
     @Override
     public String getKey() {
-        return NAME_AND_ADDRESS;
+        return KEY;
     }
 
     @Override

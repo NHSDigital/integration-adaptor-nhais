@@ -11,11 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Example PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+ * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
  */
 @Setter
 @Builder
@@ -23,7 +22,7 @@ public class PersonName extends Segment {
 
     public static final String KEY = "PNA";
     public static final String QUALIFIER = "PAT";
-    public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
+    public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
     //all properties are optional
     private String nhsNumber;
@@ -45,7 +44,7 @@ public class PersonName extends Segment {
             throw new IllegalArgumentException("Can't create " + PersonName.class.getSimpleName() + " from " + edifactString);
         }
         return PersonName.builder()
-            .nhsNumber(getNhsNumber(edifactString))
+            .nhsNumber(extractNhsNumber(edifactString))
             .patientIdentificationType(getPatientIdentificationType(edifactString))
             .familyName(extractNamePart("SU", edifactString))
             .forename(extractNamePart("FO", edifactString))
@@ -55,7 +54,7 @@ public class PersonName extends Segment {
             .build();
     }
 
-    private static String getNhsNumber(String edifactString) {
+    private static String extractNhsNumber(String edifactString) {
         String[] components = edifactString.split("\\+");
         if (components.length > 2 && StringUtils.isNotEmpty(components[2])) {
             return components[2].split(":")[0];
@@ -65,7 +64,7 @@ public class PersonName extends Segment {
 
     private static String getPatientIdentificationType(String edifactString) {
         String[] components = edifactString.split("\\+");
-        if (StringUtils.isNotEmpty(getNhsNumber(edifactString)) && components.length > 1) {
+        if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
             return components[2].split(":")[1];
         }
         return null;
@@ -110,7 +109,7 @@ public class PersonName extends Segment {
             .map(value -> "FS:" + value)
             .ifPresent(values::add);
 
-        return values.stream().collect(Collectors.joining("+"));
+        return String.join(PLUS_SEPARATOR, values);
     }
 
     private boolean containsName() {

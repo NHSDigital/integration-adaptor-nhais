@@ -16,6 +16,7 @@ import java.util.Optional;
 @Builder
 @Data
 public class PersonSex extends Segment {
+    private final static String KEY = "PDI";
     private final static Map<Enumerations.AdministrativeGender, String> PATIENT_SEX_CODE = ImmutableMap.of(
         Enumerations.AdministrativeGender.UNKNOWN, "0",
         Enumerations.AdministrativeGender.MALE, "1",
@@ -33,7 +34,7 @@ public class PersonSex extends Segment {
 
     @Override
     public String getKey() {
-        return "PDI";
+        return KEY;
     }
 
     @Override

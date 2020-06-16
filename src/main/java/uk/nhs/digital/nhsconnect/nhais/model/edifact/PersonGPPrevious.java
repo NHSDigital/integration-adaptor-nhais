@@ -10,23 +10,29 @@ import java.util.Objects;
 @Builder
 @Data
 public class PersonGPPrevious extends Segment {
-    private final static String PGP_PREFIX = "PGP";
-    private final static String PGP_SUFFIX = ",281:900";
+    private final static String KEY = "NAD";
+    private final static String PREVIOUS_GP_QUALIFIER = "PGP";
+    //TODO LOCAL_GP_CODE is not static value
+    private final static String LOCAL_GP_CODE = "281";
+    //TODO CODE_LIST_QUALIFIER is not static value
+    private final static String CODE_LIST_QUALIFIER = "900";
 
-    //NAD+PGP+4826940,281:900'
     private @NonNull String practitioner;
 
     @Override
     public String getKey() {
-        return "NAD";
+        return KEY;
     }
 
     @Override
     public String getValue() {
-        return PGP_PREFIX
+        return PREVIOUS_GP_QUALIFIER
             .concat(PLUS_SEPARATOR)
             .concat(practitioner)
-            .concat(PGP_SUFFIX);
+            .concat(COMMA_SEPARATOR)
+            .concat(LOCAL_GP_CODE)
+            .concat(COLON_SEPARATOR)
+            .concat(CODE_LIST_QUALIFIER);
     }
 
     @Override

@@ -25,6 +25,18 @@ public class PersonNameTest {
     }
 
     @Test
+    public void When_BuildingNameWithTypeOnly_Then_ReturnCorrectValue() {
+        var expectedValue = "PNA+PAT+T247:OPI'";
+
+        var personName = PersonName.builder()
+            .nhsNumber("T247")
+            .patientIdentificationType("OPI")
+            .build();
+
+        assertEquals(expectedValue, personName.toEdifact());
+    }
+
+    @Test
     public void When_BuildingEmptyName_Then_ReturnEmptySegment() {
         var expectedValue = "PNA+PAT+'";
 
