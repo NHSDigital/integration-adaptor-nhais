@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
@@ -37,10 +39,11 @@ public class FhirToEdifactService {
     private final OutboundStateRepository outboundStateRepository;
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
+    private final FhirParser fhirParser;
 
-    public TranslatedInterchange convertToEdifact(Patient patient, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
-        translationItems.patient = patient;
+        translationItems.patient = fhirParser.getPatientFromParams(parameters);
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
         generateTimestamp(translationItems);

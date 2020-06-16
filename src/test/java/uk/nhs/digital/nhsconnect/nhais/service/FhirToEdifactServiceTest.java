@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +62,7 @@ public class FhirToEdifactServiceTest {
 
     @Test
     public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
-        Patient patient = createPatient();
+        Parameters patient = createPatient();
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
@@ -85,7 +86,7 @@ public class FhirToEdifactServiceTest {
 
     @Test
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
-        Patient patient = createPatient();
+        Parameters patient = createPatient();
 
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
@@ -103,7 +104,7 @@ public class FhirToEdifactServiceTest {
         assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
     }
 
-    private Patient createPatient() {
+    private Parameters createPatient() {
         Patient patient = new Patient();
         patient.setId(NHS_NUMBER);
         Identifier patientId = new Identifier();
@@ -121,7 +122,13 @@ public class FhirToEdifactServiceTest {
         Reference haRef = new Reference();
         haRef.setIdentifier(haId);
         patient.setManagingOrganization(haRef);
-        return patient;
+
+        Parameters parameters = new Parameters();
+        Parameters.ParametersParameterComponent param = new Parameters.ParametersParameterComponent();
+        param.setName("patient");
+        param.setResource(patient);
+        parameters.addParameter(param);
+        return parameters;
     }
 
 }
