@@ -28,6 +28,7 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
     }
 
     private Instant parseInstant(String value) {
+        //TODO use TimestampService
         return ZonedDateTime.parse(value).toInstant();
     }
 }

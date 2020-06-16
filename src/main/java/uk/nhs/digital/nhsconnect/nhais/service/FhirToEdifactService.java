@@ -74,6 +74,7 @@ public class FhirToEdifactService {
     }
 
     private void createSegments(Parameters parameters, TranslationItems translationItems) {
+        //TODO use dependency injection
         FromFhirToEdifact fromFhirToEdifact = new FromFhirToEdifact();
 
         translationItems.segments.add(new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp));
