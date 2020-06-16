@@ -26,20 +26,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AcceptanceControllerIntegrationTest {
 
     @Autowired
+    OutboundStateRepository outboundStateRepository;
+    @Autowired
     private MockMvc mockMvc;
 
-    @Value("classpath:patient.json")
-    private Resource patientPayload;
-
-    @Autowired
-    OutboundStateRepository outboundStateRepository;
+    @Value("classpath:patient/parameters.json")
+    private Resource paramsPayload;
 
     @Test
     void whenValidInput_thenReturns202() throws Exception {
-        String requestBody = new String(Files.readAllBytes(patientPayload.getFile().toPath()));
+        String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
 
-        mockMvc.perform(post("/fhir/Patient/12345").contentType("application/json").content(requestBody))
-                .andExpect(status().isAccepted());
+        mockMvc.perform(post("/fhir/Patient").contentType("application/json").content(requestBody))
+            .andExpect(status().isAccepted());
 
         Iterable<OutboundState> outboundState = outboundStateRepository.findAll();
 
