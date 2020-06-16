@@ -12,7 +12,7 @@ public class EdifactParser {
     public Interchange parse(String edifact) {
         EdifactMessage edifactMessage = new EdifactMessage(edifact);
         Interchange interchange = new Interchange(edifactMessage);
-//        validateInterchange(interchange);
+        validateInterchange(interchange);
 
         return interchange;
     }

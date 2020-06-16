@@ -12,8 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,16 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
-
-    @Mock
-    private TransactionMapper transactionMapper1;
-    @Mock
-    private TransactionMapper transactionMapper2;
 
     private final String exampleMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
         "UNH+00000004+FHSREG:0:1:FH:FHS001'\n" +
@@ -59,6 +51,10 @@ class EdifactToFhirServiceTest {
         "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
+    @Mock
+    private TransactionMapper transactionMapper1;
+    @Mock
+    private TransactionMapper transactionMapper2;
 
     @BeforeEach
     void setUp() {
@@ -79,8 +75,13 @@ class EdifactToFhirServiceTest {
         assertThat(parameters.getParameterFirstRep().getName()).isEqualTo("patient");
         Patient patient = (Patient) parameters.getParameterFirstRep().getResource();
 
-        assertThat(patient.getManagingOrganization().getResource().getIdElement().getIdPart()).isEqualTo("XX1");
-        assertThat(patient.getGeneralPractitionerFirstRep().getResource().getIdElement().getIdPart()).isEqualTo("2750922,295");
+        assertThat(patient.getManagingOrganization().getIdentifier().getSystem())
+            .isEqualTo("https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation");
+        assertThat(patient.getManagingOrganization().getIdentifier().getValue()).isEqualTo("XX1");
+
+        assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getSystem())
+            .isEqualTo("https://fhir.hl7.org.uk/Id/gmc-number");
+        assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
 
         verify(transactionMapper1, never()).map(any(), any());
         verify(transactionMapper2).map(any(), any());

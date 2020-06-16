@@ -7,11 +7,17 @@
         "resourceType": "Patient",
         "generalPractitioner": [
           {
-            "reference": "Practitioner/2750922,295"
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
+            }
           }
         ],
         "managingOrganization": {
-          "reference": "Organization/XX1"
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
         }
       }
     }

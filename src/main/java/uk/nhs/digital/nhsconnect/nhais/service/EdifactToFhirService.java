@@ -1,15 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
 import java.util.Set;
@@ -46,21 +46,16 @@ public class EdifactToFhirService {
 
     private Reference createGeneralPractitionerReference(Interchange interchange) {
         String gpId = interchange.getGpNameAndAddress().getIdentifier();
-        return new Reference(
-            new Practitioner().setId(gpId)
-        );
+        return new Reference().setIdentifier(new GeneralPractitionerIdentifier(gpId));
     }
 
     private Reference createManagingOrganizationReference(Interchange interchange) {
         String organizationId = interchange.getHealthAuthorityNameAndAddress().getIdentifier();
-        return new Reference(
-            new Organization().setId(organizationId)
-        );
+        return new Reference().setIdentifier(new ManagingOrganizationIdentifier(organizationId));
     }
 
     private Patient createPatient(Interchange interchange) {
         var patient = new Patient();
-//        patient.setId(patientId);
 
         Reference managingOrganization = createManagingOrganizationReference(interchange);
         Reference generalPractitioner = createGeneralPractitionerReference(interchange);
