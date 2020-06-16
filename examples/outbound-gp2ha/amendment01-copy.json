@@ -1,0 +1,26 @@
+{
+  "nhsNumber": "SEQ12",
+  "gpCode": "2750922,295",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
+  "freeText": "NOW AT THE ARTHUR ANDREWS CENTRE",
+  "patches": [
+    { "op": "replace", "path": "/name/0/prefix/0", "value": "MRS" },
+    { "op": "replace", "path": "/name/0/family", "value": "PATTERSON" },
+    { "op": "replace", "path": "/name/1/family", "value": "SMYTHE" },
+    { "op": "replace", "path": "/address/0/line/0", "value": "HOLLY COTTAGE" },
+    { "op": "replace", "path": "/address/0/line/1", "value": "12 LONG LANE" },
+    { "op": "replace", "path": "/address/0/line/2", "value": "" },
+    { "op": "replace", "path": "/address/0/line/3", "value": "BROMLEY" },
+    { "op": "replace", "path": "/address/0/line/4", "value": "KENT" },
+    { "op": "replace", "path": "/address/0/postalCode", "value": "BR5  4ER" },
+    { "op": "replace", "path": "/extension/0", "value": {
+      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+      "valueBoolean": true}
+    },
+    { "op": "replace", "path": "/extension/0", "value": {
+      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+      "valueString": "AA"}
+    }
+  ]
+}
