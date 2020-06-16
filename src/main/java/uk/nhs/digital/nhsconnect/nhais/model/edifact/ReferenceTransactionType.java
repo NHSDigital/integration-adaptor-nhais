@@ -57,7 +57,8 @@ public class ReferenceTransactionType extends Segment {
         AMENDMENT("G2", "AMG"),
         REMOVAL("G3", "REG"),
         DEDUCTION("G4", "DER"),
-        REJECTION("F3", "REF");
+        REJECTION("F3", "REF"),
+        APPROVAL("F4", "APF");
 
         private final String code;
         private final String abbreviation;

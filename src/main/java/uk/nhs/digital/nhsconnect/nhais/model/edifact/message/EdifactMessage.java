@@ -9,6 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
@@ -80,6 +81,11 @@ public class EdifactMessage {
         return FreeText.fromString(
             extractSegment(FreeText.KEY_QUALIFIER)
         );
+    }
+
+    public Optional<PatientIdentifier> getPatientIdentifier() {
+        return extractOptionalSegment(PatientIdentifier.KEY_QUALIFIER)
+            .map(PatientIdentifier::fromString);
     }
 
     public InterchangeTrailer getInterchangeTrailer() {

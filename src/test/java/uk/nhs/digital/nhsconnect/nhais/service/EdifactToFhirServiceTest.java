@@ -1,8 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -43,7 +49,7 @@ class EdifactToFhirServiceTest {
         "LOC+950+GLASGOW'\n" +
         "FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'\n" +
         "S02+2'\n" +
-        "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
+        "PNA+PAT+NHS123:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
         "DTM+329:19911209:102'\n" +
         "PDI+2'\n" +
         "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
@@ -63,13 +69,10 @@ class EdifactToFhirServiceTest {
         Parameters parameters = new EdifactToFhirService(transactionMappers)
             .convertToFhir(new EdifactParser().parse(exampleMessage));
 
-        List<Resource> resources = parameters.getParameter().stream()
-            .map(Parameters.ParametersParameterComponent::getResource)
-            .collect(Collectors.toList());
+        ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        assertThat(resources).hasOnlyElementsOfType(Patient.class);
-        assertThat(parameters.getParameterFirstRep().getName()).isEqualTo("patient");
-        Patient patient = (Patient) parameters.getParameterFirstRep().getResource();
+        Patient patient = parametersExt.extractPatient();
+        String gpTradingPartnerCode = parametersExt.extractValue("gpTradingPartnerCode");
 
         assertThat(patient.getManagingOrganization().getIdentifier().getSystem())
             .isEqualTo("https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation");
@@ -78,6 +81,8 @@ class EdifactToFhirServiceTest {
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getSystem())
             .isEqualTo("https://fhir.hl7.org.uk/Id/gmc-number");
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
+        assertThat(gpTradingPartnerCode).isEqualTo("XX11");
+        assertThat(patient.getIdentifierFirstRep().getValue()).isEqualTo("NHS123");
 
         verify(transactionMapper1, never()).map(any(), any());
         verify(transactionMapper2).map(any(), any());

@@ -2,6 +2,10 @@
   "resourceType": "Parameters",
   "parameter": [
     {
+      "name": "gpTradingPartnerCode",
+      "valueString": "XX11"
+    },
+    {
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
