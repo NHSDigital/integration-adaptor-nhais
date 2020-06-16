@@ -29,7 +29,6 @@ public class PersonOldAddress extends Segment {
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
             .filter(Objects::nonNull)
-            .map(String::toUpperCase)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE

@@ -87,6 +87,7 @@ public class PersonName extends Segment {
     @Override
     public String getValue() {
         List<String> values = new ArrayList<>();
+        values.add(QUALIFIER);
 
         String namesDelimiter = containsName() ? "++" : "";
         Optional.ofNullable(this.nhsNumber)
@@ -109,7 +110,7 @@ public class PersonName extends Segment {
             .map(value -> "FS:" + value)
             .ifPresent(values::add);
 
-        return QUALIFIER + "+" + values.stream().collect(Collectors.joining("+"));
+        return values.stream().collect(Collectors.joining("+"));
     }
 
     private boolean containsName() {

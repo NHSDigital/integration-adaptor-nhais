@@ -13,11 +13,11 @@ public class PersonAddressTest {
         var expectedValue = "NAD+PAT++MOORSIDE FARM:OLD LANE:ST PAULS CRAY:ORPINGTON:KENT'";
 
         var personAddress = PersonAddress.builder()
-            .addressLine1("Moorside Farm")
-            .addressLine2("Old Lane")
-            .addressLine3("St Pauls Cray")
-            .addressLine4("Orpington")
-            .addressLine5("Kent")
+            .addressLine1("MOORSIDE FARM")
+            .addressLine2("OLD LANE")
+            .addressLine3("ST PAULS CRAY")
+            .addressLine4("ORPINGTON")
+            .addressLine5("KENT")
             .build();
 
         assertEquals(expectedValue, personAddress.toEdifact());
@@ -28,9 +28,9 @@ public class PersonAddressTest {
         var expectedValue = "NAD+PAT++MOORSIDE FARM:ST PAULS CRAY:KENT'";
 
         var personAddress = PersonAddress.builder()
-            .addressLine1("Moorside Farm")
-            .addressLine3("St Pauls Cray")
-            .addressLine5("Kent")
+            .addressLine1("MOORSIDE FARM")
+            .addressLine3("ST PAULS CRAY")
+            .addressLine5("KENT")
             .build();
 
         assertEquals(expectedValue, personAddress.toEdifact());
