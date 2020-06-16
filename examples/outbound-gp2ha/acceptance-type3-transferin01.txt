@@ -1,0 +1,7 @@
+Lord Roger Asquith.
+Born : 23/07/1946 in Peterborough.
+Address : The Mansion House, St Pauls Cray, Orpington, Kent, BR12 7ET.
+Registered with GP 281 (GMC National GP Code 4826940).
+Address has a Blocked Route classification.
+The patient was previously registered with a Dr. Black and previously lived in Horsforth, Leeds.
+Information transmitted within Interchange 4, Message 5, Transaction Number 19 at 09:04 on 15/01/1992.
