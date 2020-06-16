@@ -48,38 +48,38 @@ class EdifactParserTest {
         assertThat(interchange.getTranslationDateTime().getValue()).isEqualTo("137:199201141619:203");
     }
 
-//    @Test
-//    void testValidateInterchange() {
-//        String messageWithEmptySegments = "S01+1'\n" +
-//            "S02+2'\n" +
-//            "UNT+24+00000004'\n" +
-//            "UNZ+1+00000003'";
-//
-//        String messageWithEmptySender = "UNB+UNOA:2++XX11+920114:1619+00000003'\n" +
-//            "BGM+++507'\n" +
-//            "S01+1'\n" +
-//            "S02+2'\n" +
-//            "UNT+24+00000004'\n" +
-//            "UNZ+1+00000003'";
-//
-//        assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySegments))
-//            .isExactlyInstanceOf(ToEdifactParsingException.class)
-//            .hasMessageContaining("missing segment UNB")
-//            .hasMessageContaining("missing segment UNH")
-//            .hasMessageContaining("missing segment RFF+TN")
-//            .hasMessageContaining("missing segment RFF+950")
-//            .hasMessageContaining("missing segment DTM")
-//            .hasMessageContaining("missing segment NAD+FHS")
-//            .hasMessageContaining("missing segment NAD+GP");
-//
-//        assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySender))
-//            .isExactlyInstanceOf(ToEdifactParsingException.class)
-//            .hasMessageContaining("UNB: Attribute sender is required")
-//            .hasMessageContaining("missing segment UNH")
-//            .hasMessageContaining("missing segment RFF+TN")
-//            .hasMessageContaining("missing segment RFF+950")
-//            .hasMessageContaining("missing segment DTM")
-//            .hasMessageContaining("missing segment NAD+FHS")
-//            .hasMessageContaining("missing segment NAD+GP");
-//    }
+    @Test
+    void testValidateInterchange() {
+        String messageWithEmptySegments = "S01+1'\n" +
+            "S02+2'\n" +
+            "UNT+24+00000004'\n" +
+            "UNZ+1+00000003'";
+
+        String messageWithEmptySender = "UNB+UNOA:2++XX11+920114:1619+00000003'\n" +
+            "BGM+++507'\n" +
+            "S01+1'\n" +
+            "S02+2'\n" +
+            "UNT+24+00000004'\n" +
+            "UNZ+1+00000003'";
+
+        assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySegments))
+            .isExactlyInstanceOf(ToEdifactParsingException.class)
+            .hasMessageContaining("missing segment UNB")
+            .hasMessageContaining("missing segment UNH")
+            .hasMessageContaining("missing segment RFF+TN")
+            .hasMessageContaining("missing segment RFF+950")
+            .hasMessageContaining("missing segment DTM")
+            .hasMessageContaining("missing segment NAD+FHS")
+            .hasMessageContaining("missing segment NAD+GP");
+
+        assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySender))
+            .isExactlyInstanceOf(ToEdifactParsingException.class)
+            .hasMessageContaining("UNB: Attribute sender is required")
+            .hasMessageContaining("missing segment UNH")
+            .hasMessageContaining("missing segment RFF+TN")
+            .hasMessageContaining("missing segment RFF+950")
+            .hasMessageContaining("missing segment DTM")
+            .hasMessageContaining("missing segment NAD+FHS")
+            .hasMessageContaining("missing segment NAD+GP");
+    }
 }
