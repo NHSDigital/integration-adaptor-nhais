@@ -13,23 +13,25 @@ public class PersonGPPreviousTest {
         var expectedValue = "NAD+PGP+4826940,281:900'";
 
         var personGPPrevious = PersonGPPrevious.builder()
-            .practitioner("4826940")
+            .identifier("4826940,281")
+            .code("900")
             .build();
 
         assertEquals(expectedValue, personGPPrevious.toEdifact());
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyPractitioner_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyFields_Then_EdifactValidationExceptionIsThrown() {
         var personGPPrevious = PersonGPPrevious.builder()
-            .practitioner("")
+            .identifier("")
+            .code("")
             .build();
 
         assertThrows(EdifactValidationException.class, personGPPrevious::toEdifact);
     }
 
     @Test
-    public void When_BuildingWithoutPractitioner_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithoutMandatoryFields_Then_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PersonGPPrevious.builder().build());
     }
 }
