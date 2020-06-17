@@ -23,7 +23,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @DirtiesContext
-public class InboundMeshServiceRegistrationTest extends InboundMeshServiceBaseTest {
+public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 3;
     private static final long MESSAGE_SEQUENCE = 4;

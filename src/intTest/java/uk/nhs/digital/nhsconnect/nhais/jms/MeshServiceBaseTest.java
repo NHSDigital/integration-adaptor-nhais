@@ -34,7 +34,7 @@ import static org.awaitility.Awaitility.await;
 @ExtendWith({SpringExtension.class, SoftAssertionsExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @Slf4j
-public abstract class InboundMeshServiceBaseTest {
+public abstract class MeshServiceBaseTest {
 
     protected static final int WAIT_FOR_IN_SECONDS = 5;
     private long originalReceiveTimeout;
@@ -97,9 +97,22 @@ public abstract class InboundMeshServiceBaseTest {
         return new FhirParser().parse(body);
     }
 
+    protected MeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
+        if (message == null) {
+            return null;
+        }
+        var body = InboundMeshService.readMessage(message);
+        return deserializeMeshMessage(body);
+    }
+
     @SneakyThrows
     private String serializeMeshMessage(MeshMessage meshMessage) {
         return objectMapper.writeValueAsString(meshMessage);
+    }
+
+    @SneakyThrows
+    private MeshMessage deserializeMeshMessage(String meshMessage) {
+        return objectMapper.readValue(meshMessage, MeshMessage.class);
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {
