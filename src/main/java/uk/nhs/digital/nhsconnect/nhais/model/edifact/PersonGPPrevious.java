@@ -8,29 +8,25 @@ import lombok.Setter;
 import org.springframework.util.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-/**
- * Example NAD+GP+2750922,295:900'
- */
 @Getter
 @Setter
 @Builder
 @RequiredArgsConstructor
-public class GpNameAndAddress extends Segment {
-
+public class PersonGPPrevious extends Segment {
     public static final String KEY = "NAD";
-    public static final String QUALIFIER = "GP";
-    public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
+    public static final String PREVIOUS_GP_QUALIFIER = "PGP";
+    public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + PREVIOUS_GP_QUALIFIER;
     private @NonNull String identifier;
     private @NonNull String code;
 
-    public static GpNameAndAddress fromString(String edifactString) {
-        if (!edifactString.startsWith(GpNameAndAddress.KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + GpNameAndAddress.class.getSimpleName() + " from " + edifactString);
+    public static PersonGPPrevious fromString(String edifactString) {
+        if (!edifactString.startsWith(PersonGPPrevious.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + PersonGPPrevious.class.getSimpleName() + " from " + edifactString);
         }
         String[] keySplit = edifactString.split("\\+");
         String identifier = keySplit[2].split("\\:")[0];
         String code = keySplit[2].split("\\:")[1];
-        return new GpNameAndAddress(identifier, code);
+        return new PersonGPPrevious(identifier, code);
     }
 
     @Override
@@ -40,7 +36,11 @@ public class GpNameAndAddress extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + "+" + identifier + ":" + code;
+        return PREVIOUS_GP_QUALIFIER +
+            PLUS_SEPARATOR +
+            identifier +
+            COLON_SEPARATOR +
+            code;
     }
 
     @Override
