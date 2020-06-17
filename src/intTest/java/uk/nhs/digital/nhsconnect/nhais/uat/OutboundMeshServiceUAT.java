@@ -4,20 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
-
-import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,8 +53,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     }
 
     private void sendToApi(String fhirInput, String transactionType) throws Exception {
-//        mockMvc.perform(post("/fhir/Patient/" + transactionType).contentType("application/json").content(fhirInput))
-        mockMvc.perform(post("/fhir/Patient/1234").contentType("application/json").content(fhirInput))
+        mockMvc.perform(post("/fhir/Patient/$nhais." + transactionType).contentType("application/json").content(fhirInput))
             .andExpect(status().isAccepted());
     }
 
