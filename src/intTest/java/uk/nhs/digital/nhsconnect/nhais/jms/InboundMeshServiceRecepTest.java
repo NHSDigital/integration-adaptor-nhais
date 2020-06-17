@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-public class InboundMeshServiceRecepTest extends InboundMeshServiceBaseTest {
+public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
     private static final long MESSAGE_SEQUENCE = 28;
