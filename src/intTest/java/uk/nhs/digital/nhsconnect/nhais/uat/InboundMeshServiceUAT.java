@@ -24,7 +24,7 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.Inbound.class)
-    void test(String category, TestData testData) throws JMSException {
+    void testTranslatingFromEdifactToFhir(String category, TestData testData) throws JMSException {
         // send EDIFACT to "inbound queue"
         sendToMeshInboundQueue(testData.getEdifact());
 

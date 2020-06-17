@@ -39,7 +39,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.Outbound.class)
-    void test(String category, TestData testData) throws Exception {
+    void testTranslatingFromFrhiToEdifact(String category, TestData testData) throws Exception {
         var transactionType = category.split("/")[0];
 
         // send EDIFACT to API
