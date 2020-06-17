@@ -9,25 +9,25 @@ import java.util.Objects;
 
 @Builder
 @Data
-public class PersonGP extends Segment {
-    private final static String GP_PREFIX = "GP";
-    private final static String GP_SUFFIX = ",281:900";
+public class PartyQualifier extends Segment {
+    private final static String KEY = "NAD";
+    private final static String CODE = "FHS";
+    private final static String REGISTRATION_ID = ":954";
 
-    //Registered with GP 281 (GMC National GP Code 4826940).
-    //NAD+GP+4826940,281:900'
-    private @NonNull String practitioner;
+    //NAD+FHS+XX1:954'
+    private @NonNull String organization;
 
     @Override
     public String getKey() {
-        return "NAD";
+        return KEY;
     }
 
     @Override
     public String getValue() {
-        return GP_PREFIX
+        return CODE
             .concat(PLUS_SEPARATOR)
-            .concat(practitioner)
-            .concat(GP_SUFFIX);
+            .concat(organization)
+            .concat(REGISTRATION_ID);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class PersonGP extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(practitioner) || practitioner.isBlank()) {
-            throw new EdifactValidationException(getKey() + ": practitioner is required");
+        if (Objects.isNull(organization) || organization.isBlank()) {
+            throw new EdifactValidationException(getKey() + ": organization is required");
         }
     }
 }

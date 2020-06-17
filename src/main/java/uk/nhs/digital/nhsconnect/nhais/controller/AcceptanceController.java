@@ -37,7 +37,7 @@ public class AcceptanceController {
     private FhirParser fhirParser;
 
 
-    @PostMapping(path = "/fhir/Patient", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/fhir/Patient/$nhais.acceptance", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> acceptance(@RequestBody String body) throws FhirValidationException {
         Parameters parameters = fhirParser.parseParameters(body);

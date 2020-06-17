@@ -11,9 +11,8 @@ import java.util.stream.Stream;
 @Builder
 @Data
 public class PersonOldAddress extends Segment {
-    private final static String NAME_AND_ADDRESS = "NAD";
+    private final static String KEY = "NAD";
     private final static String PAT_CODE = "PER";
-    private final static String COLON_SEPARATOR = ":";
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -22,14 +21,13 @@ public class PersonOldAddress extends Segment {
 
     @Override
     public String getKey() {
-        return NAME_AND_ADDRESS;
+        return KEY;
     }
 
     @Override
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
             .filter(Objects::nonNull)
-            .map(String::toUpperCase)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE

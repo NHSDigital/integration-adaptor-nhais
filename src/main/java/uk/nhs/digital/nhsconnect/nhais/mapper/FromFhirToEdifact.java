@@ -11,8 +11,8 @@ public class FromFhirToEdifact {
     //TODO fix mapper order if needed
     //TODO use dependency injection as a list
     private final List<FromFhirToEdifactMapper<?>> MAPPERS = Arrays.asList(
-        new PersonHAMapper(),
-        new PersonGPMapper(),
+        new PartyQualifierMapper(),
+        new GpNameAndAddressMapper(),
         new AcceptanceCodeMapper(),
         new AcceptanceTypeMapper(),
         new PersonNameMapper(),

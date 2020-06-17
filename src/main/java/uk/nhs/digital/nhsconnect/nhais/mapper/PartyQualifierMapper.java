@@ -2,12 +2,12 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonHA;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
 
-public class PersonHAMapper implements FromFhirToEdifactMapper<PersonHA> {
+public class PartyQualifierMapper implements FromFhirToEdifactMapper<PartyQualifier> {
 
-    public PersonHA map(Parameters parameters) {
-        return PersonHA.builder()
+    public PartyQualifier map(Parameters parameters) {
+        return PartyQualifier.builder()
             .organization(getPersonHA(parameters))
             .build();
     }

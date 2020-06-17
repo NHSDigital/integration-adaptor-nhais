@@ -10,7 +10,8 @@ public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPP
 
     public PersonGPPrevious map(Parameters parameters) {
         return PersonGPPrevious.builder()
-            .practitioner(getPersonPreviousGP(parameters))
+            .identifier(getPersonPreviousGP(parameters))
+            .code(getPersonPreviousGP(parameters))
             .build();
     }
 

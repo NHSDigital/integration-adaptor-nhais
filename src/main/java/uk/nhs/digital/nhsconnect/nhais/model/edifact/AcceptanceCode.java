@@ -25,6 +25,7 @@ public class AcceptanceCode extends Segment {
         "I" = "Internal transfer within partnership"
         "S" = "Acceptance with same GP new FHSA"
      */
+    private final static String KEY = "HEA";
     private final static Set<String> ALLOWED_CODES = ImmutableSet.of("A", "D", "R", "I", "S");
     private final static String ACD_PREFIX = "ACD";
     private final static String ZZZ_SUFFIX = ":ZZZ";
@@ -36,7 +37,7 @@ public class AcceptanceCode extends Segment {
 
     @Override
     public String getKey() {
-        return "HEA";
+        return KEY;
     }
 
     @Override

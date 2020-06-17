@@ -14,6 +14,7 @@ import java.util.Optional;
 @Builder
 @Data
 public class AcceptanceType extends Segment {
+    private final static String KEY = "HEA";
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
@@ -31,7 +32,7 @@ public class AcceptanceType extends Segment {
 
     @Override
     public String getKey() {
-        return "HEA";
+        return KEY;
     }
 
     @Override

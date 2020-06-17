@@ -1,54 +1,48 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PersonNameTest {
 
     @Test
     public void When_MappingToEdifact_Then_ReturnCorrectString() throws EdifactValidationException {
-        var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN MARK'";
+        var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN'";
 
         var personName = PersonName.builder()
             .nhsNumber("1234567890")
-            .surname("STEVENS")
+            .patientIdentificationType("OPI")
+            .familyName("STEVENS")
             .forename("CHARLES")
             .title("MR")
             .middleName("ANTHONY")
-            .otherNames(new String[]{"JOHN", "MARK"})
+            .thirdForename("JOHN")
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
     }
 
     @Test
-    public void When_MappingToEdifactWithMandatoryFields_Then_ReturnCorrectString() throws EdifactValidationException {
-        var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS++++'";
+    public void When_BuildingNameWithTypeOnly_Then_ReturnCorrectValue() {
+        var expectedValue = "PNA+PAT+T247:OPI'";
 
         var personName = PersonName.builder()
-            .surname("STEVENS")
-            .nhsNumber("1234567890")
+            .nhsNumber("T247")
+            .patientIdentificationType("OPI")
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptySurnameAndNhs_Then_EdifactValidationExceptionIsThrown() {
+    public void When_BuildingEmptyName_Then_ReturnEmptySegment() {
+        var expectedValue = "PNA+PAT+'";
+
         var personName = PersonName.builder()
-            .surname(StringUtils.EMPTY)
-            .nhsNumber(StringUtils.EMPTY)
             .build();
 
-        assertThrows(EdifactValidationException.class, personName::toEdifact);
-    }
-
-    @Test
-    public void When_BuildingWithoutSurname_Then_NullPointerExceptionIsThrown() {
-        assertThrows(NullPointerException.class, () -> PersonName.builder().build());
+        assertEquals(expectedValue, personName.toEdifact());
     }
 }

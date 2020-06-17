@@ -14,21 +14,24 @@ import java.util.Objects;
 @Data
 public class PersonDateOfBirth extends Segment {
     //DTM+329:19911106:102'
+    private final static String KEY = "DTM";
     private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
-    private final static String DOB_PREFIX = "329:";
-    private final static String DOB_SUFFIX = ":102";
+    private final static String QUALIFIER = "329";
+    private final static String DATE_FORMAT = "102";
     private @NonNull Instant timestamp;
 
     @Override
     public String getKey() {
-        return "DTM";
+        return KEY;
     }
 
     @Override
     public String getValue() {
-        return DOB_PREFIX
+        return QUALIFIER
+            .concat(COLON_SEPARATOR)
             .concat(DATE_TIME_FORMATTER.format(timestamp))
-            .concat(DOB_SUFFIX);
+            .concat(COLON_SEPARATOR)
+            .concat(DATE_FORMAT);
     }
 
     @Override

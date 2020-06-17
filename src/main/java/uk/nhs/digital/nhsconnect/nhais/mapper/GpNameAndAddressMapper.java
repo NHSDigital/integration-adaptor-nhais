@@ -2,13 +2,14 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGP;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 
-public class PersonGPMapper implements FromFhirToEdifactMapper<PersonGP> {
+public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAndAddress> {
 
-    public PersonGP map(Parameters parameters) {
-        return PersonGP.builder()
-            .practitioner(getPersonGP(parameters))
+    public GpNameAndAddress map(Parameters parameters) {
+        return GpNameAndAddress.builder()
+            .identifier(getPersonGP(parameters))
+            .code(getPersonGP(parameters))
             .build();
     }
 

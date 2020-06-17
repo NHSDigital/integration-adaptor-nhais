@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,11 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 /**
  * Example NAD+GP+2750922,295:900'
  */
-@Getter @Setter @RequiredArgsConstructor
-public class GpNameAndAddress extends Segment{
+@Getter
+@Setter
+@Builder
+@RequiredArgsConstructor
+public class GpNameAndAddress extends Segment {
 
     public static final String KEY = "NAD";
     public static final String QUALIFIER = "GP";
@@ -19,6 +23,15 @@ public class GpNameAndAddress extends Segment{
     private @NonNull String identifier;
     private @NonNull String code;
 
+    public static GpNameAndAddress fromString(String edifactString) {
+        if (!edifactString.startsWith(GpNameAndAddress.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + GpNameAndAddress.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] keySplit = edifactString.split("\\+");
+        String identifier = keySplit[2].split("\\:")[0];
+        String code = keySplit[2].split("\\:")[1];
+        return new GpNameAndAddress(identifier, code);
+    }
 
     @Override
     public String getKey() {
@@ -43,15 +56,5 @@ public class GpNameAndAddress extends Segment{
         if (StringUtils.isEmpty(code)) {
             throw new EdifactValidationException(getKey() + ": Attribute code is required");
         }
-    }
-
-    public static GpNameAndAddress fromString(String edifactString) {
-        if(!edifactString.startsWith(GpNameAndAddress.KEY_QUALIFIER)){
-            throw new IllegalArgumentException("Can't create " + GpNameAndAddress.class.getSimpleName() + " from " + edifactString);
-        }
-        String[] keySplit = edifactString.split("\\+");
-        String identifier = keySplit[2].split("\\:")[0];
-        String code = keySplit[2].split("\\:")[1];
-        return new GpNameAndAddress(identifier, code);
     }
 }
