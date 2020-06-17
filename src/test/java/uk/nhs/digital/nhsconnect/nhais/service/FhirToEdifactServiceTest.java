@@ -11,28 +11,38 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
 
-    private static final String OPERATION_ID = "4297001d94b41d2e604059879d45123880760cb0262d28f85394a08de5e761b8";
+    private static final String OPERATION_ID = "0bb7e974dccafc41b24ba5bc6f0f52a8cb81397d2a3160051c37d336cd1122d8";
     private static final String NHS_NUMBER = "54321";
-    private static final String GP_CODE = "GP123";
-    private static final String HA_CODE = "HA456";
+    private static final String GP_TRADING_PARTNER_CODE = "GP123";
+    private static final String HA_CIPHER = "HA4";
+    private static final String HA_TRADING_PARTNER_CODE = HA_CIPHER + "1";
     private static final Long SIS = 45L;
     private static final Long SMS = 56L;
     private static final Long TN = 5174L;
@@ -49,20 +59,32 @@ public class FhirToEdifactServiceTest {
     @Mock
     TimestampService timestampService;
 
+    @Mock
+    FhirToEdifactManager fhirToEdifactManager;
+
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
 
     private Instant expectedTimestamp;
 
     @BeforeEach
-    public void beforeEach() {
-        when(sequenceService.generateMessageId(GP_CODE, HA_CODE)).thenReturn(SMS);
-        when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
+    public void beforeEach() throws Exception {
+        when(sequenceService.generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
+        when(sequenceService.generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
             .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
+        // segments related to state management only
+        when(fhirToEdifactManager.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
+                new BeginningOfMessage(),
+                new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
+                new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+                new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+                new SegmentGroup(1),
+                new ReferenceTransactionNumber()
+        ));
     }
 
     @Test
@@ -71,15 +93,15 @@ public class FhirToEdifactServiceTest {
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
-        verify(sequenceService).generateInterchangeId(GP_CODE, HA_CODE);
-        verify(sequenceService).generateMessageId(GP_CODE, HA_CODE);
+        verify(sequenceService).generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
         verify(sequenceService).generateTransactionId();
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
         expected.setWorkflowId(WorkflowId.REGISTRATION);
-        expected.setRecipient(HA_CODE);
-        expected.setSender(GP_CODE);
+        expected.setRecipient(HA_TRADING_PARTNER_CODE);
+        expected.setSender(GP_TRADING_PARTNER_CODE);
         expected.setSendInterchangeSequence(SIS);
         expected.setSendMessageSequence(SMS);
         expected.setTransactionId(TN);
@@ -95,10 +117,10 @@ public class FhirToEdifactServiceTest {
 
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
-        String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
+        String expected = "UNB+UNOA:2+GP123+HA41+200427:1737+00000045'\n" +
             "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
             "BGM+++507'\n" +
-            "NAD+FHS+HA456:954'\n" +
+            "NAD+FHS+HA4:954'\n" +
             "DTM+137:202004271737:203'\n" +
             "RFF+950:G1'\n" +
             "S01+1'\n" +
@@ -116,23 +138,19 @@ public class FhirToEdifactServiceTest {
         patientId.setValue(NHS_NUMBER);
         patient.setIdentifier(singletonList(patientId));
 
-        Identifier gpId = new Identifier();
-        gpId.setValue(GP_CODE);
-        Reference gpRef = new Reference();
-        gpRef.setIdentifier(gpId);
-        patient.setGeneralPractitioner(singletonList(gpRef));
-
         Identifier haId = new Identifier();
-        haId.setValue(HA_CODE);
+        haId.setValue(HA_CIPHER);
         Reference haRef = new Reference();
         haRef.setIdentifier(haId);
         patient.setManagingOrganization(haRef);
 
         Parameters parameters = new Parameters();
-        Parameters.ParametersParameterComponent param = new Parameters.ParametersParameterComponent();
-        param.setName("patient");
-        param.setResource(patient);
-        parameters.addParameter(param);
+        Parameters.ParametersParameterComponent patientParameter = new Parameters.ParametersParameterComponent();
+        patientParameter.setName(ParameterNames.PATIENT.getName());
+        patientParameter.setResource(patient);
+        parameters.addParameter(patientParameter);
+
+        parameters.addParameter(ParameterNames.GP_TRADING_PARTNER_CODE.getName(), GP_TRADING_PARTNER_CODE);
         return parameters;
     }
 
