@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +16,7 @@ class PartyQualifierMapperTest {
     void When_MappingPartyQualifier_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
         patient.setManagingOrganization(
-            new Reference().setIdentifier(new GeneralPractitionerIdentifier("X11"))
+            new Reference().setIdentifier(new ManagingOrganizationIdentifier("X11"))
         );
 
         Parameters parameters = new Parameters();
