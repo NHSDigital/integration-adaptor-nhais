@@ -17,6 +17,7 @@ import java.util.stream.Stream;
  * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
  */
 @Setter
+@Getter
 @Builder
 public class PersonName extends Segment {
 
@@ -26,17 +27,11 @@ public class PersonName extends Segment {
 
     //all properties are optional
     private String nhsNumber;
-    @Getter
     private String patientIdentificationType;
-    @Getter
     private String familyName;
-    @Getter
     private String forename;
-    @Getter
     private String title;
-    @Getter
     private String middleName;
-    @Getter
     private String thirdForename;
 
     public static PersonName fromString(String edifactString) {
