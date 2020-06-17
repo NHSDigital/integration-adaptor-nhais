@@ -3,7 +3,10 @@ build
 .gradle
 
 # ide file
-.idea
+#.idea
+.idea/*
+!.idea/codeStyles/
+!.idea/codeStyles/**
 *.iml
 
 .DS_Store
