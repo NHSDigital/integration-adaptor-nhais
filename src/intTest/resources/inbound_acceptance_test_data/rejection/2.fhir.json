@@ -9,7 +9,7 @@
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "2750922,295"
+              "value": "4826940,281"
             }
           }
         ],
@@ -20,6 +20,14 @@
           }
         }
       }
+    },
+    {
+      "name": "freeText",
+      "valueString": "SPECIAL CHARACTERS ALLOWED EXCEPT PLUS SIGN !@£$%^&*()?><:\"|\\#][{}-_="
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
     }
   ]
 }

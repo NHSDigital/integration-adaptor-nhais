@@ -8,8 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
@@ -73,6 +71,9 @@ public class RegistrationConsumerServiceTest {
     @Mock
     RecepProducerService recepProducerService;
 
+    @Mock
+    EdifactToFhirService edifactToFhirService;
+
     @InjectMocks
     RegistrationConsumerService registrationConsumerService;
 
@@ -101,11 +102,6 @@ public class RegistrationConsumerServiceTest {
     }
 
     private void mockInterchangeRecepRequiredSegments() {
-        when(interchange.getHealthAuthorityNameAndAddress()).thenReturn(
-            new HealthAuthorityNameAndAddress("identifier", "code"));
-        when(interchange.getGpNameAndAddress()).thenReturn(
-            new GpNameAndAddress("identifier", "code"));
-
         when(recep.getInterchangeHeader()).thenReturn(
             new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
         when(recep.getMessageHeader()).thenReturn(

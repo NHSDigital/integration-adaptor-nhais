@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class InboundMeshServiceAcceptanceTest extends InboundMeshServiceBaseTest {
+public class InboundMeshServiceUAT extends InboundMeshServiceBaseTest {
 
     @Autowired
     private FhirParser fhirParser;
@@ -37,13 +37,17 @@ public class InboundMeshServiceAcceptanceTest extends InboundMeshServiceBaseTest
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.class)
     void test(String category, String edifactInput, String fhirOutput) throws JMSException {
+        // send EDIFACT to "inbound queue"
         sendToMeshInboundQueue(edifactInput);
 
         var expectedTransactionType = category.split("/")[0];
 
+        // fetch FHIR from "gp inbound queue"
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
+        // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
+        // assert output FHIR is correct
         assertMessageBody(gpSystemInboundQueueMessage, fhirOutput);
     }
 

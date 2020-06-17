@@ -4,13 +4,23 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
 
     private final String exampleMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
@@ -39,11 +49,19 @@ class EdifactToFhirServiceTest {
         "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
+    @Mock
+    private TransactionMapper transactionMapper1;
+    @Mock
+    private TransactionMapper transactionMapper2;
 
     @Test
     void convertToFhir() {
+        var transactionMappers = Map.of(
+            ReferenceTransactionType.TransactionType.REJECTION, transactionMapper1,
+            ReferenceTransactionType.TransactionType.ACCEPTANCE, transactionMapper2);
 
-        Parameters parameters = new EdifactToFhirService().convertToFhir(new EdifactParser().parse(exampleMessage));
+        Parameters parameters = new EdifactToFhirService(transactionMappers)
+            .convertToFhir(new EdifactParser().parse(exampleMessage));
 
         List<Resource> resources = parameters.getParameter().stream()
             .map(Parameters.ParametersParameterComponent::getResource)
@@ -53,8 +71,15 @@ class EdifactToFhirServiceTest {
         assertThat(parameters.getParameterFirstRep().getName()).isEqualTo("patient");
         Patient patient = (Patient) parameters.getParameterFirstRep().getResource();
 
-        assertThat(patient.getManagingOrganization().getResource().getIdElement().getIdPart()).isEqualTo("XX1");
-        assertThat(patient.getGeneralPractitionerFirstRep().getResource().getIdElement().getIdPart()).isEqualTo("2750922,295");
-//        FhirToJson.printResource(parameters);
+        assertThat(patient.getManagingOrganization().getIdentifier().getSystem())
+            .isEqualTo("https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation");
+        assertThat(patient.getManagingOrganization().getIdentifier().getValue()).isEqualTo("XX1");
+
+        assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getSystem())
+            .isEqualTo("https://fhir.hl7.org.uk/Id/gmc-number");
+        assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
+
+        verify(transactionMapper1, never()).map(any(), any());
+        verify(transactionMapper2).map(any(), any());
     }
 }

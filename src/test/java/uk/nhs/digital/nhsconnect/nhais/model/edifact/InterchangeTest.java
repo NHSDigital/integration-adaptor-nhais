@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentGroupException;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,14 +44,14 @@ class InterchangeTest {
     @Test
     void testValidateOk() {
         Interchange interchange = new Interchange(new EdifactMessage(correctMessage));
-        assertThatCode(() -> interchange.validate()).doesNotThrowAnyException();
+        assertThatCode(interchange::validate).doesNotThrowAnyException();
     }
 
     @Test
     void testEmptyMessageThrowsSegmentGroupMissingException() {
         Interchange interchange = new Interchange(new EdifactMessage("example invalid edifact message"));
         assertThatThrownBy(interchange::getGpNameAndAddress)
-            .isExactlyInstanceOf(MissingSegmentGroupException.class);
+            .isExactlyInstanceOf(MissingSegmentException.class);
     }
 
     @Test

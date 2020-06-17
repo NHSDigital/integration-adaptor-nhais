@@ -20,6 +20,7 @@ public class Interchange {
 
     @Getter(AccessLevel.NONE)
     private final EdifactMessage edifactMessage;
+
     @Getter(lazy = true)
     private final InterchangeHeader interchangeHeader = edifactMessage.getInterchangeHeader();
     @Getter(lazy = true)
@@ -37,6 +38,8 @@ public class Interchange {
     @Getter(lazy = true)
     private final NameAndAddress nameAndAddress = edifactMessage.getNameAndAddress();
     @Getter(lazy = true)
+    private final FreeText freeText = edifactMessage.getFreeText();
+    @Getter(lazy = true)
     private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 
     public List<ToEdifactParsingException> validate() {
@@ -49,6 +52,7 @@ public class Interchange {
             (Supplier<? extends Segment>) this::getHealthAuthorityNameAndAddress,
             (Supplier<? extends Segment>) this::getGpNameAndAddress,
             (Supplier<? extends Segment>) this::getNameAndAddress,
+            (Supplier<? extends Segment>) this::getFreeText,
             (Supplier<? extends Segment>) this::getInterchangeTrailer)
             .map(this::checkData)
             .flatMap(Optional::stream)
