@@ -18,10 +18,10 @@ public class AcceptanceType extends Segment {
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
-        "birth", "1",
-        "first", "2",
-        "transferin", "3",
-        "immigrant", "4"
+        AcceptanceTypes.BIRTH.toString(), "1",
+        AcceptanceTypes.FIRST.toString(), "2",
+        AcceptanceTypes.TRANSFERIN.toString(), "3",
+        AcceptanceTypes.IMMIGRANT.toString(), "4"
     );
     private @NonNull String type;
 
@@ -55,6 +55,24 @@ public class AcceptanceType extends Segment {
 
         if (!ACC_TYPE_MAPPING.containsValue(type)) {
             throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
+        }
+    }
+
+    private enum AcceptanceTypes {
+        BIRTH("birth"),
+        FIRST("first"),
+        TRANSFERIN("transferin"),
+        IMMIGRANT("immigrant");
+
+        String type;
+
+        AcceptanceTypes(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
         }
     }
 }
