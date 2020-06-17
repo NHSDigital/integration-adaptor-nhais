@@ -1,11 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 
 import java.util.List;
 
@@ -17,12 +17,9 @@ class GpNameAndAddressMapperTest {
     @Test
     void When_MappingGP_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
-        Identifier identifier = new Identifier();
-        identifier.setSystem("https://fhir.hl7.org.uk/Id/gmc-number");
-        identifier.setValue("4826940,281");
-        Reference reference = new Reference();
-        reference.setIdentifier(identifier);
-        patient.setGeneralPractitioner(List.of(reference));
+        patient.setGeneralPractitioner(List.of(
+            new Reference().setIdentifier(new GeneralPractitionerIdentifier("4826940,281"))
+        ));
 
         Parameters parameters = new Parameters();
         parameters.addParameter()
