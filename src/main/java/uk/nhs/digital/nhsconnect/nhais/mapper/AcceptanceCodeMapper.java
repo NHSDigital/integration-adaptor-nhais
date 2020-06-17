@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
 
 public class AcceptanceCodeMapper implements FromFhirToEdifactMapper<AcceptanceCode> {
@@ -18,8 +19,7 @@ public class AcceptanceCodeMapper implements FromFhirToEdifactMapper<AcceptanceC
             .filter(param -> ACCEPTANCE_CODE.equals(param.getName()))
             .map(Parameters.ParametersParameterComponent::getValue)
             .map(Object::toString)
-            .filter(AcceptanceCode::isCodeAllowed)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Acceptance Code not supported"));
+            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ACCEPTANCE_CODE));
     }
 }

@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,10 +29,10 @@ class PersonGPPreviousMapperTest {
 //    }
 
     @Test
-    public void When_MappingWithoutGPPrevious_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutGPPreviousParam_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var personGPPreviousMapper = new PersonGPPreviousMapper();
-        assertThrows(IllegalStateException.class, () -> personGPPreviousMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> personGPPreviousMapper.map(parameters));
     }
 }

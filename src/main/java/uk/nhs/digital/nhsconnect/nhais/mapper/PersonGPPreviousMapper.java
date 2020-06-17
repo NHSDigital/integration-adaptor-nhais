@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
 
 import java.util.Objects;
@@ -23,7 +24,7 @@ public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPP
             .map(Objects::toString)
             .map(this::splitPractitionerString)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Previous GP mapping problem"));
+            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + PREVIOUS_GP_PARAM));
     }
 
     private String splitPractitionerString(String value) {

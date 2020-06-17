@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,21 +29,10 @@ class AcceptanceCodeMapperTest {
     }
 
     @Test
-    public void When_MappingWithWrongType_Then_NoSuchElementExceptionIsThrown() {
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName("acceptanceCode")
-            .setValue(new StringType("test-fails"));
-
-        var acceptanceCodeMapper = new AcceptanceCodeMapper();
-        assertThrows(IllegalStateException.class, () -> acceptanceCodeMapper.map(parameters));
-    }
-
-    @Test
-    public void When_MappingWithoutCode_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutCodeParam_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();
-        assertThrows(IllegalStateException.class, () -> acceptanceCodeMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> acceptanceCodeMapper.map(parameters));
     }
 }

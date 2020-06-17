@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
 
 import java.time.Instant;
@@ -24,7 +25,7 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
             .map(Objects::toString)
             .map(this::parseInstant)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Entry Date mapping problem"));
+            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ENTRY_DATE_PARAM));
     }
 
     private Instant parseInstant(String value) {

@@ -31,7 +31,7 @@ public class AcceptanceCode extends Segment {
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private @NonNull String code;
 
-    public static boolean isCodeAllowed(String inputCode) {
+    private static boolean isCodeAllowed(String inputCode) {
         return ALLOWED_CODES.contains(inputCode);
     }
 

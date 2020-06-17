@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
 public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceType> {
@@ -20,6 +21,6 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
             .map(Object::toString)
             .map(AcceptanceType::getTypeValue)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Acceptance Type not supported"));
+            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ACCEPTANCE_TYPE));
     }
 }
