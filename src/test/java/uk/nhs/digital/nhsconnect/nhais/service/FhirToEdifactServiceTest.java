@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
@@ -33,6 +36,9 @@ public class FhirToEdifactServiceTest {
     private static final Long SIS = 45L;
     private static final Long SMS = 56L;
     private static final Long TN = 5174L;
+
+    @Spy
+    FhirParser fhirParser;
 
     @Mock
     OutboundStateRepository outboundStateRepository;
@@ -61,7 +67,7 @@ public class FhirToEdifactServiceTest {
 
     @Test
     public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
-        Patient patient = createPatient();
+        Parameters patient = createPatient();
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
@@ -85,25 +91,25 @@ public class FhirToEdifactServiceTest {
 
     @Test
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
-        Patient patient = createPatient();
+        Parameters patient = createPatient();
 
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA456+200427:1737+00000045'\n" +
-                "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
-                "BGM+++507'\n" +
-                "NAD+FHS+HA456:954'\n" +
-                "DTM+137:202004271737:203'\n" +
-                "RFF+950:G1'\n" +
-                "S01+1'\n" +
-                "RFF+TN:5174'\n" +
-                "UNT+8+00000056'\n" +
-                "UNZ+1+00000045'";
+            "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
+            "BGM+++507'\n" +
+            "NAD+FHS+HA456:954'\n" +
+            "DTM+137:202004271737:203'\n" +
+            "RFF+950:G1'\n" +
+            "S01+1'\n" +
+            "RFF+TN:5174'\n" +
+            "UNT+8+00000056'\n" +
+            "UNZ+1+00000045'";
 
         assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
     }
 
-    private Patient createPatient() {
+    private Parameters createPatient() {
         Patient patient = new Patient();
         patient.setId(NHS_NUMBER);
         Identifier patientId = new Identifier();
@@ -121,7 +127,13 @@ public class FhirToEdifactServiceTest {
         Reference haRef = new Reference();
         haRef.setIdentifier(haId);
         patient.setManagingOrganization(haRef);
-        return patient;
+
+        Parameters parameters = new Parameters();
+        Parameters.ParametersParameterComponent param = new Parameters.ParametersParameterComponent();
+        param.setName("patient");
+        param.setResource(patient);
+        parameters.addParameter(param);
+        return parameters;
     }
 
 }
