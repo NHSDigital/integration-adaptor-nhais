@@ -18,11 +18,6 @@ import java.util.Optional;
 
 public class EdifactMessage {
 
-    /**
-     * Matches an apostrophe NOT preceded by a question mark
-     */
-    private static final String ROW_DELIMITER = "((?<!\\?)')";
-
     private final String edifactMessage;
 
     public EdifactMessage(@NonNull String edifactMessage) {
@@ -95,7 +90,7 @@ public class EdifactMessage {
     }
 
     private String[] getSegments() {
-        return edifactMessage.strip().split(ROW_DELIMITER);
+        return Split.bySegmentTerminator(edifactMessage.strip());
     }
 
     private Optional<String> extractOptionalSegment(String key) {

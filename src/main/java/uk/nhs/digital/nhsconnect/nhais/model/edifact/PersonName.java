@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,25 +51,25 @@ public class PersonName extends Segment {
     }
 
     private static String extractNhsNumber(String edifactString) {
-        String[] components = edifactString.split("\\+");
+        String[] components = Split.byPlus(edifactString);
         if (components.length > 2 && StringUtils.isNotEmpty(components[2])) {
-            return components[2].split(":")[0];
+            return Split.byColon(components[2])[0];
         }
         return null;
     }
 
     private static String getPatientIdentificationType(String edifactString) {
-        String[] components = edifactString.split("\\+");
+        String[] components = Split.byPlus(edifactString);
         if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
-            return components[2].split(":")[1];
+            return Split.byColon(components[2])[1];
         }
         return null;
     }
 
     private static String extractNamePart(String qualifier, String text) {
-        return Arrays.stream(text.split("\\+"))
+        return Arrays.stream(Split.byPlus(text))
             .filter(value -> value.startsWith(qualifier))
-            .map(value -> value.split(":")[1])
+            .map(value -> Split.byColon(value)[1])
             .findFirst()
             .orElse(null);
     }
