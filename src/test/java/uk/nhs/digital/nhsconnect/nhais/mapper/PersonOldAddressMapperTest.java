@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class PersonAddressOldMapperTest {
+class PersonOldAddressMapperTest {
 
     @Test
     void When_MappingAddress_Then_ExpectCorrectResult() {
@@ -30,7 +30,7 @@ class PersonAddressOldMapperTest {
             .setName(Patient.class.getSimpleName())
             .setResource(patient);
 
-        var personAddressOldMapper = new PersonAddressOldMapper();
+        var personAddressOldMapper = new PersonOldAddressMapper();
         personAddressOldMapper.map(parameters);
         PersonOldAddress personOldAddress = personAddressOldMapper.map(parameters);
 
@@ -55,7 +55,7 @@ class PersonAddressOldMapperTest {
             .setName(Patient.class.getSimpleName())
             .setResource(patient);
 
-        var addressOldMapper = new PersonAddressOldMapper();
+        var addressOldMapper = new PersonOldAddressMapper();
         assertThrows(IllegalStateException.class, () -> addressOldMapper.map(parameters));
     }
 }

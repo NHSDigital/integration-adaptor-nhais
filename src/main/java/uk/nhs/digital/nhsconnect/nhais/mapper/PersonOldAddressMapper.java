@@ -8,7 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
 
 import java.util.List;
 
-public class PersonAddressOldMapper implements FromFhirToEdifactMapper<PersonOldAddress> {
+public class PersonOldAddressMapper implements FromFhirToEdifactMapper<PersonOldAddress> {
     private final static Address.AddressUse ADDRESS_USE_OLD = Address.AddressUse.OLD;
 
     public PersonOldAddress map(Parameters parameters) {
