@@ -1,0 +1,2 @@
+Appendix K defines which characters are permitted in an "Free Text" element. All of these characters are used in this
+example. Note that ? is use to escape the four characters with special meanings: ' + : ?

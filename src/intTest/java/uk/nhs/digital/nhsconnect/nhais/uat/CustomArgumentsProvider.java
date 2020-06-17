@@ -33,6 +33,8 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
         var resources = getResources();
 
         var grouped = Arrays.stream(resources)
+            .filter(r -> !r.getFilename().endsWith("txt")) // ignore notes
+            .filter(r -> !r.getFilename().contains("ignore")) // ignore ignored
             .collect(Collectors.groupingBy(resource -> {
                 var pathParts = ((FileSystemResource) resource).getPath().split("/");
                 var category = pathParts[pathParts.length - 2];

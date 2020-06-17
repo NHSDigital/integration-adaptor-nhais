@@ -1,0 +1,34 @@
+{
+  "id": "9999999999",
+  "gpCode": "4826940,281",
+  "gpCipher": "TES5",
+  "haCipher": "XX11",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "??"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/1",
+      "value": "136 HIGH STREET"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/2",
+      "value": ""
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/3",
+      "value": "BROMLEY"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/4",
+      "value": "KENT"
+    }
+  ]
+}

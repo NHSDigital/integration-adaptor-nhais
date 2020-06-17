@@ -10,67 +10,75 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "1"
+      "valueString": "3"
     },
     {
       "name": "acceptanceDate",
-      "valueString": "1992-01-13"
+      "valueString": "1992-01-15"
     },
     {
       "name": "patient",
       "resource": {
         "managingOrganization": {
-          "identifier": [{
-            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-            "value": "XX1"
-          }]
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "XX1"
+            }
+          ]
         },
         "generalPractitioner": [
           {
-           "identifier": {
-             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-             "value": "4826940,281"
-           }
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "N/10/10"
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "4826940,281"
+            }
           }
         ],
         "name": [
           {
-            "family": "STEVENS",
+            "family": "ASQUITH",
             "given": [
-              "CHARLES",
-              "ANTHONY",
-              "JOHN"
+              "ROGER"
             ],
             "prefix": [
-              "MR"
+              "LORD"
             ]
           }
         ],
         "gender": "male",
-        "birthDate": "1991-11-06",
+        "birthDate": "1946-07-23",
         "address": [
           {
             "line": [
-              "MOORSIDE FARM",
-              "OLD LANE",
+              "THE MANSION HOUSE",
+              "",
               "ST PAULS CRAY",
               "ORPINGTON",
               "KENT"
             ],
-            "postalCode": "BR6  7EW",
+            "postalCode": "BR12 7ET",
             "use": "home"
+          },
+          {
+            "line": [
+              "",
+              "",
+              "",
+              "HORSFORTH",
+              "LEEDS"
+            ],
+            "use": "old"
           }
         ],
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "BURY"
+            "valueString": "PETERBOROUGH"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
+            "valueString": "DR BLACK"
           }
         ],
         "resourceType": "Patient"

@@ -2,10 +2,6 @@
   "resourceType": "Parameters",
   "parameter": [
     {
-      "name": "gpTradingPartnerCode",
-      "valueString": "TES5"
-    },
-    {
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
@@ -27,7 +23,11 @@
     },
     {
       "name": "freeText",
-      "valueString": "SPECIAL CHARACTERS ALLOWED EXCEPT PLUS SIGN !@£$%^&*()?><:\"|\\#][{}-_="
+      "valueString": "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 .,-()/=!\"%&*;<>?'?+?:??"
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
     }
   ]
 }

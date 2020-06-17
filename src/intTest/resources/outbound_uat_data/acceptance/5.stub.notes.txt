@@ -1,0 +1,2 @@
+This example is a "stub" that only demonstrates state management / common segments. It does not represent a complete
+acceptance transaction and should be removed once any acceptance transaction is implemented.

@@ -67,6 +67,37 @@ The GP System will send outbound messages using a HL7 FHIR R4 REST API: [Outboun
 
 The GP System will receive inbound messages from an AMQP message queue. The messages will be HL7 FHIR R4.
 
+### Examples
+
+Examples of outbound request to the Adaptor's API and inbound reply and unsolicited messages to the Inbound Supplier MQ
+are provided as part of the adaptor's User Acceptance Tests.
+
+#### Outbound Examples
+
+The [outbound_uat_data](src/intTest/resources/outbound_uat_data) folder contains examples of outbound 
+(GP->HA) transactions. There is a sub-folder for each transaction type. Within each of those folder are sets of 2-3 
+files for each example:
+
+* `<example-id>.fhir.json`: The JSON payload sent from the GP System to the Adaptor.
+* `<example-id>.edifact.dat`: The EDIFACT file sent from the adaptor to the NHAIS instance for the request
+* `<example-id>.notes.txt`: (If provided) a textual descriptions of the transaction if one was provided by the source data set
+
+**Note**: Some files are named `.ignore.dat` / `.ignore.json`. These are examples for transaction types that are not yet 
+implemented. The `ignore` tells our test quite to not run tests for these examples.
+
+#### Inbound Examples
+
+The [inbound_uat_data](src/intTest/resources/inbound_uat_data) folder contains examples of inbound 
+(HA->GP) transactions. There is a sub-folder for each transaction type. Within each of those folder are sets of 2-3 
+files for each example:
+                       
+* `<example-id>.fhir.json`: The JSON message published into the Inbound Supplier MQ.
+* `<example-id>.edifact.dat`: The EDIFACT file from an NHAIS instance to the adaptor
+* `<example-id>.txt`: (If provided) a textual descriptions of the transaction if one was provided by the source data set
+
+**Note**: Some files are named `.ignore.dat` / `.ignore.json`. These are examples for transaction types that are not yet 
+implemented. The `ignore` tells our test quite to not run tests for these examples.
+
 ## Adaptor Architecture
 
 TODO
