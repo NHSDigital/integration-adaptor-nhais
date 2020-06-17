@@ -4,6 +4,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 
 public abstract class Segment {
     protected static final String PLUS_SEPARATOR = "+";
+    protected final static String COLON_SEPARATOR = ":";
+    protected final static String COMMA_SEPARATOR = ",";
     private static final String TERMINATOR = "'";
 
     /**
