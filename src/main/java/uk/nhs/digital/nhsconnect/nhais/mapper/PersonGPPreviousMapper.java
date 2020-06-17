@@ -7,12 +7,13 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
 import java.util.Objects;
 
 public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPPrevious> {
+    private final static String GP_CODE = "900";
     private final static String PREVIOUS_GP_PARAM = "previousGPName";
 
     public PersonGPPrevious map(Parameters parameters) {
         return PersonGPPrevious.builder()
             .identifier(getPersonPreviousGP(parameters))
-            .code(getPersonPreviousGP(parameters))
+            .code(GP_CODE)
             .build();
     }
 

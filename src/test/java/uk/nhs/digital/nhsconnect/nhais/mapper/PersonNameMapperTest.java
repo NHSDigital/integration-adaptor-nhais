@@ -5,44 +5,46 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonNameMapperTest {
     private final static String NHS_SYSTEM = "https://fhir.nhs.uk/Id/nhs-number";
 
-//    @Test
-//    void When_MappingPatientName_Then_ExpectCorrectResult() {
-//        Patient patient = new Patient();
-//        Identifier identifier = new Identifier();
-//        HumanName humanName = new HumanName();
-//        humanName.setFamily("Smith");
-//        identifier.setSystem(NHS_SYSTEM);
-//        identifier.setValue("1234567890");
-//
-//        patient.setName(Collections.singletonList(humanName));
-//        patient.setIdentifier(List.of(identifier));
-//
-//        Parameters parameters = new Parameters();
-//        parameters.addParameter()
-//            .setName("patient")
-//            .setResource(patient);
-//
-//        var personNameMapper = new PersonNameMapper();
-//        PersonName personName = personNameMapper.map(parameters);
-//
-//        var expectedPersonName = PersonName
-//            .builder()
-//            .nhsNumber("1234567890")
-//            .familyName("Smith")
-//            .build();
-//
-//        assertEquals(expectedPersonName, personName);
-//    }
+    @Test
+    void When_MappingPatientName_Then_ExpectCorrectResult() {
+        Patient patient = new Patient();
+        Identifier identifier = new Identifier();
+        HumanName humanName = new HumanName();
+        humanName.setFamily("Smith");
+        identifier.setSystem(NHS_SYSTEM);
+        identifier.setValue("1234567890");
+
+        patient.setName(Collections.singletonList(humanName));
+        patient.setIdentifier(List.of(identifier));
+
+        Parameters parameters = new Parameters();
+        parameters.addParameter()
+            .setName("patient")
+            .setResource(patient);
+
+        var personNameMapper = new PersonNameMapper();
+        PersonName personName = personNameMapper.map(parameters);
+
+        var expectedPersonName = PersonName
+            .builder()
+            .nhsNumber("1234567890")
+            .familyName("Smith")
+            .build();
+
+        assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());
+    }
 
     @Test
     public void When_MappingWithoutNhs_Then_NoSuchElementExceptionIsThrown() {
