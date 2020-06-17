@@ -18,10 +18,10 @@ import java.util.Optional;
 public class PersonSex extends Segment {
     private final static String KEY = "PDI";
     private final static Map<Enumerations.AdministrativeGender, String> PATIENT_SEX_CODE = ImmutableMap.of(
-        Enumerations.AdministrativeGender.UNKNOWN, "0",
-        Enumerations.AdministrativeGender.MALE, "1",
-        Enumerations.AdministrativeGender.FEMALE, "2",
-        Enumerations.AdministrativeGender.OTHER, "9"
+        Enumerations.AdministrativeGender.UNKNOWN, Gender.UNKNOWN.toString(),
+        Enumerations.AdministrativeGender.MALE, Gender.MALE.toString(),
+        Enumerations.AdministrativeGender.FEMALE, Gender.FEMALE.toString(),
+        Enumerations.AdministrativeGender.OTHER, Gender.OTHER.toString()
     );
 
     //PDI+1'
@@ -54,6 +54,24 @@ public class PersonSex extends Segment {
 
         if (!PATIENT_SEX_CODE.containsValue(sexCode)) {
             throw new EdifactValidationException(getKey() + "Gender code not known: " + sexCode);
+        }
+    }
+
+    private enum Gender {
+        UNKNOWN("0"),
+        MALE("1"),
+        FEMALE("2"),
+        OTHER("9");
+
+        String code;
+
+        Gender(String code) {
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return code;
         }
     }
 }
