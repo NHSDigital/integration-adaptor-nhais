@@ -12,11 +12,15 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class CustomArgumentsProvider implements ArgumentsProvider {
+
+    private static final String FHIR_FILE_ENDING = ".fhir.json";
+    private static final String EDIFACT_FILE_ENDING = ".edifact.dat";
 
     private final String folder;
 
@@ -36,24 +40,31 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
                 var fileNumber = fileName.split("\\.")[0];
                 return category + "/" + fileNumber;
             })).entrySet().stream()
+            .peek(es -> {
+                if (es.getValue().size() != 2) {
+                    throw new IllegalStateException(String.format(
+                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s'", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING));
+                }
+            })
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                es -> {
-                    if (es.getValue().size() != 2) {
-                        throw new IllegalStateException("There should be 2 test data files: N.edifact.dat and N.fhir.json");
-                    }
-                    String edifact = readFile(es.getValue().get(0));
-                    String fhir = readFile(es.getValue().get(1));
-
-                    return TestData.builder()
-                        .edifact(edifact)
-                        .fhir(fhir)
-                        .build();
-                }));
+                es -> TestData.builder()
+                    .edifact(readResource(es.getValue(),EDIFACT_FILE_ENDING))
+                    .fhir(readResource(es.getValue(),FHIR_FILE_ENDING))
+                    .build()));
 
         return grouped.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
             .map(es -> Arguments.of(es.getKey(), es.getValue()));
+    }
+
+    private String readResource(List<Resource> resources, String fileEnding) {
+        return resources.stream()
+            .filter(resource -> resource.getFilename() != null)
+            .filter(resource -> resource.getFilename().endsWith(fileEnding))
+            .map(this::readFile)
+            .findFirst()
+            .orElseThrow();
     }
 
     @SneakyThrows
