@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -14,8 +15,11 @@ class PartyQualifierMapperTest {
     @Test
     void When_MappingPartyQualifier_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
+        Identifier identifier = new Identifier();
+        identifier.setSystem("https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation");
+        identifier.setValue("XX1");
         Reference reference = new Reference();
-        reference.setReference("Organization/XX1");
+        reference.setIdentifier(identifier);
         patient.setManagingOrganization(reference);
 
         Parameters parameters = new Parameters();

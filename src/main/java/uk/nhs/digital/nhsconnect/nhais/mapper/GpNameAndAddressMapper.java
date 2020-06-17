@@ -16,8 +16,6 @@ public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAnd
 
     private String getPersonGP(Parameters parameters) {
         Patient patient = getPatient(parameters);
-        var reference = patient.getGeneralPractitionerFirstRep().getReference();
-
-        return reference.split("/")[1];
+        return patient.getGeneralPractitionerFirstRep().getIdentifier().getValue();
     }
 }

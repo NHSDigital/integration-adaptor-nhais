@@ -14,8 +14,6 @@ public class PartyQualifierMapper implements FromFhirToEdifactMapper<PartyQualif
 
     private String getPersonHA(Parameters parameters) {
         Patient patient = getPatient(parameters);
-        var reference = patient.getManagingOrganization().getReference();
-
-        return reference.split("/")[1];
+        return patient.getManagingOrganization().getIdentifier().getValue();
     }
 }

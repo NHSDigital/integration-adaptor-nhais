@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -16,8 +17,11 @@ class GpNameAndAddressMapperTest {
     @Test
     void When_MappingGP_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
+        Identifier identifier = new Identifier();
+        identifier.setSystem("https://fhir.hl7.org.uk/Id/gmc-number");
+        identifier.setValue("4826940,281");
         Reference reference = new Reference();
-        reference.setReference("Practitioner/4826940,281");
+        reference.setIdentifier(identifier);
         patient.setGeneralPractitioner(List.of(reference));
 
         Parameters parameters = new Parameters();
