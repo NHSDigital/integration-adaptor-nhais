@@ -11,18 +11,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,13 +52,16 @@ public class FhirToEdifactServiceTest {
     @Mock
     TimestampService timestampService;
 
+    @Mock
+    FhirToEdifactManager fhirToEdifactManager;
+
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
 
     private Instant expectedTimestamp;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws Exception {
         when(sequenceService.generateMessageId(GP_CODE, HA_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeId(GP_CODE, HA_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionId()).thenReturn(TN);
@@ -63,6 +69,15 @@ public class FhirToEdifactServiceTest {
             .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
+        // segments related to state management only
+        when(fhirToEdifactManager.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
+                new BeginningOfMessage(),
+                new NameAndAddress(HA_CODE, NameAndAddress.QualifierAndCode.FHS),
+                new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+                new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+                new SegmentGroup(1),
+                new ReferenceTransactionNumber()
+        ));
     }
 
     @Test

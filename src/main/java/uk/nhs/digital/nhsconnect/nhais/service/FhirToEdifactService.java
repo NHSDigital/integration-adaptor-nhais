@@ -8,28 +8,16 @@ import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -40,9 +28,11 @@ public class FhirToEdifactService {
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
     private final FhirParser fhirParser;
+    private final FhirToEdifactManager fhirToEdifactManager;
 
     public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
-        TranslationItems translationItems = new TranslationItems();
+        EdifactToFhirService.TranslationItems translationItems = new EdifactToFhirService.TranslationItems();
+        translationItems.parameters = parameters;
         translationItems.patient = fhirParser.getPatientFromParams(parameters);
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
@@ -56,28 +46,35 @@ public class FhirToEdifactService {
         return translateInterchange(translationItems);
     }
 
-    private void setOperationId(TranslationItems translationItems) {
+    private void setOperationId(EdifactToFhirService.TranslationItems translationItems) {
         translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
     }
 
-    private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {
+    private void extractDetailsFromPatient(EdifactToFhirService.TranslationItems translationItems) throws FhirValidationException {
         // set sender and recipient
-        translationItems.sender = getSender(translationItems.patient);
-        translationItems.recipient = getRecipient(translationItems.patient);
+        translationItems.sender = getSenderTradingPartnerCode(translationItems.patient);
+        translationItems.recipient = getRecipientTradingPartnerCode(translationItems.patient);
     }
 
-    private String getSender(Patient patient) throws FhirValidationException {
+    private String getSenderTradingPartnerCode(Patient patient) throws FhirValidationException {
+        // TODO: should be read from "gpTradingPartnerCode" parameter
         String path = "patient.generalPractitioner";
         exceptionIfMissingOrEmpty(path, patient.getGeneralPractitioner());
         Reference gpReference = patient.getGeneralPractitioner().get(0);
         return getOrganizationIdentifier(path, gpReference);
     }
 
-    private String getRecipient(Patient patient) throws FhirValidationException {
+    private String getHaCipher(Patient patient) throws FhirValidationException {
         String path = "patient.managingOrganization";
         exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
         Reference haReference = patient.getManagingOrganization();
         return getOrganizationIdentifier(path, haReference);
+    }
+
+    private String getRecipientTradingPartnerCode(Patient patient) throws FhirValidationException {
+        String haCipher = getHaCipher(patient);
+        // TODO: append "1" if three characters and "01" if two characters. throw FhirValidationException otherwise
+        return haCipher;
     }
 
     private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
@@ -115,28 +112,25 @@ public class FhirToEdifactService {
         return type.cast(value);
     }
 
-    private void createSegments(TranslationItems translationItems) {
-        translationItems.segments = Arrays.asList(
-                new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp),
-                new MessageHeader(),
-                new BeginningOfMessage(),
-                new NameAndAddress(translationItems.recipient, NameAndAddress.QualifierAndCode.FHS),
-                new DateTimePeriod(translationItems.translationTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType(translationItems.transactionType),
-                new SegmentGroup(1),
-                new ReferenceTransactionNumber(),
-                new MessageTrailer(8),
-                new InterchangeTrailer(1)
-        );
+    private void createSegments(EdifactToFhirService.TranslationItems translationItems) throws FhirValidationException {
+        translationItems.segments = new ArrayList<>();
+        translationItems.segments.add(new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp));
+        translationItems.segments.add(new MessageHeader());
+        List<Segment> messageSegments = fhirToEdifactManager.createMessageSegments(translationItems.parameters, translationItems.transactionType);
+        translationItems.segments.addAll(messageSegments);
+        // numberOfSegments must include the header and trailer thus numberOfSegments = size() + 2
+        translationItems.segments.add(new MessageTrailer(messageSegments.size() + 2));
+        // outbound interchanges always contain a single message thus numberOfMessages = 1
+        translationItems.segments.add(new InterchangeTrailer(1));
     }
 
-    private void prevalidateSegments(TranslationItems translationItems) throws EdifactValidationException {
+    private void prevalidateSegments(EdifactToFhirService.TranslationItems translationItems) throws EdifactValidationException {
         for(Segment segment : translationItems.segments) {
             segment.preValidate();
         }
     }
 
-    private void generateSequenceNumbers(TranslationItems translationItems) {
+    private void generateSequenceNumbers(EdifactToFhirService.TranslationItems translationItems) {
         translationItems.sendInterchangeSequence =
                 sequenceService.generateInterchangeId(translationItems.sender, translationItems.recipient);
         translationItems.sendMessageSequence =
@@ -145,11 +139,11 @@ public class FhirToEdifactService {
                 sequenceService.generateTransactionId();
     }
 
-    private void generateTimestamp(TranslationItems translationItems) {
+    private void generateTimestamp(EdifactToFhirService.TranslationItems translationItems) {
         translationItems.translationTimestamp = timestampService.getCurrentTimestamp();
     }
 
-    private void recordOutboundState(TranslationItems translationItems) {
+    private void recordOutboundState(EdifactToFhirService.TranslationItems translationItems) {
         var outboundState = new OutboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setRecipient(translationItems.recipient)
@@ -165,7 +159,7 @@ public class FhirToEdifactService {
         outboundStateRepository.save(outboundState);
     }
 
-    private void addSequenceNumbersToSegments(TranslationItems translationItems) {
+    private void addSequenceNumbersToSegments(EdifactToFhirService.TranslationItems translationItems) {
         for(Segment segment : translationItems.segments) {
             if(segment instanceof InterchangeHeader) {
                 InterchangeHeader interchangeHeader = (InterchangeHeader) segment;
@@ -182,11 +176,14 @@ public class FhirToEdifactService {
             } else if(segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.transactionNumber);
+            } else if(segment instanceof DateTimePeriod) {
+                DateTimePeriod dateTimePeriod = (DateTimePeriod) segment;
+                dateTimePeriod.setTimestamp(translationItems.translationTimestamp);
             }
         }
     }
 
-    private TranslatedInterchange translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
+    private TranslatedInterchange translateInterchange(EdifactToFhirService.TranslationItems translationItems) throws EdifactValidationException {
         List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
         for(Segment segment : translationItems.segments) {
             segmentStrings.add(segment.toEdifact());
@@ -199,16 +196,4 @@ public class FhirToEdifactService {
         return interchange;
     }
 
-    private static class TranslationItems {
-        private Patient patient;
-        private ReferenceTransactionType.TransactionType transactionType;
-        private List<Segment> segments = new ArrayList<>();
-        private String sender;
-        private String recipient;
-        private String operationId;
-        private Long sendMessageSequence;
-        private Long sendInterchangeSequence;
-        private Long transactionNumber;
-        private Instant translationTimestamp;
-    }
 }

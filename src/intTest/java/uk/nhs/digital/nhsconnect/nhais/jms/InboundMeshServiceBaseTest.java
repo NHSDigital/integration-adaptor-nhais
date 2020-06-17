@@ -99,7 +99,8 @@ public abstract class InboundMeshServiceBaseTest {
 
     @SneakyThrows
     private String serializeMeshMessage(MeshMessage meshMessage) {
-        return objectMapper.writeValueAsString(meshMessage);
+        String ser = objectMapper.writeValueAsString(meshMessage);
+        return ser;
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {

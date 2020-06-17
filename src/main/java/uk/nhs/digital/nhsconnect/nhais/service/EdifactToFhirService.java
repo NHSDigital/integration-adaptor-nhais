@@ -1,13 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Practitioner;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class EdifactToFhirService {
@@ -52,5 +53,19 @@ public class EdifactToFhirService {
 
     private Patient createPatient(String patientId) {
         return (Patient) new Patient().setId(patientId);
+    }
+
+    public static class TranslationItems {
+        public Patient patient;
+        public Parameters parameters;
+        public ReferenceTransactionType.TransactionType transactionType;
+        public List<Segment> segments = new ArrayList<>();
+        public String sender;
+        public String recipient;
+        public String operationId;
+        public Long sendMessageSequence;
+        public Long sendInterchangeSequence;
+        public Long transactionNumber;
+        public Instant translationTimestamp;
     }
 }
