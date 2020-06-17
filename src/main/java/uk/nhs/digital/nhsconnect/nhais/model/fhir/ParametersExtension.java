@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
@@ -15,8 +16,7 @@ public class ParametersExtension {
     private final Parameters parameters;
 
     public Patient extractPatient() {
-
-        return extractResource("patient", Patient.class);
+        return extractResource(ParameterNames.PATIENT, Patient.class);
     }
 
     public <T extends Resource> T extractResource(String name, Class<T> clazz) {

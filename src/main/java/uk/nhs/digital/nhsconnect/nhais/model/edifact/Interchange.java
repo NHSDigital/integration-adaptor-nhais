@@ -48,13 +48,7 @@ public class Interchange {
 
         return Stream.of((Supplier<? extends Segment>) this::getInterchangeHeader,
             (Supplier<? extends Segment>) this::getMessageHeader,
-            (Supplier<? extends Segment>) this::getReferenceTransactionNumber,
             (Supplier<? extends Segment>) this::getTranslationDateTime,
-            (Supplier<? extends Segment>) this::getReferenceTransactionType,
-            (Supplier<? extends Segment>) this::getHealthAuthorityNameAndAddress,
-            (Supplier<? extends Segment>) this::getGpNameAndAddress,
-            (Supplier<? extends Segment>) this::getNameAndAddress,
-            (Supplier<? extends Segment>) this::getFreeText,
             (Supplier<? extends Segment>) this::getInterchangeTrailer)
             .map(this::checkData)
             .flatMap(Optional::stream)

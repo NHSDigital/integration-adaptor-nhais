@@ -1,6 +1,25 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import org.hl7.fhir.r4.model.Identifier;
+import static java.util.Collections.singletonList;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -133,25 +152,17 @@ public class FhirToEdifactServiceTest {
 
     private Parameters createPatient() {
         Patient patient = new Patient();
-        patient.setId(NHS_NUMBER);
-        Identifier patientId = new Identifier();
-        patientId.setValue(NHS_NUMBER);
-        patient.setIdentifier(singletonList(patientId));
+        patient.setIdentifier(singletonList(new NhsIdentifier(NHS_NUMBER)));
+        patient.setGeneralPractitioner(
+            singletonList(
+                new Reference().setIdentifier(new GeneralPractitionerIdentifier(GP_CODE))
+            )
+        );
+        patient.setManagingOrganization(new Reference().setIdentifier(new ManagingOrganizationIdentifier(HA_CODE)));
 
-        Identifier haId = new Identifier();
-        haId.setValue(HA_CIPHER);
-        Reference haRef = new Reference();
-        haRef.setIdentifier(haId);
-        patient.setManagingOrganization(haRef);
-
-        Parameters parameters = new Parameters();
-        Parameters.ParametersParameterComponent patientParameter = new Parameters.ParametersParameterComponent();
-        patientParameter.setName(ParameterNames.PATIENT.getName());
-        patientParameter.setResource(patient);
-        parameters.addParameter(patientParameter);
-
-        parameters.addParameter(ParameterNames.GP_TRADING_PARTNER_CODE.getName(), GP_TRADING_PARTNER_CODE);
-        return parameters;
+        return new Parameters()
+            .addParameter(new PatientParameter(patient))
+            .addParameter(ParameterNames.GP_TRADING_PARTNER_CODE.getName(), GP_TRADING_PARTNER_CODE);
     }
 
 }

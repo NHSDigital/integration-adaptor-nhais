@@ -12,7 +12,6 @@ public class RejectionTransactionMapper implements TransactionMapper {
     @Override
     public void map(Parameters parameters, Interchange interchange) {
         mapFreeText(parameters, interchange);
-        mapGpTradingPartnerCode(parameters, interchange);
     }
 
     private void mapFreeText(Parameters parameters, Interchange interchange) {
@@ -21,19 +20,8 @@ public class RejectionTransactionMapper implements TransactionMapper {
             .setValue(new StringType(interchange.getFreeText().getTextLiteral()));
     }
 
-    private void mapGpTradingPartnerCode(Parameters parameters, Interchange interchange) {
-        parameters.addParameter()
-            .setName(ParameterNames.GP_TRADING_PARTNER_CODE)
-            .setValue(new StringType(interchange.getInterchangeHeader().getRecipient()));
-    }
-
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
         return ReferenceTransactionType.TransactionType.REJECTION;
-    }
-
-    private static final class ParameterNames {
-        private static final String FREE_TEXT = "freeText";
-        private static final String GP_TRADING_PARTNER_CODE = "gpTradingPartnerCode";
     }
 }
