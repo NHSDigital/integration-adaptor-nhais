@@ -1,0 +1,33 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "patient",
+      "resource": {
+        "resourceType": "Patient",
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "4826940,281"
+            }
+          }
+        ],
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
+        }
+      }
+    },
+    {
+      "name": "freeText",
+      "valueString": "SPECIAL CHARACTERS ALLOWED EXCEPT PLUS SIGN !@£$%^&*()?><:\"|\\#][{}-_="
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    }
+  ]
+}
