@@ -23,7 +23,7 @@ public class EdifactParser {
             .map(Exception::getMessage)
             .collect(Collectors.joining(", "));
 
-        if(StringUtils.isNotEmpty(errorList)) {
+        if (StringUtils.isNotEmpty(errorList)) {
             throw new ToEdifactParsingException(errorList);
         }
     }

@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact.message;
 
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -12,13 +13,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class EdifactMessage {
 
-    /**
-     * Matches "S0" + any digit
-     */
-    private static final String SEGMENT_DELIMITER = "S0\\d\\+";
     /**
      * Matches an apostrophe NOT preceded by a question mark
      */
@@ -32,83 +30,77 @@ public class EdifactMessage {
 
     public InterchangeHeader getInterchangeHeader() {
         return InterchangeHeader.fromString(
-            extractSegment(getHeader(), InterchangeHeader.KEY)
+            extractSegment(InterchangeHeader.KEY)
         );
     }
 
     public MessageHeader getMessageHeader() {
         return MessageHeader.fromString(
-            extractSegment(getHeader(), MessageHeader.KEY)
+            extractSegment(MessageHeader.KEY)
         );
     }
 
     public ReferenceTransactionNumber getReferenceTransactionNumber() {
         return ReferenceTransactionNumber.fromString(
-            extractSegment(getFirstGroup(), ReferenceTransactionNumber.KEY_QUALIFIER)
+            extractSegment(ReferenceTransactionNumber.KEY_QUALIFIER)
         );
     }
 
     public ReferenceTransactionType getReferenceTransactionType() {
         return ReferenceTransactionType.fromString(
-            extractSegment(getHeader(), ReferenceTransactionType.KEY_QUALIFIER)
+            extractSegment(ReferenceTransactionType.KEY_QUALIFIER)
         );
     }
 
     public HealthAuthorityNameAndAddress getHealthAuthorityNameAndAddress() {
         return HealthAuthorityNameAndAddress.fromString(
-            extractSegment(getHeader(), HealthAuthorityNameAndAddress.KEY_QUALIFIER)
+            extractSegment(HealthAuthorityNameAndAddress.KEY_QUALIFIER)
         );
     }
 
     public GpNameAndAddress getGpNameAndAddress() {
         return GpNameAndAddress.fromString(
-            extractSegment(getFirstGroup(), GpNameAndAddress.KEY_QUALIFIER)
+            extractSegment(GpNameAndAddress.KEY_QUALIFIER)
         );
     }
 
     public DateTimePeriod getTranslationDateTime() {
         return DateTimePeriod.fromString(
-            extractSegment(getHeader(), DateTimePeriod.KEY)
+            extractSegment(DateTimePeriod.KEY)
         );
     }
 
     public NameAndAddress getNameAndAddress() {
         return NameAndAddress.fromString(
-            extractSegment(getHeader(), NameAndAddress.KEY)
+            extractSegment(NameAndAddress.KEY)
+        );
+    }
+
+    public FreeText getFreeText() {
+        return FreeText.fromString(
+            extractSegment(FreeText.KEY_QUALIFIER)
         );
     }
 
     public InterchangeTrailer getInterchangeTrailer() {
         return InterchangeTrailer.fromString(
-            extractSegment(getSecondGroup(), InterchangeTrailer.KEY)
+            extractSegment(InterchangeTrailer.KEY)
         );
     }
 
-    private String[] getHeader() {
-        return edifactMessage.strip().split(SEGMENT_DELIMITER)[0].split(ROW_DELIMITER);
+    private String[] getSegments() {
+        return edifactMessage.strip().split(ROW_DELIMITER);
     }
 
-    private String[] getFirstGroup() {
-        String[] segmentSplit = edifactMessage.strip().split(SEGMENT_DELIMITER);
-        if(segmentSplit.length < 2) {
-            throw new MissingSegmentGroupException("First segment group is missing in " + Arrays.toString(segmentSplit));
-        }
-        return ("S01+"+segmentSplit[1]).split(ROW_DELIMITER);
-    }
-
-    private String[] getSecondGroup() {
-        String[] input = edifactMessage.strip().split(SEGMENT_DELIMITER);
-        if(input.length < 3) {
-            throw new MissingSegmentGroupException("Second segment group is missing in " + edifactMessage);
-        }
-        return ("S02+"+input[2]).split(ROW_DELIMITER);
-    }
-
-    private String extractSegment(String[] segmentGroup, String key) {
-        return Arrays.stream(segmentGroup)
+    private Optional<String> extractOptionalSegment(String key) {
+        return Arrays.stream(getSegments())
             .map(String::strip)
             .filter(segment -> segment.startsWith(key))
-            .findFirst()
-            .orElseThrow(() -> new MissingSegmentException("Segment group " + Arrays.toString(segmentGroup) + " is missing segment " + key));
+            .findFirst();
+    }
+
+    private String extractSegment(String key) {
+        return extractOptionalSegment(key)
+            .orElseThrow(() -> new MissingSegmentException("EDIFACT message is missing segment " + key));
     }
 }

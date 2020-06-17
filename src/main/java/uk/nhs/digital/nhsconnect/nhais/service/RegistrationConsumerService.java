@@ -26,6 +26,7 @@ public class RegistrationConsumerService {
     private final OutboundMeshService outboundMeshService;
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
+    private final EdifactToFhirService edifactToFhirService;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
@@ -42,7 +43,7 @@ public class RegistrationConsumerService {
         outboundStateRepository.save(recepOutboundState);
         LOGGER.debug("Saved recep in outbound state: {}", recepOutboundState);
 
-        var outputParameters = new EdifactToFhirService().convertToFhir(interchange);
+        var outputParameters = edifactToFhirService.convertToFhir(interchange);
         LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
         inboundGpSystemService.publishToSupplierQueue(
             outputParameters,
