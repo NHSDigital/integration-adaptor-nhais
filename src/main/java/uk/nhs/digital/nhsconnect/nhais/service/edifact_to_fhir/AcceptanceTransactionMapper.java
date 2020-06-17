@@ -9,7 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 public class AcceptanceTransactionMapper implements TransactionMapper {
     @Override
     public void map(Parameters parameters, Interchange interchange) {
-
+        //TODO: to be implemented
     }
 
     @Override

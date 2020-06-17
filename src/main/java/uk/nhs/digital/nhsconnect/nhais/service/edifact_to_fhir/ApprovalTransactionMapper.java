@@ -14,11 +14,9 @@ import org.springframework.stereotype.Component;
 public class ApprovalTransactionMapper implements TransactionMapper {
     @Override
     public void map(Parameters parameters, Interchange interchange) {
-        ParametersExtension parametersExt = new ParametersExtension(parameters);
-
         interchange.getPatientIdentifier()
             .flatMap(PatientIdentifier::getNhsNumber)
-            .ifPresent(nhsIdentifier -> parametersExt.extractPatient().setIdentifier(List.of(nhsIdentifier)));
+            .ifPresent(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)));
     }
 
     @Override

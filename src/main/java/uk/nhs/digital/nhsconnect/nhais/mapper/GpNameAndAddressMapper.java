@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAndAddress> {
     private final static String GP_CODE = "900";
@@ -15,7 +16,7 @@ public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAnd
     }
 
     private String getPersonGP(Parameters parameters) {
-        Patient patient = getPatient(parameters);
+        Patient patient = ParametersExtension.extractPatient(parameters);
         return patient.getGeneralPractitionerFirstRep().getIdentifier().getValue();
     }
 }

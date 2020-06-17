@@ -1,8 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
 
 import org.hl7.fhir.r4.model.Parameters;
@@ -14,6 +16,10 @@ import org.hl7.fhir.r4.model.StringType;
 public class ParametersExtension {
 
     private final Parameters parameters;
+
+    public static Patient extractPatient(Parameters parameters) {
+        return new ParametersExtension(parameters).extractResource(ParameterNames.PATIENT, Patient.class);
+    }
 
     public Patient extractPatient() {
         return extractResource(ParameterNames.PATIENT, Patient.class);
@@ -33,5 +39,17 @@ public class ParametersExtension {
             .map(StringType.class::cast)
             .map(StringType::getValueAsString)
             .orElseThrow();
+    }
+
+    @SneakyThrows
+    public String extractValueOrThrow(String name, Supplier<? extends Throwable> exception) {
+        return Optional.ofNullable(parameters.getParameter(name))
+            .map(StringType.class::cast)
+            .map(StringType::getValueAsString)
+            .orElseThrow(exception);
+    }
+
+    public int size() {
+        return parameters.getParameter().size();
     }
 }

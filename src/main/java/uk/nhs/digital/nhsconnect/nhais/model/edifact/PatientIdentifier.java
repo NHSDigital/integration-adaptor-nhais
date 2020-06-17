@@ -66,7 +66,7 @@ public class PatientIdentifier extends Segment {
             .map(value -> "FS:" + value)
             .ifPresent(values::add);
 
-        return String.join("+", values);
+        return String.join(PLUS_SEPARATOR, values);
     }
 
     private boolean containsName(){
@@ -84,7 +84,7 @@ public class PatientIdentifier extends Segment {
     }
 
     public Optional<NhsIdentifier> getNhsNumber() {
-        return nhsNumber == null ? Optional.empty() : Optional.of(new NhsIdentifier(nhsNumber));
+        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
     }
 
     public static PatientIdentifier fromString(String edifactString) {

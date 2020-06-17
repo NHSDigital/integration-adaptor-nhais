@@ -66,9 +66,6 @@ public class FhirToEdifactServiceTest {
     private static final Long SMS = 56L;
     private static final Long TN = 5174L;
 
-    @Spy
-    FhirParser fhirParser;
-
     @Mock
     OutboundStateRepository outboundStateRepository;
 

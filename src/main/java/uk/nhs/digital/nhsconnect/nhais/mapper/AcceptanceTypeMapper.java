@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceType> {
     private final static String ACCEPTANCE_TYPE = "acceptanceType";
@@ -14,13 +15,9 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
     }
 
     private String getAcceptanceType(Parameters parameters) {
-        return parameters.getParameter()
-            .stream()
-            .filter(param -> ACCEPTANCE_TYPE.equals(param.getName()))
-            .map(Parameters.ParametersParameterComponent::getValue)
-            .map(Object::toString)
-            .map(AcceptanceType::getTypeValue)
-            .findFirst()
-            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ACCEPTANCE_TYPE));
+        ParametersExtension parametersExt = new ParametersExtension(parameters);
+        return parametersExt.extractValueOrThrow(ACCEPTANCE_TYPE,
+            () -> new FhirValidationException("Error while parsing param: " + ACCEPTANCE_TYPE)
+        );
     }
 }
