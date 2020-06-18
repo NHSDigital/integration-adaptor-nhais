@@ -146,11 +146,11 @@ public class FhirToEdifactServiceTest {
 
         Parameters parameters = new Parameters();
         Parameters.ParametersParameterComponent patientParameter = new Parameters.ParametersParameterComponent();
-        patientParameter.setName(ParameterNames.PATIENT.getName());
+        patientParameter.setName(ParameterNames.PATIENT);
         patientParameter.setResource(patient);
         parameters.addParameter(patientParameter);
 
-        parameters.addParameter(ParameterNames.GP_TRADING_PARTNER_CODE.getName(), GP_TRADING_PARTNER_CODE);
+        parameters.addParameter(ParameterNames.GP_TRADING_PARTNER_CODE, GP_TRADING_PARTNER_CODE);
         return parameters;
     }
 

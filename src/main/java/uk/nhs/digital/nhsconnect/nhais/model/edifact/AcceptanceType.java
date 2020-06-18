@@ -1,15 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import java.util.Map;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 @Builder
 @Data
@@ -17,18 +16,8 @@ public class AcceptanceType extends Segment {
     private final static String KEY = "HEA";
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
-    private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
-        AcceptanceTypes.BIRTH.toString(), "1",
-        AcceptanceTypes.FIRST.toString(), "2",
-        AcceptanceTypes.TRANSFERIN.toString(), "3",
-        AcceptanceTypes.IMMIGRANT.toString(), "4"
-    );
-    private @NonNull String type;
 
-    public static String getTypeValue(String input) {
-        return Optional.ofNullable(ACC_TYPE_MAPPING.get(input))
-            .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
-    }
+    private @NonNull AcceptanceTypes acceptanceType;
 
     @Override
     public String getKey() {
@@ -39,7 +28,7 @@ public class AcceptanceType extends Segment {
     public String getValue() {
         return APT_PREFIX
             .concat(PLUS_SEPARATOR)
-            .concat(type)
+            .concat(acceptanceType.getCode())
             .concat(ZZZ_SUFFIX);
     }
 
@@ -49,30 +38,28 @@ public class AcceptanceType extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(type) || type.isBlank()) {
+        if (Objects.isNull(acceptanceType)) {
             throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
-        }
-
-        if (!ACC_TYPE_MAPPING.containsValue(type)) {
-            throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
         }
     }
 
-    private enum AcceptanceTypes {
-        BIRTH("birth"),
-        FIRST("first"),
-        TRANSFERIN("transferin"),
-        IMMIGRANT("immigrant");
+    public enum AcceptanceTypes {
+        BIRTH("1"),
+        FIRST("2"),
+        TRANSFER_IN("3"),
+        IMMIGRANT("4");
 
-        String type;
-
-        AcceptanceTypes(String type) {
-            this.type = type;
+        @Getter
+        public String code;
+        AcceptanceTypes(String code) {
+            this.code = code;
         }
 
-        @Override
-        public String toString() {
-            return type;
+        public static AcceptanceTypes fromCode(String code) {
+            return Arrays.stream(AcceptanceTypes.values())
+                .filter(acceptanceType -> acceptanceType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
         }
     }
 }

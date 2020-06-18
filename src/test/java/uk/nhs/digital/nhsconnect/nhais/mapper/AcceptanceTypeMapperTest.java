@@ -18,13 +18,13 @@ class AcceptanceTypeMapperTest {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName("acceptanceType")
-            .setValue(new StringType("birth"));
+            .setValue(new StringType("1"));
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         AcceptanceType acceptanceType = acceptanceTypeMapper.map(parameters);
 
         var exceptedAcceptanceType = AcceptanceType.builder()
-            .type("1")
+            .acceptanceType(AcceptanceType.AcceptanceTypes.BIRTH)
             .build();
 
         assertEquals(exceptedAcceptanceType, acceptanceType);

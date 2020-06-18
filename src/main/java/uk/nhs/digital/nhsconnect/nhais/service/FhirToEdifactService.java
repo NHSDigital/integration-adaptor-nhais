@@ -67,7 +67,7 @@ public class FhirToEdifactService {
     }
 
     private String getSenderTradingPartnerCode(Parameters parameters) throws FhirValidationException {
-        final String paramName = ParameterNames.GP_TRADING_PARTNER_CODE.getName();
+        final String paramName = ParameterNames.GP_TRADING_PARTNER_CODE;
         return parameters.getParameter().stream()
                 .filter(p -> p.getName().equals(paramName))
                 .map(Parameters.ParametersParameterComponent::getValue)

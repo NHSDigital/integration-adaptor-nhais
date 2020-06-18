@@ -9,17 +9,17 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
 
     public AcceptanceType map(Parameters parameters) {
         return AcceptanceType.builder()
-            .type(getAcceptanceType(parameters))
+            .acceptanceType(getAcceptanceType(parameters))
             .build();
     }
 
-    private String getAcceptanceType(Parameters parameters) {
+    private AcceptanceType.AcceptanceTypes getAcceptanceType(Parameters parameters) {
         return parameters.getParameter()
             .stream()
             .filter(param -> ACCEPTANCE_TYPE.equals(param.getName()))
             .map(Parameters.ParametersParameterComponent::getValue)
             .map(Object::toString)
-            .map(AcceptanceType::getTypeValue)
+            .map(AcceptanceType.AcceptanceTypes::fromCode)
             .findFirst()
             .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ACCEPTANCE_TYPE));
     }
