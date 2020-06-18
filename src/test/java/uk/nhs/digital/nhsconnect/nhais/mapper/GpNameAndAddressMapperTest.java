@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
@@ -40,11 +39,11 @@ class GpNameAndAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutGP_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutGP_Then_NullPointerExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter(new PatientParameter());
 
         var personGPMapper = new GpNameAndAddressMapper();
-        assertThrows(FhirValidationException.class, () -> personGPMapper.map(parameters));
+        assertThrows(NullPointerException.class, () -> personGPMapper.map(parameters));
     }
 }

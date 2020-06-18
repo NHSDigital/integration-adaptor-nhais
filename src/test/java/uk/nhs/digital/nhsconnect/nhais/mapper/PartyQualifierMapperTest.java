@@ -1,17 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
+import org.junit.jupiter.api.Test;
 
 class PartyQualifierMapperTest {
 
@@ -37,11 +36,11 @@ class PartyQualifierMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutPartyQualifier_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutPartyQualifier_Then_NullPointerExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter(new PatientParameter());
 
         var personHAMapper = new PartyQualifierMapper();
-        assertThrows(FhirValidationException.class, () -> personHAMapper.map(parameters));
+        assertThrows(NullPointerException.class, () -> personHAMapper.map(parameters));
     }
 }

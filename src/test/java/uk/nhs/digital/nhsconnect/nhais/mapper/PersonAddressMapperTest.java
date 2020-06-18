@@ -45,11 +45,11 @@ class PersonAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutAddress_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutAddress_Then_IllegalStateExceptionIsThrown() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
         var personAddressMapper = new PersonAddressMapper();
-        assertThrows(FhirValidationException.class, () -> personAddressMapper.map(parameters));
+        assertThrows(IllegalStateException.class, () -> personAddressMapper.map(parameters));
     }
 }
