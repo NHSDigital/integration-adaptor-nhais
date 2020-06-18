@@ -93,11 +93,15 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "birth"
+      "valueString": "1"
     },
     {
       "name": "acceptanceCode",
       "valueString": "A"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "1992-01-13"
     },
     {
       "name": "previousGPName",

@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
@@ -29,7 +28,7 @@ public class PersonName extends Segment {
 
     //all properties are optional
     private final String nhsNumber;
-    private final String patientIdentificationType;
+    private final PatientIdentificationType patientIdentificationType;
     private final String familyName;
     private final String forename;
     private final String title;
@@ -59,10 +58,10 @@ public class PersonName extends Segment {
         return null;
     }
 
-    private static String getPatientIdentificationType(String edifactString) {
+    private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
         String[] components = Split.byPlus(edifactString);
         if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
-            return Split.byColon(components[2])[1];
+            return PatientIdentificationType.valueOf(Split.byColon(components[2])[1]);
         }
         return null;
     }
@@ -125,5 +124,16 @@ public class PersonName extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
+    }
+
+    public enum PatientIdentificationType {
+        OPI("Official Patient Identifier"),
+        API("Amended Patient Identifier");
+
+        private final String description;
+
+        PatientIdentificationType(String description) {
+            this.description = description;
+        }
     }
 }

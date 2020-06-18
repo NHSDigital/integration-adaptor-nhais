@@ -1,20 +1,19 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-import java.util.List;
-
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.Test;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonNameMapperTest {
 
@@ -37,6 +36,7 @@ class PersonNameMapperTest {
             .builder()
             .nhsNumber("1234567890")
             .familyName("Smith")
+            .patientIdentificationType(PersonName.PatientIdentificationType.OPI)
             .build();
 
         assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());

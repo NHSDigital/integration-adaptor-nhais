@@ -8,12 +8,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonNameTest {
-    private final static String NHS_AND_NAMES = "PNA+PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_AND_NAMES_VALUE = "PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NHS_AND_NAMES = "PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NHS_AND_NAMES_VALUE = "PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
     private final static String NAMES_ONLY = "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
     private final static String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_ONLY = "PNA+PAT+RAT56:OBI";
-    private final static String NHS_ONLY_VALUE = "PAT+RAT56:OBI";
+    private final static String NHS_ONLY = "PNA+PAT+RAT56:OPI";
+    private final static String NHS_ONLY_VALUE = "PAT+RAT56:OPI";
 
 
     @Test
@@ -22,7 +22,7 @@ public class PersonNameTest {
 
         var personName = PersonName.builder()
             .nhsNumber("1234567890")
-            .patientIdentificationType("OPI")
+            .patientIdentificationType(PersonName.PatientIdentificationType.OPI)
             .familyName("STEVENS")
             .forename("CHARLES")
             .title("MR")
@@ -39,7 +39,7 @@ public class PersonNameTest {
 
         var personName = PersonName.builder()
             .nhsNumber("T247")
-            .patientIdentificationType("OPI")
+            .patientIdentificationType(PersonName.PatientIdentificationType.OPI)
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
@@ -59,7 +59,7 @@ public class PersonNameTest {
     public void testValidReferenceTransactionType() throws EdifactValidationException {
         PersonName nhsAndNames = PersonName.builder()
             .nhsNumber("RAT56")
-            .patientIdentificationType("OBI")
+            .patientIdentificationType(PersonName.PatientIdentificationType.OPI)
             .familyName("KENNEDY")
             .forename("SARAH")
             .title("MISS")
@@ -68,7 +68,7 @@ public class PersonNameTest {
 
         String edifact = nhsAndNames.toEdifact();
 
-        assertEquals("PNA+PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'", edifact);
+        assertEquals("PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'", edifact);
     }
 
     @Test
