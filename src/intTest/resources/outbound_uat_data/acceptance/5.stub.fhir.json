@@ -92,7 +92,11 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "birth"
+      "valueString": "1"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "1992-01-13"
     },
     {
       "name": "acceptanceCode",
