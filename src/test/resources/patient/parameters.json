@@ -51,7 +51,10 @@
         "gender": "male",
         "generalPractitioner": [
           {
-            "reference": "Practitioner/2750922,295"
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
+            }
           }
         ],
         "id": "54321",
@@ -62,7 +65,10 @@
           }
         ],
         "managingOrganization": {
-          "reference": "Organization/XX1"
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
         },
         "name": [
           {
@@ -98,6 +104,10 @@
     {
       "name": "entryDate",
       "valueString": "1991-11-06T23:55:00Z"
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
     }
   ],
   "resourceType": "Parameters"

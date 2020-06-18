@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 /**
  * Example NAD+FHS+XX1:954'
@@ -49,9 +50,9 @@ public class HealthAuthorityNameAndAddress extends Segment{
         if(!edifactString.startsWith(HealthAuthorityNameAndAddress.KEY_QUALIFIER)){
             throw new IllegalArgumentException("Can't create " + HealthAuthorityNameAndAddress.class.getSimpleName() + " from " + edifactString);
         }
-        String[] keySplit = edifactString.split("\\+");
-        String identifier = keySplit[2].split("\\:")[0];
-        String code = keySplit[2].split("\\:")[1];
+        String[] keySplit = Split.byPlus(edifactString);
+        String identifier = Split.byColon(keySplit[2])[0];
+        String code = Split.byColon(keySplit[2])[1];
         return new HealthAuthorityNameAndAddress(identifier, code);
     }
 }

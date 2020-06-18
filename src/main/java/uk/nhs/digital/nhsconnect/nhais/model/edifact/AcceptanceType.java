@@ -17,7 +17,7 @@ public class AcceptanceType extends Segment {
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
 
-    private @NonNull AcceptanceTypes acceptanceType;
+    private @NonNull AvailableTypes acceptanceType;
 
     @Override
     public String getKey() {
@@ -43,7 +43,7 @@ public class AcceptanceType extends Segment {
         }
     }
 
-    public enum AcceptanceTypes {
+    public enum AvailableTypes {
         BIRTH("1"),
         FIRST("2"),
         TRANSFER_IN("3"),
@@ -51,12 +51,12 @@ public class AcceptanceType extends Segment {
 
         @Getter
         public String code;
-        AcceptanceTypes(String code) {
+        AvailableTypes(String code) {
             this.code = code;
         }
 
-        public static AcceptanceTypes fromCode(String code) {
-            return Arrays.stream(AcceptanceTypes.values())
+        public static AvailableTypes fromCode(String code) {
+            return Arrays.stream(AvailableTypes.values())
                 .filter(acceptanceType -> acceptanceType.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));

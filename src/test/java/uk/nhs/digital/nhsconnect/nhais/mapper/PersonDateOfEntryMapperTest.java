@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -30,7 +31,7 @@ class PersonDateOfEntryMapperTest {
     void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-            .setName("entryDate")
+            .setName(ParameterNames.ENTRY_DATE)
             .setValue(new StringType(FIXED_TIME.toString()));
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
@@ -49,7 +50,7 @@ class PersonDateOfEntryMapperTest {
     public void When_MappingWithWrongDate_Then_DateTimeParseExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-            .setName("entryDate")
+            .setName(ParameterNames.ENTRY_DATE)
             .setValue(new StringType(""));
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();

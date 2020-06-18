@@ -36,7 +36,7 @@ class EdifactMessageTest {
         "LOC+950+GLASGOW'\n" +
         "FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'\n" +
         "S02+2'\n" +
-        "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
+        "PNA+PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
         "DTM+329:19911209:102'\n" +
         "PDI+2'\n" +
         "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
@@ -100,6 +100,15 @@ class EdifactMessageTest {
         softly.assertThat(gpNameAndAddress.getValue()).isEqualTo("GP+2750922,295:900");
         softly.assertThat(gpNameAndAddress.getIdentifier()).isEqualTo("2750922,295");
         softly.assertThat(gpNameAndAddress.getCode()).isEqualTo("900");
+    }
+
+    @Test
+    void testPatientIdentifier(SoftAssertions softly) {
+        EdifactMessage edifactMessage = new EdifactMessage(exampleMessage);
+        PersonName personName = edifactMessage.getPersonName().get();
+
+        softly.assertThat(personName.getValue()).isEqualTo("PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA");
+        softly.assertThat(personName.getNhsNumber().get().getValue()).isEqualTo("RAT56");
     }
 
     @Test

@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
@@ -82,9 +83,10 @@ public class DateTimePeriod extends Segment{
         if(!edifactString.startsWith(DateTimePeriod.KEY)){
             throw new IllegalArgumentException("Can't create " + DateTimePeriod.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+")[1]
-            .split(":");
-        Instant instant = ZonedDateTime.parse(split[1], TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
+        String dateTime = Split.byColon(
+            Split.byPlus(edifactString)[1]
+        )[1];
+        Instant instant = ZonedDateTime.parse(dateTime, TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
         return new DateTimePeriod(instant, TypeAndFormat.TRANSLATION_TIMESTAMP);
     }
 }

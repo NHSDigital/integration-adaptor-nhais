@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.NonNull;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,15 +10,10 @@ import java.util.stream.Stream;
 
 public class RecepMessage {
 
-    /**
-     * Matches an apostrophe NOT preceded by a question mark
-     */
-    public static final String ROW_DELIMITER = "((?<!\\?)')";
-
     private final List<String> rows;
 
     public RecepMessage(String recepMessage) {
-        this.rows = Arrays.stream(recepMessage.strip().split(ROW_DELIMITER))
+        this.rows = Arrays.stream(Split.bySegmentTerminator(recepMessage.strip()))
             .map(String::trim)
             .collect(Collectors.toList());
     }

@@ -13,7 +13,7 @@ public class AcceptanceTypeTest {
         var expectedValue = "HEA+ATP+1:ZZZ'";
 
         var acceptanceType = AcceptanceType.builder()
-            .acceptanceType(AcceptanceType.AcceptanceTypes.BIRTH)
+            .acceptanceType(AcceptanceType.AvailableTypes.BIRTH)
             .build();
 
         assertEquals(expectedValue, acceptanceType.toEdifact());

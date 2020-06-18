@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 /**
  * Example FTX+RGI+++WRONG HA - TRY SURREY'
@@ -21,7 +22,9 @@ public class FreeText extends Segment {
         if (!edifactString.startsWith(FreeText.KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + FreeText.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("'")[0].split("\\+");
+        String[] split = Split.byPlus(
+            Split.bySegmentTerminator(edifactString)[0]
+        );
         return new FreeText(split[4]);
     }
 
