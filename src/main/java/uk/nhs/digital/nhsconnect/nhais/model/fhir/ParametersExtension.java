@@ -18,7 +18,7 @@ public class ParametersExtension {
     private final Parameters parameters;
 
     public static Patient extractPatient(Parameters parameters) {
-        return new ParametersExtension(parameters).extractResource(ParameterNames.PATIENT, Patient.class);
+        return new ParametersExtension(parameters).extractPatient();
     }
 
     public Patient extractPatient() {
