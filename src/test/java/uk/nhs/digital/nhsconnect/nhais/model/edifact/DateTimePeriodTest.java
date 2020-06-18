@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -39,5 +40,11 @@ public class DateTimePeriodTest {
     void testFromString() {
         assertThat(DateTimePeriod.fromString("DTM+137:202005282158:203").getValue()).isEqualTo(summerDateTimePeriod.getValue());
         assertThatThrownBy(() -> DateTimePeriod.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void When_acceptanceDateType_Then_edifactFormattedAsAcceptanceDate() {
+        DateTimePeriod dateTimePeriod = new DateTimePeriod(LocalDate.parse("1992-01-15").atStartOfDay(ZoneOffset.UTC).toInstant(), DateTimePeriod.TypeAndFormat.ACCEPTANCE_DATE);
+        assertThat(dateTimePeriod.toEdifact()).isEqualTo("DTM+956:19920115:102'");
     }
 }

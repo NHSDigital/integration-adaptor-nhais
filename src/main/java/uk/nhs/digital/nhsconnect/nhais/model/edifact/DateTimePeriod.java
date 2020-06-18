@@ -1,10 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
@@ -16,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Example DTM+137:199201141619:203'
  */
-@Getter @Setter @RequiredArgsConstructor @AllArgsConstructor
+@Getter @Setter @RequiredArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
 public class DateTimePeriod extends Segment{
 
     public static final String KEY = "DTM";
@@ -30,7 +32,8 @@ public class DateTimePeriod extends Segment{
     private @NonNull TypeAndFormat typeAndFormat;
 
     public enum TypeAndFormat {
-        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm");
+        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm"),
+        ACCEPTANCE_DATE("956", "102", "yyyMMdd");
 
         private final String typeCode;
         private final String formatCode;
