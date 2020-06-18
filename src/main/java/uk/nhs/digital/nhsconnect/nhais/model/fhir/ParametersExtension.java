@@ -11,6 +11,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
 @RequiredArgsConstructor
 public class ParametersExtension {
@@ -23,6 +24,15 @@ public class ParametersExtension {
 
     public Patient extractPatient() {
         return extractResource(ParameterNames.PATIENT, Patient.class);
+    }
+
+    public static AcceptanceType.AvailableTypes extractAcceptanceType(Parameters parameters) {
+        return new ParametersExtension(parameters).extractAcceptanceType();
+    }
+
+    public AcceptanceType.AvailableTypes extractAcceptanceType() {
+        String acceptanceTypeCode = extractValue(ParameterNames.ACCEPTANCE_TYPE);
+        return AcceptanceType.AvailableTypes.fromCode(acceptanceTypeCode);
     }
 
     public <T extends Resource> T extractResource(String name, Class<T> clazz) {
