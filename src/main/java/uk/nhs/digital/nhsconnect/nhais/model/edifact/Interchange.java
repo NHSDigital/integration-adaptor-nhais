@@ -40,19 +40,15 @@ public class Interchange {
     @Getter(lazy = true)
     private final FreeText freeText = edifactMessage.getFreeText();
     @Getter(lazy = true)
+    private final Optional<PersonName> personName = edifactMessage.getPersonName();
+    @Getter(lazy=true)
     private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 
     public List<ToEdifactParsingException> validate() {
 
         return Stream.of((Supplier<? extends Segment>) this::getInterchangeHeader,
             (Supplier<? extends Segment>) this::getMessageHeader,
-            (Supplier<? extends Segment>) this::getReferenceTransactionNumber,
             (Supplier<? extends Segment>) this::getTranslationDateTime,
-            (Supplier<? extends Segment>) this::getReferenceTransactionType,
-            (Supplier<? extends Segment>) this::getHealthAuthorityNameAndAddress,
-            (Supplier<? extends Segment>) this::getGpNameAndAddress,
-            (Supplier<? extends Segment>) this::getNameAndAddress,
-            (Supplier<? extends Segment>) this::getFreeText,
             (Supplier<? extends Segment>) this::getInterchangeTrailer)
             .map(this::checkData)
             .flatMap(Optional::stream)

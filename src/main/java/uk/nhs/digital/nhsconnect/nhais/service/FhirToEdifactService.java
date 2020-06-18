@@ -1,12 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -18,17 +16,20 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -37,13 +38,12 @@ public class FhirToEdifactService {
     private final OutboundStateRepository outboundStateRepository;
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
-    private final FhirParser fhirParser;
     private final FhirToEdifactManager fhirToEdifactManager;
 
     public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.parameters = parameters;
-        translationItems.patient = fhirParser.getPatientFromParams(parameters);
+        translationItems.patient = new ParametersExtension(parameters).extractPatient();
         translationItems.transactionType = transactionType;
         extractDetailsFromPatient(translationItems);
         generateTimestamp(translationItems);
@@ -67,13 +67,7 @@ public class FhirToEdifactService {
     }
 
     private String getSenderTradingPartnerCode(Parameters parameters) throws FhirValidationException {
-        final String paramName = ParameterNames.GP_TRADING_PARTNER_CODE.getName();
-        return parameters.getParameter().stream()
-                .filter(p -> p.getName().equals(paramName))
-                .map(Parameters.ParametersParameterComponent::getValue)
-                .map(Object::toString)
-                .findFirst()
-                .orElseThrow(() -> new FhirValidationException("The parameter " + paramName + " is required"));
+        return ParametersExtension.extractValue(parameters, ParameterNames.GP_TRADING_PARTNER_CODE);
     }
 
     private String getHaCipher(Patient patient) throws FhirValidationException {

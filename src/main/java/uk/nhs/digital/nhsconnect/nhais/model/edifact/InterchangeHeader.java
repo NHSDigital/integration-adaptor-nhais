@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
@@ -39,7 +40,7 @@ public class InterchangeHeader extends Segment {
         if (!edifactString.startsWith(InterchangeHeader.KEY)) {
             throw new IllegalArgumentException("Can't create " + InterchangeHeader.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+");
+        String[] split = Split.byPlus(edifactString);
 
         ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
         return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));

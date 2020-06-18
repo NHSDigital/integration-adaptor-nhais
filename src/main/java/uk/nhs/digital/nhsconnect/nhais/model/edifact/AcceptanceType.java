@@ -1,15 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import com.google.common.collect.ImmutableMap;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-
-import java.util.Map;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 @Builder
 @Data
@@ -17,18 +17,8 @@ public class AcceptanceType extends Segment {
     private final static String KEY = "HEA";
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
-    private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
-        AcceptanceTypes.BIRTH.toString(), "1",
-        AcceptanceTypes.FIRST.toString(), "2",
-        AcceptanceTypes.TRANSFERIN.toString(), "3",
-        AcceptanceTypes.IMMIGRANT.toString(), "4"
-    );
-    private @NonNull String type;
 
-    public static String getTypeValue(String input) {
-        return Optional.ofNullable(ACC_TYPE_MAPPING.get(input))
-            .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
-    }
+    private @NonNull String type;
 
     @Override
     public String getKey() {
@@ -53,26 +43,33 @@ public class AcceptanceType extends Segment {
             throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
         }
 
-        if (!ACC_TYPE_MAPPING.containsValue(type)) {
+        if (!AvailableTypes.isValidCode(type)) {
             throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
         }
     }
 
-    private enum AcceptanceTypes {
-        BIRTH("birth"),
-        FIRST("first"),
-        TRANSFERIN("transferin"),
-        IMMIGRANT("immigrant");
+    @Getter
+    @RequiredArgsConstructor
+    public enum AvailableTypes {
+        BIRTH("birth", "1"),
+        FIRST("first", "2"),
+        TRANSFERIN("transferin", "3"),
+        IMMIGRANT("immigrant", "4");
 
-        String type;
+        final String value;
+        final String code;
 
-        AcceptanceTypes(String type) {
-            this.type = type;
+        public static String toCode(String fromValue) {
+            return Arrays.stream(AvailableTypes.values())
+                .filter(type -> type.getValue().equals(fromValue))
+                .findFirst()
+                .map(AvailableTypes::getCode)
+                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
         }
 
-        @Override
-        public String toString() {
-            return type;
+        public static boolean isValidCode(String inputCode) {
+            return Arrays.stream(AvailableTypes.values())
+                .anyMatch(type -> type.getCode().equals(inputCode));
         }
     }
 }

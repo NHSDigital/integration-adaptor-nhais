@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class StubTranslator implements FhirToEdifactTranslator {
 
     @Deprecated
     private String getHaCipher(Parameters parameters) throws FhirValidationException {
-        Patient patient = fhirParser.getPatientFromParams(parameters);
+        Patient patient = ParametersExtension.extractPatient(parameters);
         String path = "patient.managingOrganization";
         exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
         Reference haReference = patient.getManagingOrganization();

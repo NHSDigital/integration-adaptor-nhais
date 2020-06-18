@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 /**
  * A specialisation of a segment for the specific use case of an interchange trailer
@@ -52,7 +53,9 @@ public class InterchangeTrailer extends Segment {
         if(!edifactString.startsWith(InterchangeTrailer.KEY)){
             throw new IllegalArgumentException("Can't create " + InterchangeTrailer.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("'")[0].split("\\+");
+        String[] split = Split.byPlus(
+            Split.bySegmentTerminator(edifactString)[0]
+        );
         return new InterchangeTrailer(Integer.parseInt(split[1]))
             .setSequenceNumber(Long.parseLong(split[2]));
     }

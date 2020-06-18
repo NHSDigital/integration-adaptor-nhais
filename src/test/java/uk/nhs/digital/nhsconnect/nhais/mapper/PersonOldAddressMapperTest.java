@@ -1,15 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonOldAddressMapperTest {
 
@@ -25,10 +28,8 @@ class PersonOldAddressMapperTest {
             .addLine("Kent");
         patient.setAddress(List.of(address));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personAddressOldMapper = new PersonOldAddressMapper();
         personAddressOldMapper.map(parameters);
@@ -47,13 +48,9 @@ class PersonOldAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutAddress_Then_NoSuchElementExceptionIsThrown() {
-        Patient patient = new Patient();
-
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+    public void When_MappingWithoutAddress_Then_IllegalStateExceptionIsThrown() {
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter());
 
         var addressOldMapper = new PersonOldAddressMapper();
         assertThrows(IllegalStateException.class, () -> addressOldMapper.map(parameters));

@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
     }
 
     private Address getAddress(Parameters parameters) {
-        Patient patient = getPatient(parameters);
+        Patient patient = ParametersExtension.extractPatient(parameters);
 
         return patient.getAddress().stream()
             .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
