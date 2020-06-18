@@ -1,4 +1,5 @@
 {
+  "resourceType": "Parameters",
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
@@ -7,14 +8,7 @@
     {
       "name": "patient",
       "resource": {
-        "managingOrganization": {
-          "identifier": [
-            {
-              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-              "value": "XX1"
-            }
-          ]
-        },
+        "resourceType": "Patient",
         "generalPractitioner": [
           {
             "identifier": {
@@ -23,9 +17,13 @@
             }
           }
         ],
-        "resourceType": "Patient"
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
+        }
       }
     }
-  ],
-  "resourceType": "Parameters"
+  ]
 }

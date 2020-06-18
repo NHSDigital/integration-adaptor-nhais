@@ -45,7 +45,7 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
             .peek(es -> {
                 if (es.getValue().size() != 2) {
                     throw new IllegalStateException(String.format(
-                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s'", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING));
+                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s': %s", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING, es.getKey()));
                 }
             })
             .collect(Collectors.toMap(
