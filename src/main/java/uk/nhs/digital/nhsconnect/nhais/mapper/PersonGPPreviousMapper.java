@@ -1,12 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import java.util.Objects;
-
+@Component
 public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPPrevious> {
     private final static String GP_CODE = "900";
     private final static String PREVIOUS_GP_PARAM = "previousGPName";

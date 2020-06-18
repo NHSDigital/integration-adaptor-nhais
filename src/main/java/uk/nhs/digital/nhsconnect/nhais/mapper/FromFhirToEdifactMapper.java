@@ -1,11 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
+@Component
 public interface FromFhirToEdifactMapper<T extends Segment> {
     T map(Parameters parameters);
-
 }

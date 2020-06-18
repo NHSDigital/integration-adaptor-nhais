@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
@@ -9,8 +9,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
+@Component
 public class AcceptanceDateMapper implements FromFhirToEdifactMapper<DateTimePeriod> {
 
     public DateTimePeriod map(Parameters parameters) {

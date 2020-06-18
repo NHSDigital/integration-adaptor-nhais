@@ -5,15 +5,11 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Delegates to a translator based on transaction type and other information
@@ -23,13 +19,13 @@ import java.util.NoSuchElementException;
 public class FhirToEdifactManager {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
+    private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
     private final StubTranslator stubTranslator;
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
         switch (transactionType) {
-// TODO: enable this and remove stub once acceptance implemented
-//            case ACCEPTANCE:
-//                return delegateAcceptance(transactionItems);
+            case ACCEPTANCE:
+                return delegateAcceptance(parameters);
             default:
                 return stubTranslator.translate(parameters);
         }
@@ -39,10 +35,11 @@ public class FhirToEdifactManager {
         var acceptanceType = ParametersExtension.extractAcceptanceType(parameters);
         switch (acceptanceType) {
             case BIRTH:
-               return acceptanceBirthTranslator.translate(parameters);
+                return acceptanceBirthTranslator.translate(parameters);
             case FIRST:
             case TRANSFER_IN:
             case IMMIGRANT:
+                return acceptanceImmigrantTranslator.translate(parameters);
             default:
                 throw new UnsupportedOperationException(String.format("%s is not supported", acceptanceType));
         }
