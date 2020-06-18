@@ -30,6 +30,11 @@ public class PatientParameter extends Parameters.ParametersParameterComponent {
         this.setName(ParameterNames.PATIENT);
     }
 
+    public PatientParameter() {
+        this.setResource(new Patient());
+        this.setName(ParameterNames.PATIENT);
+    }
+
     private Reference createManagingOrganizationReference(Interchange interchange) {
         String organizationId = interchange.getHealthAuthorityNameAndAddress().getIdentifier();
         return new Reference().setIdentifier(new ManagingOrganizationIdentifier(organizationId));

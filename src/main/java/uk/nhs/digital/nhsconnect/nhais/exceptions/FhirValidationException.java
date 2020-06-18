@@ -8,7 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.OperationOutcomeUtils;
 
 public class FhirValidationException extends NhaisBaseException implements OperationOutcomeError {
 
-    private IBaseOperationOutcome operationOutcome;
+    private final IBaseOperationOutcome operationOutcome;
 
     public FhirValidationException(ValidationResult validationResult) {
         super(createMessage(validationResult));
@@ -18,6 +18,11 @@ public class FhirValidationException extends NhaisBaseException implements Opera
     public FhirValidationException(String message) {
         super(message);
         operationOutcome = OperationOutcomeUtils.createFromMessage(message, OperationOutcome.IssueType.STRUCTURE);
+    }
+
+    public FhirValidationException(Throwable cause) {
+        super(cause.getMessage(), cause);
+        this.operationOutcome = OperationOutcomeUtils.createFromMessage(cause.getMessage(), OperationOutcome.IssueType.STRUCTURE);
     }
 
     @Override

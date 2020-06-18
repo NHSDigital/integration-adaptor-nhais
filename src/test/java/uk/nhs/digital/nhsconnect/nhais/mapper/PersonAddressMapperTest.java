@@ -4,7 +4,10 @@ import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
+
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
 import java.util.List;
 
@@ -24,13 +27,10 @@ class PersonAddressMapperTest {
             .addLine("Vic 3999");
         patient.setAddress(List.of(address));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personAddressMapper = new PersonAddressMapper();
-        personAddressMapper.map(parameters);
         PersonAddress personAddress = personAddressMapper.map(parameters);
 
         var expectedPersonAddress = PersonAddress
@@ -45,7 +45,7 @@ class PersonAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutAddress_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutAddress_Then_FhirValidationExceptionIsThrown() {
         Patient patient = new Patient();
 
         Parameters parameters = new Parameters();
@@ -54,6 +54,6 @@ class PersonAddressMapperTest {
             .setResource(patient);
 
         var personAddressMapper = new PersonAddressMapper();
-        assertThrows(IllegalStateException.class, () -> personAddressMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> personAddressMapper.map(parameters));
     }
 }

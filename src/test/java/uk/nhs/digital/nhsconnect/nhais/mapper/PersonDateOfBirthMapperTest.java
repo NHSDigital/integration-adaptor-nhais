@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.NoSuchElementException;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
@@ -27,7 +26,6 @@ class PersonDateOfBirthMapperTest {
         0,
         ZoneId.of("Europe/London")).toInstant();
 
-
     @Test
     void When_MappingDob_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
@@ -45,19 +43,14 @@ class PersonDateOfBirthMapperTest {
             .build();
 
         assertEquals(expectedPersonDob, personDateOfBirth);
-
     }
 
     @Test
     public void When_MappingWithoutDob_Then_NullPointerExceptionIsThrown() {
-        Patient patient = new Patient();
-
         Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        parameters.addParameter(new PatientParameter());
 
         var personDobMapper = new PersonDateOfBirthMapper();
-        assertThrows(NoSuchElementException.class, () -> personDobMapper.map(parameters));
+        assertThrows(NullPointerException.class, () -> personDobMapper.map(parameters));
     }
 }

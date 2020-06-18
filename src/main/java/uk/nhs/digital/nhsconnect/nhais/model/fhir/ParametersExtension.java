@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
 
 import org.hl7.fhir.r4.model.Parameters;
@@ -31,14 +32,18 @@ public class ParametersExtension {
             .map(Parameters.ParametersParameterComponent::getResource)
             .map(clazz::cast)
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new FhirValidationException("Resource " + clazz.getSimpleName() + " with name " + name + " is missing in FHIR Parameters"));
+    }
+
+    public static String extractValue(Parameters parameters, String name) {
+        return new ParametersExtension(parameters).extractValue(name);
     }
 
     public String extractValue(String name) {
         return Optional.ofNullable(parameters.getParameter(name))
             .map(StringType.class::cast)
             .map(StringType::getValueAsString)
-            .orElseThrow();
+            .orElseThrow(() -> new FhirValidationException("Value " + name + " is missing in FHIR Parameters"));
     }
 
     @SneakyThrows
