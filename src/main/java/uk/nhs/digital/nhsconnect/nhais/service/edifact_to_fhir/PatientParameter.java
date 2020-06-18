@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.api.annotation.Block;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;

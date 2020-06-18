@@ -21,7 +21,7 @@ public class PersonGPPreviousMapper implements FromFhirToEdifactMapper<PersonGPP
     private String getPersonPreviousGP(Parameters parameters) {
         ParametersExtension parametersExt = new ParametersExtension(parameters);
         return splitPractitionerString(
-            parametersExt.extractValueOrThrow(PREVIOUS_GP_PARAM, () -> new FhirValidationException("Error while parsing param: " + PREVIOUS_GP_PARAM))
+            parametersExt.extractValue(PREVIOUS_GP_PARAM)
         );
     }
 

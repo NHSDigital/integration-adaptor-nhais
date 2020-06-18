@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import org.assertj.core.api.SoftAssertions;

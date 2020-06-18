@@ -38,12 +38,8 @@ class PartyQualifierMapperTest {
 
     @Test
     public void When_MappingWithoutPartyQualifier_Then_FhirValidationExceptionIsThrown() {
-        Patient patient = new Patient();
-
         Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        parameters.addParameter(new PatientParameter());
 
         var personHAMapper = new PartyQualifierMapper();
         assertThrows(FhirValidationException.class, () -> personHAMapper.map(parameters));

@@ -16,11 +16,11 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -67,13 +67,7 @@ public class FhirToEdifactService {
     }
 
     private String getSenderTradingPartnerCode(Parameters parameters) throws FhirValidationException {
-        final String paramName = ParameterNames.GP_TRADING_PARTNER_CODE.getName();
-        return parameters.getParameter().stream()
-                .filter(p -> p.getName().equals(paramName))
-                .map(Parameters.ParametersParameterComponent::getValue)
-                .map(Object::toString)
-                .findFirst()
-                .orElseThrow(() -> new FhirValidationException("The parameter " + paramName + " is required"));
+        return ParametersExtension.extractValue(parameters, ParameterNames.GP_TRADING_PARTNER_CODE);
     }
 
     private String getHaCipher(Patient patient) throws FhirValidationException {

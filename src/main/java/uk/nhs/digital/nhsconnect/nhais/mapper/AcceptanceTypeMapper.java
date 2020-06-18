@@ -2,7 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import org.hl7.fhir.r4.model.Parameters;
 

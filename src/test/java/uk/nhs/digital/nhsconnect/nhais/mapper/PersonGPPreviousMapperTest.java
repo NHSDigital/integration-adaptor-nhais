@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,7 +16,7 @@ class PersonGPPreviousMapperTest {
     void When_MappingGPPrevious_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-            .setName("previousGPName")
+            .setName(ParameterNames.PREVIOUS_GP_NAME)
             .setValue(new StringType("Practitioner/Old-One"));
 
         var personGPPreviousMapper = new PersonGPPreviousMapper();

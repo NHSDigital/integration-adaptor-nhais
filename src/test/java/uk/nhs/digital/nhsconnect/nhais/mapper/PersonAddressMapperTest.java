@@ -46,12 +46,8 @@ class PersonAddressMapperTest {
 
     @Test
     public void When_MappingWithoutAddress_Then_FhirValidationExceptionIsThrown() {
-        Patient patient = new Patient();
-
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter());
 
         var personAddressMapper = new PersonAddressMapper();
         assertThrows(FhirValidationException.class, () -> personAddressMapper.map(parameters));

@@ -31,8 +31,8 @@ class PersonDateOfBirthMapperTest {
         Patient patient = new Patient();
         patient.setBirthDate(Date.from(FIXED_TIME));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter(new PatientParameter(patient));
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personDobMapper = new PersonDateOfBirthMapper();
         PersonDateOfBirth personDateOfBirth = personDobMapper.map(parameters);
@@ -47,8 +47,8 @@ class PersonDateOfBirthMapperTest {
 
     @Test
     public void When_MappingWithoutDob_Then_NullPointerExceptionIsThrown() {
-        Parameters parameters = new Parameters();
-        parameters.addParameter(new PatientParameter());
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter());
 
         var personDobMapper = new PersonDateOfBirthMapper();
         assertThrows(NullPointerException.class, () -> personDobMapper.map(parameters));

@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 @Component
 public class RejectionTransactionMapper implements TransactionMapper {

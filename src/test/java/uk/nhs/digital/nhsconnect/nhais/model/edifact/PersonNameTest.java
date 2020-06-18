@@ -8,6 +8,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonNameTest {
+    private final static String NHS_AND_NAMES = "PNA+PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NHS_AND_NAMES_VALUE = "PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NAMES_ONLY = "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private final static String NHS_ONLY = "PNA+PAT+RAT56:OBI";
+    private final static String NHS_ONLY_VALUE = "PAT+RAT56:OBI";
+
 
     @Test
     public void When_MappingToEdifact_Then_ReturnCorrectString() throws EdifactValidationException {
@@ -47,13 +54,6 @@ public class PersonNameTest {
 
         assertEquals(expectedValue, personName.toEdifact());
     }
-
-    private final static String NHS_AND_NAMES = "PNA+PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_AND_NAMES_VALUE = "PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY = "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_ONLY = "PNA+PAT+RAT56:OBI";
-    private final static String NHS_ONLY_VALUE = "PAT+RAT56:OBI";
 
     @Test
     public void testValidReferenceTransactionType() throws EdifactValidationException {

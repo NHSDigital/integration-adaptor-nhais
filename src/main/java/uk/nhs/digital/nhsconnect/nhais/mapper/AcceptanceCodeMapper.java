@@ -1,12 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
 
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 public class AcceptanceCodeMapper implements FromFhirToEdifactMapper<AcceptanceCode> {
 

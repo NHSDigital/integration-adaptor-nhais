@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.ParameterNames;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import java.util.NoSuchElementException;
 
@@ -35,7 +35,7 @@ class AcceptanceTypeMapperTest {
     public void When_MappingWithWrongType_Then_NoSuchElementExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-            .setName("acceptanceType")
+            .setName(ParameterNames.ACCEPTANCE_TYPE)
             .setValue(new StringType("test-fails"));
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
