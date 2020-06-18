@@ -33,6 +33,8 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
         var resources = getResources();
 
         var grouped = Arrays.stream(resources)
+            .filter(r -> !r.getFilename().endsWith("txt")) // ignore notes
+            .filter(r -> !r.getFilename().contains("ignore")) // ignore ignored
             .collect(Collectors.groupingBy(resource -> {
                 var pathParts = ((FileSystemResource) resource).getPath().split("/");
                 var category = pathParts[pathParts.length - 2];
@@ -43,7 +45,7 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
             .peek(es -> {
                 if (es.getValue().size() != 2) {
                     throw new IllegalStateException(String.format(
-                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s'", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING));
+                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s': %s", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING, es.getKey()));
                 }
             })
             .collect(Collectors.toMap(
