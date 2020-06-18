@@ -1,15 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Builder
 @Data
@@ -18,7 +17,7 @@ public class AcceptanceType extends Segment {
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
 
-    private @NonNull String type;
+    private @NonNull AvailableTypes acceptanceType;
 
     @Override
     public String getKey() {
@@ -29,7 +28,7 @@ public class AcceptanceType extends Segment {
     public String getValue() {
         return APT_PREFIX
             .concat(PLUS_SEPARATOR)
-            .concat(type)
+            .concat(acceptanceType.getCode())
             .concat(ZZZ_SUFFIX);
     }
 
@@ -39,37 +38,28 @@ public class AcceptanceType extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(type) || type.isBlank()) {
+        if (Objects.isNull(acceptanceType)) {
             throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
-        }
-
-        if (!AvailableTypes.isValidCode(type)) {
-            throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
         }
     }
 
-    @Getter
-    @RequiredArgsConstructor
     public enum AvailableTypes {
-        BIRTH("birth", "1"),
-        FIRST("first", "2"),
-        TRANSFERIN("transferin", "3"),
-        IMMIGRANT("immigrant", "4");
+        BIRTH("1"),
+        FIRST("2"),
+        TRANSFER_IN("3"),
+        IMMIGRANT("4");
 
-        final String value;
-        final String code;
-
-        public static String toCode(String fromValue) {
-            return Arrays.stream(AvailableTypes.values())
-                .filter(type -> type.getValue().equals(fromValue))
-                .findFirst()
-                .map(AvailableTypes::getCode)
-                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
+        @Getter
+        public String code;
+        AvailableTypes(String code) {
+            this.code = code;
         }
 
-        public static boolean isValidCode(String inputCode) {
+        public static AvailableTypes fromCode(String code) {
             return Arrays.stream(AvailableTypes.values())
-                .anyMatch(type -> type.getCode().equals(inputCode));
+                .filter(acceptanceType -> acceptanceType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
         }
     }
 }
