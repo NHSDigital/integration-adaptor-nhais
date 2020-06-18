@@ -10,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -61,7 +62,7 @@ public class PersonName extends Segment {
     private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
         String[] components = Split.byPlus(edifactString);
         if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
-            return PatientIdentificationType.valueOf(Split.byColon(components[2])[1]);
+            return PatientIdentificationType.fromCode(Split.byColon(components[2])[1]);
         }
         return null;
     }
@@ -86,7 +87,7 @@ public class PersonName extends Segment {
 
         String namesDelimiter = containsName() ? "++" : "";
         Optional.ofNullable(this.nhsNumber)
-            .map(value -> value + ":" + this.patientIdentificationType + namesDelimiter)
+            .map(value -> value + ":" + this.patientIdentificationType.getCode() + namesDelimiter)
             .ifPresentOrElse(values::add, () -> values.add(namesDelimiter));
 
         Optional.ofNullable(this.familyName)
@@ -127,13 +128,21 @@ public class PersonName extends Segment {
     }
 
     public enum PatientIdentificationType {
-        OPI("Official Patient Identifier"),
-        API("Amended Patient Identifier");
+        OFFICIAL_PATIENT_IDENTIFICATION("OPI"),
+        AMENDED_PATIENT_IDENTIFICATION("API");
 
-        private final String description;
+        @Getter
+        private final String code;
 
-        PatientIdentificationType(String description) {
-            this.description = description;
+        PatientIdentificationType(String code) {
+            this.code = code;
+        }
+
+        public static PatientIdentificationType fromCode(String code) {
+            return Arrays.stream(PatientIdentificationType.values())
+                .filter(patientIdentificationType -> patientIdentificationType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("%s element not found", code)));
         }
     }
 }

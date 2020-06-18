@@ -36,7 +36,7 @@ class PersonNameMapperTest {
             .builder()
             .nhsNumber("1234567890")
             .familyName("Smith")
-            .patientIdentificationType(PersonName.PatientIdentificationType.OPI)
+            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());

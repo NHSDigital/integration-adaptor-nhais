@@ -20,7 +20,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +40,6 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
     private final PersonSexMapper personSexMapper;
     private final PersonAddressMapper personAddressMapper;
     private final PersonDateOfBirthMapper personDateOfBirthMapper;
-    private final TimestampService timestampService;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
