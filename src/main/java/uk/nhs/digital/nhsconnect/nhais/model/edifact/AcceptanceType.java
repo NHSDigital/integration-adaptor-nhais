@@ -43,14 +43,14 @@ public class AcceptanceType extends Segment {
             throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
         }
 
-        if (!AcceptanceTypes.isValidCode(type)) {
+        if (!AvailableTypes.isValidCode(type)) {
             throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
         }
     }
 
     @Getter
     @RequiredArgsConstructor
-    public enum AcceptanceTypes {
+    public enum AvailableTypes {
         BIRTH("birth", "1"),
         FIRST("first", "2"),
         TRANSFERIN("transferin", "3"),
@@ -60,15 +60,15 @@ public class AcceptanceType extends Segment {
         final String code;
 
         public static String toCode(String fromValue) {
-            return Arrays.stream(AcceptanceTypes.values())
+            return Arrays.stream(AvailableTypes.values())
                 .filter(type -> type.getValue().equals(fromValue))
                 .findFirst()
-                .map(AcceptanceTypes::getCode)
+                .map(AvailableTypes::getCode)
                 .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
         }
 
         public static boolean isValidCode(String inputCode) {
-            return Arrays.stream(AcceptanceTypes.values())
+            return Arrays.stream(AvailableTypes.values())
                 .anyMatch(type -> type.getCode().equals(inputCode));
         }
     }

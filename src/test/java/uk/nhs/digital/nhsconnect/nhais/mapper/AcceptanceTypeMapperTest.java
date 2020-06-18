@@ -19,7 +19,7 @@ class AcceptanceTypeMapperTest {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ACCEPTANCE_TYPE)
-            .setValue(new StringType(AcceptanceType.AcceptanceTypes.BIRTH.getValue()));
+            .setValue(new StringType(AcceptanceType.AvailableTypes.BIRTH.getValue()));
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();
         AcceptanceType acceptanceType = acceptanceTypeMapper.map(parameters);

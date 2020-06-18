@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
@@ -28,13 +28,13 @@ class ApprovalTransactionMapperTest {
     @Mock
     private Interchange interchange;
     @Mock
-    private PatientIdentifier patientIdentifier;
+    private PersonName personName;
 
     @Test
     void testMap(SoftAssertions softly) {
-        when(interchange.getPatientIdentifier()).thenReturn(Optional.of(patientIdentifier));
+        when(interchange.getPersonName()).thenReturn(Optional.of(personName));
 
-        when(patientIdentifier.getNhsNumber()).thenReturn(Optional.of(new NhsIdentifier(NHS_NUMBER)));
+        when(personName.getNhsNumber()).thenReturn(Optional.of(new NhsIdentifier(NHS_NUMBER)));
 
         var parameters = new Parameters()
             .addParameter(new PatientParameter(new Patient()));

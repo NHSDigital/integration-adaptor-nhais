@@ -40,7 +40,7 @@ public class Interchange {
     @Getter(lazy = true)
     private final FreeText freeText = edifactMessage.getFreeText();
     @Getter(lazy = true)
-    private final Optional<PatientIdentifier> patientIdentifier = edifactMessage.getPatientIdentifier();
+    private final Optional<PersonName> personName = edifactMessage.getPersonName();
     @Getter(lazy=true)
     private final InterchangeTrailer interchangeTrailer = edifactMessage.getInterchangeTrailer();
 

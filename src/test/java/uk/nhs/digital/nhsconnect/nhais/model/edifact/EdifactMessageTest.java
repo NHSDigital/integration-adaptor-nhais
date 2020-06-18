@@ -105,10 +105,10 @@ class EdifactMessageTest {
     @Test
     void testPatientIdentifier(SoftAssertions softly) {
         EdifactMessage edifactMessage = new EdifactMessage(exampleMessage);
-        PatientIdentifier patientIdentifier = edifactMessage.getPatientIdentifier().get();
+        PersonName personName = edifactMessage.getPersonName().get();
 
-        softly.assertThat(patientIdentifier.getValue()).isEqualTo("PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA");
-        softly.assertThat(patientIdentifier.getNhsNumber().get().getValue()).isEqualTo("RAT56");
+        softly.assertThat(personName.getValue()).isEqualTo("PAT+RAT56:OBI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA");
+        softly.assertThat(personName.getNhsNumber().get().getValue()).isEqualTo("RAT56");
     }
 
     @Test

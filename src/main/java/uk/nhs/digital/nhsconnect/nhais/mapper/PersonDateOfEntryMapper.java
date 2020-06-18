@@ -19,9 +19,8 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
     }
 
     private Instant getPersonEntryDate(Parameters parameters) {
-        ParametersExtension parametersExt = new ParametersExtension(parameters);
         return parseInstant(
-            parametersExt.extractValueOrThrow(ENTRY_DATE_PARAM,() -> new FhirValidationException("Error while parsing param: " + ENTRY_DATE_PARAM))
+            ParametersExtension.extractValue(parameters, ENTRY_DATE_PARAM)
         );
     }
 

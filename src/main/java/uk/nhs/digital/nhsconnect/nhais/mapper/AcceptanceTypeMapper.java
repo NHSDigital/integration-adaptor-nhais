@@ -15,7 +15,7 @@ public class AcceptanceTypeMapper implements FromFhirToEdifactMapper<AcceptanceT
     }
 
     private String getAcceptanceType(Parameters parameters) {
-        return AcceptanceType.AcceptanceTypes.toCode(
+        return AcceptanceType.AvailableTypes.toCode(
             ParametersExtension.extractValue(parameters, ParameterNames.ACCEPTANCE_TYPE)
         );
     }
