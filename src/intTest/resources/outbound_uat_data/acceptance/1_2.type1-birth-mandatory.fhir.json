@@ -41,15 +41,7 @@
         ],
         "name": [
           {
-            "family": "STEVENS",
-            "given": [
-              "CHARLES",
-              "ANTHONY",
-              "JOHN"
-            ],
-            "prefix": [
-              "MR"
-            ]
+            "family": "STEVENS"
           }
         ],
         "gender": "male",
@@ -63,14 +55,7 @@
               "ORPINGTON",
               "KENT"
             ],
-            "postalCode": "BR6  7EW",
             "use": "home"
-          }
-        ],
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "BURY"
           }
         ],
         "resourceType": "Patient"
