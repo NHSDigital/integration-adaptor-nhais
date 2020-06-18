@@ -2,9 +2,19 @@
   "resourceType": "Parameters",
   "parameter": [
     {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    },
+    {
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "RAT56"
+          }
+        ],
         "generalPractitioner": [
           {
             "identifier": {

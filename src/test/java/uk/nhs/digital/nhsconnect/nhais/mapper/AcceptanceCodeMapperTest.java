@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,7 +16,7 @@ class AcceptanceCodeMapperTest {
     void When_MappingAcceptanceCode_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
-            .setName("acceptanceCode")
+            .setName(ParameterNames.ACCEPTANCE_CODE)
             .setValue(new StringType("S"));
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();

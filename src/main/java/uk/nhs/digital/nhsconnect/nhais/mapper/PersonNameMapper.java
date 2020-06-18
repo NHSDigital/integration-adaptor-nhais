@@ -4,13 +4,14 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
     private final static String NHS_SYSTEM = "https://fhir.nhs.uk/Id/nhs-number";
 
     public PersonName map(Parameters parameters) {
 
-        Patient patient = getPatient(parameters);
+        Patient patient = ParametersExtension.extractPatient(parameters);
 
         return PersonName.builder()
             .nhsNumber(getNhsNumber(patient))

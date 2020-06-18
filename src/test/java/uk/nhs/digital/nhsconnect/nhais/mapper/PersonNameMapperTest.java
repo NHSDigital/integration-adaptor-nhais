@@ -1,38 +1,34 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Collections;
+import java.util.List;
+
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Test;
+
 class PersonNameMapperTest {
-    private final static String NHS_SYSTEM = "https://fhir.nhs.uk/Id/nhs-number";
 
     @Test
     void When_MappingPatientName_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
-        Identifier identifier = new Identifier();
         HumanName humanName = new HumanName();
         humanName.setFamily("Smith");
-        identifier.setSystem(NHS_SYSTEM);
-        identifier.setValue("1234567890");
 
         patient.setName(Collections.singletonList(humanName));
-        patient.setIdentifier(List.of(identifier));
+        patient.setIdentifier(List.of(new NhsIdentifier("1234567890")));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName("patient")
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personNameMapper = new PersonNameMapper();
         PersonName personName = personNameMapper.map(parameters);
@@ -47,17 +43,15 @@ class PersonNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutNhs_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutNhs_Then_IllegalStateExceptionIsThrown() {
         Patient patient = new Patient();
         HumanName humanName = new HumanName();
         humanName.setFamily("Smith");
 
         patient.setName(Collections.singletonList(humanName));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName("patient")
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personNameMapper = new PersonNameMapper();
         assertThrows(IllegalStateException.class, () -> personNameMapper.map(parameters));
@@ -66,27 +60,21 @@ class PersonNameMapperTest {
     @Test
     public void When_MappingWithoutSurname_Then_UnsupportedOperationExceptionIsThrown() {
         Patient patient = new Patient();
-        Identifier identifier = new Identifier();
-        identifier.setSystem(NHS_SYSTEM);
-        identifier.setValue("1234567890");
-
-        patient.setIdentifier(List.of(identifier));
+        patient.setIdentifier(List.of(new NhsIdentifier("1234567890")));
         patient.setName(List.of());
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName("patient")
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personNameMapper = new PersonNameMapper();
         assertThrows(UnsupportedOperationException.class, () -> personNameMapper.map(parameters));
     }
 
     @Test
-    public void When_MappingWithoutPatient_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithoutPatient_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var personNameMapper = new PersonNameMapper();
-        assertThrows(NoSuchElementException.class, () -> personNameMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> personNameMapper.map(parameters));
     }
 }

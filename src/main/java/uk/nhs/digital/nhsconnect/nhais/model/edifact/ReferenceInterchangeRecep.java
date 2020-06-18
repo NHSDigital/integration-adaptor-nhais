@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.Arrays;
 
@@ -55,8 +56,8 @@ public class ReferenceInterchangeRecep extends Segment {
         if (!edifactString.startsWith(KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + ReferenceInterchangeRecep.class.getSimpleName() + " from " + edifactString);
         }
-        String[] keySplit = edifactString.split("\\+");
-        String[] sequenceWithCodeAndCount = keySplit[1].split("\\:");
+        String[] keySplit = Split.byPlus(edifactString);
+        String[] sequenceWithCodeAndCount = Split.byColon(keySplit[1]);
         String[] sequenceWithCode = sequenceWithCodeAndCount[1].split("\\s");
         return new ReferenceInterchangeRecep(
             Long.parseLong(sequenceWithCode[0]),

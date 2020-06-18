@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -18,14 +19,9 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
     }
 
     private Instant getPersonEntryDate(Parameters parameters) {
-        return parameters.getParameter()
-            .stream()
-            .filter(param -> ENTRY_DATE_PARAM.equalsIgnoreCase(param.getName()))
-            .map(Parameters.ParametersParameterComponent::getValue)
-            .map(Objects::toString)
-            .map(this::parseInstant)
-            .findFirst()
-            .orElseThrow(() -> new FhirValidationException("Error while parsing param: " + ENTRY_DATE_PARAM));
+        return parseInstant(
+            ParametersExtension.extractValue(parameters, ENTRY_DATE_PARAM)
+        );
     }
 
     private Instant parseInstant(String value) {

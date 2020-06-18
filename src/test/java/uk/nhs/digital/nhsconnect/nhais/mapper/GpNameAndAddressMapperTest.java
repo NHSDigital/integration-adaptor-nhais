@@ -1,16 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GpNameAndAddressMapperTest {
 
@@ -21,10 +23,8 @@ class GpNameAndAddressMapperTest {
             new Reference().setIdentifier(new GeneralPractitionerIdentifier("4826940,281"))
         ));
 
-        Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
 
         var personGPMapper = new GpNameAndAddressMapper();
         GpNameAndAddress personGP = personGPMapper.map(parameters);
@@ -40,12 +40,8 @@ class GpNameAndAddressMapperTest {
 
     @Test
     public void When_MappingWithoutGP_Then_NullPointerExceptionIsThrown() {
-        Patient patient = new Patient();
-
         Parameters parameters = new Parameters();
-        parameters.addParameter()
-            .setName(Patient.class.getSimpleName())
-            .setResource(patient);
+        parameters.addParameter(new PatientParameter());
 
         var personGPMapper = new GpNameAndAddressMapper();
         assertThrows(NullPointerException.class, () -> personGPMapper.map(parameters));

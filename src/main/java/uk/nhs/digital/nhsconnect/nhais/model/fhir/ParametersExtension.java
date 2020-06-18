@@ -19,20 +19,20 @@ public class ParametersExtension {
     private final Parameters parameters;
 
     public static Patient extractPatient(Parameters parameters) {
-        return new ParametersExtension(parameters).extractResource(ParameterNames.PATIENT, Patient.class);
+        return new ParametersExtension(parameters).extractPatient();
     }
 
     public Patient extractPatient() {
         return extractResource(ParameterNames.PATIENT, Patient.class);
     }
 
-    public static AcceptanceType.AcceptanceTypes extractAcceptanceType(Parameters parameters) {
+    public static AcceptanceType.AvailableTypes extractAcceptanceType(Parameters parameters) {
         return new ParametersExtension(parameters).extractAcceptanceType();
     }
 
-    public AcceptanceType.AcceptanceTypes extractAcceptanceType() {
+    public AcceptanceType.AvailableTypes extractAcceptanceType() {
         String acceptanceTypeCode = extractValue(ParameterNames.ACCEPTANCE_TYPE);
-        return AcceptanceType.AcceptanceTypes.fromCode(acceptanceTypeCode);
+        return AcceptanceType.AvailableTypes.fromCode(acceptanceTypeCode);
     }
 
     public <T extends Resource> T extractResource(String name, Class<T> clazz) {

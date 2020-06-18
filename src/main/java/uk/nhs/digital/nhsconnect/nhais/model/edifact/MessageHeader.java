@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 /**
  * A specialisation of a segment for the specific use case of a message header
@@ -49,7 +50,7 @@ public class MessageHeader extends Segment {
         if(!edifactString.startsWith(MessageHeader.KEY)){
             throw new IllegalArgumentException("Can't create " + MessageHeader.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+");
+        String[] split = Split.byPlus(edifactString);
         return new MessageHeader(Long.valueOf(split[1]));
     }
 

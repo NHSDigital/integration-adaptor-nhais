@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Configuration
-public class Config {
+public class TransactionMapperConfig {
     @Bean
     public Map<ReferenceTransactionType.TransactionType, TransactionMapper> getTransactionMappers(Set<TransactionMapper> transactionMappers) {
         return transactionMappers.stream()
