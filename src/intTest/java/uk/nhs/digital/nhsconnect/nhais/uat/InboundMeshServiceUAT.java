@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.uat;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +17,6 @@ import javax.jms.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @Autowired
