@@ -52,7 +52,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            emptyMapper(new DateTimePeriod(timestampService.getCurrentTimestamp(), DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
             emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)),
             //S01
