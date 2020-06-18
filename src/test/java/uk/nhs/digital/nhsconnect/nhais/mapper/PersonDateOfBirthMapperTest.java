@@ -8,18 +8,19 @@ import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfBirthMapperTest {
-    private static final Instant FIXED_TIME = ZonedDateTime.of(
-        1991, 11, 6, 23, 55, 0, 0, ZoneId.of("Europe/London"))
-        .toInstant();
-    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime.of(
-        1991, 11, 6, 23, 55, 0, 0, ZoneId.systemDefault())
+    private static final Instant FIXED_TIME =
+        LocalDate.of(1991, 11, 6)
+            .atStartOfDay(ZoneId.of("Europe/London"))
+            .toInstant();
+    private static final Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
+        .atStartOfDay(ZoneId.systemDefault())
         .toInstant();
 
     @Test

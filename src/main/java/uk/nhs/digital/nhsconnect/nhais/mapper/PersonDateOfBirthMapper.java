@@ -8,7 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Component
 public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDateOfBirth> {
@@ -22,11 +22,9 @@ public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDa
     private Instant getPersonDob(Parameters parameters) {
         Patient patient = ParametersExtension.extractPatient(parameters);
         var birthDateElement = patient.getBirthDateElement();
-        return LocalDateTime
-            .of(
-                birthDateElement.getYear(), birthDateElement.getMonth() + 1, birthDateElement.getDay(),
-                birthDateElement.getHour(), birthDateElement.getMinute(), birthDateElement.getSecond())
-            .atZone(TimestampService.UKZone)
+        return LocalDate
+            .of(birthDateElement.getYear(), birthDateElement.getMonth() + 1, birthDateElement.getDay())
+            .atStartOfDay(TimestampService.UKZone)
             .toInstant();
     }
 }
