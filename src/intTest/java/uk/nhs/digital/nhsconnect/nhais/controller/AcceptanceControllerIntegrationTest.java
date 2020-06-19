@@ -17,6 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import java.nio.file.Files;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
@@ -24,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Slf4j
 public class AcceptanceControllerIntegrationTest {
+
+    private static final String expectedOperationId = "c35b1432682a04ca77b287b11f240fbd8c46f22fe589b513a84e307b57dcb820";
 
     @Autowired
     OutboundStateRepository outboundStateRepository;
@@ -38,7 +41,8 @@ public class AcceptanceControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
 
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
-            .andExpect(status().isAccepted());
+            .andExpect(status().isAccepted())
+            .andExpect(header().string("OperationId", expectedOperationId));
 
         Iterable<OutboundState> outboundState = outboundStateRepository.findAll();
 

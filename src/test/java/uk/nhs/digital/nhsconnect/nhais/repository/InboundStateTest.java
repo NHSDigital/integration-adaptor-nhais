@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 public class InboundStateTest {
 
-    private static final String OPERATION_ID = "bd0327c35d94d2972b4e0c99e355a8bb5ea2453eb27777d9e1985af38c9c2cf2";
+    private static final String OPERATION_ID = "4b93239acaf902960fad67a339cfda2c1c0f771d51122627066cfcc667bc6b16";
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
     private static final Instant INTERCHANGE_TIMESTAMP = ZonedDateTime.now().toInstant();
