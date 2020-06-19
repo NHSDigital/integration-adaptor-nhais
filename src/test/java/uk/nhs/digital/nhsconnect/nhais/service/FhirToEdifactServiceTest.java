@@ -1,26 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import static java.util.Collections.singletonList;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.Instant;
-import java.time.ZonedDateTime;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -34,19 +13,33 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
 
-    private static final String OPERATION_ID = "0bb7e974dccafc41b24ba5bc6f0f52a8cb81397d2a3160051c37d336cd1122d8";
+    private static final String OPERATION_ID = "536f8ae2df897ae1d351a2aaed5c6f731f44718b8db412ee073e5def5bd3cef0";
     private static final String NHS_NUMBER = "54321";
     private static final String GP_TRADING_PARTNER_CODE = "GP123";
     private static final String HA_CIPHER = "HA4";

@@ -42,7 +42,7 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "birth"
+      "valueString": "1"
     }
   ],
   "resourceType": "Parameters"

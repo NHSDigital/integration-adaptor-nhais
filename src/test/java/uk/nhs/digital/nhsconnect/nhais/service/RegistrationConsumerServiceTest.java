@@ -48,7 +48,7 @@ public class RegistrationConsumerServiceTest {
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
     public static final String RECEP_RECIPIENT = SENDER;
-    private static final String OPERATION_ID = "70086e87f012c1e9776bd59589726d3722420823e2b5ceb2f7c7441c4044ffba";
+    private static final String OPERATION_ID = "241edf33054d1570ada7fdf1f4cdb3180c0097cf56ab1932ccd111d6cf3f2771";
     private static final String CONTENT = "some_content";
     private static final Instant TRANSLATION_TIME = ZonedDateTime
         .parse("199201141619", DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(TimestampService.UKZone))
