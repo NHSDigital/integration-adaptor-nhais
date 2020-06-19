@@ -4,38 +4,37 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonGPPrevious;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousGpName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class PersonGPPreviousMapperTest {
+class PreviousGpNameMapperTest {
 
     @Test
     void When_MappingGPPrevious_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.PREVIOUS_GP_NAME)
-            .setValue(new StringType("Practitioner/Old-One"));
+            .setValue(new StringType("DR PREVIOUS"));
 
-        var personGPPreviousMapper = new PersonGPPreviousMapper();
-        PersonGPPrevious personGPPrevious = personGPPreviousMapper.map(parameters);
+        var personGPPreviousMapper = new PreviousGpNameMapper();
+        PreviousGpName previousGpName = personGPPreviousMapper.map(parameters);
 
-        var expectedPersonGPPrevious = PersonGPPrevious
+        var expectedPersonGPPrevious = PreviousGpName
             .builder()
-            .identifier("Old-One")
-            .code("900")
+            .partyName("DR PREVIOUS")
             .build();
 
-        assertEquals(expectedPersonGPPrevious.toEdifact(), personGPPrevious.toEdifact());
+        assertEquals(expectedPersonGPPrevious.toEdifact(), previousGpName.toEdifact());
     }
 
     @Test
     public void When_MappingWithoutGPPreviousParam_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
-        var personGPPreviousMapper = new PersonGPPreviousMapper();
+        var personGPPreviousMapper = new PreviousGpNameMapper();
         assertThrows(FhirValidationException.class, () -> personGPPreviousMapper.map(parameters));
     }
 }

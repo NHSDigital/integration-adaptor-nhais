@@ -8,15 +8,26 @@ import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @deprecated for removal after completion of last translate outbound transaction story. Useful to stub out APIs until
+ * then
+ */
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Deprecated
 public class StubTranslator implements FhirToEdifactTranslator {
 
     private final FhirParser fhirParser;
@@ -24,16 +35,16 @@ public class StubTranslator implements FhirToEdifactTranslator {
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         return Arrays.asList(
-                new BeginningOfMessage(),
-                new NameAndAddress(getHaCipher(parameters), NameAndAddress.QualifierAndCode.FHS),
-                new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
-                new SegmentGroup(1),
-                new ReferenceTransactionNumber()
+            new BeginningOfMessage(),
+            new NameAndAddress(getHaCipher(parameters), NameAndAddress.QualifierAndCode.FHS),
+            new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+            new SegmentGroup(1),
+            new ReferenceTransactionNumber()
         );
     }
 
-    @Deprecated
+
     private String getHaCipher(Parameters parameters) throws FhirValidationException {
         Patient patient = ParametersExtension.extractPatient(parameters);
         String path = "patient.managingOrganization";
