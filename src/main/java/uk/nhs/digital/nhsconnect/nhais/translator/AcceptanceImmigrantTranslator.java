@@ -49,8 +49,8 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
             emptyMapper(new BeginningOfMessage()),
             //NAD+FHS+XX1:954'
             partyQualifierMapper,
-            //DTM+137:199201151723:203'
-            acceptanceDateMapper,
+            //DTM+956:19920115:102' (acceptance date)
+            emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950:G1'
             emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)),
             //S01+1'
@@ -63,8 +63,8 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
             acceptanceCodeMapper,
             //HEA+ATP+4:ZZZ'
             acceptanceTypeMapper,
-            //DTM+956:19920115:102' (acceptance date ?)
-            emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            //DTM+137:199201151723:203'
+            acceptanceDateMapper,
             //DTM+957:19910806:102'
             personDateOfEntryMapper,
             //DTM+958:19680305:102' (optional)
@@ -75,8 +75,6 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
             emptyMapper(new SegmentGroup(2)),
             //PNA+PAT++++SU:HOWES+FO:ALISON+TI:MRS+MI:J'
             personNameMapper,
-            //DTM+329:19651212:102'
-            personDateOfBirthMapper,
             //PDI+2'
             personSexMapper,
             //NAD+PAT++:13 FOX CRESCENT::BROMLEY:KENT+++++BR1  7TQ'
