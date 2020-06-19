@@ -28,17 +28,13 @@ public class PersonAddress extends Segment {
     @Override
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
-            .map(this::replaceNullOrBlankWithEmptyString)
+            .map(StringUtils::defaultString)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE
             .concat(PLUS_SEPARATOR)
             .concat(PLUS_SEPARATOR)
             .concat(address);
-    }
-
-    private String replaceNullOrBlankWithEmptyString(String s) {
-        return StringUtils.isBlank(s) ? StringUtils.EMPTY : s;
     }
 
     @Override
