@@ -27,7 +27,7 @@ public class PersonAddress extends Segment {
     @Override
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
-            .filter(Objects::nonNull)
+            .map(s -> s == null ? "" : s)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE

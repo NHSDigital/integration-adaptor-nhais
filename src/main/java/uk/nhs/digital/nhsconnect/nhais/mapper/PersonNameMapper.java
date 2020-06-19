@@ -27,6 +27,6 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
             .filter(identifier -> identifier.getSystem().equals(NHS_SYSTEM))
             .map(Identifier::getValue)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Nhs Number mapping problem"));
+            .orElse(null);
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public class FhirToEdifactManager {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
+    private final AcceptanceTransferinTranslator acceptanceTransferinTranslator;
     private final StubTranslator stubTranslator;
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
@@ -35,8 +36,9 @@ public class FhirToEdifactManager {
         switch (acceptanceType) {
             case BIRTH:
                 return acceptanceBirthTranslator.translate(parameters);
-            case FIRST:
             case TRANSFER_IN:
+                return acceptanceTransferinTranslator.translate(parameters);
+            case FIRST:
             case IMMIGRANT:
             default:
                 throw new UnsupportedOperationException(String.format("%s is not supported", acceptanceType));

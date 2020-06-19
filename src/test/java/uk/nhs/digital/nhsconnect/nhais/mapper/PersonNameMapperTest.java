@@ -43,21 +43,6 @@ class PersonNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutNhs_Then_IllegalStateExceptionIsThrown() {
-        Patient patient = new Patient();
-        HumanName humanName = new HumanName();
-        humanName.setFamily("Smith");
-
-        patient.setName(Collections.singletonList(humanName));
-
-        Parameters parameters = new Parameters()
-            .addParameter(new PatientParameter(patient));
-
-        var personNameMapper = new PersonNameMapper();
-        assertThrows(IllegalStateException.class, () -> personNameMapper.map(parameters));
-    }
-
-    @Test
     public void When_MappingWithoutSurname_Then_UnsupportedOperationExceptionIsThrown() {
         Patient patient = new Patient();
         patient.setIdentifier(List.of(new NhsIdentifier("1234567890")));
