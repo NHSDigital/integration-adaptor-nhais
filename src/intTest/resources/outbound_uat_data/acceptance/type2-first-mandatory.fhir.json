@@ -53,12 +53,6 @@
             "use": "home"
           }
         ],
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "GLASGOW"
-          }
-        ],
         "resourceType": "Patient"
       }
     }
