@@ -1,15 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import java.util.Map;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 @Builder
 @Data
@@ -17,18 +16,8 @@ public class AcceptanceType extends Segment {
     private final static String KEY = "HEA";
     private final static String APT_PREFIX = "ATP";
     private final static String ZZZ_SUFFIX = ":ZZZ";
-    private final static Map<String, String> ACC_TYPE_MAPPING = ImmutableMap.of(
-        "birth", "1",
-        "first", "2",
-        "transferin", "3",
-        "immigrant", "4"
-    );
-    private @NonNull String type;
 
-    public static String getTypeValue(String input) {
-        return Optional.ofNullable(ACC_TYPE_MAPPING.get(input))
-            .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
-    }
+    private @NonNull AvailableTypes acceptanceType;
 
     @Override
     public String getKey() {
@@ -39,7 +28,7 @@ public class AcceptanceType extends Segment {
     public String getValue() {
         return APT_PREFIX
             .concat(PLUS_SEPARATOR)
-            .concat(type)
+            .concat(acceptanceType.getCode())
             .concat(ZZZ_SUFFIX);
     }
 
@@ -49,12 +38,28 @@ public class AcceptanceType extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(type) || type.isBlank()) {
+        if (Objects.isNull(acceptanceType)) {
             throw new EdifactValidationException(getKey() + ": Acceptance Type is required");
         }
+    }
 
-        if (!ACC_TYPE_MAPPING.containsValue(type)) {
-            throw new EdifactValidationException(getKey() + "Acceptance Type not allowed: " + type);
+    public enum AvailableTypes {
+        BIRTH("1"),
+        FIRST("2"),
+        TRANSFER_IN("3"),
+        IMMIGRANT("4");
+
+        @Getter
+        public String code;
+        AvailableTypes(String code) {
+            this.code = code;
+        }
+
+        public static AvailableTypes fromCode(String code) {
+            return Arrays.stream(AvailableTypes.values())
+                .filter(acceptanceType -> acceptanceType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("%s element not found", code)));
         }
     }
 }

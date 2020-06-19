@@ -1,13 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.apache.commons.lang3.EnumUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Builder
 @Data
@@ -26,13 +25,12 @@ public class AcceptanceCode extends Segment {
         "S" = "Acceptance with same GP new FHSA"
      */
     private final static String KEY = "HEA";
-    private final static Set<String> ALLOWED_CODES = ImmutableSet.of("A", "D", "R", "I", "S");
     private final static String ACD_PREFIX = "ACD";
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private @NonNull String code;
 
-    public static boolean isCodeAllowed(String inputCode) {
-        return ALLOWED_CODES.contains(inputCode);
+    private static boolean isCodeAllowed(String inputCode) {
+        return EnumUtils.isValidEnum(AcceptanceCodes.class, inputCode);
     }
 
     @Override
@@ -61,5 +59,9 @@ public class AcceptanceCode extends Segment {
         if (!isCodeAllowed(code)) {
             throw new EdifactValidationException("Acceptance Code not allowed: " + code);
         }
+    }
+
+    private enum AcceptanceCodes {
+        A, D, R, I, S
     }
 }

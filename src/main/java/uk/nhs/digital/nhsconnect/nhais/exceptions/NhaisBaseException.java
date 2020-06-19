@@ -1,6 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.exceptions;
 
-public class NhaisBaseException extends Exception {
+public class NhaisBaseException extends RuntimeException {
 
     public NhaisBaseException(String message) {
         super(message);

@@ -65,21 +65,11 @@ class EdifactParserTest {
         assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySegments))
             .isExactlyInstanceOf(ToEdifactParsingException.class)
             .hasMessageContaining("missing segment UNB")
-            .hasMessageContaining("missing segment UNH")
-            .hasMessageContaining("missing segment RFF+TN")
-            .hasMessageContaining("missing segment RFF+950")
-            .hasMessageContaining("missing segment DTM")
-            .hasMessageContaining("missing segment NAD+FHS")
-            .hasMessageContaining("missing segment NAD+GP");
+            .hasMessageContaining("missing segment UNH");
 
         assertThatThrownBy(() -> new EdifactParser().parse(messageWithEmptySender))
             .isExactlyInstanceOf(ToEdifactParsingException.class)
             .hasMessageContaining("UNB: Attribute sender is required")
-            .hasMessageContaining("missing segment UNH")
-            .hasMessageContaining("missing segment RFF+TN")
-            .hasMessageContaining("missing segment RFF+950")
-            .hasMessageContaining("missing segment DTM")
-            .hasMessageContaining("missing segment NAD+FHS")
-            .hasMessageContaining("missing segment NAD+GP");
+            .hasMessageContaining("missing segment UNH");
     }
 }

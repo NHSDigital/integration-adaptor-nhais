@@ -51,16 +51,9 @@
         "gender": "male",
         "generalPractitioner": [
           {
-            "id": "254406A3",
-            "type": "Organization",
-            "reference": "https://directory.spineservices.nhs.uk/STU3/Organization/Y12345",
             "identifier": {
-              "system": "https://digital.nhs.uk/services/organisation-data-service",
-              "value": "Y12345",
-              "period": {
-                "start": "2020-01-01",
-                "end": "2021-12-31"
-              }
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
             }
           }
         ],
@@ -72,10 +65,12 @@
           }
         ],
         "managingOrganization": {
-          "identifier": {
-            "value": "HA456"
-          },
-          "type": "Organization"
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "XX1"
+            }
+          ]
         },
         "name": [
           {
@@ -98,11 +93,15 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "birth"
+      "valueString": "1"
     },
     {
       "name": "acceptanceCode",
       "valueString": "A"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "1992-01-13"
     },
     {
       "name": "previousGPName",
@@ -111,6 +110,10 @@
     {
       "name": "entryDate",
       "valueString": "1991-11-06T23:55:00Z"
+    },
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
     }
   ],
   "resourceType": "Parameters"

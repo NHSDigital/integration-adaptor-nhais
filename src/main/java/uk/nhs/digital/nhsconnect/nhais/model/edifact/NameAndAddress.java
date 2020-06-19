@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.Arrays;
 
@@ -24,14 +25,16 @@ public class NameAndAddress extends Segment {
         if (!edifactString.startsWith(NameAndAddress.KEY)) {
             throw new IllegalArgumentException("Can't create " + NameAndAddress.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("'")[0].split("\\+");
+        String[] split = Split.byPlus(
+            Split.bySegmentTerminator(edifactString)[0]
+        );
 
         var qualifierAndCode = Arrays.stream(QualifierAndCode.values())
-            .filter(qc -> qc.getCode().equals(split[2].split(":")[1]) && qc.getQualifier().equals(split[1]))
+            .filter(qc -> qc.getCode().equals(Split.byColon(split[2])[1]) && qc.getQualifier().equals(split[1]))
             .findFirst()
             .orElseThrow();
 
-        return new NameAndAddress(split[2].split(":")[0], qualifierAndCode);
+        return new NameAndAddress(Split.byColon(split[2])[0], qualifierAndCode);
     }
 
     @Override

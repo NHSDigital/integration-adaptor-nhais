@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 @Getter @Setter
 @RequiredArgsConstructor @NoArgsConstructor
@@ -48,7 +49,7 @@ public class ReferenceTransactionNumber extends Segment {
         if(!edifactString.startsWith(ReferenceTransactionNumber.KEY_QUALIFIER)){
             throw new IllegalArgumentException("Can't create " + ReferenceTransactionNumber.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\:");
+        String[] split = Split.byColon(edifactString);
         return new ReferenceTransactionNumber(Long.valueOf(split[1]));
     }
 }

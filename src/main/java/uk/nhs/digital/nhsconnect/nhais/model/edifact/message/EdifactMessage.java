@@ -9,6 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
@@ -16,11 +17,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class EdifactMessage {
-
-    /**
-     * Matches an apostrophe NOT preceded by a question mark
-     */
-    private static final String ROW_DELIMITER = "((?<!\\?)')";
 
     private final String edifactMessage;
 
@@ -82,6 +78,11 @@ public class EdifactMessage {
         );
     }
 
+    public Optional<PersonName> getPersonName() {
+        return extractOptionalSegment(PersonName.KEY_QUALIFIER)
+            .map(PersonName::fromString);
+    }
+
     public InterchangeTrailer getInterchangeTrailer() {
         return InterchangeTrailer.fromString(
             extractSegment(InterchangeTrailer.KEY)
@@ -89,7 +90,7 @@ public class EdifactMessage {
     }
 
     private String[] getSegments() {
-        return edifactMessage.strip().split(ROW_DELIMITER);
+        return Split.bySegmentTerminator(edifactMessage.strip());
     }
 
     private Optional<String> extractOptionalSegment(String key) {

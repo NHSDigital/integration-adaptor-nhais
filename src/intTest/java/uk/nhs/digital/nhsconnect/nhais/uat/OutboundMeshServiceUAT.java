@@ -1,5 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.uat;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.ZonedDateTime;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+
+import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,17 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import java.time.ZonedDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -59,7 +61,6 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedEdifact) throws JMSException {
         var meshMessage = parseOutboundQueueMessage(gpSystemInboundQueueMessage);
-
         assertThat(meshMessage.getContent()).isEqualTo(expectedEdifact);
     }
 }

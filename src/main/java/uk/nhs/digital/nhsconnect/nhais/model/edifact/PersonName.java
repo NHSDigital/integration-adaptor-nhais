@@ -2,13 +2,15 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -16,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
  */
-@Setter
+
 @Getter
 @Builder
 public class PersonName extends Segment {
@@ -26,13 +28,13 @@ public class PersonName extends Segment {
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
     //all properties are optional
-    private String nhsNumber;
-    private String patientIdentificationType;
-    private String familyName;
-    private String forename;
-    private String title;
-    private String middleName;
-    private String thirdForename;
+    private final String nhsNumber;
+    private final PatientIdentificationType patientIdentificationType;
+    private final String familyName;
+    private final String forename;
+    private final String title;
+    private final String middleName;
+    private final String thirdForename;
 
     public static PersonName fromString(String edifactString) {
         if (!edifactString.startsWith(PersonName.KEY_QUALIFIER)) {
@@ -50,25 +52,25 @@ public class PersonName extends Segment {
     }
 
     private static String extractNhsNumber(String edifactString) {
-        String[] components = edifactString.split("\\+");
+        String[] components = Split.byPlus(edifactString);
         if (components.length > 2 && StringUtils.isNotEmpty(components[2])) {
-            return components[2].split(":")[0];
+            return Split.byColon(components[2])[0];
         }
         return null;
     }
 
-    private static String getPatientIdentificationType(String edifactString) {
-        String[] components = edifactString.split("\\+");
+    private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
+        String[] components = Split.byPlus(edifactString);
         if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
-            return components[2].split(":")[1];
+            return PatientIdentificationType.fromCode(Split.byColon(components[2])[1]);
         }
         return null;
     }
 
     private static String extractNamePart(String qualifier, String text) {
-        return Arrays.stream(text.split("\\+"))
+        return Arrays.stream(Split.byPlus(text))
             .filter(value -> value.startsWith(qualifier))
-            .map(value -> value.split(":")[1])
+            .map(value -> Split.byColon(value)[1])
             .findFirst()
             .orElse(null);
     }
@@ -85,7 +87,7 @@ public class PersonName extends Segment {
 
         String namesDelimiter = containsName() ? "++" : "";
         Optional.ofNullable(this.nhsNumber)
-            .map(value -> value + ":" + this.patientIdentificationType + namesDelimiter)
+            .map(value -> value + ":" + this.patientIdentificationType.getCode() + namesDelimiter)
             .ifPresentOrElse(values::add, () -> values.add(namesDelimiter));
 
         Optional.ofNullable(this.familyName)
@@ -107,6 +109,10 @@ public class PersonName extends Segment {
         return String.join(PLUS_SEPARATOR, values);
     }
 
+    public Optional<NhsIdentifier> getNhsNumber() {
+        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
+    }
+
     private boolean containsName() {
         return Stream.of(this.familyName, this.forename, this.title, this.middleName, this.thirdForename)
             .anyMatch(Objects::nonNull);
@@ -119,5 +125,24 @@ public class PersonName extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
+    }
+
+    public enum PatientIdentificationType {
+        OFFICIAL_PATIENT_IDENTIFICATION("OPI"),
+        AMENDED_PATIENT_IDENTIFICATION("API");
+
+        @Getter
+        private final String code;
+
+        PatientIdentificationType(String code) {
+            this.code = code;
+        }
+
+        public static PatientIdentificationType fromCode(String code) {
+            return Arrays.stream(PatientIdentificationType.values())
+                .filter(patientIdentificationType -> patientIdentificationType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("%s element not found", code)));
+        }
     }
 }

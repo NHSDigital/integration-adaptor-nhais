@@ -1,0 +1,12 @@
+Miss Sarah Angela Kennedy.
+Born : 09/12/1991 in Glasgow.
+Address : 26 Farmside Close, St Pauls Cray, Orpington, Kent, BR6 7ET.
+Registered with GP 295 (GMC National GP Code 2750922) - a dispensing GP for this patient.
+Address has an RPP Mileage of 6, a Special District classification, Walking Units of 3 and a Residential Institute Code of RT.
+The GP has added some free text (GP Notes) at the time of registration.
+Information transmitted within Interchange 3, Message 4, Transaction Number 18 at 16:19 on 14/01/1992.
+
+The following segments are present in the original data but are not longer used by NHAIS and have been removed from the example:
+HEA+BM+S:ZZZ'
+QTY+952:3'
+QTY+951:6'

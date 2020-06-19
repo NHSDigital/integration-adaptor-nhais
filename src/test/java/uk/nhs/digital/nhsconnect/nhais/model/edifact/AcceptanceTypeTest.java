@@ -13,28 +13,10 @@ public class AcceptanceTypeTest {
         var expectedValue = "HEA+ATP+1:ZZZ'";
 
         var acceptanceType = AcceptanceType.builder()
-            .type("1")
+            .acceptanceType(AcceptanceType.AvailableTypes.BIRTH)
             .build();
 
         assertEquals(expectedValue, acceptanceType.toEdifact());
-    }
-
-    @Test
-    public void When_MappingWithWrongType_Then_EdifactValidationExceptionIsThrown() {
-        var acceptanceType = AcceptanceType.builder()
-            .type("a")
-            .build();
-
-        assertThrows(EdifactValidationException.class, acceptanceType::toEdifact);
-    }
-
-    @Test
-    public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
-        var acceptanceType = AcceptanceType.builder()
-            .type("")
-            .build();
-
-        assertThrows(EdifactValidationException.class, acceptanceType::toEdifact);
     }
 
     @Test

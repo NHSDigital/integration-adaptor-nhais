@@ -1,10 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
@@ -14,16 +18,22 @@ import java.time.format.DateTimeFormatter;
 /**
  * Example DTM+137:199201141619:203'
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @RequiredArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
 public class DateTimePeriod extends Segment{
 
     public static final String KEY = "DTM";
 
-    private @NonNull Instant timestamp;
+    /**
+     * When creating a new DateTimePeriod the timestamp is not provided. This is considered "stateful" and a value
+     * this is shared across multiple segments. The FhirToEdifactService sets this value as a pre-precessing step just
+     * before the segments are translated "toEdifact()"
+     */
+    private Instant timestamp;
     private @NonNull TypeAndFormat typeAndFormat;
 
     public enum TypeAndFormat {
-        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm");
+        TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm"),
+        ACCEPTANCE_DATE("956", "102", "yyyMMdd");
 
         private final String typeCode;
         private final String formatCode;
@@ -62,29 +72,24 @@ public class DateTimePeriod extends Segment{
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
-        // Do nothing
+        if (timestamp == null) {
+            throw new EdifactValidationException(getKey() + ": Attribute timestamp is required");
+        }
     }
 
     @Override
     public void preValidate() throws EdifactValidationException {
-//        if (typeCode.isEmpty()) {
-//            throw new EdifactValidationException(getKey() + ": Attribute typeCode is required");
-//        }
-//        if(formatCode.isEmpty()){
-//            throw new EdifactValidationException(getKey() + ": Attribute formatCode is required");
-//        }
-//        if (dateTimeFormat.isEmpty()) {
-//            throw new EdifactValidationException(getKey() + ": Attribute dateTimeFormat is required");
-//        }
+        // nothing
     }
 
     public static DateTimePeriod fromString(String edifactString) {
         if(!edifactString.startsWith(DateTimePeriod.KEY)){
             throw new IllegalArgumentException("Can't create " + DateTimePeriod.class.getSimpleName() + " from " + edifactString);
         }
-        String[] split = edifactString.split("\\+")[1]
-            .split(":");
-        Instant instant = ZonedDateTime.parse(split[1], TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
+        String dateTime = Split.byColon(
+            Split.byPlus(edifactString)[1]
+        )[1];
+        Instant instant = ZonedDateTime.parse(dateTime, TypeAndFormat.TRANSLATION_TIMESTAMP.getDateTimeFormat()).toInstant();
         return new DateTimePeriod(instant, TypeAndFormat.TRANSLATION_TIMESTAMP);
     }
 }
