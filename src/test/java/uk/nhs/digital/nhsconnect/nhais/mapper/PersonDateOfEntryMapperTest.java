@@ -8,31 +8,24 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfEntryMapperTest {
-    private static final Instant FIXED_TIME = ZonedDateTime.of(
-        1991,
-        11,
-        6,
-        23,
-        55,
-        0,
-        0,
-        ZoneId.of("Europe/London")).toInstant();
-
+    private static final String DATE_STRING = "1991-11-06";
+    private static final LocalDate LOCAL_DATE = LocalDate.parse(DATE_STRING);
+    private static final Instant FIXED_TIME = LOCAL_DATE.atStartOfDay(ZoneId.of("Europe/London")).toInstant();
 
     @Test
     void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ENTRY_DATE)
-            .setValue(new StringType(FIXED_TIME.toString()));
+            .setValue(new StringType(DATE_STRING));
 
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
         PersonDateOfEntry personDateOfEntry = personDateOfEntryMapper.map(parameters);

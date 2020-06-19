@@ -19,6 +19,7 @@ import java.util.List;
 public class FhirToEdifactManager {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
+    private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
     private final AcceptanceTransferinTranslator acceptanceTransferinTranslator;
     private final StubTranslator stubTranslator;
 
@@ -40,6 +41,7 @@ public class FhirToEdifactManager {
                 return acceptanceTransferinTranslator.translate(parameters);
             case FIRST:
             case IMMIGRANT:
+                return acceptanceImmigrantTranslator.translate(parameters);
             default:
                 throw new UnsupportedOperationException(String.format("%s is not supported", acceptanceType));
         }

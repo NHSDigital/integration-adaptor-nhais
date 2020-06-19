@@ -43,12 +43,12 @@ public class PersonAddress extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(addressLine1) && Objects.isNull(addressLine2)) {
+        if (!isAddressLineValid(addressLine1) && !isAddressLineValid(addressLine2)) {
             throw new EdifactValidationException("Address line 1 or Address line 2 must be populated");
         }
+    }
 
-        if (addressLine1.isBlank() && addressLine2.isBlank()) {
-            throw new EdifactValidationException("Address line 1 or Address line 2 must be populated");
-        }
+    private boolean isAddressLineValid(String addressLine) {
+        return Objects.nonNull(addressLine) && !addressLine.isBlank();
     }
 }
