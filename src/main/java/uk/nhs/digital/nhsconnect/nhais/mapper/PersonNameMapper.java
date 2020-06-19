@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
@@ -15,9 +16,17 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
 
         Patient patient = ParametersExtension.extractPatient(parameters);
 
-        return PersonName.builder()
-            .nhsNumber(getNhsNumber(patient))
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+        String nhsNumber = getNhsNumber(patient);
+
+        PersonName.PersonNameBuilder builder = PersonName.builder();
+
+        if (!StringUtils.isBlank(nhsNumber)) {
+            builder
+                .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+                .nhsNumber(nhsNumber);
+        }
+
+        return builder
             .familyName(patient.getNameFirstRep().getFamily())
             .build();
     }
@@ -27,6 +36,6 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
             .filter(identifier -> identifier.getSystem().equals(NHS_SYSTEM))
             .map(Identifier::getValue)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Nhs Number mapping problem"));
+            .orElse(null);
     }
 }

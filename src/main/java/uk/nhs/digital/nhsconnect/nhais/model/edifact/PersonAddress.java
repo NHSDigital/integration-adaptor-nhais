@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class PersonAddress extends Segment {
     @Override
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
-            .filter(Objects::nonNull)
+            .map(StringUtils::defaultString)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE

@@ -4,11 +4,13 @@ import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
 
+@Component
 public class PersonOldAddressMapper implements FromFhirToEdifactMapper<PersonOldAddress> {
     private final static Address.AddressUse ADDRESS_USE_OLD = Address.AddressUse.OLD;
 

@@ -6,15 +6,14 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PersonGPPreviousTest {
+public class PreviousGpNameTest {
 
     @Test
     public void When_MappingToEdifact_Then_ReturnCorrectString() {
-        var expectedValue = "NAD+PGP+4826940,281:900'";
+        var expectedValue = "NAD+PGP+++DR PREVIOUS'";
 
-        var personGPPrevious = PersonGPPrevious.builder()
-            .identifier("4826940,281")
-            .code("900")
+        var personGPPrevious = PreviousGpName.builder()
+            .partyName("DR PREVIOUS")
             .build();
 
         assertEquals(expectedValue, personGPPrevious.toEdifact());
@@ -22,9 +21,8 @@ public class PersonGPPreviousTest {
 
     @Test
     public void When_MappingToEdifactWithEmptyFields_Then_EdifactValidationExceptionIsThrown() {
-        var personGPPrevious = PersonGPPrevious.builder()
-            .identifier("")
-            .code("")
+        var personGPPrevious = PreviousGpName.builder()
+            .partyName("")
             .build();
 
         assertThrows(EdifactValidationException.class, personGPPrevious::toEdifact);
@@ -32,6 +30,6 @@ public class PersonGPPreviousTest {
 
     @Test
     public void When_BuildingWithoutMandatoryFields_Then_NullPointerExceptionIsThrown() {
-        assertThrows(NullPointerException.class, () -> PersonGPPrevious.builder().build());
+        assertThrows(NullPointerException.class, () -> PreviousGpName.builder().build());
     }
 }
