@@ -25,10 +25,10 @@ public class PersonAddressTest {
 
     @Test
     public void When_MappingToEdifactWithMissingFields_Then_ReturnCorrectString() {
-        var expectedValue = "NAD+PAT++MOORSIDE FARM::ST PAULS CRAY::KENT'";
+        var expectedValue = "NAD+PAT++:MOORSIDE FARM:ST PAULS CRAY::KENT'";
 
         var personAddress = PersonAddress.builder()
-            .addressLine1("MOORSIDE FARM")
+            .addressLine2("MOORSIDE FARM")
             .addressLine3("ST PAULS CRAY")
             .addressLine5("KENT")
             .build();
