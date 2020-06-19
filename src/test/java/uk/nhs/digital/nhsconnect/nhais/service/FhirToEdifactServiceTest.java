@@ -24,7 +24,7 @@ import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
-import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactSegmentTranslator;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -59,7 +59,7 @@ public class FhirToEdifactServiceTest {
     TimestampService timestampService;
 
     @Mock
-    FhirToEdifactManager fhirToEdifactManager;
+    FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
@@ -76,7 +76,7 @@ public class FhirToEdifactServiceTest {
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
         // segments related to state management only
-        when(fhirToEdifactManager.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
+        when(fhirToEdifactSegmentTranslator.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
                 new BeginningOfMessage(),
                 new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
