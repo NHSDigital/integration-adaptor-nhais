@@ -15,9 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PartyQualifierMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonOldAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PreviousGpNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
@@ -31,39 +29,59 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AcceptanceTransferinTranslator implements FhirToEdifactTranslator {
+public class AcceptanceFirstTranslator implements FhirToEdifactTranslator {
 
     private final PartyQualifierMapper partyQualifierMapper;
     private final GpNameAndAddressMapper gpNameAndAddressMapper;
-    private final PreviousGpNameMapper previousGpNameMapper;
     private final AcceptanceCodeMapper acceptanceCodeMapper;
     private final AcceptanceTypeMapper acceptanceTypeMapper;
     private final AcceptanceDateMapper acceptanceDateMapper;
     private final PersonNameMapper personNameMapper;
     private final PersonSexMapper personSexMapper;
     private final PersonAddressMapper personAddressMapper;
-    private final PersonOldAddressMapper personOldAddressMapper;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
-        return Stream.of(
+//        //TODO: enforce place of birth mandatory when NHS number is missing
+//        if(new PersonNameMapper().map(parameters).getNhsNumber().isEmpty()) {
+//            Optional.ofNullable(new PersonPlaceOfBirthMapper().map(parameters).getLocation())
+//                .orElseThrow(() -> new FhirValidationException("Location is mandatory when NHS number is missing"));
+//        }
+
+        List<Segment> segments = Stream.of(
+            //BGM
             emptyMapper(new BeginningOfMessage()),
+            //NAD+FHS
             partyQualifierMapper,
-            emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            //DTM+137
+            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            //RFF+950
             emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)),
+            //S01
             emptyMapper(new SegmentGroup(1)),
+            //RFF+TN
             emptyMapper(new ReferenceTransactionNumber()),
+            //NAD+GP
             gpNameAndAddressMapper,
-            previousGpNameMapper,
+            //HEA+ACD
             acceptanceCodeMapper,
+            //HEA+ATP
             acceptanceTypeMapper,
+            //DTM+956
             acceptanceDateMapper,
+            //LOC+950
+//            new PersonPlaceOfBirthMapper(), //TODO: for now place of birth is ignored
+            //S02
             emptyMapper(new SegmentGroup(2)),
+            // PNA+PAT
             personNameMapper,
+            //PNI
             personSexMapper,
-            personAddressMapper,
-            personOldAddressMapper)
+            //NAD+PAT
+            personAddressMapper)
             .map(mapper -> mapper.map(parameters))
             .collect(Collectors.toList());
+
+        return segments;
     }
 }

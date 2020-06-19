@@ -16,17 +16,23 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class FhirToEdifactManager {
+public class FhirToEdifactSegmentTranslator {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
-    private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
+    private final AcceptanceFirstTranslator acceptanceFirstTranslator;
     private final AcceptanceTransferinTranslator acceptanceTransferinTranslator;
+    private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
     private final StubTranslator stubTranslator;
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
         switch (transactionType) {
             case ACCEPTANCE:
                 return delegateAcceptance(parameters);
+            case AMENDMENT:
+            case REMOVAL:
+            case DEDUCTION:
+            case REJECTION:
+            case APPROVAL:
             default:
                 return stubTranslator.translate(parameters);
         }
@@ -37,9 +43,10 @@ public class FhirToEdifactManager {
         switch (acceptanceType) {
             case BIRTH:
                 return acceptanceBirthTranslator.translate(parameters);
+            case FIRST:
+                return acceptanceFirstTranslator.translate(parameters);
             case TRANSFER_IN:
                 return acceptanceTransferinTranslator.translate(parameters);
-            case FIRST:
             case IMMIGRANT:
                 return acceptanceImmigrantTranslator.translate(parameters);
             default:
