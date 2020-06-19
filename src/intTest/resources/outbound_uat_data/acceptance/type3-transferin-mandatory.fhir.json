@@ -41,17 +41,10 @@
         ],
         "name": [
           {
-            "family": "ASQUITH",
-            "given": [
-              "ROGER"
-            ],
-            "prefix": [
-              "LORD"
-            ]
+            "family": "ASQUITH"
           }
         ],
         "gender": "male",
-        "birthDate": "1946-07-23",
         "address": [
           {
             "line": [
@@ -61,7 +54,6 @@
               "ORPINGTON",
               "KENT"
             ],
-            "postalCode": "BR12 7ET",
             "use": "home"
           },
           {

@@ -3,13 +3,20 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import static java.util.Collections.singletonList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
@@ -17,9 +24,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactSegmentTranslator;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
@@ -30,18 +37,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
-
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class FhirToEdifactServiceTest {
@@ -66,7 +61,7 @@ public class FhirToEdifactServiceTest {
     TimestampService timestampService;
 
     @Mock
-    FhirToEdifactManager fhirToEdifactManager;
+    FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
     @InjectMocks
     FhirToEdifactService fhirToEdifactService;
@@ -83,7 +78,7 @@ public class FhirToEdifactServiceTest {
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
         // segments related to state management only
-        when(fhirToEdifactManager.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
+        when(fhirToEdifactSegmentTranslator.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
                 new BeginningOfMessage(),
                 new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
                 new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),

@@ -1,12 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -23,12 +21,15 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactSegmentTranslator;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -37,7 +38,7 @@ public class FhirToEdifactService {
     private final OutboundStateRepository outboundStateRepository;
     private final SequenceService sequenceService;
     private final TimestampService timestampService;
-    private final FhirToEdifactManager fhirToEdifactManager;
+    private final FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
     public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
@@ -124,7 +125,7 @@ public class FhirToEdifactService {
         translationItems.segments = new ArrayList<>();
         translationItems.segments.add(new InterchangeHeader(translationItems.sender, translationItems.recipient, translationItems.translationTimestamp));
         translationItems.segments.add(new MessageHeader());
-        List<Segment> messageSegments = fhirToEdifactManager.createMessageSegments(translationItems.parameters, translationItems.transactionType);
+        List<Segment> messageSegments = fhirToEdifactSegmentTranslator.createMessageSegments(translationItems.parameters, translationItems.transactionType);
         translationItems.segments.addAll(messageSegments);
         // numberOfSegments must include the header and trailer thus numberOfSegments = size() + 2
         translationItems.segments.add(new MessageTrailer(messageSegments.size() + 2));
