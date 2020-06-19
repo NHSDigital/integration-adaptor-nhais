@@ -1,10 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -16,20 +18,17 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactManager;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -79,7 +78,7 @@ public class FhirToEdifactService {
 
     private String getRecipientTradingPartnerCode(Patient patient) throws FhirValidationException {
         String haCipher = getHaCipher(patient);
-        if(haCipher.length() == 2) {
+        if (haCipher.length() == 2) {
             return haCipher + "01";
         } else {
             return haCipher + "1";
@@ -98,24 +97,24 @@ public class FhirToEdifactService {
     }
 
     private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if(value == null) {
+        if (value == null) {
             throw new FhirValidationException("Missing element at " + path);
         }
-        if(value instanceof List) {
+        if (value instanceof List) {
             List list = (List) value;
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
-        } else if(value instanceof String) {
+        } else if (value instanceof String) {
             String str = (String) value;
-            if(str.isBlank()) {
+            if (str.isBlank()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
         }
     }
 
     private <T> T castOrError(String path, Class<T> type, Object value) throws FhirValidationException {
-        if(!type.isAssignableFrom(value.getClass())) {
+        if (!type.isAssignableFrom(value.getClass())) {
             throw new FhirValidationException("Expected " + type.getSimpleName() + " at " + path + " but found " + value.getClass().getSimpleName());
         }
         return type.cast(value);
@@ -134,18 +133,18 @@ public class FhirToEdifactService {
     }
 
     private void prevalidateSegments(TranslationItems translationItems) throws EdifactValidationException {
-        for(Segment segment : translationItems.segments) {
+        for (Segment segment : translationItems.segments) {
             segment.preValidate();
         }
     }
 
     private void generateSequenceNumbers(TranslationItems translationItems) {
         translationItems.sendInterchangeSequence =
-                sequenceService.generateInterchangeId(translationItems.sender, translationItems.recipient);
+            sequenceService.generateInterchangeId(translationItems.sender, translationItems.recipient);
         translationItems.sendMessageSequence =
-                sequenceService.generateMessageId(translationItems.sender, translationItems.recipient);
+            sequenceService.generateMessageId(translationItems.sender, translationItems.recipient);
         translationItems.transactionNumber =
-                sequenceService.generateTransactionId();
+            sequenceService.generateTransactionId();
     }
 
     private void generateTimestamp(TranslationItems translationItems) {
@@ -169,32 +168,34 @@ public class FhirToEdifactService {
     }
 
     private void addSequenceNumbersToSegments(TranslationItems translationItems) {
-        for(Segment segment : translationItems.segments) {
-            if(segment instanceof InterchangeHeader) {
+        for (Segment segment : translationItems.segments) {
+            if (segment instanceof InterchangeHeader) {
                 InterchangeHeader interchangeHeader = (InterchangeHeader) segment;
                 interchangeHeader.setSequenceNumber(translationItems.sendInterchangeSequence);
-            } else if(segment instanceof InterchangeTrailer) {
+            } else if (segment instanceof InterchangeTrailer) {
                 InterchangeTrailer interchangeTrailer = (InterchangeTrailer) segment;
                 interchangeTrailer.setSequenceNumber(translationItems.sendInterchangeSequence);
-            } else if(segment instanceof MessageHeader) {
+            } else if (segment instanceof MessageHeader) {
                 MessageHeader messageHeader = (MessageHeader) segment;
                 messageHeader.setSequenceNumber(translationItems.sendMessageSequence);
-            } else if(segment instanceof MessageTrailer) {
+            } else if (segment instanceof MessageTrailer) {
                 MessageTrailer messageTrailer = (MessageTrailer) segment;
                 messageTrailer.setSequenceNumber(translationItems.sendMessageSequence);
-            } else if(segment instanceof ReferenceTransactionNumber) {
+            } else if (segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.transactionNumber);
-            } else if(segment instanceof DateTimePeriod) {
+            } else if (segment instanceof DateTimePeriod) {
                 DateTimePeriod dateTimePeriod = (DateTimePeriod) segment;
-                dateTimePeriod.setTimestamp(translationItems.translationTimestamp);
+                if (dateTimePeriod.getTypeAndFormat().equals(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)) {
+                    dateTimePeriod.setTimestamp(translationItems.translationTimestamp);
+                }
             }
         }
     }
 
     private TranslatedInterchange translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
         List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
-        for(Segment segment : translationItems.segments) {
+        for (Segment segment : translationItems.segments) {
             segmentStrings.add(segment.toEdifact());
         }
         String edifact = String.join("\n", segmentStrings);

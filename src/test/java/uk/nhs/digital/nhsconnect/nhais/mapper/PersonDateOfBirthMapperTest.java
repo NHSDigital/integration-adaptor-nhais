@@ -1,35 +1,32 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.sql.Date;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfBirthMapperTest {
-    private static final Instant FIXED_TIME = ZonedDateTime.of(
-        1991,
-        11,
-        6,
-        23,
-        55,
-        0,
-        0,
-        ZoneId.of("Europe/London")).toInstant();
+    private static final Instant FIXED_TIME =
+        LocalDate.of(1991, 11, 6)
+            .atStartOfDay(ZoneId.of("Europe/London"))
+            .toInstant();
+    private static final Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant();
 
     @Test
     void When_MappingDob_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
-        patient.setBirthDate(Date.from(FIXED_TIME));
+        patient.setBirthDate(Date.from(FIXED_TIME_LOCAL));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));

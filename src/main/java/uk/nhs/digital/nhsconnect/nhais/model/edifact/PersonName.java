@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
@@ -11,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -29,7 +29,7 @@ public class PersonName extends Segment {
 
     //all properties are optional
     private final String nhsNumber;
-    private final String patientIdentificationType;
+    private final PatientIdentificationType patientIdentificationType;
     private final String familyName;
     private final String forename;
     private final String title;
@@ -59,10 +59,10 @@ public class PersonName extends Segment {
         return null;
     }
 
-    private static String getPatientIdentificationType(String edifactString) {
+    private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
         String[] components = Split.byPlus(edifactString);
         if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
-            return Split.byColon(components[2])[1];
+            return PatientIdentificationType.fromCode(Split.byColon(components[2])[1]);
         }
         return null;
     }
@@ -87,7 +87,7 @@ public class PersonName extends Segment {
 
         String namesDelimiter = containsName() ? "++" : "";
         Optional.ofNullable(this.nhsNumber)
-            .map(value -> value + ":" + this.patientIdentificationType + namesDelimiter)
+            .map(value -> value + ":" + this.patientIdentificationType.getCode() + namesDelimiter)
             .ifPresentOrElse(values::add, () -> values.add(namesDelimiter));
 
         Optional.ofNullable(this.familyName)
@@ -125,5 +125,24 @@ public class PersonName extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
+    }
+
+    public enum PatientIdentificationType {
+        OFFICIAL_PATIENT_IDENTIFICATION("OPI"),
+        AMENDED_PATIENT_IDENTIFICATION("API");
+
+        @Getter
+        private final String code;
+
+        PatientIdentificationType(String code) {
+            this.code = code;
+        }
+
+        public static PatientIdentificationType fromCode(String code) {
+            return Arrays.stream(PatientIdentificationType.values())
+                .filter(patientIdentificationType -> patientIdentificationType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("%s element not found", code)));
+        }
     }
 }

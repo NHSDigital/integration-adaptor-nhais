@@ -59,7 +59,7 @@ public class AcceptanceType extends Segment {
             return Arrays.stream(AvailableTypes.values())
                 .filter(acceptanceType -> acceptanceType.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("acceptanceType element not found"));
+                .orElseThrow(() -> new NoSuchElementException(String.format("%s element not found", code)));
         }
     }
 }

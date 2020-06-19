@@ -5,8 +5,10 @@ import org.hl7.fhir.r4.model.Patient;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Component
 public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDateOfBirth> {
@@ -19,6 +21,10 @@ public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDa
 
     private Instant getPersonDob(Parameters parameters) {
         Patient patient = ParametersExtension.extractPatient(parameters);
-        return patient.getBirthDate().toInstant();
+        var birthDateElement = patient.getBirthDateElement();
+        return LocalDate
+            .of(birthDateElement.getYear(), birthDateElement.getMonth() + 1, birthDateElement.getDay())
+            .atStartOfDay(TimestampService.UKZone)
+            .toInstant();
     }
 }

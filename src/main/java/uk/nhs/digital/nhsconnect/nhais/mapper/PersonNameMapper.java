@@ -17,6 +17,7 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
 
         return PersonName.builder()
             .nhsNumber(getNhsNumber(patient))
+            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .familyName(patient.getNameFirstRep().getFamily())
             .build();
     }
