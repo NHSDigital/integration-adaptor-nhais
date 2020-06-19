@@ -56,6 +56,27 @@ class PersonNameMapperTest {
     }
 
     @Test
+    void When_MappingWithoutNhsNumber_Then_ExpectCorrectResult() {
+        Patient patient = new Patient();
+        HumanName humanName = new HumanName();
+        humanName.setFamily("Smith");
+
+        patient.setName(Collections.singletonList(humanName));
+
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
+
+        var personNameMapper = new PersonNameMapper();
+        PersonName personName = personNameMapper.map(parameters);
+
+        var expectedPersonName = PersonName.builder()
+            .familyName("Smith")
+            .build();
+
+        assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());
+    }
+
+    @Test
     public void When_MappingWithoutPatient_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
