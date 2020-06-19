@@ -57,7 +57,7 @@ public class FhirToEdifactService {
     }
 
     private void setOperationId(TranslationItems translationItems) {
-        translationItems.operationId = OperationId.buildOperationId(translationItems.recipient, translationItems.transactionNumber);
+        translationItems.operationId = OperationId.buildOperationId(translationItems.sender, translationItems.transactionNumber);
     }
 
     private void extractDetailsFromPatient(TranslationItems translationItems) throws FhirValidationException {

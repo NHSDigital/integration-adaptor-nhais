@@ -46,14 +46,14 @@ public class InboundState {
         var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
         var referenceTransactionType = interchange.getReferenceTransactionType();
 
-        var sender = interchangeHeader.getSender();
+        var recipient = interchangeHeader.getRecipient();
         var transactionNumber = referenceTransactionNumber.getTransactionNumber();
 
         return new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setOperationId(OperationId.buildOperationId(sender, transactionNumber))
-            .setSender(sender)
-            .setRecipient(interchangeHeader.getRecipient())
+            .setOperationId(OperationId.buildOperationId(recipient, transactionNumber))
+            .setSender(interchangeHeader.getSender())
+            .setRecipient(recipient)
             .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setReceiveMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(transactionNumber)
