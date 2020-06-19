@@ -3,7 +3,7 @@
 # owned by NHS Digital (https://digital.nhs.uk/)
 openapi: "3.0.0"
 info:
-  version: "{VERSION}"
+  version: "0.1.0"
   title: NHAIS Adaptor (FHIR) API
   description: |
     ## Overview
@@ -30,25 +30,39 @@ info:
     - resource names are capitalised and singular, for example the `/Patient` not `/patients`
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    - data items related to an operation rather than the resource are representes as `Parameter`s
+
+    ## Example Requests
+
+    A number of example requests are available as part of the adaptor's user acceptance tests.
+
+    The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
+    of the README explains these examples in further detail.
 
   contact:
     name: National Integration Adaptors API Support
     url: 'https://github.com/nhsconnect/integration-adaptors'
 servers:
   - url: 'https://localhost'
-    description: There are not publicly available services available for testing or integration
+    description: There are no publicly available services available for testing or integration
 tags:
   - name: patients
 paths:
-  '/Patient/{id}/$nhais.deduction':
+  '/fhir/Patient/{id}/$nhais.deduction':
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
       description: |
+        ## WORK IN PROGRESS
+
+        This endpoint is not implemented yet and the specification is expected to change.
+
         ## Overview
+
         Use this endpoint to send a Deduction transaction to NHAIS.
 
         ## Operation Id
+
         When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
         to match against the asynchronous reply from NHAIS
 
@@ -56,17 +70,10 @@ paths:
 
         The request payload is a Parameters list. The list must contain parameters with the following names and values:
 
-        * patient: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * reason: simple parameter with `valueString` one of: death, emigrated, other
-        * date: simple parameter with `valueDate` the date (no time) of the deduction in ISO format
-        * reasonDetails: simple parameter with `valueString` a brief, free-text reason for the deduction
-
-        ## Sandbox test scenarios
-        *TODO*: document interactions supported by fake mesh
-
-        | Scenario                            | Request                                                      | Response                                         |
-        | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-        |                                     |                                                              |                                                  |
+        * `patient`: Patient `resource` containing id, generalPractitioner, and managingOrganization
+        * `deductionReason`: simple parameter with `valueString` one of: death, emigrated, other
+        * `deductionDate`: simple parameter with `valueDate` the date (no time) of the deduction in ISO format
+        * `freeText`: simple parameter with `valueString` a brief, free-text reason for the deduction
 
       summary: Deduct a patient (Deduction transaction)
       operationId: deduction
@@ -78,86 +85,31 @@ paths:
           application/json:
             schema:
               $ref: components/schemas/Parameters.yaml
-            examples:
-              deduction:
-                summary: Deduction - Death
-                value:
-                  $ref: components/examples/requests/NHAIS/deduction-death.json
       responses:
         '202':
-          description: Deduction forwarded to NHAIS for processing. Respose body is empty.
+          description: The deduction is forwarded to NHAIS for processing. The respose body is empty.
           headers:
             operationid:
-              description: A unique identifier (UUID) for the operation that MUST be retained
+              schema:
+                type: string
+              description: The unique identifier for the operation MUST be retained to match to the inbound reply
         '400':
-          description: Client error.
+          description: Bad Request - The request could not be processed and forwarded to NHAIS
           content:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-              examples:
-                invalid-nhs-number:
-                  summary: Invalid NHS number supplied
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: INVALID_NHS_NUMBER
-                              display: NHS Number 9000000000 is not a valid NHS number.
-                no-patches-submitted:
-                  summary: No patches submitted
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: required
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: noPatchesSubmitted
-                              display: No patches submitted.
-                invalid-patch-operation:
-                  summary: Invalid patch operation(s)
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: invalidPatchOperation
-                              display: 'Invalid patch: attempted to modify Patient properties that cannot be changed by an Amendment'
-        '415':
-          description: Unsupported media type.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome.yaml
-              example:
-                resourceType: OperationOutcome
-                issue:
-                  - severity: error
-                    code: value
-                    details:
-                      coding:
-                        - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                          version: '1'
-                          code: unsupportedMediaType
-                          display: "Must be 'application/json-patch+json'."
-  '/Patient/{id}/$nhais.removal':
+  '/fhir/Patient/{id}/$nhais.removal':
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
       description: |
+        ## WORK IN PROGRESS
+
+        This endpoint is not implemented yet and the specification is expected to change.
+
         ## Overview
+
         Use this endpoint to send a Removal (Out of Area) transaction to NHAIS.
 
         ## Payload Description
@@ -165,17 +117,9 @@ paths:
         The request payload is a Parameters list with the following parameters:
 
         * patient: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * reasonDetails: simple parameter with `valueString` a brief, free-text reason for the removal
+        * freeText: simple parameter with `valueString` a brief, free-text reason for the removal
 
-
-        ## Sandbox test scenarios
-        TODO: document interactions supported by fake mesh
-
-        | Scenario                            | Request                                                      | Response                                         |
-        | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-        |                                     |                                                              |                                                  |
-
-      summary: Accept a new patient (Acceptance transaction)
+      summary: Removal (Out of Area)
       operationId: removal
       tags:
         - patients
@@ -185,265 +129,113 @@ paths:
           application/json:
             schema:
               $ref: components/schemas/Parameters.yaml
-            examples:
-              removal:
-                summary: Removal transaction
-                value:
-                  $ref: components/examples/requests/NHAIS/removal.json
       responses:
         '202':
-          description: Removal forwarded to NHAIS for processing. Response body is empty.
+          description: The removal is forwarded to NHAIS for processing. The response body is empty.
           headers:
             operationid:
-              description: A unique identifier (UUID) for the operation that MUST be retained
+              schema:
+                type: string
+              description: The unique identifier for the operation MUST be retained to match to the inbound reply
         '400':
-          description: Client error.
+          description: Bad Request - The request could not be processed and forwarded to NHAIS
           content:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-              examples:
-                invalid-nhs-number:
-                  summary: Invalid NHS number supplied
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: INVALID_NHS_NUMBER
-                              display: NHS Number 9000000000 is not a valid NHS number.
-                no-patches-submitted:
-                  summary: No patches submitted
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: required
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: noPatchesSubmitted
-                              display: No patches submitted.
-                invalid-patch-operation:
-                  summary: Invalid patch operation(s)
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: invalidPatchOperation
-                              display: 'Invalid patch: attempted to modify Patient properties that cannot be changed by an Amendment'
-        '415':
-          description: Unsupported media type.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome.yaml
-              example:
-                resourceType: OperationOutcome
-                issue:
-                  - severity: error
-                    code: value
-                    details:
-                      coding:
-                        - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                          version: '1'
-                          code: unsupportedMediaType
-                          display: "Must be 'application/json-patch+json'."
-  '/Patient/$nhais.acceptance':
+  '/fhir/Patient/$nhais.acceptance':
     post:
       description: |
         ## Overview
         Use this endpoint to send an Acceptance to NHAIS.
 
-        ## Payload Description
+        ## Supported Acceptance Types
 
-        The request payload is a Parameters list. The list must contain parameters with the following names and values:
+        * Type 1 - Birth
+        * Type 2 - First Acceptance
+        * Type 3 - Transfer In
+        * Type 4 - Immigrant
 
-        * patient: a Patient `resource`, see below for details
-        * acceptanceType: simple parameter with `valueString` one of: birth, first, transferin, immigrant, exservices
-        * acceptanceCode: TODO
+        Type 5 - Ex-Services is no longer used. Such patients are now registered as Type 3 - Transfer In.
 
-        ## Patient Parameter
+        ## Supported Fields
 
-        Refer to the examples to see how the fields are represented in the request body.
-
-        The following is paraphrased from:
-
-        HA/GP LINKS - REGISTRATION, GP SYSTEMS SPECIFICATION
-
-        3.3.3.a  Algorithm to determine the Patient Acceptance Type
+        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-        (*) = Mandatory field
+        Three fields are deprecated and not supported by the adaptor:
 
-        [Deprecated] = fields described in the original NHAIS specification that have since been deprecated and are not supported by the adaptor
+        * RPP Mileage
+        * Blocked Route/Special District Marker
+        * Walking Units
 
-        It is anticipated that the GP System will prompt the GP to determine the following minimum basic information about the patient:
+        **Version 0.1.0**: Only data items marked REQUIRED are supported
 
-        * NHS Number
-        * Surname (*)
-        * Previous Surname
-        * Forename(s)
-        * Title
-        * Sex (*)
-        *  Date of Birth
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth [mandatory if NHS Number not entered]
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
+        | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
+        |---------------------------------------|----------------|----------------|----------------------|--------------------|
+        | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Patient's Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Patient's Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Surname                               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Previous Surname                      | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | First Forename                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Second Forename                       | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Other Forenames                       | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Title                                 | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Postcode                              | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
+        | Blocked Route/Special District Marker | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
+        | Walking Units                         | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
+        | Residential Institute Code            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Free Text (GP Notes)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Previous Address - 5 fields           | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
+        | Previous GP Name                      | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
+        | Previous HA Cipher                    | NOT PERMITTED  | NOT PERMITTED  | OPTIONAL             | OPTIONAL           |
+        | Date of Entry into the UK             | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | REQUIRED           |
+        | Date Patient left the UK              | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | OPTIONAL           |
 
-        The supported and required fields are each type of acceptance are as follows.
+        ## FHIR Field Mappings
 
-        ### Birth
-
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
-        * NHS Number (*)
-        * Surname (*)
-        * Previous Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Title
-        * Sex (*)
-        * Date of Birth (*)
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth
-        * Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-        * Free Text (GP Notes)
-
-        ### First Acceptance
-
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
-        * NHS Number
-        * Surname (*)
-        * Previous Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Title
-        * Sex (*)
-        * Date of Birth
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth [mandatory if NHS Number not entered]
-        *  Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-        * Free Text (GP Notes)
-
-        ### Transfer In
-
-        For Previous Address at least one of the five fields MUST be completed.
-
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
-        * NHS Number
-        * Surname (*)
-        * Previous Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Title
-        * Sex (*)
-        * Date of Birth
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth [mandatory if NHS Number not entered]
-        * Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-        * Previous Address - 5 fields (*)
-        * Previous GP Name (*)
-        * Previous HA Cipher
-        * Free Text (GP Notes)
-
-        ### Immigrant
-
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
-        * NHS Number
-        * Surname (*)
-        * Previous Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Title
-        * Sex (*)
-        * Date of Birth
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth [mandatory if NHS Number not entered]
-        * Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-        * Date of Entry into the UK (*)
-        * Date Patient left the UK
-        * Previous Address - 5 fields
-        * Previous GP Name
-        * Previous HA Cipher
-        * Free Text (GP Notes)
-
-        ### Ex-Services
-
-        * Patient's Responsible GP (*)
-        * Patient's Responsible HA (*)
-        * NHS Number
-        * Surname (*)
-        * Previous Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Title
-        * Sex (*)
-        * Date of Birth
-        * Present Address excluding Postcode (*)
-        * Postcode
-        * Place of Birth [mandatory if NHS Number not entered]
-        * Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-        * Previous Address - 5 fields
-        * Date of Enlistment (Joining)
-        * Date of Enlistment (Leaving)
-        * Free Text (GP Notes)
+        | Data Item                             | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                                                                               |
+        |---------------------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------|
+        | Acceptance Date                       | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                      |                                                                                                     |
+        | Patient's Responsible GP              | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+        | Patient's Responsible HA              | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                                                                                     |
+        | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                    |                                                                                                     |
+        | Surname                               | Patient       | /name/0/family                           |                          |                                    |                                                                                                     |
+        | Previous Surname                      | Patient       | /name/1/family                           |                          |                                    |                                                                                                     |
+        | First Forename                        | Patient       | /name/0/given/0                          |                          |                                    |                                                                                                     |
+        | Second Forename                       | Patient       | /name/0/given/1                          |                          |                                    |                                                                                                     |
+        | Other Forenames                       | Patient       | /name/0/given/2                          |                          |                                    |                                                                                                     |
+        | Title                                 | Patient       | /name/0/prefix/0                         |                          |                                    |                                                                                                     |
+        | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other          |                                                                                                     |
+        | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                      |                                                                                                     |
+        | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
+        | Postcode                              | Patient       | /address/0/postalCode                    |                          |                                    | "use": "home"                                                                                       |
+        | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                    | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
+        | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                         | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker"     |
+        | RPP Mileage                           | N/A           |                                          |                          |                                    |                                                                                                     |
+        | Blocked Route/Special District Marker | N/A           |                                          |                          |                                    |                                                                                                     |
+        | Walking Units                         | N/A           |                                          |                          |                                    |                                                                                                     |
+        | Residential Institute Code            | Patient       | /extension/0/valueString                 |                          |                                    | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode" |
+        | Free Text (GP Notes)                  | Parameter     | freeText                                 | valueString              |                                    |                                                                                                     |
+        | Previous Address - 5 fields           | Patient       | /address/1/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
+        | Previous GP Name                      | Parameter     | previousGPName                           | valueString              |                                    |                                                                                                     |
+        | Previous HA Cipher                    | Parameter     | previousHACipher                         | valueString              |                                    |                                                                                                     |
+        | Date of Entry into the UK             | Parameter     | dateOfUkEntry                            | valueString              | ISO 8601 Date                      |                                                                                                     |
+        | Date Patient left the UK              | Parameter     | dateOfUkExit                             | valueString              | ISO 8601 Date                      |                                                                                                     |
 
         ## Operation Id
         When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
         to match against the asynchronous reply from NHAIS
-
-        ## Sandbox test scenarios
-        TODO: document interactions supported by fake mesh
-
-        | Scenario                            | Request                                                      | Response                                         |
-        | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-        |                                     |                                                              |                                                  |
 
       summary: Accept a new patient (Acceptance transaction)
       operationId: acceptance
@@ -451,25 +243,19 @@ paths:
         - patients
       requestBody:
         required: true
+        description: "[HL7 FHIR R4 Parameters Resource](https://www.hl7.org/fhir/parameters.html)"
         content:
           application/json:
             schema:
               $ref: components/schemas/Parameters.yaml
-            examples:
-              acceptanceBirthMinimal:
-                summary: "Acceptance transaction, acceptanceType: birth, minimum required fields only"
-                value:
-                  $ref: components/examples/requests/NHAIS/acceptance-birth-required-fields-only.json
-              acceptanceBirthMaximal:
-                summary: "Acceptance transaction, acceptanceType: birth, all possible fields"
-                value:
-                  $ref: components/examples/requests/NHAIS/acceptance-birth-all-possible-fields.json
       responses:
         '202':
-          description: Acceptance forwarded to NHAIS for processing
+          description: The acceptance is forwarded to NHAIS for processing. The response body is empty.
           headers:
             operationid:
-              description: A unique identifier (UUID) for the operation that MUST be retained
+              schema:
+                type: string
+              description: The unique identifier for the operation MUST be retained to match to the inbound reply
         '400':
           description: Client error.
           content:
@@ -481,25 +267,15 @@ paths:
                   summary: The request payload is invalid
                   value:
                     $ref: components/examples/responses/400-bad-request.json
-        '415':
-          description: Unsupported media type.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome.yaml
-              example:
-                resourceType: OperationOutcome
-                issue:
-                  - severity: error
-                    code: value
-                    details:
-                      coding:
-                        - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                          version: '1'
-                          code: unsupportedMediaType
-                          display: "Must be 'application/json-patch+json'."
+  '/fhir/Patient/{id}':
+    parameters:
+      - $ref: '#/components/parameters/Id'
     patch:
       description: |
+        ## WORK IN PROGRESS
+
+        This endpoint is not implemented yet and the specification is expected to change.
+
         ## Overview
         Use this endpoint to send an Amendment to NHAIS.
 
@@ -538,13 +314,6 @@ paths:
         must be provided. There is an open query to determine if there is a possibility to either relax these requirements
         or not use JSONPatch at all in favour or a PUT or a POST operation with a Patient parameter.
 
-        ## Sandbox test scenarios
-        TODO: document interactions supported by fake mesh
-
-        | Scenario                            | Request                                                      | Response                                         |
-        | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-        |                                     |                                                              |                                                  |
-
       summary: Amend patient details (Amendment transaction)
       operationId: amendment
       tags:
@@ -563,81 +332,20 @@ paths:
               properties:
                 patches:
                   $ref: components/schemas/JsonPatch.yaml
-            examples:
-              amendment:
-                summary: Amendment transaction
-                value:
-                  $ref: components/examples/requests/NHAIS/amendment-name.json
       responses:
         '202':
           description: Amendment forwarded to NHAIS for processing
-          content:
-            application/fhir+json:
+          headers:
+            operationid:
               schema:
-                $ref: components/schemas/OperationOutcome.yaml
+                type: string
+              description: The unique identifier for the operation MUST be retained to match to the inbound reply
         '400':
           description: Client error.
           content:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-              examples:
-                invalid-nhs-number:
-                  summary: Invalid NHS number supplied
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: INVALID_NHS_NUMBER
-                              display: NHS Number 9000000000 is not a valid NHS number.
-                no-patches-submitted:
-                  summary: No patches submitted
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: required
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: noPatchesSubmitted
-                              display: No patches submitted.
-                invalid-patch-operation:
-                  summary: Invalid patch operation(s)
-                  value:
-                    resourceType: OperationOutcome
-                    issue:
-                      - severity: error
-                        code: value
-                        details:
-                          coding:
-                            - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                              version: '1'
-                              code: invalidPatchOperation
-                              display: 'Invalid patch: attempted to modify Patient properties that cannot be changed by an Amendment'
-        '415':
-          description: Unsupported media type.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome.yaml
-              example:
-                resourceType: OperationOutcome
-                issue:
-                  - severity: error
-                    code: value
-                    details:
-                      coding:
-                        - system: 'https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode'
-                          version: '1'
-                          code: unsupportedMediaType
-                          display: "Must be 'application/json-patch+json'."
 components:
   parameters:
     Id:
@@ -648,8 +356,3 @@ components:
       schema:
         type: string
         example: "9000000009"
-  schemas:
-    Patient:
-      $ref: components/schemas/Patient.yaml
-    OperationOutcome:
-      $ref: components/schemas/OperationOutcome.yaml
