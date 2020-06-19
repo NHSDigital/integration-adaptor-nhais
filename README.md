@@ -48,7 +48,7 @@ MESH messaging.
 
 | Request (GP -> HA)     | Possible Replies (HA -> GP)      |
 |--------------|------------------------|
-| Acceptance   | Approval, Rejection (Wrong HA |
+| Acceptance   | Approval, Rejection (Wrong HA) |
 | Amendment    | None, Amendment        |
 | Removal      | TBD                    |
 | Deduction    | Deduction, Deduction Request Rejection |
@@ -65,7 +65,8 @@ The GP System will send outbound messages using a HL7 FHIR R4 REST API: [Outboun
 
 ### Inbound (HA -> GP)
 
-The GP System will receive inbound messages from an AMQP message queue. The messages will be HL7 FHIR R4.
+The GP System will receive inbound messages from an AMQP message queue. See [INBOUND.md](./INBOUND.md) for documentation
+of the message formats.
 
 ### Examples
 
