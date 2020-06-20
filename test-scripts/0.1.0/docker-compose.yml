@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nhais:
+    image: nhsdev/nia-nhais-adaptor:0.1.0
+#    image: local/nhais:latest
+    ports:
+      - "80:8080"
+    environment:
+      - NHAIS_AMQP_BROKERS=amqp://activemq:5672
+      - NHAIS_MONGO_URI=mongodb://mongodb:27017
+  activemq:
+    image: rmohr/activemq:latest
+    ports:
+      - "8161:8161"
+      - "5672:5672"
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"

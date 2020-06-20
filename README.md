@@ -73,6 +73,10 @@ of the message formats.
 Examples of outbound request to the Adaptor's API and inbound reply and unsolicited messages to the Inbound Supplier MQ
 are provided as part of the adaptor's User Acceptance Tests.
 
+Examples with filenames containing `app-j-` are copied from the _GP SYSTEMS SPECIFICATION - APPENDIX J - SAMPLE 
+REGISTRATION EDIFACT MESSAGES_. Examples with filenames containing `live-` are sanitised copies of recent NHAIS live 
+service transactions.
+
 #### Outbound Examples
 
 The [outbound_uat_data](src/intTest/resources/outbound_uat_data) folder contains examples of outbound 
