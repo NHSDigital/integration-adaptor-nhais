@@ -36,7 +36,11 @@ n/a
 n/a
 
 ### Known Issues
-- If an invalid message is published to the `nhais_mesh_inbound` when the application is run **using the docker-compose
-  file provided** the application will log errors indefinitely. Purging this queue using the Active MQ web console will
-  stop the errors. __Other deployments should use a broker configured as per the README.md to avoid this issue.__
-- The adaptor may on occasion log an exception (related to toString) but continue to operation as expected
+- NIAD-340: If an invalid message is published to the `nhais_mesh_inbound` queue when the application is run **using the 
+  docker-compose file provided** the application will log errors indefinitely. Purging this queue using the Active MQ 
+  web console will stop the errors. __Other deployments should use a broker configured as per the README.md to avoid 
+  this issue.__
+- NIAD-385: The adaptor may on occasion log an exception (related to toString) but continue to operate as expected
+- NIAD-383: The control characters (' + : ?) that must be escaped in EDIFACT are not handled correctly. Outbound 
+  transactions using  these characters will produce invalid EDIFACT and inbound transactions using these characters will
+  not be parsed correctly.
