@@ -145,7 +145,7 @@ public class FhirToEdifactService {
         translationItems.sendMessageSequence =
             sequenceService.generateMessageId(translationItems.sender, translationItems.recipient);
         translationItems.transactionNumber =
-            sequenceService.generateTransactionId();
+            sequenceService.generateTransactionId(translationItems.sender);
     }
 
     private void generateTimestamp(TranslationItems translationItems) {

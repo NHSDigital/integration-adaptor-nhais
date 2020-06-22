@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderAndRecipientValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderValidationException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,8 +28,9 @@ public class SequenceServiceTest {
 
     @Test
     public void When_GenerateTransactionId_Expect_CorrectValue() {
-        when(sequenceRepository.getNext(TRANSACTION_ID)).thenReturn(SEQ_VALUE);
-        assertThat(sequenceService.generateTransactionId()).isEqualTo(SEQ_VALUE);
+        String key = TRANSACTION_ID + "-sender";
+        when(sequenceRepository.getNextForTransaction(key)).thenReturn(SEQ_VALUE);
+        assertThat(sequenceService.generateTransactionId("sender")).isEqualTo(SEQ_VALUE);
     }
 
     @Test
@@ -55,5 +57,11 @@ public class SequenceServiceTest {
     public void When_GenerateIdsForInvalidRecipient_Expect_Exception() {
         assertThrows(SenderAndRecipientValidationException.class, () ->
                 sequenceService.generateInterchangeId("sender", ""));
+    }
+
+    @Test
+    public void When_GenerateTransactionIdsForInvalidSender_Expect_Exception() {
+        assertThrows(SenderValidationException.class, () ->
+            sequenceService.generateTransactionId(null));
     }
 }
