@@ -280,9 +280,12 @@ TODO
 
 ### Fake MESH
 
-Clone https://github.com/mattd-kainos/fake-mesh from our fork
+Documentation and Source Code: https://github.com/mattd-kainos/fake-mesh
 
-Follow the instructions in that repository's README.md to run it (using Docker is recommended)
+A fake-mesh image is published to [nhsdev Docker Hub](https://hub.docker.com/repository/docker/nhsdev/fake-mesh) and 
+can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
+
+    docker-compose up fake-mesh
 
 ## Running
 

@@ -20,19 +20,13 @@ services:
     ports:
       - "8161:8161"
       - "5672:5672"
-  # nhais-tests:
-  #   image: local/nhais-tests:${BUILD_TAG}
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.tests
-  #   environment:
-  #     - NHAIS_LOG_LEVEL=NOTSET
-  #     - NHAIS_OUTBOUND_QUEUE_BROKERS=amqp://rabbitmq:5672
-  #     - NHAIS_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
-  #     - NHAIS_DYNAMODB_ENDPOINT_URL=http://dynamodb:8000
-  #     - AWS_ACCESS_KEY_ID=test
-  #     - AWS_SECRET_ACCESS_KEY=test
   mongodb:
     image: mongo
     ports:
       - "27017:27017"
+  fake-mesh:
+    image: nhsdev/fake-mesh:0.1.6
+    ports:
+      - "8829:8829"
+    volumes:
+      - ./fake_mesh_dir:/tmp/fake_mesh_dir
