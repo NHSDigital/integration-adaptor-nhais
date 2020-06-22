@@ -5,13 +5,15 @@
 - Where to file issues: https://github.com/nhsconnect/integration-adaptor-nhais/issues
 
 # What is the GP Links - NHAIS Adaptor?
-A pre-assured implementation of NHAIS/GP Links, that encapsulates the details of GP Links Registration and RECEP messaging and provides a simple interface to allow HL7 messages to be sent to and received from the NHAIS instances via MESH.
+A pre-assured implementation of NHAIS/GP Links, that encapsulates the details of GP Links Registration and RECEP 
+messaging and provides a simple interface to allow HL7 messages to be sent to and received from the NHAIS instances 
+via MESH.
 
 # How to use this image
 ## Pre-requisites
 To get running make sure you have an OpenTest environment setup.
 
-Note: OpenTest not required for release 0.0.1
+Note: OpenTest not required for release 0.1.0
 
 ## Clone the repository
 ```bash
@@ -30,11 +32,11 @@ $ cp export-env-vars.sh.example export-env-vars.sh
 ```
 Populate the variables in this file with the details provided when you signed up for OpenTest.
 
-Note: OpenTest not required for release 0.0.1
+Note: OpenTest not required for release 0.1.0
 
 ## Start it up
 ```bash
-$ cd 0.0.1
+$ cd 0.1.0
 $ ./run.sh
 ```
 

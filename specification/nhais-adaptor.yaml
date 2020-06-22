@@ -41,7 +41,7 @@ info:
 
   contact:
     name: National Integration Adaptors API Support
-    url: 'https://github.com/nhsconnect/integration-adaptors'
+    url: 'https://github.com/nhsconnect/integration-adaptor-nhais'
 servers:
   - url: 'https://localhost'
     description: There are no publicly available services available for testing or integration
