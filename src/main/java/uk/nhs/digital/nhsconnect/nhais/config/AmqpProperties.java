@@ -19,13 +19,16 @@ public class AmqpProperties {
     private Boolean receiveLocalOnly;
     private Boolean receiveNoWaitLocalOnly;
 
+    private int maxRedeliveries;
+
     private final DeserializationPolicy deserializationPolicy = new DeserializationPolicy();
 
     public DeserializationPolicy getDeserializationPolicy() {
         return deserializationPolicy;
     }
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class DeserializationPolicy {
         private String whiteList;
         private String blackList;
