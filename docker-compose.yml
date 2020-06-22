@@ -16,7 +16,8 @@ services:
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
   activemq:
-    image: rmohr/activemq:latest
+    build:
+      context: ./activemq
     ports:
       - "8161:8161"
       - "5672:5672"
