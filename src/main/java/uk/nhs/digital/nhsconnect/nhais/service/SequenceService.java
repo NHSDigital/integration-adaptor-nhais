@@ -9,17 +9,16 @@ import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 @Service
 public class SequenceService {
-    private final static String TRANSACTION_ID = "transaction_id";
+    private final static String TRANSACTION_KEY_FORMAT = "transaction_id-%s";
     private final static String INTERCHANGE_FORMAT = "SIS-%s-%s";
     private final static String INTERCHANGE_MESSAGE_FORMAT = "SMS-%s-%s";
-    private final static String TRANSACTION_KEY_FORMAT = "%s-%s";
 
     @Autowired
     private SequenceRepository sequenceRepository;
 
     public Long generateTransactionId(String generalPractitioner) {
         validateSender(generalPractitioner);
-        return sequenceRepository.getNextForTransaction(String.format(TRANSACTION_KEY_FORMAT, TRANSACTION_ID, generalPractitioner));
+        return sequenceRepository.getNextForTransaction(String.format(TRANSACTION_KEY_FORMAT, generalPractitioner));
     }
 
     public Long generateInterchangeId(String sender, String recipient) {
