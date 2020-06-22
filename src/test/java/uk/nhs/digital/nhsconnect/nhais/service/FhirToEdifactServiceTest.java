@@ -77,12 +77,12 @@ public class FhirToEdifactServiceTest {
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
         // segments related to state management only
         when(fhirToEdifactSegmentTranslator.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
-                new BeginningOfMessage(),
-                new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
-                new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-                new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
-                new SegmentGroup(1),
-                new ReferenceTransactionNumber()
+            new BeginningOfMessage(),
+            new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
+            new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+            new SegmentGroup(1),
+            new ReferenceTransactionNumber()
         ));
     }
 

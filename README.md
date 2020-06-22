@@ -1,4 +1,4 @@
-# NHAIS Adaptor
+# GP Links - NHAIS Adaptor
 
 NHAIS is a system that allows General Practice (GP) Surgeries to keep their patient registration and demographics data 
 in sync with the regional Health Authorities (HA). Since the creation of this service the regional or area health 
@@ -10,10 +10,10 @@ See the [Resources](#resources) section for links to the underlying services and
 ## Adaptor Scope
 
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
-addition to GP Links but these are out of scope for the NHAIS Adaptor project.
+addition to GP Links but these are out of scope for the GP Links - NHAIS Adaptor project.
 
 HA/GP Links messaging is comprised of several types "transactions" used to update and reconcile patient lists and 
-patient demographic data. The following transaction types are supported by the NHAIS Adaptor:
+patient demographic data. The following transaction types are supported by the GP Links - NHAIS Adaptor:
 
 GP Links to HA
 
@@ -39,7 +39,7 @@ HA to GP Links
 
 \* Close Quarter Notification is acknowledged by the adaptor but not forwarded to the GP System
 
-The goal of the NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of EDIFACT and 
+The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of EDIFACT and 
 MESH messaging.
 
 ## Workflows
@@ -48,7 +48,7 @@ MESH messaging.
 
 | Request (GP -> HA)     | Possible Replies (HA -> GP)      |
 |--------------|------------------------|
-| Acceptance   | Approval, Rejection (Wrong HA |
+| Acceptance   | Approval, Rejection (Wrong HA) |
 | Amendment    | None, Amendment        |
 | Removal      | TBD                    |
 | Deduction    | Deduction, Deduction Request Rejection |
@@ -65,12 +65,17 @@ The GP System will send outbound messages using a HL7 FHIR R4 REST API: [Outboun
 
 ### Inbound (HA -> GP)
 
-The GP System will receive inbound messages from an AMQP message queue. The messages will be HL7 FHIR R4.
+The GP System will receive inbound messages from an AMQP message queue. See [INBOUND.md](./INBOUND.md) for documentation
+of the message formats.
 
 ### Examples
 
 Examples of outbound request to the Adaptor's API and inbound reply and unsolicited messages to the Inbound Supplier MQ
 are provided as part of the adaptor's User Acceptance Tests.
+
+Examples with filenames containing `app-j-` are copied from the _GP SYSTEMS SPECIFICATION - APPENDIX J - SAMPLE 
+REGISTRATION EDIFACT MESSAGES_. Examples with filenames containing `live-` are sanitised copies of recent NHAIS live 
+service transactions.
 
 #### Outbound Examples
 
@@ -124,7 +129,7 @@ The EDIFACT HA/GP Links transactions are transmitted over MESH. The adaptor will
 
 ## Development
 
-The following sections are intended to provide the necessary info on how to configure and run the NHAIS adaptor.
+The following sections are intended to provide the necessary info on how to configure and run the GP Links - NHAIS adaptor.
 
 Environment Variables are used throughout application, an example can be found in `nhais-env-example.yaml`. 
 
@@ -149,7 +154,7 @@ To run in dev env, navigate to: IntegrationAdaptorNhaisApplication, right click,
 
 ## Getting started 
 
-Debug database and quese for NHAIS:
+Debug database and queues for NHAIS:
 
 [NHAIS Diagram with key](/documentation/nhais_diagram_plus_key.jpeg)
 
@@ -166,7 +171,7 @@ Open Robo 3T -> Create new connection with details as below:
 - Name: nhais
 - Address: localhost : 27017
 
-View NHAIS by navigating to nhais -> collections -> (select any table)
+View adaptor collections by navigating to nhais -> collections -> (select any table)
 
 ### ActiveMQ
 
@@ -199,8 +204,7 @@ when the service is run.
 | NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME | nahis_gp_system_inbound   | The name of the inbound (to gp system) message queue
 | NHAIS_AMQP_USERNAME                |                           | (Optional) username for the amqp server for outbound (to mesh) message queue
 | NHAIS_AMQP_PASSWORD                |                           | (Optional) password for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_MAX_RETRIES             | 3                         | The number of times a request to the outbound (to mesh) broker(s) will be retried
-| NHAIS_AMQP_RETRY_DELAY             | 100                       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
+| NHAIS_AMQP_MAX_REDELIVERIES        | 3                         | The number of times an message will be retried to be delivered to consumer. After exhausting all retires, it will be put on DLQ.<queue_name> dead letter queue
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
@@ -265,7 +269,7 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 ## MESH API
 
-TODO: NHAIS Adaptor MESH configuration when MESH integration is implemented
+TODO: GP Links - NHAIS Adaptor MESH configuration when MESH integration is implemented
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
 
