@@ -79,8 +79,6 @@ pipeline {
                             String tfRegion      = "${TF_STATE_BUCKET_REGION}"
                             List<String> tfParams = []
                             Map<String,String> tfVariables = ["${tfComponent}_build_id": BUILD_TAG]
-                            // tfVariables.put('docdb_master_user',DOCDB_MASTER_USER)
-                            // tfVariables.put('docdb_master_password',DOCDB_MASTER_PASSWORD)                           
                             dir ("integration-adaptors") {
                               // Clone repository with terraform
                               git (branch: tfCodeBranch, url: tfCodeRepo)
