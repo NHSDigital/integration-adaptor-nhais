@@ -48,8 +48,8 @@ public class IntegrationTestsExtension implements BeforeAllCallback, BeforeEachC
             .map(queueName -> List.of(queueName, DLQ_PREFIX + queueName))
             .flatMap(Collection::stream)
             .forEach(queueName -> {
-                while (jmsTemplate.receive(Objects.requireNonNull(meshInboundQueueName)) != null) {
-                    LOGGER.info("Purged " + meshInboundQueueName + " message");
+                while (jmsTemplate.receive(queueName) != null) {
+                    LOGGER.info("Purged '" + queueName + "' message");
                 }
             });
         jmsTemplate.setReceiveTimeout(receiveTimeout);
