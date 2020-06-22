@@ -36,6 +36,7 @@ import static org.awaitility.Awaitility.await;
 @Slf4j
 public abstract class MeshServiceBaseTest {
 
+    public static final String DLQ_PREFIX = "DLQ.";
     protected static final int WAIT_FOR_IN_SECONDS = 5;
     private long originalReceiveTimeout;
     private static final int RECEIVE_TIMEOUT = 5000;
@@ -76,7 +77,11 @@ public abstract class MeshServiceBaseTest {
     }
 
     protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
-        jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(serializeMeshMessage(meshMessage)));
+        sendToMeshInboundQueue(serializeMeshMessage(meshMessage));
+    }
+
+    protected void sendToMeshInboundQueue(String data) {
+        jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(data));
     }
 
     @SneakyThrows
@@ -89,20 +94,26 @@ public abstract class MeshServiceBaseTest {
         return jmsTemplate.receive(meshOutboundQueueName);
     }
 
+    @SneakyThrows
+    protected Message getDeadLetterInboundQueueMessage() {
+        return jmsTemplate.receive(DLQ_PREFIX + meshInboundQueueName);
+    }
+
     protected IBaseResource parseGpInboundQueueMessage(Message message) throws JMSException {
-        if (message == null) {
-            return null;
-        }
-        var body = InboundMeshService.readMessage(message);
+        var body = parseTextMessage(message);
         return new FhirParser().parse(body);
     }
 
     protected MeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
+        var body = parseTextMessage(message);
+        return deserializeMeshMessage(body);
+    }
+
+    protected String parseTextMessage(Message message) throws JMSException {
         if (message == null) {
             return null;
         }
-        var body = InboundMeshService.readMessage(message);
-        return deserializeMeshMessage(body);
+        return InboundMeshService.readMessage(message);
     }
 
     @SneakyThrows
