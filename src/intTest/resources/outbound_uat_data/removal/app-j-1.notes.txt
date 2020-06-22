@@ -1,3 +1,5 @@
+Example from HA/GP Links Specification - Appendix J
+
 Removal (Out of Area) for NHS Number T247.
 Reason for Removal : PATIENT NOW LIVES 24 MILES FROM PRACTICE
 Registered with GP 281 (GMC National GP Code 4826940).

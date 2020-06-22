@@ -1,3 +1,5 @@
+Example from HA/GP Links Specification - Appendix J
+
 Rejection (Wrong HA) of Acceptance (Transaction Number 12).
 Registered with GP 281 (GMC National GP Code 4826940).
 Reason for Rejection : WRONG HA - TRY SURREY

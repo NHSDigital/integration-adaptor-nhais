@@ -1,4 +1,4 @@
-# NHAIS OpenAPI Documentation
+# GP Links - NHAIS OpenAPI Documentation
 
 The YAML is currently being rendered into Markdown and HTML manually using the tool https://openapi-generator.tech/
 
