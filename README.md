@@ -1,4 +1,4 @@
-# NHAIS Adaptor
+# GP Links - NHAIS Adaptor
 
 NHAIS is a system that allows General Practice (GP) Surgeries to keep their patient registration and demographics data 
 in sync with the regional Health Authorities (HA). Since the creation of this service the regional or area health 
@@ -10,10 +10,10 @@ See the [Resources](#resources) section for links to the underlying services and
 ## Adaptor Scope
 
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
-addition to GP Links but these are out of scope for the NHAIS Adaptor project.
+addition to GP Links but these are out of scope for the GP Links - NHAIS Adaptor project.
 
 HA/GP Links messaging is comprised of several types "transactions" used to update and reconcile patient lists and 
-patient demographic data. The following transaction types are supported by the NHAIS Adaptor:
+patient demographic data. The following transaction types are supported by the GP Links - NHAIS Adaptor:
 
 GP Links to HA
 
@@ -39,7 +39,7 @@ HA to GP Links
 
 \* Close Quarter Notification is acknowledged by the adaptor but not forwarded to the GP System
 
-The goal of the NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of EDIFACT and 
+The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of EDIFACT and 
 MESH messaging.
 
 ## Workflows
@@ -129,7 +129,7 @@ The EDIFACT HA/GP Links transactions are transmitted over MESH. The adaptor will
 
 ## Development
 
-The following sections are intended to provide the necessary info on how to configure and run the NHAIS adaptor.
+The following sections are intended to provide the necessary info on how to configure and run the GP Links - NHAIS adaptor.
 
 Environment Variables are used throughout application, an example can be found in `nhais-env-example.yaml`. 
 
@@ -154,7 +154,7 @@ To run in dev env, navigate to: IntegrationAdaptorNhaisApplication, right click,
 
 ## Getting started 
 
-Debug database and quese for NHAIS:
+Debug database and queues for NHAIS:
 
 [NHAIS Diagram with key](/documentation/nhais_diagram_plus_key.jpeg)
 
@@ -171,7 +171,7 @@ Open Robo 3T -> Create new connection with details as below:
 - Name: nhais
 - Address: localhost : 27017
 
-View NHAIS by navigating to nhais -> collections -> (select any table)
+View adaptor collections by navigating to nhais -> collections -> (select any table)
 
 ### ActiveMQ
 
@@ -270,7 +270,7 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 ## MESH API
 
-TODO: NHAIS Adaptor MESH configuration when MESH integration is implemented
+TODO: GP Links - NHAIS Adaptor MESH configuration when MESH integration is implemented
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
 

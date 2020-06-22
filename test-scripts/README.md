@@ -4,7 +4,7 @@
 - Where to get help: https://github.com/nhsconnect/integration-adaptor-nhais
 - Where to file issues: https://github.com/nhsconnect/integration-adaptor-nhais/issues
 
-# What is the NHAIS Adaptor?
+# What is the GP Links - NHAIS Adaptor?
 A pre-assured implementation of NHAIS/GP Links, that encapsulates the details of GP Links Registration and RECEP messaging and provides a simple interface to allow HL7 messages to be sent to and received from the NHAIS instances via MESH.
 
 # How to use this image

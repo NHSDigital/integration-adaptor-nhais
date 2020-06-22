@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.1] - 2020-06-10
 ### Added
-- First release of NHAIS Adaptor
+- First release of GP Links - NHAIS Adaptor
 - Only /healthcheck endpoint is officially supported
 - Manages stateful concerns of GP Links messaging
 - API stubs that are subject to change

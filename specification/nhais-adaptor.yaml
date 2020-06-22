@@ -4,10 +4,10 @@
 openapi: "3.0.0"
 info:
   version: "0.1.0"
-  title: NHAIS Adaptor (FHIR) API
+  title: GP Links - NHAIS Adaptor (FHIR) API
   description: |
     ## Overview
-    Use this API to access the NHAIS Adaptor API
+    Use this API to access the GP Links - NHAIS Adaptor API
 
     You can:
     * Accept a new patient
@@ -15,7 +15,7 @@ info:
     * Request a Removal for a patient who has moved out of area
     * Request a Deduction for a supported reason
 
-    The NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.
+    The GP Links - NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.
 
     The API is based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
 
@@ -30,7 +30,7 @@ info:
     - resource names are capitalised and singular, for example the `/Patient` not `/patients`
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-    - data items related to an operation rather than the resource are representes as `Parameter`s
+    - data items related to an operation rather than the resource are represented as `Parameter`s
 
     ## Example Requests
 
@@ -87,7 +87,7 @@ paths:
               $ref: components/schemas/Parameters.yaml
       responses:
         '202':
-          description: The deduction is forwarded to NHAIS for processing. The respose body is empty.
+          description: The deduction is forwarded to NHAIS for processing. The response body is empty.
           headers:
             operationid:
               schema:
