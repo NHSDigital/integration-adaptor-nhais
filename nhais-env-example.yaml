@@ -1,7 +1,27 @@
-# Using this file is optional - the application has sensible defaults for local development for all configuration values
+# NHAIS connection settings
+# Using this group is optional - the application has sensible defaults for local development for all configuration values
 NHAIS_OUTBOUND_SERVER_PORT: "80"
 NHAIS_AMQP_BROKERS: localhost:5672
 NHAIS_MESH_OUTBOUND_QUEUE_NAME: 'nhais_mesh_outbound'
 NHAIS_MONGO_DATABASE_NAME: nhais
 NHAIS_MONGO_URI: mongodb://localhost:27017
+
+#MESH client settings
+NHAIS_MESH_MAILBOX_ID:  #Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail
+NHAIS_MESH_MAILBOX_PASSWORD:  #The password for MAILBOX_ID can be found in your OpenTest welcome e-mail
+NHAIS_MESH_SHARED_KEY:  #Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
+NHAIS_MESH_HOST: https://msg.opentest.hscic.gov.uk/messageexchange/ #hostname of the MESH API
+NHAIS_MESH_PORT: 443 #port of the MESH API
+NHAIS_MESH_CA_CERT: | #The content of the MESH CA Cert
+  -----BEGIN CERTIFICATE-----
+  #keep 2 spaces indent for whole certificate
+  -----END CERTIFICATE-----
+NHAIS_MESH_ENDPOINT_CERT: | #The content of the endpoint certificate
+  -----BEGIN CERTIFICATE-----
+  #keep 2 spaces indent for whole certificate
+  -----END CERTIFICATE-----
+NHAIS_MESH_ENDPOINT_PRIVATE_KEY: | #The content of the endpoint private key
+  -----BEGIN RSA PRIVATE KEY-----
+  #keep 2 spaces indent for whole key
+  -----END RSA PRIVATE KEY-----
 
