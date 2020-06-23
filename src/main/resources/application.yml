@@ -32,8 +32,7 @@ nhais:
     exchange: amq.direct
     username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}
-    maxAttempts: ${NHAIS_AMQP_MAX_RETRIES:3}
-    backOffPeriod: ${NHAIS_AMQP_RETRY_DELAY:100}
+    maxRedeliveries: ${NHAIS_AMQP_MAX_REDELIVERIES:3}
   mongodb:
     uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
     database: ${NHAIS_MONGO_DATABASE_NAME:nhais}

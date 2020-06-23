@@ -1,10 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.uat;
 
 import org.hl7.fhir.r4.model.Parameters;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
@@ -26,7 +24,7 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @ArgumentsSource(CustomArgumentsProvider.Inbound.class)
     void testTranslatingFromEdifactToFhir(String category, TestData testData) throws JMSException {
         // send EDIFACT to "inbound queue"
-        sendToMeshInboundQueue(testData.getEdifact());
+        sendToMeshInboundQueue(new MeshMessage().setWorkflowId(WorkflowId.REGISTRATION).setContent(testData.getEdifact()));
 
         var expectedTransactionType = category.split("/")[0];
 
@@ -51,13 +49,5 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {
         String transactionType = gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.TRANSACTION_TYPE);
         assertThat(transactionType).isEqualTo(expectedTransactionType);
-    }
-
-    private void sendToMeshInboundQueue(String edifact) {
-        var meshMessage = new MeshMessage()
-            .setWorkflowId(WorkflowId.REGISTRATION)
-            .setContent(edifact);
-
-        sendToMeshInboundQueue(meshMessage);
     }
 }

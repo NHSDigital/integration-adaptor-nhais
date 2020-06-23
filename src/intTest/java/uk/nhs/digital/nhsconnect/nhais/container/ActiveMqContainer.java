@@ -1,15 +1,20 @@
 package uk.nhs.digital.nhsconnect.nhais.container;
 
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+
+import java.nio.file.Path;
 
 public class ActiveMqContainer extends GenericContainer<ActiveMqContainer> {
 
     public static final int ACTIVEMQ_PORT = 5672;
-    public static final String DEFAULT_IMAGE_AND_TAG = "rmohr/activemq:latest";
     private static ActiveMqContainer container;
 
     private ActiveMqContainer() {
-        super(DEFAULT_IMAGE_AND_TAG);
+        super(new ImageFromDockerfile()
+            .withFileFromPath("activemq.xml", Path.of("./activemq/activemq.xml"))
+            .withFileFromPath("Dockerfile", Path.of("./activemq/Dockerfile"))
+        );
         addExposedPort(ACTIVEMQ_PORT);
     }
 

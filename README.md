@@ -204,8 +204,7 @@ when the service is run.
 | NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME | nahis_gp_system_inbound   | The name of the inbound (to gp system) message queue
 | NHAIS_AMQP_USERNAME                |                           | (Optional) username for the amqp server for outbound (to mesh) message queue
 | NHAIS_AMQP_PASSWORD                |                           | (Optional) password for the amqp server for outbound (to mesh) message queue
-| NHAIS_AMQP_MAX_RETRIES             | 3                         | The number of times a request to the outbound (to mesh) broker(s) will be retried
-| NHAIS_AMQP_RETRY_DELAY             | 100                       | Milliseconds delay between retries to the outbound (to mesh) broker(s)
+| NHAIS_AMQP_MAX_REDELIVERIES        | 3                         | The number of times an message will be retried to be delivered to consumer. After exhausting all retires, it will be put on DLQ.<queue_name> dead letter queue
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
