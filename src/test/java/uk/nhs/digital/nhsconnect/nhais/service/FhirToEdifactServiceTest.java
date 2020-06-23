@@ -70,7 +70,7 @@ public class FhirToEdifactServiceTest {
     public void beforeEach() throws Exception {
         when(sequenceService.generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
-        when(sequenceService.generateTransactionId()).thenReturn(TN);
+        when(sequenceService.generateTransactionId(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
             .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
@@ -94,7 +94,7 @@ public class FhirToEdifactServiceTest {
 
         verify(sequenceService).generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
         verify(sequenceService).generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
-        verify(sequenceService).generateTransactionId();
+        verify(sequenceService).generateTransactionId(GP_TRADING_PARTNER_CODE);
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
