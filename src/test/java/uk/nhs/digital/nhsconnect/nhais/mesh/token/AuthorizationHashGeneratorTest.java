@@ -6,8 +6,10 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +27,7 @@ class AuthorizationHashGeneratorTest {
     private final static String MAILBOX_PASSWORD = "mailbox_password";
     private final static String SHARED_KEY = "shared_key";
 
-    private final static Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
-        .atStartOfDay(ZoneId.systemDefault())
+    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UKZone)
         .toInstant();
     private final static String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 
@@ -45,7 +46,7 @@ class AuthorizationHashGeneratorTest {
 
         String timestamp = new TokenTimestamp(FIXED_TIME_LOCAL).getValue();
         String hash = authorizationHashGenerator.computeHash(meshConfig, nonce, timestamp);
-        assertThat(hash).isEqualTo("474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569");
+        assertThat(hash).isEqualTo("e80adf34b261ba9a377ac4776e1354f2ce814c5f6ecec71b2ce540b94836c530");
     }
 
 }

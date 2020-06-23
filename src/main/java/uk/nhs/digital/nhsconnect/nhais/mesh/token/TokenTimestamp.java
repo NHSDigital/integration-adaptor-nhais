@@ -1,11 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.token;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 @RequiredArgsConstructor
 class TokenTimestamp {
@@ -14,6 +14,6 @@ class TokenTimestamp {
     @NonNull private final Instant datetime;
 
     public String getValue() {
-        return DateTimeFormatter.ofPattern(TIMESTAMP_FORMAT).withZone(ZoneId.systemDefault()).format(datetime);
+        return DateTimeFormatter.ofPattern(TIMESTAMP_FORMAT).withZone(TimestampService.UKZone).format(datetime);
     }
 }
