@@ -3,13 +3,13 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderAndRecipientValidationException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderOrRecipientMissingException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderMissingException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 @Service
 public class SequenceService {
-    private final static String TRANSACTION_KEY_FORMAT = "transaction_id-%s";
+    private final static String TRANSACTION_KEY_FORMAT = "TN-%s";
     private final static String INTERCHANGE_FORMAT = "SIS-%s-%s";
     private final static String INTERCHANGE_MESSAGE_FORMAT = "SMS-%s-%s";
 
@@ -33,17 +33,18 @@ public class SequenceService {
 
     private void validateSenderAndRecipient(String sender, String recipient) {
         if (StringUtils.isBlank(sender) || StringUtils.isBlank(recipient)) {
-            throw new SenderAndRecipientValidationException(
+            throw new SenderOrRecipientMissingException(
                     String.format("Sender or recipient not valid. Sender: %s, recipient: %s", sender, recipient)
             );
         }
     }
 
     private void validateSender(String sender) {
-        if (StringUtils.isBlank(sender)) {
-            throw new SenderValidationException(
-                String.format("Sender not valid. Sender: %s", sender)
-            );
+        if (sender == null) {
+            throw new SenderMissingException("Sender cannot be null");
+        }
+        if (sender.isEmpty()) {
+            throw new SenderMissingException("Sender cannot be empty");
         }
     }
 

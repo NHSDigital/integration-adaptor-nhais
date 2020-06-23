@@ -5,17 +5,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderAndRecipientValidationException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderOrRecipientMissingException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderMissingException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SequenceServiceTest {
-    private final static String TRANSACTION_ID = "transaction_id";
+    private final static String TRANSACTION_ID = "TN-sender";
     private final static String INTERCHANGE_ID = "SIS-sender-recipient";
     private final static String MESSAGE_ID = "SMS-sender-recipient";
     private final static Long SEQ_VALUE = 1L;
@@ -28,8 +29,7 @@ public class SequenceServiceTest {
 
     @Test
     public void When_GenerateTransactionId_Expect_CorrectValue() {
-        String key = TRANSACTION_ID + "-sender";
-        when(sequenceRepository.getNextForTransaction(key)).thenReturn(SEQ_VALUE);
+        when(sequenceRepository.getNextForTransaction(TRANSACTION_ID)).thenReturn(SEQ_VALUE);
         assertThat(sequenceService.generateTransactionId("sender")).isEqualTo(SEQ_VALUE);
     }
 
@@ -49,19 +49,25 @@ public class SequenceServiceTest {
 
     @Test
     public void When_GenerateIdsForInvalidSender_Expect_Exception() {
-        assertThrows(SenderAndRecipientValidationException.class, () ->
-                sequenceService.generateInterchangeId(null, "recipient"));
+        assertThatThrownBy(() -> sequenceService.generateInterchangeId(null, "recipient"))
+            .isExactlyInstanceOf(SenderOrRecipientMissingException.class);
     }
 
     @Test
     public void When_GenerateIdsForInvalidRecipient_Expect_Exception() {
-        assertThrows(SenderAndRecipientValidationException.class, () ->
-                sequenceService.generateInterchangeId("sender", ""));
+        assertThatThrownBy(() -> sequenceService.generateInterchangeId("sender", ""))
+            .isExactlyInstanceOf(SenderOrRecipientMissingException.class);
     }
 
     @Test
-    public void When_GenerateTransactionIdsForInvalidSender_Expect_Exception() {
-        assertThrows(SenderValidationException.class, () ->
-            sequenceService.generateTransactionId(null));
+    public void When_GenerateTransactionIdsForNullSender_Expect_Exception() {
+        assertThatThrownBy(() -> sequenceService.generateTransactionId(null))
+            .isExactlyInstanceOf(SenderMissingException.class);
+    }
+
+    @Test
+    public void When_GenerateTransactionIdsForEmptySender_Expect_Exception() {
+        assertThatThrownBy(() -> sequenceService.generateTransactionId(""))
+            .isExactlyInstanceOf(SenderMissingException.class);
     }
 }
