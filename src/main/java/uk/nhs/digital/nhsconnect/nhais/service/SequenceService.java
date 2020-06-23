@@ -3,8 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderOrRecipientMissingException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderMissingException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SequenceException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 @Service
@@ -33,7 +32,7 @@ public class SequenceService {
 
     private void validateSenderAndRecipient(String sender, String recipient) {
         if (StringUtils.isBlank(sender) || StringUtils.isBlank(recipient)) {
-            throw new SenderOrRecipientMissingException(
+            throw new SequenceException(
                     String.format("Sender or recipient not valid. Sender: %s, recipient: %s", sender, recipient)
             );
         }
@@ -41,10 +40,10 @@ public class SequenceService {
 
     private void validateSender(String sender) {
         if (sender == null) {
-            throw new SenderMissingException("Sender cannot be null");
+            throw new SequenceException("Sender cannot be null");
         }
         if (sender.isEmpty()) {
-            throw new SenderMissingException("Sender cannot be empty");
+            throw new SequenceException("Sender cannot be empty");
         }
     }
 

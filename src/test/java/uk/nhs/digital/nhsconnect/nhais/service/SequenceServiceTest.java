@@ -5,13 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderOrRecipientMissingException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.SenderMissingException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.SequenceException;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,24 +48,24 @@ public class SequenceServiceTest {
     @Test
     public void When_GenerateIdsForInvalidSender_Expect_Exception() {
         assertThatThrownBy(() -> sequenceService.generateInterchangeId(null, "recipient"))
-            .isExactlyInstanceOf(SenderOrRecipientMissingException.class);
+            .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateIdsForInvalidRecipient_Expect_Exception() {
         assertThatThrownBy(() -> sequenceService.generateInterchangeId("sender", ""))
-            .isExactlyInstanceOf(SenderOrRecipientMissingException.class);
+            .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateTransactionIdsForNullSender_Expect_Exception() {
         assertThatThrownBy(() -> sequenceService.generateTransactionId(null))
-            .isExactlyInstanceOf(SenderMissingException.class);
+            .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateTransactionIdsForEmptySender_Expect_Exception() {
         assertThatThrownBy(() -> sequenceService.generateTransactionId(""))
-            .isExactlyInstanceOf(SenderMissingException.class);
+            .isExactlyInstanceOf(SequenceException.class);
     }
 }
