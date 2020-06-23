@@ -42,3 +42,12 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
+  mesh:
+    mailboxId: ${NHAIS_MESH_MAILBOX_ID:}
+    mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:}
+    sharedKey: ${NHAIS_MESH_SHARED_KEY:}
+    host: ${NHAIS_MESH_HOST:https://msg.opentest.hscic.gov.uk/messageexchange/}
+    port: ${NHAIS_MESH_PORT:443}
+    endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:}
+    endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
+    caCert: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}

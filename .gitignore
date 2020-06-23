@@ -11,6 +11,7 @@ build
 
 # Local configuration
 /nhais/nhais-env.yaml
+nhais-env.yaml
 
 .classpath
 .project
