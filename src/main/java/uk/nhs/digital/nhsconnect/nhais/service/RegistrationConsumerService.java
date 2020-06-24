@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -24,37 +24,42 @@ public class RegistrationConsumerService {
     private final InboundStateRepository inboundStateRepository;
     private final OutboundStateRepository outboundStateRepository;
     private final OutboundMeshService outboundMeshService;
-    private final RecepProducerService recepProducerService;
+//    private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        Interchange interchange = edifactParser.parse(meshMessage.getContent());
+        InterchangeV2 interchange = null;
+//        Interchange interchange = edifactParser.parse(meshMessage.getContent());
         LOGGER.debug("Parsed registration message into interchange: {}", interchange);
 
-        var inboundState = InboundState.fromInterchange(interchange);
-        if (!saveInboundState(inboundState)) {
-            return;
-        }
+        interchange.getMessages().forEach(message -> {
+            message.getTransactions().forEach(transaction -> {
+                var inboundState = InboundState.fromTransaction(transaction);
+                if (!saveInboundState(inboundState)) {
+                    return;
+                }
 
-        var recep = recepProducerService.produceRecep(interchange);
-        var recepOutboundState = OutboundState.fromRecep(recep);
-        outboundStateRepository.save(recepOutboundState);
-        LOGGER.debug("Saved recep in outbound state: {}", recepOutboundState);
+                var outputParameters = edifactToFhirService.convertToFhir(transaction);
+                LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
+                inboundGpSystemService.publishToSupplierQueue(
+                    outputParameters,
+                    inboundState.getOperationId(),
+                    transaction.getMessage().getReferenceTransactionType().getTransactionType());
+                LOGGER.debug("Published inbound registration message to gp supplier queue");
+            });
+        });
 
-        var outputParameters = edifactToFhirService.convertToFhir(interchange);
-        LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
-        inboundGpSystemService.publishToSupplierQueue(
-            outputParameters,
-            inboundState.getOperationId(),
-            interchange.getReferenceTransactionType().getTransactionType());
-        LOGGER.debug("Published inbound registration message to gp supplier queue");
-
-        var recepMeshMessage = buildRecepMeshMessage(recep);
-        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
-        outboundMeshService.publishToOutboundQueue(recepMeshMessage);
-        LOGGER.debug("Published recep to outbound queue");
+//        var recep = recepProducerService.produceRecep(interchange);
+//        var recepOutboundState = OutboundState.fromRecep(recep);
+//        outboundStateRepository.save(recepOutboundState);
+//        LOGGER.debug("Saved recep in outbound state: {}", recepOutboundState);
+//
+//        var recepMeshMessage = buildRecepMeshMessage(recep);
+//        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
+//        outboundMeshService.publishToOutboundQueue(recepMeshMessage);
+//        LOGGER.debug("Published recep to outbound queue");
     }
 
     private MeshMessage buildRecepMeshMessage(Recep recep) {

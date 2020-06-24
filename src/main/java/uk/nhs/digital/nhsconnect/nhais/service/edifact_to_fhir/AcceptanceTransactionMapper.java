@@ -4,11 +4,12 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 
 @Component
 public class AcceptanceTransactionMapper implements TransactionMapper {
     @Override
-    public void map(Parameters parameters, Interchange interchange) {
+    public void map(Parameters parameters, TransactionV2 transaction) {
         //TODO: to be implemented
     }
 

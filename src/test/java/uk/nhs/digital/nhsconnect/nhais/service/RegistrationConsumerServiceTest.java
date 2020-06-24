@@ -68,8 +68,8 @@ public class RegistrationConsumerServiceTest {
     @Mock
     OutboundMeshService outboundMeshService;
 
-    @Mock
-    RecepProducerService recepProducerService;
+//    @Mock
+//    RecepProducerService recepProducerService;
 
     @Mock
     EdifactToFhirService edifactToFhirService;
@@ -117,7 +117,7 @@ public class RegistrationConsumerServiceTest {
         mockInterchangeSegments();
         mockInterchangeRecepRequiredSegments();
 
-        when(recepProducerService.produceRecep(interchange)).thenReturn(recep);
+//        when(recepProducerService.produceRecep(interchange)).thenReturn(recep);
 
         var meshInterchangeMessage = new MeshMessage();
         meshInterchangeMessage.setWorkflowId(WorkflowId.REGISTRATION);

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.NotSupportedTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
@@ -22,15 +23,15 @@ public class EdifactToFhirService {
 
     public final Map<ReferenceTransactionType.TransactionType, TransactionMapper> transactionMappers;
 
-    public Parameters convertToFhir(Interchange interchange) {
+    public Parameters convertToFhir(TransactionV2 transaction) {
         var parameters = new Parameters()
-            .addParameter(new GpTradingPartnerCode(interchange))
-            .addParameter(new PatientParameter(interchange));
+            .addParameter(new GpTradingPartnerCode(transaction.getMessage().getInterchange()))
+            .addParameter(new PatientParameter(transaction));
 
-        var transactionType = interchange.getReferenceTransactionType().getTransactionType();
+        var transactionType = transaction.getMessage().getReferenceTransactionType().getTransactionType();
         transactionMappers
             .getOrDefault(transactionType, new NotSupportedTransactionMapper(transactionType))
-            .map(parameters, interchange);
+            .map(parameters, transaction);
 
         return parameters;
     }

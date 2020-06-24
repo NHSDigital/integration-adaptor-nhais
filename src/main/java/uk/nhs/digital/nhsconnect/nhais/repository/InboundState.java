@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -37,14 +38,14 @@ public class InboundState {
     private Instant translationTimestamp;
     private ReferenceTransactionType.TransactionType transactionType;
 
-    public static InboundState fromInterchange(Interchange interchange) {
+    public static InboundState fromTransaction(TransactionV2 transaction) {
         //TODO initial assumption that interchange can have a single message only
 
-        var interchangeHeader = interchange.getInterchangeHeader();
-        var translationDateTime = interchange.getTranslationDateTime();
-        var messageHeader = interchange.getMessageHeader();
-        var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
-        var referenceTransactionType = interchange.getReferenceTransactionType();
+        var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
+        var translationDateTime = transaction.getMessage().getTranslationDateTime();
+        var messageHeader = transaction.getMessage().getMessageHeader();
+        var referenceTransactionNumber = transaction.getReferenceTransactionNumber();
+        var referenceTransactionType = transaction.getMessage().getReferenceTransactionType();
 
         var recipient = interchangeHeader.getRecipient();
         var transactionNumber = referenceTransactionNumber.getTransactionNumber();
