@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>NHAIS Adaptor (FHIR) API</title>
+  <title>GP Links - NHAIS Adaptor (FHIR) API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
@@ -861,44 +861,6 @@ ul.nav-tabs {
     }
   }
 };
-    defs["OperationIdentifier"] = {
-  "required" : [ "extension", "url" ],
-  "type" : "object",
-  "properties" : {
-    "url" : {
-      "type" : "string",
-      "description" : "Definition of OperationIdentifier extension.",
-      "readOnly" : true,
-      "default" : "https://TODO.COM/ExtensionNhais-OperationIdentifier"
-    },
-    "extension" : {
-      "$ref" : "#/components/schemas/OperationIdentifier_extension"
-    }
-  },
-  "description" : "Wrapper object for asynchronous operation identifiers."
-};
-    defs["OperationIdentifier_extension"] = {
-  "required" : [ "operationId" ],
-  "properties" : {
-    "operationId" : {
-      "pattern" : "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-      "type" : "string",
-      "description" : "The identifier (UUID) of the accepted transaction"
-    },
-    "tn" : {
-      "type" : "string",
-      "description" : "Transaction number used by EDIFACT messaging"
-    },
-    "sis" : {
-      "type" : "string",
-      "description" : "Send interchange sequence used by EDIFACT messaging"
-    },
-    "sms" : {
-      "type" : "string"
-    }
-  },
-  "description" : "Asynchronous operation identifiers. TODO: Could optionally include NHAIS-specific IDs if needed to support queries from HA"
-};
     defs["OperationOutcome"] = {
   "type" : "object",
   "properties" : {
@@ -914,14 +876,6 @@ ul.nav-tabs {
       "description" : "List of issues that have occurred.",
       "items" : {
         "$ref" : "#/components/schemas/OperationOutcome_issue"
-      }
-    },
-    "extension" : {
-      "type" : "array",
-      "items" : {
-        "anyOf" : [ {
-          "$ref" : "#/components/schemas/OperationIdentifier"
-        } ]
       }
     }
   },
@@ -1003,7 +957,7 @@ ul.nav-tabs {
       <div id="content">
         <div id="project">
           <div class="pull-left">
-            <h1>NHAIS Adaptor (FHIR) API</h1>
+            <h1>GP Links - NHAIS Adaptor (FHIR) API</h1>
           </div>
           <div class="clearfix"></div>
         </div>
@@ -1014,7 +968,7 @@ ul.nav-tabs {
             <hr>
             <div id="app-description" class="app-desc">
                 <h2>Overview</h2>
-<p>Use this API to access the NHAIS Adaptor API</p>
+<p>Use this API to access the GP Links - NHAIS Adaptor API</p>
 <p>You can:</p>
 <ul>
 <li>Accept a new patient</li>
@@ -1022,7 +976,7 @@ ul.nav-tabs {
 <li>Request a Removal for a patient who has moved out of area</li>
 <li>Request a Deduction for a supported reason</li>
 </ul>
-<p>The NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.</p>
+<p>The GP Links - NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.</p>
 <p>The API is based on the <a href="https://github.com/NHSDigital/personal-demographics-service-api">Personal Demographics Service API</a></p>
 <h2>Technology</h2>
 <p>This API is <a href="https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest">RESTful</a>.</p>
@@ -1034,7 +988,7 @@ In particular:</p>
 <li>resource names are capitalised and singular, for example the <code>/Patient</code> not <code>/patients</code></li>
 <li>array names are singular, for example <code>line</code> not <code>lines</code> for address lines</li>
 <li>data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an <code>extension</code> object</li>
-<li>data items related to an operation rather than the resource are representes as <code>Parameter</code>s</li>
+<li>data items related to an operation rather than the resource are represented as <code>Parameter</code>s</li>
 </ul>
 <h2>Example Requests</h2>
 <p>A number of example requests are available as part of the adaptor's user acceptance tests.</p>
@@ -1235,9 +1189,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-acceptance-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NhaisAdaptorFhirApi = require('nhais_adaptor__fhir_api');
+                              <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
-var api = new NhaisAdaptorFhirApi.PatientsApi()
+var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 
 var callback = function(error, data, response) {
@@ -1652,9 +1606,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-amendment-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NhaisAdaptorFhirApi = require('nhais_adaptor__fhir_api');
+                              <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
-var api = new NhaisAdaptorFhirApi.PatientsApi()
+var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var inlineObject = ; // {InlineObject} 
 
@@ -2077,9 +2031,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-deduction-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NhaisAdaptorFhirApi = require('nhais_adaptor__fhir_api');
+                              <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
-var api = new NhaisAdaptorFhirApi.PatientsApi()
+var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var parameters = ; // {Parameters} 
 
@@ -2277,7 +2231,7 @@ $(document).ready(function() {
                             <h3 id="examples-Patients-deduction-title-202"></h3>
                             <p id="examples-Patients-deduction-description-202" class="marked"></p>
                             <script>
-                              var responsePatients202_description = `The deduction is forwarded to NHAIS for processing. The respose body is empty.`;
+                              var responsePatients202_description = `The deduction is forwarded to NHAIS for processing. The response body is empty.`;
                               var responsePatients202_description_break = responsePatients202_description.indexOf('\n');
                               if (responsePatients202_description_break == -1) {
                                 $("#examples-Patients-deduction-title-202").text("Status: 202 - " + responsePatients202_description);
@@ -2495,9 +2449,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-removal-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var NhaisAdaptorFhirApi = require('nhais_adaptor__fhir_api');
+                              <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
-var api = new NhaisAdaptorFhirApi.PatientsApi()
+var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var parameters = ; // {Parameters} 
 
@@ -2802,7 +2756,7 @@ $(document).ready(function() {
           <div id="footer">
             <div id="api-_footer">
               <p>Suggestions, contact, support and error reporting;
-                  <div class="app-desc">Information URL: <a href="https://github.com/nhsconnect/integration-adaptors">https://github.com/nhsconnect/integration-adaptors</a></div>
+                  <div class="app-desc">Information URL: <a href="https://github.com/nhsconnect/integration-adaptor-nhais">https://github.com/nhsconnect/integration-adaptor-nhais</a></div>
                   <div class="app-desc">Contact Info: <a href="team@openapitools.org">team@openapitools.org</a></div>
               </p>
                 <div class="license-info">All rights reserved</div>
