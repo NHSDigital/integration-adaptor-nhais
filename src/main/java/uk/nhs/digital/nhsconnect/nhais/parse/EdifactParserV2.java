@@ -113,24 +113,11 @@ public class EdifactParserV2 {
         var allMessageTrailerIndexes = findAllIndexes(wholeInterchangeLines, MessageTrailer.KEY);
         var lastMessageTrailerIndex = allMessageTrailerIndexes.get(allMessageTrailerIndexes.size() - 1);
 
-//        var interchangeHeader = wholeInterchangeLines.get(indexOfKey(wholeInterchangeLines, InterchangeHeader.KEY));
-//        var interchangeTrailer = wholeInterchangeLines.get(indexOfKey(wholeInterchangeLines, InterchangeTrailer.KEY));
-
         return Stream.of(
             wholeInterchangeLines.subList(0, firstMessageHeaderIndex),
-            wholeInterchangeLines.subList(lastMessageTrailerIndex, wholeInterchangeLines.size() - 1))
+            wholeInterchangeLines.subList(lastMessageTrailerIndex + 1, wholeInterchangeLines.size()))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
-
-//        return List.of(interchangeHeader, interchangeTrailer);
-    }
-
-    private int indexOfKey(List<String> lines, String key) {
-        var indexes = findAllIndexes(lines, key);
-        if (indexes.size() != 1) {
-            throw new ToEdifactParsingException("Expected 1 occurrence for " + key + " but got " + indexes);
-        }
-        return indexes.get(0);
     }
 
     private List<Integer> findAllIndexes(List<String> list, String key) {
