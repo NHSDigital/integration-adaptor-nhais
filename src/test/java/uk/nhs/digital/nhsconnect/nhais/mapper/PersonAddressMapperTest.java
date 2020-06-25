@@ -45,11 +45,42 @@ class PersonAddressMapperTest {
     }
 
     @Test
+    void When_MappingAddressWithPostcode_Then_ExpectCorrectResult() {
+        Patient patient = new Patient();
+        Address address = new Address();
+        address.addLine("")
+            .addLine("2 CROSSDALE COURT")
+            .addLine("SEA CLIFF CRESCENT")
+            .addLine("")
+            .addLine("SCARBOROUGH");
+        address.setPostalCode("YO11 2XZ");
+        patient.setAddress(List.of(address));
+
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
+
+        var personAddressMapper = new PersonAddressMapper();
+        PersonAddress personAddress = personAddressMapper.map(parameters);
+
+        var expectedPersonAddress = PersonAddress
+            .builder()
+            .addressLine1("")
+            .addressLine2("2 CROSSDALE COURT")
+            .addressLine3("SEA CLIFF CRESCENT")
+            .addressLine4("")
+            .addressLine5("SCARBOROUGH")
+            .postalCode("YO11 2XZ")
+            .build();
+
+        assertEquals(expectedPersonAddress, personAddress);
+    }
+
+    @Test
     public void When_MappingWithoutAddress_Then_IllegalStateExceptionIsThrown() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
         var personAddressMapper = new PersonAddressMapper();
-        assertThrows(IllegalStateException.class, () -> personAddressMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> personAddressMapper.map(parameters));
     }
 }
