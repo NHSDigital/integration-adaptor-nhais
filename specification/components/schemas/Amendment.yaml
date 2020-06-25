@@ -20,10 +20,11 @@ properties:
         - path
       properties:
         op:
+          description: Add and replace are synonymous for GP Links messaging
           type: string
           enum: [remove,add,replace]
         path:
-          description: The location of the information to remove, add or replace. The '-' character must be used to add new items to arrays, e.g. names, addresses.
+          description: The exact path to the item being patched. Supported paths are listed in the API endpont's description.
           type: string
           format: jsonpointer
           externalDocs:
