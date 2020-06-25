@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.token.MeshAuthorizationToken;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -118,9 +119,9 @@ public class MeshAuthorizationIntegrationTest {
         KeyStore ks = EnvKeyStore.createFromPEMStrings(
                 new String(Files.readAllBytes(fakeMeshKey.getFile().toPath())),
                 new String(Files.readAllBytes(fakeMeshCert.getFile().toPath())),
-                "")
+            StringUtils.EMPTY)
             .keyStore();
-        return SSLContexts.custom().loadKeyMaterial(ks, "".toCharArray())
+        return SSLContexts.custom().loadKeyMaterial(ks, StringUtils.EMPTY.toCharArray())
             .loadTrustMaterial(TrustAllStrategy.INSTANCE)
             .build();
     }
