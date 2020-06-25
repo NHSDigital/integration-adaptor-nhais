@@ -13,16 +13,21 @@ import java.util.stream.Stream;
 
 public abstract class Section {
     @Getter
-    private List<String> edifactSegments;
+    private final List<String> edifactSegments;
 
     public Section(List<String> edifactSegments) {
         this.edifactSegments = edifactSegments;
     }
 
-    protected Optional<String> extractOptionalSegment(String key) {
+    protected List<String> extractSegments(String key) {
         return edifactSegments.stream()
             .map(String::strip)
             .filter(segment -> segment.startsWith(key))
+            .collect(Collectors.toList());
+    }
+
+    protected Optional<String> extractOptionalSegment(String key) {
+        return extractSegments(key).stream()
             .findFirst();
     }
 
@@ -30,7 +35,6 @@ public abstract class Section {
         return extractOptionalSegment(key)
             .orElseThrow(() -> new MissingSegmentException("EDIFACT section is missing segment " + key));
     }
-
 
     public List<ToEdifactParsingException> validate() {
         return getSegmentsToValidate()

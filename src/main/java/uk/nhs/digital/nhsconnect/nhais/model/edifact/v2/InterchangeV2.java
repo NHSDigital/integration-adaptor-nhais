@@ -11,14 +11,13 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class InterchangeV2 extends Section {
-    @Getter
-    @Setter
-    private List<MessageV2> messages;
-
     @Getter(lazy = true)
     private final InterchangeHeader interchangeHeader = InterchangeHeader.fromString(extractSegment(InterchangeHeader.KEY));
     @Getter(lazy = true)
     private final InterchangeTrailer interchangeTrailer = InterchangeTrailer.fromString(extractSegment(InterchangeTrailer.KEY));
+    @Getter
+    @Setter
+    private List<MessageV2> messages;
 
     public InterchangeV2(List<String> edifactSegments) {
         super(edifactSegments);

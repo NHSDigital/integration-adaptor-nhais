@@ -14,24 +14,21 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class TransactionV2 extends Section {
-    @Getter @Setter
-    private MessageV2 message;
-
     @Getter(lazy = true)
     private final ReferenceTransactionNumber referenceTransactionNumber =
         ReferenceTransactionNumber.fromString(extractSegment(ReferenceTransactionNumber.KEY_QUALIFIER));
-
     @Getter(lazy = true)
     private final GpNameAndAddress gpNameAndAddress =
         GpNameAndAddress.fromString(extractSegment(GpNameAndAddress.KEY_QUALIFIER));
-
     @Getter(lazy = true)
     private final Optional<PersonName> personName =
         extractOptionalSegment(PersonName.KEY_QUALIFIER).map(PersonName::fromString);
-
     @Getter(lazy = true)
     private final FreeText freeText =
         FreeText.fromString(extractSegment(FreeText.KEY_QUALIFIER));
+    @Getter
+    @Setter
+    private MessageV2 message;
 
     public TransactionV2(List<String> segments) {
         super(segments);
