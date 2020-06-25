@@ -5,7 +5,7 @@ public class FakeMeshConfig extends MeshConfig {
         super("mailboxId",
             "password",
             "SharedKey",
-            "https://localhost:8829/messageexchange/",
+            System.getProperty("NHAIS_MESH_HOST"),
             "", "");
     }
 }
