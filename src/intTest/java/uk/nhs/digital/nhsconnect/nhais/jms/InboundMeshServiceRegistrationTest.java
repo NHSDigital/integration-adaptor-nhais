@@ -58,7 +58,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
         assertGpSystemInboundQueueMessage(softly);
 
-        assertOutboundQueueRecepMessage(softly);
+//        assertOutboundQueueRecepMessage(softly);
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {

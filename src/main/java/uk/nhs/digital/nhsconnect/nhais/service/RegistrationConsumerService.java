@@ -85,7 +85,7 @@ public class RegistrationConsumerService {
             messageHeader.getSequenceNumber(),
             transaction.getReferenceTransactionNumber().getTransactionNumber());
 
-        return inboundState != null;
+        return inboundState == null;
     }
 
     private Stream<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<TransactionV2> transactions) {

@@ -142,9 +142,9 @@ public class RegistrationConsumerServiceTest {
         when(transaction4.getMessage()).thenReturn(message2);
 
         when(inboundStateRepository.findBy(eq(WorkflowId.REGISTRATION), eq(SENDER), eq(RECIPIENT), eq(SIS), any(), any()))
-            .thenReturn(new InboundState());
-        when(inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS_2, TN_4))
             .thenReturn(null);
+        when(inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS_2, TN_4))
+            .thenReturn(new InboundState());
     }
 
 //    private void mockInterchangeRecepRequiredSegments() {
