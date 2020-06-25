@@ -1,7 +1,7 @@
 # GP Links - NHAIS OpenAPI Documentation
 
 For convenience an [HTML Version](out/index.html) of [nhais-adaptor.yaml](nhais-adaptor.yaml) is committed into the 
-repository. This should not be considered official documentation. Any examples, code samples, and references to SDKs
+repository. The HTML should not be considered official documentation. Any examples, code samples, and references to SDKs
 in this HTML document are incorrect.
 
 This is a temporary solution to facilitate review and feedback while the adaptor is in development. If you need to
