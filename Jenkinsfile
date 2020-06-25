@@ -55,13 +55,12 @@ pipeline {
                 always {
                     sh label: 'Create logs directory', script: 'mkdir logs'
                     sh label: 'Docker status', script: 'docker ps --all'
-                    sh label: 'Copy nhais container logs', script: 'docker-compose logs ${BUILD_TAG} > logs/nhais.log'
-                    // sh label: 'Copy dynamo container logs', script: 'docker-compose logs ${BUILD_TAG_LOWER}_dynamodb > logs/outbound.log'
-                    // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs ${BUILD_TAG_LOWER}_rabbitmq > logs/inbound.log'
-                    sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests:${BUILD_TAG} > logs/nhais-tests.log'
+                    // sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
+                    // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
+                    // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
+                    sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
                     archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
-                    sh label: 'Docker compose logs', script: 'docker-compose -f docker-compose.yml -f docker-compose.component.override.yml -p ${BUILD_TAG} logs'
-                    sh label: 'Docker compose down', script: 'docker-compose -f docker-compose.yml -f docker-compose.component.override.yml -p ${BUILD_TAG} down -v'
+                    sh label: 'Stopping containers', script: 'docker-compose down -v'
                 }
             }
         }
