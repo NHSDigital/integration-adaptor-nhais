@@ -178,7 +178,7 @@ paths:
         | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Patient's Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Patient's Responsible GP (GMC Code)   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Patient's Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
@@ -212,7 +212,7 @@ paths:
         | Acceptance Date                       | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                      |                                                                                                     |
         | Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                    |                                                                                                     |
         | Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                    |                                                                                                     |
-        | Patient's Responsible GP - GMC Code   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+        | Patient's Responsible GP (GMC Code)   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
         | GP Trading Partner Code               | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                                                                                     |
         | Patient's Responsible HA              | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                                                                                     |
         | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                    |                                                                                                     |
