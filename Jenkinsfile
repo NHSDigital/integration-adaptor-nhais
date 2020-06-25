@@ -55,7 +55,7 @@ pipeline {
                 always {
                     sh label: 'Create logs directory', script: 'mkdir logs'
                     sh label: 'Docker status', script: 'docker ps --all'
-                    sh label: 'Copy nhais container logs', script: 'docker-compose logs ${BUILD_TAG} > logs/nhais.log'
+                    sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
                     // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb > logs/outbound.log'
                     // sh label: 'Copy rabbitmq logs', script: 'docker-compose logs rabbitmq > logs/inbound.log'
                     // sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
