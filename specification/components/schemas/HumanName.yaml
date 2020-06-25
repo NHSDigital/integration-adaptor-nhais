@@ -7,7 +7,6 @@ properties:
   family:
     type: string
     description: Family name (often called Surname).
-    example: Smith
   prefix:
     type: array
     description: Title
