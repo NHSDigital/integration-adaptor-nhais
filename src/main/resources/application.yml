@@ -46,8 +46,6 @@ nhais:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:}
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:}
-    host: ${NHAIS_MESH_HOST:https://msg.opentest.hscic.gov.uk/messageexchange/}
-    port: ${NHAIS_MESH_PORT:443}
+    host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #fake-mesh as default
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:}
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
-    caCert: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}

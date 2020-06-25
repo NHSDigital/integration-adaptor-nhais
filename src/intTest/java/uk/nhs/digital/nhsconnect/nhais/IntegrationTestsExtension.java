@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.ActiveMqContainer;
+import uk.nhs.digital.nhsconnect.nhais.container.FakeMeshContainer;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbContainer;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -26,6 +27,7 @@ public class IntegrationTestsExtension implements BeforeAllCallback, BeforeEachC
     public void beforeAll(ExtensionContext context) {
         ActiveMqContainer.getInstance().start();
         MongoDbContainer.getInstance().start();
+        FakeMeshContainer.getInstance().start();
     }
 
     @Override

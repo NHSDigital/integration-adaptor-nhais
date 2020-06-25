@@ -14,10 +14,8 @@ public class MeshConfig {
     private final String mailboxPassword;
     private final String sharedKey;
     private final String host;
-    private final String port;
     private final String endpointCert;
     private final String endpointPrivateKey;
-    private final String caCert;
 
     @Autowired
     public MeshConfig(
@@ -25,17 +23,13 @@ public class MeshConfig {
             @Value("${nhais.mesh.mailboxPassword}") String mailboxPassword,
             @Value("${nhais.mesh.sharedKey}") String sharedKey,
             @Value("${nhais.mesh.host}") String host,
-            @Value("${nhais.mesh.port}") String port,
             @Value("${nhais.mesh.endpointCert}") String endpointCert,
-            @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey,
-            @Value("${nhais.mesh.caCert}") String caCert) {
+            @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey) {
         this.mailboxId = mailboxId;
         this.mailboxPassword = mailboxPassword;
         this.sharedKey = sharedKey;
         this.host = host;
-        this.port = port;
         this.endpointCert = endpointCert;
         this.endpointPrivateKey = endpointPrivateKey;
-        this.caCert = caCert;
     }
 }
