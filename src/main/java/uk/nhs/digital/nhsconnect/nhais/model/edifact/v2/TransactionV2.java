@@ -38,4 +38,12 @@ public class TransactionV2 extends Section {
     protected Stream<Supplier<? extends Segment>> getSegmentsToValidate() {
         return Stream.empty();
     }
+
+    @Override
+    public String toString() {
+        return String.format("Transaction{SIS: %s, SMS: %s, TN: %s}",
+            getMessage().getInterchange().getInterchangeHeader().getSequenceNumber(),
+            getMessage().getMessageHeader().getSequenceNumber(),
+            getReferenceTransactionNumber().getTransactionNumber());
+    }
 }

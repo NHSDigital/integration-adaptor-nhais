@@ -5,14 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 @Component
@@ -24,18 +21,19 @@ public class RegistrationConsumerService {
     private final InboundStateRepository inboundStateRepository;
     private final OutboundStateRepository outboundStateRepository;
     private final OutboundMeshService outboundMeshService;
-//    private final RecepProducerService recepProducerService;
-    private final EdifactParser edifactParser;
+    //    private final RecepProducerService recepProducerService;
+    private final EdifactParserV2 edifactParser;
     private final EdifactToFhirService edifactToFhirService;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        InterchangeV2 interchange = null;
-//        Interchange interchange = edifactParser.parse(meshMessage.getContent());
-        LOGGER.debug("Parsed registration message into interchange: {}", interchange);
+        InterchangeV2 interchange = edifactParser.parse(meshMessage.getContent());
 
+        LOGGER.debug("Handling interchange: {}", interchange);
         interchange.getMessages().forEach(message -> {
+            LOGGER.debug("Handling message: {}", message);
             message.getTransactions().forEach(transaction -> {
+                LOGGER.debug("Handling transaction: {}", transaction);
                 var inboundState = InboundState.fromTransaction(transaction);
                 if (!saveInboundState(inboundState)) {
                     return;
@@ -62,13 +60,13 @@ public class RegistrationConsumerService {
 //        LOGGER.debug("Published recep to outbound queue");
     }
 
-    private MeshMessage buildRecepMeshMessage(Recep recep) {
-        return new MeshMessage()
-            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
-            .setOdsCode("ods123")
-            .setWorkflowId(WorkflowId.RECEP)
-            .setContent(recep.toEdifact());
-    }
+//    private MeshMessage buildRecepMeshMessage(Recep recep) {
+//        return new MeshMessage()
+//            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
+//            .setOdsCode("ods123")
+//            .setWorkflowId(WorkflowId.RECEP)
+//            .setContent(recep.toEdifact());
+//    }
 
     private boolean saveInboundState(InboundState inboundState) {
         try {

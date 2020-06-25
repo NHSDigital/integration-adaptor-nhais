@@ -33,7 +33,7 @@ public class EdifactParserV2 {
     }
 
     private InterchangeV2 parseInterchange(List<String> allEdifactSegments) {
-        InterchangeV2 interchange = new InterchangeV2(extractInterchangeLines(allEdifactSegments));
+        InterchangeV2 interchange = new InterchangeV2(extractInterchangeEdifactSegments(allEdifactSegments));
 
         var messages = parseAllMessages(allEdifactSegments);
         messages.forEach(message -> message.setInterchange(interchange));
@@ -56,30 +56,42 @@ public class EdifactParserV2 {
     }
 
     private MessageV2 parseMessage(List<String> singleMessageEdifactSegments) {
+        var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01).stream()
+            .findFirst()
+            // there might be no transaction inside - RECEP - so all message lines belong to message
+            .orElse(singleMessageEdifactSegments.size() - 1);
+
+        var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
+        onlyMessageLines.add(singleMessageEdifactSegments.get(singleMessageEdifactSegments.size() - 1)); // message trailer
+
+        var message = new MessageV2(onlyMessageLines);
+        var transactions = parseAllTransactions(singleMessageEdifactSegments);
+        transactions.forEach(transaction -> transaction.setMessage(message));
+        message.setTransactions(transactions);
+
+        return message;
+    }
+
+    private List<TransactionV2> parseAllTransactions(List<String> singleMessageEdifactSegments) {
         var transactionStartIndexes = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01);
         var transactionEndIndexes = new ArrayList<>(transactionStartIndexes);
-        // there is no transaction end indicator, so ending segment is the one before the beginning of the next transaction
-        // so end indexes are beginning without first S01
-        transactionEndIndexes.remove(0);
-        // and last transaction end indicator is the segment before message trailer
-        transactionEndIndexes.add(singleMessageEdifactSegments.size() - 1);
+
+        // there might be no transactions inside - RECEP
+        if (!transactionEndIndexes.isEmpty()) {
+            // there is no transaction end indicator, so ending segment is the one before the beginning of the next transaction
+            // so end indexes are beginning without first S01
+            transactionEndIndexes.remove(0);
+            // and last transaction end indicator is the segment before message trailer
+            transactionEndIndexes.add(singleMessageEdifactSegments.size() - 1);
+        }
 
         var transactionStartEndIndexPairs = zipIndexes(transactionStartIndexes, transactionEndIndexes);
 
-        var transactions = transactionStartEndIndexPairs.stream()
+        return transactionStartEndIndexPairs.stream()
             .map(transactionStartEndIndexPair ->
                 singleMessageEdifactSegments.subList(transactionStartEndIndexPair.getLeft(), transactionStartEndIndexPair.getRight()))
             .map(TransactionV2::new)
             .collect(Collectors.toList());
-
-        var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, transactionStartIndexes.get(0))); // first lines until transaction
-        onlyMessageLines.add(singleMessageEdifactSegments.get(singleMessageEdifactSegments.size() - 1)); // message trailer
-
-        var message = new MessageV2(onlyMessageLines);
-        message.setTransactions(transactions);
-        transactions.forEach(transaction -> transaction.setMessage(message));
-
-        return message;
     }
 
     private List<Pair<Integer, Integer>> zipIndexes(List<Integer> startIndexes, List<Integer> endIndexes) {
@@ -99,6 +111,8 @@ public class EdifactParserV2 {
     }
 
     private boolean areIndexesInOrder(List<Pair<Integer, Integer>> messageIndexPairs) {
+        // trailer must go after header
+        // next header must go after previous trailer
         return Comparators.isInOrder(
             messageIndexPairs.stream()
                 .map(pair -> List.of(pair.getLeft(), pair.getRight()))
@@ -107,7 +121,7 @@ public class EdifactParserV2 {
             Comparator.naturalOrder());
     }
 
-    private List<String> extractInterchangeLines(List<String> allEdifactSegments) {
+    private List<String> extractInterchangeEdifactSegments(List<String> allEdifactSegments) {
         var firstMessageHeaderIndex = findAllIndexesOfSegment(allEdifactSegments, MessageHeader.KEY).get(0);
         var allMessageTrailerIndexes = findAllIndexesOfSegment(allEdifactSegments, MessageTrailer.KEY);
         var lastMessageTrailerIndex = allMessageTrailerIndexes.get(allMessageTrailerIndexes.size() - 1);

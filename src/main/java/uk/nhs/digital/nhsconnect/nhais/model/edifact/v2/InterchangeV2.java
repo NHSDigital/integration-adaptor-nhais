@@ -29,4 +29,10 @@ public class InterchangeV2 extends Section {
             (Supplier<? extends Segment>) this::getInterchangeHeader,
             (Supplier<? extends Segment>) this::getInterchangeTrailer);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Interchange{SIS: %s}",
+            getInterchangeHeader().getSequenceNumber());
+    }
 }

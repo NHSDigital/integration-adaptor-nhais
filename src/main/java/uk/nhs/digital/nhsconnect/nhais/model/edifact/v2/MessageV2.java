@@ -53,4 +53,11 @@ public class MessageV2 extends Section {
             (Supplier<? extends Segment>) this::getMessageHeader,
             (Supplier<? extends Segment>) this::getTranslationDateTime);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Message{SIS: %s, SMS: %s}",
+            getInterchange().getInterchangeHeader().getSequenceNumber(),
+            getMessageHeader().getSequenceNumber());
+    }
 }
