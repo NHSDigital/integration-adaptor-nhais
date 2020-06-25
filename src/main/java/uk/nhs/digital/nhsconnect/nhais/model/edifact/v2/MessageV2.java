@@ -7,7 +7,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddre
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.parse.TransactionSegments;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -36,8 +38,10 @@ public class MessageV2 extends Section {
     private final ReferenceTransactionType referenceTransactionType =
         ReferenceTransactionType.fromString(extractSegment(ReferenceTransactionType.KEY_QUALIFIER));
 
-    public MessageV2(List<String> edifactSegments) {
-        super(edifactSegments);
+    public MessageV2(InterchangeV2 interchange, List<String> messageEdifactSegmentsOnly, TransactionSegments transactionSegments) {
+        super(messageEdifactSegmentsOnly);
+        this.transactions = transactionSegments.toTransactions();
+        this.interchange = interchange;
     }
 
     @Override
