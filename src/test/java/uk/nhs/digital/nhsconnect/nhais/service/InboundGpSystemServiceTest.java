@@ -48,7 +48,7 @@ public class InboundGpSystemServiceTest {
         String jsonEncodedFhir = "{\"resourceType\":\"Parameters\"}";
         when(fhirParser.encodeToString(parameters)).thenReturn(jsonEncodedFhir);
 
-        inboundGpSystemService.publishToSupplierQueue(parameters, operationId, transactionType);
+        inboundGpSystemService.publishToSupplierQueue(new InboundGpSystemService.DataToSend(parameters, operationId, transactionType));
 
         var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 

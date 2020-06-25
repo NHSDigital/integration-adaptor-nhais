@@ -4,6 +4,7 @@ import com.google.common.collect.Comparators;
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 public class EdifactParserV2 {
     public InterchangeV2 parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));

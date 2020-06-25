@@ -1,5 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
@@ -22,17 +24,24 @@ public class InboundGpSystemService {
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
 
-    public void publishToSupplierQueue(
-        Parameters parameters, String operationId, ReferenceTransactionType.TransactionType transactionType) {
+    public void publishToSupplierQueue(DataToSend dataToSend) {
 
-        String jsonMessage = fhirParser.encodeToString(parameters);
+        String jsonMessage = fhirParser.encodeToString(dataToSend.getParameters());
         LOGGER.debug("Encoded FHIR to string: {}", jsonMessage);
         jmsTemplate.send(gpSystemInboundQueueName, session -> {
             var message = session.createTextMessage(jsonMessage);
-            message.setStringProperty(JmsHeaders.OPERATION_ID, operationId);
-            message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, transactionType.name().toLowerCase());
+            message.setStringProperty(JmsHeaders.OPERATION_ID, dataToSend.getOperationId());
+            message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, dataToSend.getTransactionType().name().toLowerCase());
             return message;
         });
         LOGGER.debug("Published message to inbound gp system queue");
+    }
+
+    @Builder
+    @Getter
+    public static class DataToSend {
+        private final Parameters parameters;
+        private final String operationId;
+        private final ReferenceTransactionType.TransactionType transactionType;
     }
 }
