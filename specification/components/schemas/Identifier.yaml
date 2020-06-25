@@ -15,8 +15,3 @@ items:
       readOnly: true
     value:
       $ref: "NhsNumber.yaml"
-    extension:
-      type: array
-      description: FHIR extensions.
-      items:
-        $ref: "extensions/NHSNumberVerificationStatus.yaml"
