@@ -46,36 +46,30 @@ public class MongoSchedulerTest {
     private MongoCollection mongoCollection;
 
     @Test
-    public void When_collectionDoesNotExist_Then_theCollectionAndSingleDocumentIsCreated_andTheJobIsNotExecuted() {
+    public void WhenCollectionDoesNotExistThenTheCollectionAndSingleDocumentIsCreatedAndTheJobIsNotExecuted() {
         when(mongoOperations.collectionExists(MESH_TIMESTAMP)).thenReturn(false);
         when(mongoOperations.save(any(Document.class), any(String.class))).thenReturn(document);
-
-        when(mongoOperations.getCollection(MESH_TIMESTAMP)).thenReturn(mongoCollection);
-        when(mongoCollection.createIndex(any(Document.class), any(IndexOptions.class))).thenReturn("Index name");
 
         mongoScheduler.updateConditionally();
 
         verify(mongoOperations).save(any(), any());
-//        verify(mongoCollection).createIndex(any());
-
         verifyNoInteractions(meshClient);
     }
 
     @Test
-    public void When_collectionIsEmpty_Then_singleDocumentIsCreated_andTheJobIsNotExecuted() {
+    public void WhenCollectionIsEmptyThenSingleDocumentIsCreatedAndTheJobIsNotExecuted() {
         when(mongoOperations.collectionExists(MESH_TIMESTAMP)).thenReturn(true);
         when(mongoOperations.getCollection(MESH_TIMESTAMP)).thenReturn(mongoCollection);
         when(mongoCollection.countDocuments()).thenReturn(0L);
 
         mongoScheduler.updateConditionally();
-        verify(mongoOperations).save(any(), any());
-        //        verify(mongoCollection).createIndex(any());
 
+        verify(mongoOperations).save(any(), any());
         verifyNoInteractions(meshClient);
     }
 
     @Test
-    public void When_documentExistsAndTimestampIsBeforeFiveMinutesAgo_Then_documentIsUpdate_andTheJobIsExecuted() {
+    public void WhenDocumentExistsAndTimestampIsBeforeFiveMinutesAgoThenDocumentIsUpdateAndTheJobIsExecuted() {
         when(meshClient.getInboxMessageIds()).thenReturn(List.of("messageId"));
         when(meshClient.getMessage("messageId")).thenReturn("something");
 
@@ -91,7 +85,7 @@ public class MongoSchedulerTest {
     }
 
     @Test
-    public void When_documentExistsAndTimestampIsAfterFiveMinutesAgo_Then_documentIsNotUpdate_andTheJobIsNotExecuted() {
+    public void WhenDocumentExistsAndTimestampIsAfterFiveMinutesAgoThenDocumentIsNotUpdateAndTheJobIsNotExecuted() {
         when(mongoOperations.collectionExists(MESH_TIMESTAMP)).thenReturn(true);
         when(mongoOperations.getCollection(MESH_TIMESTAMP)).thenReturn(mongoCollection);
         when(mongoCollection.countDocuments()).thenReturn(1L);
@@ -102,7 +96,4 @@ public class MongoSchedulerTest {
 
         verifyNoInteractions(meshClient);
     }
-
-
-
 }

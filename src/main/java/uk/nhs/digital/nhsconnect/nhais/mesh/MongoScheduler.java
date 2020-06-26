@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.UpdateResult;
 
 @Component
@@ -62,7 +61,6 @@ public class MongoScheduler {
             Document document = new Document();
             document.put(TIMESTAMP, LocalDateTime.now());
             mongoOperations.save(document, MESH_TIMESTAMP);
-            mongoOperations.getCollection(MESH_TIMESTAMP).createIndex(document, new IndexOptions().unique(true));
             return false;
         }
     }
