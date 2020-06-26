@@ -31,7 +31,7 @@ public class MongoScheduler {
     @Scheduled(fixedRate = 60000)
     public void updateConditionally() {
         LOGGER.info("Scheduled job for mesh messages fetching started");
-        if (checkTheTimestampUpdatability()){
+        if (checkTheTimestampUpdatability()) {
             LOGGER.info("Mesh messages fetching started");
             //here comes mesh fetching and further logic
         } else {
@@ -41,7 +41,7 @@ public class MongoScheduler {
 
     private boolean checkTheTimestampUpdatability() {
         if (mongoOperations.collectionExists(MESH_TIMESTAMP) || mongoOperations.getCollection(MESH_TIMESTAMP).countDocuments() != 0) {
-            UpdateResult result =mongoOperations.updateFirst(query(where(TIMESTAMP).lt(LocalDateTime.now().minusSeconds(20))),
+            UpdateResult result = mongoOperations.updateFirst(query(where(TIMESTAMP).lt(LocalDateTime.now().minusMinutes(5))),
                 Update.update(TIMESTAMP, LocalDateTime.now()),
                 MESH_TIMESTAMP);
 
