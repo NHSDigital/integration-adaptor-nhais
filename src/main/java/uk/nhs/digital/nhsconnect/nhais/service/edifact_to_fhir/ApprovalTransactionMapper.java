@@ -1,15 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
-import java.util.List;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import org.hl7.fhir.r4.model.Parameters;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.springframework.stereotype.Component;
+import java.util.List;
 
 @Component
 public class ApprovalTransactionMapper implements TransactionMapper {

@@ -123,7 +123,7 @@ public abstract class MeshServiceBaseTest {
         await()
             .atMost(WAIT_FOR_IN_SECONDS, SECONDS)
             .pollInterval(100, MILLISECONDS)
-            .pollDelay(250, SECONDS)
+            .pollDelay(250, MILLISECONDS)
             .until(() -> {
                 var data = supplier.get();
                 if (data != null) {

@@ -25,13 +25,13 @@ import java.time.ZonedDateTime;
 @DirtiesContext
 public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
-    private static final long INTERCHANGE_SEQUENCE = 3;
-    private static final long MESSAGE_SEQUENCE = 4;
     private static final String SENDER = "TES5";
     private static final String RECIPIENT = "XX11";
-    private static final long TRANSACTION_NUMBER = 18;
+    private static final long SIS = 3;
+    private static final long SMS = 4;
+    private static final long TN = 18;
     private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
-    private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TRANSACTION_NUMBER);
+    private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
         .of(1992, 1, 14, 16, 19, 0, 0, TimestampService.UKZone)
         .toInstant();
@@ -52,7 +52,9 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
         sendToMeshInboundQueue(meshMessage);
 
         var inboundState = waitFor(
-            () -> inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE));
+            () -> inboundStateRepository
+                .findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS, TN)
+                .orElse(null));
 
         assertInboundState(softly, inboundState);
 
@@ -90,12 +92,12 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(OPERATION_ID)
-            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setMessageSequence(MESSAGE_SEQUENCE)
+            .setInterchangeSequence(SIS)
+            .setMessageSequence(SMS)
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTransactionType(TRANSACTION_TYPE)
-            .setTransactionNumber(TRANSACTION_NUMBER)
+            .setTransactionNumber(TN)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

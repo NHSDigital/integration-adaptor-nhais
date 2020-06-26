@@ -1,11 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class InterchangeTest {
 
@@ -36,77 +35,9 @@ class InterchangeTest {
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
 
-    private final String messageWithEmptySegments = "S01+1'\n" +
-        "S02+2'\n" +
-        "UNT+24+00000004'\n" +
-        "UNZ+1+00000003'";
-
     @Test
     void testValidateOk() {
-        Interchange interchange = new Interchange(new EdifactMessage(correctMessage));
+        InterchangeV2 interchange = new EdifactParserV2().parse(correctMessage);
         assertThatCode(interchange::validate).doesNotThrowAnyException();
-    }
-
-    @Test
-    void testEmptyMessageThrowsSegmentGroupMissingException() {
-        Interchange interchange = new Interchange(new EdifactMessage("example invalid edifact message"));
-        assertThatThrownBy(interchange::getGpNameAndAddress)
-            .isExactlyInstanceOf(MissingSegmentException.class);
-    }
-
-    @Test
-    void testInterchangeHeaderMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getInterchangeHeader)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("UNB");
-    }
-
-    @Test
-    void testMessageHeaderMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getMessageHeader)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("UNH");
-    }
-
-    @Test
-    void testReferenceTransactionNumberMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getReferenceTransactionNumber)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("RFF+TN");
-    }
-
-    @Test
-    void testTranslationDateTimeMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getTranslationDateTime)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("DTM");
-    }
-
-    @Test
-    void testReferenceTransactionTypeMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getReferenceTransactionType)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("RFF+950");
-    }
-
-    @Test
-    void testHealthAuthorityNameAndAddressMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getHealthAuthorityNameAndAddress)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("NAD+FHS");
-    }
-
-    @Test
-    void testGpNameAndAddressMissing() {
-        Interchange interchange = new Interchange(new EdifactMessage(messageWithEmptySegments));
-        assertThatThrownBy(interchange::getGpNameAndAddress)
-            .isExactlyInstanceOf(MissingSegmentException.class)
-            .hasMessageContaining("NAD+GP");
     }
 }

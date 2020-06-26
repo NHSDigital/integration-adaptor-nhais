@@ -1,10 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import org.hl7.fhir.r4.model.Parameters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
@@ -12,9 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.NotSupportedTrans
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Map;
 
 @Slf4j
 @Component

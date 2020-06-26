@@ -1,16 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import ca.uhn.fhir.model.api.annotation.Block;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
-
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Reference;
 
 @Block()
 public class PatientParameter extends Parameters.ParametersParameterComponent {

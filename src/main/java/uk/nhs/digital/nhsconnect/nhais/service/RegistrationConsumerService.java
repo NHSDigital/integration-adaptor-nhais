@@ -54,8 +54,6 @@ public class RegistrationConsumerService {
                 inboundStateRepository.save(pair.getLeft());
             });
 
-        supplierQueueDataToSend.forEach(inboundGpSystemService::publishToSupplierQueue);
-        inboundStateRecords.forEach(inboundStateRepository::save);
         //TODO: NIAD-390
 //        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
 //        outboundStateRepository.save(recepOutboundState);
