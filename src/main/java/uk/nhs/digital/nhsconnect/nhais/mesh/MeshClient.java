@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,9 +39,15 @@ public class MeshClient {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
                     throw sendMessageError(response);
                 }
-                return new MeshResponse(response).parseInto(MeshMessageId.class);
+                return parseInto(MeshMessageId.class, response);
             }
         }
+    }
+
+    private <T> T parseInto(Class<T> clazz, CloseableHttpResponse response) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonParser parser = objectMapper.reader().createParser(EntityUtils.toString(response.getEntity()));
+        return objectMapper.readValue(parser, clazz);
     }
 
     private MeshApiConnectionException sendMessageError(CloseableHttpResponse response) throws IOException {
