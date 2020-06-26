@@ -7,7 +7,7 @@ properties:
     type: string
   gpTradingPartnerCode:
     type: string
-  healthcarePartyCode:
+  destinationHaCipher:
     type: string
   freeText:
     type: string
