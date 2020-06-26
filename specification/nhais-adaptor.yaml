@@ -285,11 +285,23 @@ paths:
         ## Overview
         Use this endpoint to send an Amendment to NHAIS.
 
-        This is a 'patch' operation, meaning you can update specific parts of the patient record (such as a name or an address), as opposed to having to update the entire record.
+        This is a 'patch' operation, meaning you can update specific parts of the patient record (such as a name or an address),
+        as opposed to having to update the entire record.
+
+        The adaptor is not a FHIR server and cannot perform actual patches onto Patient resources. Instead the patches are
+        translated into an equivalent EDIFACT message. This places some restrictions on the patches accepted by the adaptor:
+
+        * The value of "path" must match exactly those listed in the "FHIR / JSONPatch Field Mappings" table below. Logically
+          equivalent alternatives are not permitted.
+        * The only supported operations are add, replace, and remove
+        * The add and replace operations are synonymous for GP Links
+        * The remove operation MUST only be used for data items for which GP Links permits removal
+        * The remove operation MUST be used to erase an existing value. Performing an add or replace with an empty or null
+          value will not work.
 
         ## Supported Fields
 
-        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        Refer to GP Links Specification Chapter 3.5 for the complete requirements for manually-entered amendments. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
@@ -300,6 +312,34 @@ paths:
         * Blocked Route/Special District Marker
         * Walking Units
 
+        | GP Links Data Item                        | Amendment  |
+        |-------------------------------------------|------------|
+        | Transaction Type                          | REQUIRED   |
+        | Existing GP Code                          | REQUIRED   |
+        | GP Trading Partner Code                   | REQUIRED   |
+        | Destination HA Cipher                     | REQUIRED   |
+        | NHS Number                                | REQUIRED   |
+        | New Surname                               | OPTIONAL   |
+        | New Previous Surname                      | OPTIONAL   |
+        | New First Forename                        | OPTIONAL   |
+        | New Second Forename                       | OPTIONAL   |
+        | New Other Forenames                       | OPTIONAL   |
+        | New Title                                 | OPTIONAL   |
+        | New Sex                                   | OPTIONAL   |
+        | New Date of Birth                         | OPTIONAL   |
+        | New Address - House Name                  | OPTIONAL   |
+        | New Address - Number/Road Name            | OPTIONAL   |
+        | New Address - Locality                    | OPTIONAL   |
+        | New Address - Post Town                   | OPTIONAL   |
+        | New Address - County                      | OPTIONAL   |
+        | New Address - Postcode                    | OPTIONAL   |
+        | New Drugs Dispensed Marker                | OPTIONAL   |
+        | New RPP Mileage                           | DEPRECATED |
+        | New Blocked Route/Special District Marker | DEPRECATED |
+        | New Walking Units                         | DEPRECATED |
+        | New Residential Institute Code            | OPTIONAL   |
+        | GP Notes                                  | OPTIONAL   |
+
         ## FHIR / JSONPatch Field Mappings
 
         | GP Links Data Item                    | Property Name        | JSONPatch "path" value | "value" format, if different from GP Links | Notes                                               |
@@ -307,7 +347,7 @@ paths:
         | Transaction Type                      | n/a                  | n/a                    | n/a                                        | Determined by REST API method                       |
         | Existing GP Code                      | gpCode               |                        |                                            |                                                     |
         | GP Trading Partner Code               | gpTradingPartnerCode |                        |                                            |                                                     |
-        | Destinaton HA Cipher                  | destinationHaCipher  |                        |                                            |                                                     |
+        | Destination HA Cipher                 | destinationHaCipher  |                        |                                            |                                                     |
         | NHS Number                            | nhsNumber            |                        |                                            |                                                     |
         | New Surname                           |                      | /name/0/family         |                                            |                                                     |
         | New Previous Surname                  |                      | /name/1/family         |                                            |                                                     |
@@ -335,37 +375,9 @@ paths:
         (2) The `value` of the patch must be the entire extension including `url` and `valueString` properties.
 
         ## Operation Id
-        When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
+
+        An amendment request will produce an operation id in the response headers. This operation id MUST be retained
         to match against the asynchronous reply from NHAIS
-
-        ## Payload Description
-
-        An Amendment to any of the following data items for a patient on the GP System MUST be captured for transmission to the HA responsible for that patient:
-
-        [Deprecated] = fields described in the original NHAIS specification that have since been deprecated and are not supported by the adaptor
-
-        * Surname
-        * First Forename
-        * Second Forename
-        * Other Forenames
-        * Previous Surname
-        * Title
-        * Sex
-        * Date of Birth
-        * Address - 5 fields
-        * Postcode
-        * Drugs Dispensed Marker
-        * [Deprecated] RPP Mileage
-        * [Deprecated] Blocked Route/Special District Marker
-        * [Deprecated] Walking Units
-        * Residential Institute Code
-
-        Amendments to any other items of patient information will not be advised to an HA.
-
-        TODO: There are some GP Links messaging requirements that go against the spirit of a patch. For example, if any name
-        is changed then all name items must be provided. Similarly, if any address item is changed then all address items
-        must be provided. There is an open query to determine if there is a possibility to either relax these requirements
-        or not use JSONPatch at all in favour or a PUT or a POST operation with a Patient parameter.
 
       summary: Amend patient details (Amendment transaction)
       operationId: amendment
