@@ -10,12 +10,7 @@ NHAIS_MONGO_URI: mongodb://localhost:27017
 NHAIS_MESH_MAILBOX_ID:  #Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail
 NHAIS_MESH_MAILBOX_PASSWORD:  #The password for MAILBOX_ID can be found in your OpenTest welcome e-mail
 NHAIS_MESH_SHARED_KEY:  #Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
-NHAIS_MESH_HOST: https://msg.opentest.hscic.gov.uk/messageexchange/ #hostname of the MESH API
-NHAIS_MESH_PORT: 443 #port of the MESH API
-NHAIS_MESH_CA_CERT: | #The content of the MESH CA Cert
-  -----BEGIN CERTIFICATE-----
-  #keep 2 spaces indent for whole certificate
-  -----END CERTIFICATE-----
+NHAIS_MESH_HOST: https://localhost:8829/messageexchange/ #fake-mesh as default, for OpenTest use: https://msg.opentest.hscic.gov.uk/messageexchange/
 NHAIS_MESH_ENDPOINT_CERT: | #The content of the endpoint certificate
   -----BEGIN CERTIFICATE-----
   #keep 2 spaces indent for whole certificate
