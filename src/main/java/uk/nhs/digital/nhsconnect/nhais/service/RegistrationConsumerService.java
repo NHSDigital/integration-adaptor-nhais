@@ -12,7 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
@@ -33,7 +33,7 @@ public class RegistrationConsumerService {
     private final OutboundStateRepository outboundStateRepository;
     private final OutboundMeshService outboundMeshService;
     private final RecepProducerService recepProducerService;
-    private final EdifactParserV2 edifactParser;
+    private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
 
     public void handleRegistration(MeshMessage meshMessage) {

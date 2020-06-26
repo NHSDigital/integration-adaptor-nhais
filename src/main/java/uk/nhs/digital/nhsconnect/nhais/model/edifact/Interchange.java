@@ -12,6 +12,7 @@ public class Interchange extends Section {
     private final InterchangeHeader interchangeHeader = InterchangeHeader.fromString(extractSegment(InterchangeHeader.KEY));
     @Getter(lazy = true)
     private final InterchangeTrailer interchangeTrailer = InterchangeTrailer.fromString(extractSegment(InterchangeTrailer.KEY));
+
     @Getter
     @Setter
     private List<Message> messages;

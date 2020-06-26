@@ -8,13 +8,13 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Section;
 
-class EdifactParserV2Test {
+class EdifactParserTest {
 
     @SuppressWarnings("UnstableApiUsage")
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.class)
     void testEdifactParserSplitsSegmentsIntoProperSections(String test, CustomArgumentsProvider.TestData testData) {
-        Interchange interchange = new EdifactParserV2().parse(testData.getInput());
+        Interchange interchange = new EdifactParser().parse(testData.getInput());
 
         SoftAssertions.assertSoftly(softly -> {
 

@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
 import java.util.Map;
@@ -95,7 +95,7 @@ class EdifactToFhirServiceTest {
     @Test
     void convertRejectionToFhir() {
         Parameters parameters = new EdifactToFhirService(transactionMappers)
-            .convertToFhir(new EdifactParserV2().parse(rejectionMessage).getMessages().get(0).getTransactions().get(0));
+            .convertToFhir(new EdifactParser().parse(rejectionMessage).getMessages().get(0).getTransactions().get(0));
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -119,7 +119,7 @@ class EdifactToFhirServiceTest {
     @Test
     void convertApprovalToFhir() {
         Parameters parameters = new EdifactToFhirService(transactionMappers)
-            .convertToFhir(new EdifactParserV2().parse(approvalMessage).getMessages().get(0).getTransactions().get(0));
+            .convertToFhir(new EdifactParser().parse(approvalMessage).getMessages().get(0).getTransactions().get(0));
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 

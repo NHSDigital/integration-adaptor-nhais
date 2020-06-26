@@ -29,6 +29,7 @@ public class Message extends Section {
     @Getter(lazy = true)
     private final ReferenceInterchangeRecep referenceInterchangeRecep =
         ReferenceInterchangeRecep.fromString(extractSegment(ReferenceInterchangeRecep.KEY_QUALIFIER));
+
     @Getter
     @Setter
     private Interchange interchange;

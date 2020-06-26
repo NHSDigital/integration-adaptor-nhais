@@ -42,7 +42,7 @@ dependencies {
 	implementation 'com.google.guava:guava:29.0-jre'
 	implementation 'org.springframework:spring-jms:5.2.6.RELEASE'
 	implementation 'org.apache.qpid:qpid-jms-client:0.51.0'
-    implementation 'org.apache.commons:commons-collections4:4.0'
+	implementation 'org.apache.commons:commons-collections4:4.0'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 

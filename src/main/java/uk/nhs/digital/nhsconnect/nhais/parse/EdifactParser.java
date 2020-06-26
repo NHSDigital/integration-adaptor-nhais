@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class EdifactParserV2 {
+public class EdifactParser {
     public Interchange parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));
 

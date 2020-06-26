@@ -21,6 +21,7 @@ public class Transaction extends Section {
     @Getter(lazy = true)
     private final FreeText freeText =
         FreeText.fromString(extractSegment(FreeText.KEY_QUALIFIER));
+
     @Getter
     @Setter
     private Message message;

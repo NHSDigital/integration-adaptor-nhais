@@ -18,7 +18,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -113,7 +113,7 @@ public class RegistrationConsumerServiceTest {
     Transaction transaction4;
 
     @Mock
-    EdifactParserV2 edifactParser;
+    EdifactParser edifactParser;
 
     private void mockInterchangeSegments() {
         when(edifactParser.parse(CONTENT)).thenReturn(interchange);
