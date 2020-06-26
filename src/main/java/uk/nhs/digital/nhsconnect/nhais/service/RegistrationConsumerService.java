@@ -1,7 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import com.google.common.collect.Streams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
@@ -20,7 +22,6 @@ import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -39,25 +40,37 @@ public class RegistrationConsumerService {
         LOGGER.debug("Received Registration message: {}", meshMessage);
         InterchangeV2 interchange = edifactParser.parse(meshMessage.getContent());
 
-        var transactionsToProcess = interchange.getMessages().stream()
-            .map(MessageV2::getTransactions)
-            .flatMap(Collection::stream)
-            .filter(this::isNotDuplicate)
-            .collect(Collectors.toList());
+        var transactionsToProcess = filterOutDuplicates(interchange);
 
         var inboundStateRecords = prepareInboundStateRecords(transactionsToProcess);
         var supplierQueueDataToSend = prepareSupplierQueueDataToSend(transactionsToProcess);
+
         var recepOutboundState = prepareRecepOutboundState(interchange);
         var recepOutboundMessage = prepareRecepOutboundMessage(interchange);
 
+        Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
+            .forEach(pair -> {
+                inboundGpSystemService.publishToSupplierQueue(pair.getRight());
+                inboundStateRepository.save(pair.getLeft());
+            });
+
         supplierQueueDataToSend.forEach(inboundGpSystemService::publishToSupplierQueue);
         inboundStateRecords.forEach(inboundStateRepository::save);
-
+        //TODO: NIAD-390
 //        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
 //        outboundStateRepository.save(recepOutboundState);
     }
 
+    private List<TransactionV2> filterOutDuplicates(InterchangeV2 interchange) {
+        return interchange.getMessages().stream()
+            .map(MessageV2::getTransactions)
+            .flatMap(Collection::stream)
+            .filter(this::isNotDuplicate)
+            .collect(Collectors.toList());
+    }
+
     private MeshMessage prepareRecepOutboundMessage(InterchangeV2 interchange) {
+        //TODO: NIAD-390
 //        var recepMeshMessage = buildRecepMeshMessage(recep);
 //        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
 //        outboundMeshService.publishToOutboundQueue(recepMeshMessage);
@@ -66,6 +79,7 @@ public class RegistrationConsumerService {
     }
 
     private OutboundState prepareRecepOutboundState(InterchangeV2 interchange) {
+        //TODO: NIAD-390
 //        var recep = recepProducerService.produceRecep(interchange);
 //        var recepOutboundState = OutboundState.fromRecep(recep);
 //        outboundStateRepository.save(recepOutboundState);
@@ -88,7 +102,7 @@ public class RegistrationConsumerService {
         return inboundState.isEmpty();
     }
 
-    private Stream<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<TransactionV2> transactions) {
+    private List<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<TransactionV2> transactions) {
         return transactions.stream()
             .map(transaction -> {
                 LOGGER.debug("Handling transaction: {}", transaction);
@@ -103,14 +117,16 @@ public class RegistrationConsumerService {
                     .operationId(operationId)
                     .transactionType(transaction.getMessage().getReferenceTransactionType().getTransactionType())
                     .build();
-            });
+            }).collect(Collectors.toList());
     }
 
-    private Stream<InboundState> prepareInboundStateRecords(List<TransactionV2> transactions) {
-        return transactions.stream().map(transaction -> {
-            LOGGER.debug("Building transaction {} inbound state", transaction);
-            return InboundState.fromTransaction(transaction);
-        });
+    private List<InboundState> prepareInboundStateRecords(List<TransactionV2> transactions) {
+        return transactions.stream()
+            .map(transaction -> {
+                LOGGER.debug("Building transaction {} inbound state", transaction);
+                return InboundState.fromTransaction(transaction);
+            })
+            .collect(Collectors.toList());
     }
 
     private MeshMessage buildRecepMeshMessage(Recep recep) {

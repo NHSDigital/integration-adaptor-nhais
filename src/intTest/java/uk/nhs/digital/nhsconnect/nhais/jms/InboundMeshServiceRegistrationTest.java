@@ -58,6 +58,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
         assertGpSystemInboundQueueMessage(softly);
 
+        //TODO: NIAD-390
 //        assertOutboundQueueRecepMessage(softly);
     }
 

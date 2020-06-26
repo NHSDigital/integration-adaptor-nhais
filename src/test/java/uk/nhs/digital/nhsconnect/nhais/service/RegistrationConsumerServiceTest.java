@@ -148,6 +148,7 @@ public class RegistrationConsumerServiceTest {
             .thenReturn(Optional.of(new InboundState()));
     }
 
+    //TODO: NIAD-390
 //    private void mockInterchangeRecepRequiredSegments() {
 //        when(recep.getInterchangeHeader()).thenReturn(
 //            new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
@@ -162,6 +163,7 @@ public class RegistrationConsumerServiceTest {
     @Test
     public void registrationMessage_publishedToSupplierQueue() {
         mockInterchangeSegments();
+        //TODO: NIAD-390
 //        mockInterchangeRecepRequiredSegments();
 
 //        when(recepProducerService.produceRecep(interchange)).thenReturn(recep);
@@ -190,7 +192,7 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(1), SMS_1, TN_2, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
 
-        //TODO: assert recep
+        //TODO: NIAD-390
 //        var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
 //        verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
 //        var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();

@@ -37,7 +37,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class MeshServiceBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
-    protected static final int WAIT_FOR_IN_SECONDS = 15;
+    protected static final int WAIT_FOR_IN_SECONDS = 5;
     private static final int RECEIVE_TIMEOUT = 5000;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);
@@ -122,8 +122,8 @@ public abstract class MeshServiceBaseTest {
         var dataToReturn = new AtomicReference<T>();
         await()
             .atMost(WAIT_FOR_IN_SECONDS, SECONDS)
-            .pollInterval(500, MILLISECONDS)
-            .pollDelay(1, SECONDS)
+            .pollInterval(100, MILLISECONDS)
+            .pollDelay(250, SECONDS)
             .until(() -> {
                 var data = supplier.get();
                 if (data != null) {

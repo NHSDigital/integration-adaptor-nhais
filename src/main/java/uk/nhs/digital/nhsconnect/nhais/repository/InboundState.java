@@ -38,8 +38,6 @@ public class InboundState {
     private ReferenceTransactionType.TransactionType transactionType;
 
     public static InboundState fromTransaction(TransactionV2 transaction) {
-        //TODO initial assumption that interchange can have a single message only
-
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
         var translationDateTime = transaction.getMessage().getTranslationDateTime();
         var messageHeader = transaction.getMessage().getMessageHeader();

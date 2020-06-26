@@ -11,6 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +29,8 @@ public class CustomArgumentsProvider implements ArgumentsProvider {
         var resources = getResources();
 
         var grouped = Arrays.stream(resources)
-            .filter(r -> !r.getFilename().contains("ignore")) // ignore ignored
+            .filter(resource -> resource.getFilename() != null)
+            .filter(resource -> !resource.getFilename().contains("ignore")) // ignore ignored
             .collect(Collectors.groupingBy(resource -> {
                 var pathParts = ((FileSystemResource) resource).getPath().split("/");
                 return pathParts[pathParts.length - 2];
@@ -39,13 +41,13 @@ public class CustomArgumentsProvider implements ArgumentsProvider {
                     var messages = es.getValue().stream()
                         .filter(resource -> Pattern.matches("output\\.message\\.\\d+\\.dat", resource.getFilename()))
                         .map(messageResources -> {
-                            var messageContent = Arrays.asList(readFile(messageResources).split("\\n"));
+                            var messageContent = Arrays.asList(Split.byNewLine(readFile(messageResources)));
                             var messageFileNameWithoutExtension = FilenameUtils.removeExtension(messageResources.getFilename());
 
                             var transactions = es.getValue().stream()
                                 .filter(resource -> Pattern.matches(messageFileNameWithoutExtension + "\\.transaction\\.\\d+\\.dat", resource.getFilename()))
                                 .map(this::readFile)
-                                .map(content -> content.split("\\n"))
+                                .map(Split::byNewLine)
                                 .map(Arrays::asList)
                                 .map(Transaction::new)
                                 .collect(Collectors.toList());
@@ -55,15 +57,17 @@ public class CustomArgumentsProvider implements ArgumentsProvider {
                         .collect(Collectors.toList());
 
                     var inputContent = readFile(es.getValue().stream()
+                        .filter(resource -> resource.getFilename() != null)
                         .filter(resource -> resource.getFilename().equals("input.dat"))
                         .findFirst()
                         .orElseThrow());
 
                     var interchange = es.getValue().stream()
+                        .filter(resource -> resource.getFilename() != null)
                         .filter(resource -> resource.getFilename().equals("output.interchange.dat"))
                         .findFirst()
                         .map(this::readFile)
-                        .map(content -> content.split("\\n"))
+                        .map(Split::byNewLine)
                         .map(Arrays::asList)
                         .map(interchangeContent -> new Interchange(interchangeContent, messages))
                         .orElseThrow();

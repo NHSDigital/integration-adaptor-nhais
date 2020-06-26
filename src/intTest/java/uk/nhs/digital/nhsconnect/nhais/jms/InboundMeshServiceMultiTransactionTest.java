@@ -61,7 +61,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-3.json")
     private Resource fhirTN3;
 
-    @Value("classpath:edifact/multi_transaction_recep.dat")
+    @Value("classpath:edifact/multi_transaction.1.recep.dat")
     private Resource recep;
 
     @Test
@@ -79,6 +79,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
         assertGpSystemInboundQueueMessages(softly);
 
+        //TODO: NIAD-390s
 //        assertOutboundQueueRecepMessage(softly);
     }
 
