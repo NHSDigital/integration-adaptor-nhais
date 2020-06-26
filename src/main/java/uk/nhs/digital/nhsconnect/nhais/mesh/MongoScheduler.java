@@ -45,7 +45,7 @@ public class MongoScheduler {
     }
 
     private boolean checkTheTimestampUpdatability() {
-        if (mongoOperations.collectionExists(MESH_TIMESTAMP) || mongoOperations.getCollection(MESH_TIMESTAMP).countDocuments() != 0) {
+        if (mongoOperations.collectionExists(MESH_TIMESTAMP) && mongoOperations.getCollection(MESH_TIMESTAMP).countDocuments() != 0) {
             UpdateResult result = mongoOperations.updateFirst(query(where(TIMESTAMP).lt(LocalDateTime.now().minusMinutes(5))),
                 Update.update(TIMESTAMP, LocalDateTime.now()),
                 MESH_TIMESTAMP);
