@@ -1,4 +1,4 @@
 type: string
-description: Gender with which the patient most strongly identifies.
+description: Gender in accordance with GP Links 'sex' data item.
 enum: [male, female, other, unknown]
 example: female
