@@ -4,18 +4,18 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 @Component
 public class RejectionTransactionMapper implements TransactionMapper {
 
     @Override
-    public void map(Parameters parameters, TransactionV2 transaction) {
+    public void map(Parameters parameters, Transaction transaction) {
         mapFreeText(parameters, transaction);
     }
 
-    private void mapFreeText(Parameters parameters, TransactionV2 transaction) {
+    private void mapFreeText(Parameters parameters, Transaction transaction) {
         parameters.addParameter()
             .setName(ParameterNames.FREE_TEXT)
             .setValue(new StringType(transaction.getFreeText().getTextLiteral()));

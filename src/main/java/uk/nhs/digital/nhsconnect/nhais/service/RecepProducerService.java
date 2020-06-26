@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class RecepProducerService {
 
     private final SequenceService sequenceService;
 
-    public Recep produceRecep(InterchangeV2 receivedInterchangeFromHa) throws EdifactValidationException {
+    public Recep produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
         //TODO: NIAD-390
 //        var segments = mapEdifactToRecep(receivedInterchangeFromHa);
 //

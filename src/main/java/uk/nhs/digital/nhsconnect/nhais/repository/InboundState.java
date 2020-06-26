@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -37,7 +37,7 @@ public class InboundState {
     private Instant translationTimestamp;
     private ReferenceTransactionType.TransactionType transactionType;
 
-    public static InboundState fromTransaction(TransactionV2 transaction) {
+    public static InboundState fromTransaction(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
         var translationDateTime = transaction.getMessage().getTranslationDateTime();
         var messageHeader = transaction.getMessage().getMessageHeader();

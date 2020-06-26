@@ -1,21 +1,14 @@
-package uk.nhs.digital.nhsconnect.nhais.model.edifact.v2;
+package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MessageV2 extends Section {
+public class Message extends Section {
     @Getter(lazy = true)
     private final MessageHeader messageHeader =
         MessageHeader.fromString(extractSegment(MessageHeader.KEY));
@@ -38,12 +31,12 @@ public class MessageV2 extends Section {
         ReferenceInterchangeRecep.fromString(extractSegment(ReferenceInterchangeRecep.KEY_QUALIFIER));
     @Getter
     @Setter
-    private InterchangeV2 interchange;
+    private Interchange interchange;
     @Getter
     @Setter
-    private List<TransactionV2> transactions;
+    private List<Transaction> transactions;
 
-    public MessageV2(List<String> edifactSegments) {
+    public Message(List<String> edifactSegments) {
         super(edifactSegments);
     }
 

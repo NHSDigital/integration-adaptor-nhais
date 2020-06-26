@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
@@ -25,7 +25,7 @@ class ApprovalTransactionMapperTest {
 
     private static final String NHS_NUMBER = "1234567890";
     @Mock
-    private TransactionV2 transaction;
+    private Transaction transaction;
     @Mock
     private PersonName personName;
 

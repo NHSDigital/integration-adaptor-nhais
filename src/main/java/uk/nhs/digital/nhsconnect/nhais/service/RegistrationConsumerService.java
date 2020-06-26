@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.MessageV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
@@ -38,7 +38,7 @@ public class RegistrationConsumerService {
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
-        InterchangeV2 interchange = edifactParser.parse(meshMessage.getContent());
+        Interchange interchange = edifactParser.parse(meshMessage.getContent());
 
         var transactionsToProcess = filterOutDuplicates(interchange);
 
@@ -59,15 +59,15 @@ public class RegistrationConsumerService {
 //        outboundStateRepository.save(recepOutboundState);
     }
 
-    private List<TransactionV2> filterOutDuplicates(InterchangeV2 interchange) {
+    private List<Transaction> filterOutDuplicates(Interchange interchange) {
         return interchange.getMessages().stream()
-            .map(MessageV2::getTransactions)
+            .map(Message::getTransactions)
             .flatMap(Collection::stream)
             .filter(this::isNotDuplicate)
             .collect(Collectors.toList());
     }
 
-    private MeshMessage prepareRecepOutboundMessage(InterchangeV2 interchange) {
+    private MeshMessage prepareRecepOutboundMessage(Interchange interchange) {
         //TODO: NIAD-390
 //        var recepMeshMessage = buildRecepMeshMessage(recep);
 //        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
@@ -76,7 +76,7 @@ public class RegistrationConsumerService {
         return null;
     }
 
-    private OutboundState prepareRecepOutboundState(InterchangeV2 interchange) {
+    private OutboundState prepareRecepOutboundState(Interchange interchange) {
         //TODO: NIAD-390
 //        var recep = recepProducerService.produceRecep(interchange);
 //        var recepOutboundState = OutboundState.fromRecep(recep);
@@ -85,7 +85,7 @@ public class RegistrationConsumerService {
         return null;
     }
 
-    private boolean isNotDuplicate(TransactionV2 transaction) {
+    private boolean isNotDuplicate(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
         var messageHeader = transaction.getMessage().getMessageHeader();
 
@@ -100,7 +100,7 @@ public class RegistrationConsumerService {
         return inboundState.isEmpty();
     }
 
-    private List<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<TransactionV2> transactions) {
+    private List<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<Transaction> transactions) {
         return transactions.stream()
             .map(transaction -> {
                 LOGGER.debug("Handling transaction: {}", transaction);
@@ -118,7 +118,7 @@ public class RegistrationConsumerService {
             }).collect(Collectors.toList());
     }
 
-    private List<InboundState> prepareInboundStateRecords(List<TransactionV2> transactions) {
+    private List<InboundState> prepareInboundStateRecords(List<Transaction> transactions) {
         return transactions.stream()
             .map(transaction -> {
                 LOGGER.debug("Building transaction {} inbound state", transaction);

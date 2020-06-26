@@ -5,8 +5,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.Section;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Section;
 
 class EdifactParserV2Test {
 
@@ -14,7 +14,7 @@ class EdifactParserV2Test {
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.class)
     void testEdifactParserSplitsSegmentsIntoProperSections(String test, CustomArgumentsProvider.TestData testData) {
-        InterchangeV2 interchange = new EdifactParserV2().parse(testData.getInput());
+        Interchange interchange = new EdifactParserV2().parse(testData.getInput());
 
         SoftAssertions.assertSoftly(softly -> {
 

@@ -4,16 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.MessageV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.time.Instant;
@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 public class InboundStateTest {
 
-    public static final InterchangeV2 INTERCHANGE = Mockito.mock(InterchangeV2.class);
-    public static final MessageV2 MESSAGE = Mockito.mock(MessageV2.class);
-    public static final TransactionV2 TRANSACTION = Mockito.mock(TransactionV2.class);
+    public static final Interchange INTERCHANGE = Mockito.mock(Interchange.class);
+    public static final Message MESSAGE = Mockito.mock(Message.class);
+    public static final Transaction TRANSACTION = Mockito.mock(Transaction.class);
     public static final Recep RECEP = Mockito.mock(Recep.class);
     private static final String OPERATION_ID = "4b93239acaf902960fad67a339cfda2c1c0f771d51122627066cfcc667bc6b16";
     private static final String SENDER = "some_sender";

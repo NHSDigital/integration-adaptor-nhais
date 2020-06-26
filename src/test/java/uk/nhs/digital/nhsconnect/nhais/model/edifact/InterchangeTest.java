@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -37,7 +36,7 @@ class InterchangeTest {
 
     @Test
     void testValidateOk() {
-        InterchangeV2 interchange = new EdifactParserV2().parse(correctMessage);
+        Interchange interchange = new EdifactParserV2().parse(correctMessage);
         assertThatCode(interchange::validate).doesNotThrowAnyException();
     }
 }

@@ -1,19 +1,14 @@
-package uk.nhs.digital.nhsconnect.nhais.model.edifact.v2;
+package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class TransactionV2 extends Section {
+public class Transaction extends Section {
     @Getter(lazy = true)
     private final ReferenceTransactionNumber referenceTransactionNumber =
         ReferenceTransactionNumber.fromString(extractSegment(ReferenceTransactionNumber.KEY_QUALIFIER));
@@ -28,9 +23,9 @@ public class TransactionV2 extends Section {
         FreeText.fromString(extractSegment(FreeText.KEY_QUALIFIER));
     @Getter
     @Setter
-    private MessageV2 message;
+    private Message message;
 
-    public TransactionV2(List<String> segments) {
+    public Transaction(List<String> segments) {
         super(segments);
     }
 

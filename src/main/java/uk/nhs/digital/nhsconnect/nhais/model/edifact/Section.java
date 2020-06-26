@@ -1,7 +1,6 @@
-package uk.nhs.digital.nhsconnect.nhais.model.edifact.v2;
+package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 

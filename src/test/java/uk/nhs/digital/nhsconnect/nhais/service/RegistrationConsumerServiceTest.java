@@ -7,15 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.MessageV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParserV2;
@@ -92,25 +92,25 @@ public class RegistrationConsumerServiceTest {
     Recep recep;
 
     @Mock
-    InterchangeV2 interchange;
+    Interchange interchange;
 
     @Mock
-    MessageV2 message1;
+    Message message1;
 
     @Mock
-    MessageV2 message2;
+    Message message2;
 
     @Mock
-    TransactionV2 transaction1;
+    Transaction transaction1;
 
     @Mock
-    TransactionV2 transaction2;
+    Transaction transaction2;
 
     @Mock
-    TransactionV2 transaction3;
+    Transaction transaction3;
 
     @Mock
-    TransactionV2 transaction4;
+    Transaction transaction4;
 
     @Mock
     EdifactParserV2 edifactParser;

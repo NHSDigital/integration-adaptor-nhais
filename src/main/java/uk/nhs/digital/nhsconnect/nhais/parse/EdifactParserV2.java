@@ -5,14 +5,14 @@ import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.InterchangeV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.MessageV2;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.v2.TransactionV2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 @Component
 public class EdifactParserV2 {
-    public InterchangeV2 parse(String edifact) {
+    public Interchange parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));
 
         var interchange = parseInterchange(allEdifactSegments);
@@ -34,8 +34,8 @@ public class EdifactParserV2 {
         return interchange;
     }
 
-    private InterchangeV2 parseInterchange(List<String> allEdifactSegments) {
-        InterchangeV2 interchange = new InterchangeV2(extractInterchangeEdifactSegments(allEdifactSegments));
+    private Interchange parseInterchange(List<String> allEdifactSegments) {
+        Interchange interchange = new Interchange(extractInterchangeEdifactSegments(allEdifactSegments));
 
         var messages = parseAllMessages(allEdifactSegments);
         messages.forEach(message -> message.setInterchange(interchange));
@@ -44,7 +44,7 @@ public class EdifactParserV2 {
         return interchange;
     }
 
-    private List<MessageV2> parseAllMessages(List<String> allEdifactSegments) {
+    private List<Message> parseAllMessages(List<String> allEdifactSegments) {
         var allMessageHeaderSegmentIndexes = findAllIndexesOfSegment(allEdifactSegments, MessageHeader.KEY);
         var allMessageTrailerSegmentIndexes = findAllIndexesOfSegment(allEdifactSegments, MessageTrailer.KEY);
 
@@ -57,7 +57,7 @@ public class EdifactParserV2 {
             .collect(Collectors.toList());
     }
 
-    private MessageV2 parseMessage(List<String> singleMessageEdifactSegments) {
+    private Message parseMessage(List<String> singleMessageEdifactSegments) {
         var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01).stream()
             .findFirst()
             // there might be no transaction inside - RECEP - so all message lines belong to message
@@ -66,7 +66,7 @@ public class EdifactParserV2 {
         var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
         onlyMessageLines.add(singleMessageEdifactSegments.get(singleMessageEdifactSegments.size() - 1)); // message trailer
 
-        var message = new MessageV2(onlyMessageLines);
+        var message = new Message(onlyMessageLines);
         var transactions = parseAllTransactions(singleMessageEdifactSegments);
         transactions.forEach(transaction -> transaction.setMessage(message));
         message.setTransactions(transactions);
@@ -74,7 +74,7 @@ public class EdifactParserV2 {
         return message;
     }
 
-    private List<TransactionV2> parseAllTransactions(List<String> singleMessageEdifactSegments) {
+    private List<Transaction> parseAllTransactions(List<String> singleMessageEdifactSegments) {
         var transactionStartIndexes = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01);
         var transactionEndIndexes = new ArrayList<>(transactionStartIndexes);
 
@@ -92,7 +92,7 @@ public class EdifactParserV2 {
         return transactionStartEndIndexPairs.stream()
             .map(transactionStartEndIndexPair ->
                 singleMessageEdifactSegments.subList(transactionStartEndIndexPair.getLeft(), transactionStartEndIndexPair.getRight()))
-            .map(TransactionV2::new)
+            .map(Transaction::new)
             .collect(Collectors.toList());
     }
 
@@ -146,7 +146,7 @@ public class EdifactParserV2 {
         return indexes;
     }
 
-    private void validateInterchange(InterchangeV2 interchange) {
+    private void validateInterchange(Interchange interchange) {
         List<ToEdifactParsingException> exceptions = interchange.validate();
         String errorList = exceptions.stream()
             .map(Exception::getMessage)
