@@ -176,7 +176,10 @@ paths:
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
         | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Patient's Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Patient's Responsible GP (GMC Code)   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Patient's Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Surname                               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
@@ -188,7 +191,7 @@ paths:
         | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Postcode                              | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Present Address - Postcode            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
@@ -207,7 +210,10 @@ paths:
         | Data Item                             | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                                                                               |
         |---------------------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------|
         | Acceptance Date                       | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                      |                                                                                                     |
-        | Patient's Responsible GP              | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+        | Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                    |                                                                                                     |
+        | Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                    |                                                                                                     |
+        | Patient's Responsible GP (GMC Code)   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+        | GP Trading Partner Code               | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                                                                                     |
         | Patient's Responsible HA              | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                                                                                     |
         | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                    |                                                                                                     |
         | Surname                               | Patient       | /name/0/family                           |                          |                                    |                                                                                                     |
@@ -219,7 +225,7 @@ paths:
         | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other          |                                                                                                     |
         | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                      |                                                                                                     |
         | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
-        | Postcode                              | Patient       | /address/0/postalCode                    |                          |                                    | "use": "home"                                                                                       |
+        | Present Address - Postcode            | Patient       | /address/0/postalCode                    |                          |                                    | "use": "home"                                                                                       |
         | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                    | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
         | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                         | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker"     |
         | RPP Mileage                           | N/A           |                                          |                          |                                    |                                                                                                     |
@@ -326,12 +332,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - patches
-              properties:
-                patches:
-                  $ref: components/schemas/JsonPatch.yaml
+              $ref: components/schemas/Amendment.yaml
       responses:
         '202':
           description: Amendment forwarded to NHAIS for processing

@@ -58,13 +58,4 @@ properties:
             - throttled
             - informational
         details:
-          $ref: 'ErrorCode.yaml'
-        expression:
-          type: string
-          description: FHIRPath of element(s) related to the error.
-          example: Patient.name.given
-  extension:
-    type: array
-    items:
-      anyOf:
-        - $ref: "extensions/OperationIdentifier.yaml"
+          $ref: 'ErrorDetails.yaml'
