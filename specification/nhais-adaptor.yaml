@@ -191,7 +191,7 @@ paths:
         | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Postcode                              | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Present Address - Postcode            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
@@ -225,7 +225,7 @@ paths:
         | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other          |                                                                                                     |
         | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                      |                                                                                                     |
         | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
-        | Postcode                              | Patient       | /address/0/postalCode                    |                          |                                    | "use": "home"                                                                                       |
+        | Present Address - Postcode            | Patient       | /address/0/postalCode                    |                          |                                    | "use": "home"                                                                                       |
         | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                    | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
         | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                         | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker"     |
         | RPP Mileage                           | N/A           |                                          |                          |                                    |                                                                                                     |

@@ -848,11 +848,12 @@ ul.nav-tabs {
   "properties" : {
     "op" : {
       "type" : "string",
+      "description" : "Add and replace are synonymous for GP Links messaging",
       "enum" : [ "remove", "add", "replace" ]
     },
     "path" : {
       "type" : "string",
-      "description" : "The location of the information to remove, add or replace. The '-' character must be used to add new items to arrays, e.g. names, addresses.",
+      "description" : "The exact path to the item being patched. Supported paths are listed in the API endpont's description.",
       "format" : "jsonpointer",
       "externalDocs" : {
         "description" : "IETF RFC 6901 JavaScript Object Notation (JSON) Pointer.",
@@ -1065,7 +1066,7 @@ Three fields are deprecated and not supported by the adaptor:
 | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-| Postcode                              | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+| Present Address - Postcode            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
@@ -1099,7 +1100,7 @@ Three fields are deprecated and not supported by the adaptor:
 | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other          |                                                                                                     |
 | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                      |                                                                                                     |
 | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
-| Postcode                              | Patient       | /address/0/postalCode                    |                          |                                    | &quot;use&quot;: &quot;home&quot;                                                                                       |
+| Present Address - Postcode            | Patient       | /address/0/postalCode                    |                          |                                    | &quot;use&quot;: &quot;home&quot;                                                                                       |
 | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                    | &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/patient-birthPlace&quot;                                 |
 | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                         | &quot;url&quot;: &quot;https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker&quot;     |
 | RPP Mileage                           | N/A           |                                          |                          |                                    |                                                                                                     |
