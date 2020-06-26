@@ -19,7 +19,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -28,6 +27,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +59,14 @@ public class MeshAuthorizationIntegrationTest {
     @Value("classpath:fake-mesh/fakemesh.ca.key.pem")
     private Resource fakeMeshKey;
 
-    private final FakeMeshConfig fakeMeshConfig = new FakeMeshConfig();
+    private FakeMeshConfig fakeMeshConfig;
+
+    @BeforeEach
+    void setUp() throws Exception{
+        System.setProperty("NHAIS_MESH_ENDPOINT_CERT", new String(Files.readAllBytes(fakeMeshCert.getFile().toPath())));
+        System.setProperty("NHAIS_MESH_ENDPOINT_KEY", new String(Files.readAllBytes(fakeMeshKey.getFile().toPath())));
+        fakeMeshConfig = new FakeMeshConfig();
+    }
 
     /**
      * This test is ignored by default.
@@ -69,11 +76,9 @@ public class MeshAuthorizationIntegrationTest {
     @Test
     @Disabled("Used locally be developers to prove OpenTest MESH API connectivity")
     void when_CallingMeshAuthorizationEndpoint_Then_MailboxIdIsReturned() throws Exception {
-        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(getSSLContext(),
-            new DefaultHostnameVerifier());
-        try(CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(factory).build()) {
+        try(CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             HttpPost httpPost = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId());
-            httpPost.setHeaders(createHeaders(meshConfig));
+            httpPost.setHeaders(new MeshHeaders(meshConfig).createMinimalHeaders());
             try(CloseableHttpResponse response = client.execute(httpPost)){
                 assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.OK.value());
                 JsonParser parser = objectMapper.reader().createParser(EntityUtils.toString(response.getEntity()));
@@ -86,44 +91,13 @@ public class MeshAuthorizationIntegrationTest {
 
     @Test
     void when_CallingFakeMeshCountMessagesEndpoint_Then_Http200IsReturned() throws Exception {
-        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(getFakeMeshSSLContext(),
-            new NoopHostnameVerifier());
-        try(CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(factory).build()) {
+        try(CloseableHttpClient client = new MeshHttpClientBuilder(fakeMeshConfig).build()) {
             HttpGet httpGet = new HttpGet(fakeMeshConfig.getHost() + fakeMeshConfig.getMailboxId()+"/count");
-            httpGet.setHeaders(createHeaders(fakeMeshConfig));
+            httpGet.setHeaders(new MeshHeaders(fakeMeshConfig).createMinimalHeaders());
             try(CloseableHttpResponse response = client.execute(httpGet)){
                 assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.OK.value());
             }
         }
-    }
-
-    private Header[] createHeaders(MeshConfig meshConfig) {
-        return new Header[] {
-            new BasicHeader("Mex-ClientVersion", "1.0"),
-            new BasicHeader("Mex-OSVersion", "1.0"),
-            new BasicHeader("Mex-OSName", "Unix"),
-            new BasicHeader("Authorization", new MeshAuthorizationToken(meshConfig).getValue()),
-        };
-    }
-
-    @SneakyThrows
-    private SSLContext getSSLContext() {
-        KeyStore ks = EnvKeyStore.create("NHAIS_MESH_ENDPOINT_PRIVATE_KEY", "NHAIS_MESH_ENDPOINT_CERT", "NHAIS_MESH_MAILBOX_PASSWORD").keyStore();
-        return SSLContexts.custom().loadKeyMaterial(ks, meshConfig.getMailboxPassword().toCharArray())
-            .loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE)
-            .build();
-    }
-
-    @SneakyThrows
-    private SSLContext getFakeMeshSSLContext() {
-        KeyStore ks = EnvKeyStore.createFromPEMStrings(
-                new String(Files.readAllBytes(fakeMeshKey.getFile().toPath())),
-                new String(Files.readAllBytes(fakeMeshCert.getFile().toPath())),
-            StringUtils.EMPTY)
-            .keyStore();
-        return SSLContexts.custom().loadKeyMaterial(ks, StringUtils.EMPTY.toCharArray())
-            .loadTrustMaterial(TrustAllStrategy.INSTANCE)
-            .build();
     }
 
     @Data

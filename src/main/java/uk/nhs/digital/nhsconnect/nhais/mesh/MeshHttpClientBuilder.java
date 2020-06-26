@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -29,7 +30,8 @@ public class MeshHttpClientBuilder {
     }
 
     public CloseableHttpClient build(SSLContext sslContext) {
-        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslContext, new DefaultHostnameVerifier());
+        NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier(); //TODO: NoopHostnameVerifier works for fake-mesh - in production DefaultHostnameVerifier should be used
+        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
         return HttpClients.custom().setSSLSocketFactory(factory).build();
     }
 
