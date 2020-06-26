@@ -1,26 +1,12 @@
 {
-  "id": "validationfail",
+  "resourceType": "OperationOutcome",
   "issue": [
     {
+      "severity": "error",
       "code": "structure",
       "details": {
-        "text": "Wrong type <class 'int'> for property \"value\" on <class 'fhir.resources.identifier.Identifier'>, expecting <class 'str'>"
-      },
-      "expression": [
-        "generalPractitioner.0.identifier.value"
-      ],
-      "severity": "error"
-    },
-    {
-      "code": "structure",
-      "details": {
-        "text": "Wrong type <class 'int'> for property \"value\" on <class 'fhir.resources.identifier.Identifier'>, expecting <class 'str'>"
-      },
-      "expression": [
-        "managingOrganization.identifier.value"
-      ],
-      "severity": "error"
+        "text": "Unable to parse JSON resource as a Parameters: Incorrect resource type found, expected \"Parameters\" but found \"Patient\""
+      }
     }
-  ],
-  "resourceType": "OperationOutcome"
+  ]
 }

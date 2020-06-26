@@ -816,50 +816,66 @@ ul.nav-tabs {
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-    defs["ErrorCode"] = {
+    defs["Amendment"] = {
   "type" : "object",
   "properties" : {
-    "coding" : {
+    "nhsNumber" : {
+      "type" : "string"
+    },
+    "gpCode" : {
+      "type" : "string"
+    },
+    "gpTradingPartnerCode" : {
+      "type" : "string"
+    },
+    "healthcarePartyCode" : {
+      "type" : "string"
+    },
+    "freeText" : {
+      "type" : "string"
+    },
+    "patches" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/ErrorCode_coding"
+        "$ref" : "#/components/schemas/Amendment_patches"
       }
     }
   },
-  "description" : "Internal error code."
+  "description" : "Amendment request."
 };
-    defs["ErrorCode_coding"] = {
+    defs["Amendment_patches"] = {
+  "required" : [ "op", "path" ],
   "properties" : {
-    "system" : {
+    "op" : {
       "type" : "string",
-      "description" : "URI of the coding system specification.",
-      "example" : "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode"
+      "description" : "Add and replace are synonymous for GP Links messaging",
+      "enum" : [ "remove", "add", "replace" ]
     },
-    "version" : {
+    "path" : {
       "type" : "string",
-      "description" : "Version of the coding system in use.",
-      "example" : "1"
+      "description" : "The exact path to the item being patched. Supported paths are listed in the API endpont's description.",
+      "format" : "jsonpointer",
+      "externalDocs" : {
+        "description" : "IETF RFC 6901 JavaScript Object Notation (JSON) Pointer.",
+        "url" : "https://tools.ietf.org/html/rfc6901"
+      }
     },
-    "code" : {
+    "value" : {
       "type" : "string",
-      "description" : "Symbol in syntax defined by the system.",
-      "example" : "invalidParams"
-    },
-    "display" : {
-      "type" : "string",
-      "description" : "Representation defined by the system.",
-      "example" : "Invalid params."
+      "description" : "The information to be added or replaced.",
+      "format" : "json"
     }
   }
 };
-    defs["inline_object"] = {
-  "required" : [ "patches" ],
+    defs["ErrorDetails"] = {
   "type" : "object",
   "properties" : {
-    "patches" : {
-      "$ref" : "#/components/schemas/JsonPatch"
+    "text" : {
+      "type" : "string",
+      "description" : "The error message"
     }
-  }
+  },
+  "description" : "Error details"
 };
     defs["OperationOutcome"] = {
   "type" : "object",
@@ -897,12 +913,7 @@ ul.nav-tabs {
       "enum" : [ "invalid", "structure", "required", "value", "invariant", "security", "login", "unknown", "expired", "forbidden", "suppressed", "processing", "not-supported", "duplicate", "multiple-matches", "not-found", "deleted", "too-long", "code-invalid", "extension", "too-costly", "business-rule", "conflict", "transient", "lock-error", "no-store", "exception", "timeout", "incomplete", "throttled", "informational" ]
     },
     "details" : {
-      "$ref" : "#/components/schemas/ErrorCode"
-    },
-    "expression" : {
-      "type" : "string",
-      "description" : "FHIRPath of element(s) related to the error.",
-      "example" : "Patient.name.given"
+      "$ref" : "#/components/schemas/ErrorDetails"
     }
   }
 };
@@ -1040,7 +1051,10 @@ Three fields are deprecated and not supported by the adaptor:
 | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
 |---------------------------------------|----------------|----------------|----------------------|--------------------|
 | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-| Patient&#39;s Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+| Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+| Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+| Patient&#39;s Responsible GP (GMC Code)   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+| GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Patient&#39;s Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Surname                               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
@@ -1052,7 +1066,7 @@ Three fields are deprecated and not supported by the adaptor:
 | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-| Postcode                              | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+| Present Address - Postcode            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
@@ -1071,7 +1085,10 @@ Three fields are deprecated and not supported by the adaptor:
 | Data Item                             | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                                                                               |
 |---------------------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------|
 | Acceptance Date                       | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                      |                                                                                                     |
-| Patient&#39;s Responsible GP              | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+| Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                    |                                                                                                     |
+| Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                    |                                                                                                     |
+| Patient&#39;s Responsible GP (GMC Code)   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                                                                                     |
+| GP Trading Partner Code               | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                                                                                     |
 | Patient&#39;s Responsible HA              | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                                                                                     |
 | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                    |                                                                                                     |
 | Surname                               | Patient       | /name/0/family                           |                          |                                    |                                                                                                     |
@@ -1083,7 +1100,7 @@ Three fields are deprecated and not supported by the adaptor:
 | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other          |                                                                                                     |
 | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                      |                                                                                                     |
 | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for empty/no value   | All 5 lines required                                                                                |
-| Postcode                              | Patient       | /address/0/postalCode                    |                          |                                    | &quot;use&quot;: &quot;home&quot;                                                                                       |
+| Present Address - Postcode            | Patient       | /address/0/postalCode                    |                          |                                    | &quot;use&quot;: &quot;home&quot;                                                                                       |
 | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                    | &quot;url&quot;: &quot;http://hl7.org/fhir/StructureDefinition/patient-birthPlace&quot;                                 |
 | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                         | &quot;url&quot;: &quot;https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker&quot;     |
 | RPP Mileage                           | N/A           |                                          |                          |                                    |                                                                                                     |
@@ -1554,9 +1571,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-        InlineObject inlineObject = ; // InlineObject | 
+        Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(id, inlineObject);
+            apiInstance.amendment(id, amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1574,9 +1591,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-        InlineObject inlineObject = ; // InlineObject | 
+        Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(id, inlineObject);
+            apiInstance.amendment(id, amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1590,13 +1607,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-InlineObject *inlineObject = ; // 
+Amendment *amendment = ; // 
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
 [apiInstance amendmentWith:id
-    inlineObject:inlineObject
+    amendment:amendment
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1610,7 +1627,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-var inlineObject = ; // {InlineObject} 
+var amendment = ; // {Amendment} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1619,7 +1636,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.amendment(id, inlineObject, callback);
+api.amendment(id, amendment, callback);
 </code></pre>
                             </div>
 
@@ -1642,12 +1659,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var id = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-            var inlineObject = new InlineObject(); // InlineObject | 
+            var amendment = new Amendment(); // Amendment | 
 
             try
             {
                 // Amend patient details (Amendment transaction)
-                apiInstance.amendment(id, inlineObject);
+                apiInstance.amendment(id, amendment);
             }
             catch (Exception e)
             {
@@ -1665,10 +1682,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-$inlineObject = ; // InlineObject | 
+$amendment = ; // Amendment | 
 
 try {
-    $api_instance->amendment($id, $inlineObject);
+    $api_instance->amendment($id, $amendment);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->amendment: ', $e->getMessage(), PHP_EOL;
 }
@@ -1682,10 +1699,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $id = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-my $inlineObject = WWW::OPenAPIClient::Object::InlineObject->new(); # InlineObject | 
+my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
 
 eval { 
-    $api_instance->amendment(id => $id, inlineObject => $inlineObject);
+    $api_instance->amendment(id => $id, amendment => $amendment);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->amendment: $@\n";
@@ -1702,11 +1719,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 id = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-inlineObject =  # InlineObject | 
+amendment =  # Amendment | 
 
 try: 
     # Amend patient details (Amendment transaction)
-    api_instance.amendment(id, inlineObject)
+    api_instance.amendment(id, amendment)
 except ApiException as e:
     print("Exception when calling PatientsApi->amendment: %s\n" % e)</code></pre>
                             </div>
@@ -1716,10 +1733,10 @@ except ApiException as e:
 
 pub fn main() {
     let id = 9000000009; // String
-    let inlineObject = ; // InlineObject
+    let amendment = ; // Amendment
 
     let mut context = PatientsApi::Context::default();
-    let result = client.amendment(id, inlineObject, &context).wait();
+    let result = client.amendment(id, amendment, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1772,7 +1789,7 @@ The patient&#39;s NHS Number. The primary identifier of a patient, unique within
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">inlineObject <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">amendment <span style="color:red;">*</span></td>
 <td>
 <p class="marked"></p>
 <script>
@@ -1789,12 +1806,12 @@ $(document).ready(function() {
   }
 
   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-  var result = $('#d2e199_amendment_inlineObject');
+  var result = $('#d2e199_amendment_amendment');
   result.empty();
   result.append(view.render());
 });
 </script>
-<div id="d2e199_amendment_inlineObject"></div>
+<div id="d2e199_amendment_amendment"></div>
 </td>
 </tr>
 
