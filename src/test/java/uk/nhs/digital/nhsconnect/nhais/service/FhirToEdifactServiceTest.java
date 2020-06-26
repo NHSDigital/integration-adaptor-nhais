@@ -101,8 +101,8 @@ public class FhirToEdifactServiceTest {
         expected.setWorkflowId(WorkflowId.REGISTRATION);
         expected.setRecipient(HA_TRADING_PARTNER_CODE);
         expected.setSender(GP_TRADING_PARTNER_CODE);
-        expected.setSendInterchangeSequence(SIS);
-        expected.setSendMessageSequence(SMS);
+        expected.setInterchangeSequence(SIS);
+        expected.setMessageSequence(SMS);
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
         expected.setTransactionTimestamp(expectedTimestamp);

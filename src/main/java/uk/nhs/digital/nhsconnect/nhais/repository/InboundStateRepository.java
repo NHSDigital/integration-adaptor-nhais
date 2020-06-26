@@ -5,10 +5,7 @@ import org.springframework.stereotype.Repository;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 @Repository
-public interface InboundStateRepository extends CrudRepository<InboundState, String> {
+public interface InboundStateRepository extends CrudRepository<InboundState, String>, InboundStateRepositoryExtensions {
     InboundState findBy(
         WorkflowId workflowId, String sender, String recipient, long receiveInterchangeSequence, Long receiveMessageSequence);
-
-    InboundState findBy(
-        WorkflowId workflowId, String sender, String recipient, long receiveInterchangeSequence, Long receiveMessageSequence, Long transactionNumber);
 }

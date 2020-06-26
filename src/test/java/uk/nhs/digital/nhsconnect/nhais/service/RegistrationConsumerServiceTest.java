@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -142,9 +143,9 @@ public class RegistrationConsumerServiceTest {
         when(transaction4.getMessage()).thenReturn(message2);
 
         when(inboundStateRepository.findBy(eq(WorkflowId.REGISTRATION), eq(SENDER), eq(RECIPIENT), eq(SIS), any(), any()))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
         when(inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS_2, TN_4))
-            .thenReturn(new InboundState());
+            .thenReturn(Optional.of(new InboundState()));
     }
 
 //    private void mockInterchangeRecepRequiredSegments() {
@@ -224,8 +225,8 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedInboundState.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
         assertThat(savedInboundState.getSender()).isEqualTo(SENDER);
         assertThat(savedInboundState.getRecipient()).isEqualTo(RECIPIENT);
-        assertThat(savedInboundState.getReceiveInterchangeSequence()).isEqualTo(SIS);
-        assertThat(savedInboundState.getReceiveMessageSequence()).isEqualTo(sms);
+        assertThat(savedInboundState.getInterchangeSequence()).isEqualTo(SIS);
+        assertThat(savedInboundState.getMessageSequence()).isEqualTo(sms);
         assertThat(savedInboundState.getTransactionNumber()).isEqualTo(tn);
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo(transactionType.getCode());
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(translationTyime);

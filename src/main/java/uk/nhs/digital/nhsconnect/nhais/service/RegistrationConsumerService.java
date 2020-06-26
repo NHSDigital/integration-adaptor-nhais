@@ -42,7 +42,7 @@ public class RegistrationConsumerService {
         var transactionsToProcess = interchange.getMessages().stream()
             .map(MessageV2::getTransactions)
             .flatMap(Collection::stream)
-            .filter(this::isNewTransaction)
+            .filter(this::isNotDuplicate)
             .collect(Collectors.toList());
 
         var inboundStateRecords = prepareInboundStateRecords(transactionsToProcess);
@@ -73,7 +73,7 @@ public class RegistrationConsumerService {
         return null;
     }
 
-    private boolean isNewTransaction(TransactionV2 transaction) {
+    private boolean isNotDuplicate(TransactionV2 transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
         var messageHeader = transaction.getMessage().getMessageHeader();
 
@@ -85,7 +85,7 @@ public class RegistrationConsumerService {
             messageHeader.getSequenceNumber(),
             transaction.getReferenceTransactionNumber().getTransactionNumber());
 
-        return inboundState == null;
+        return inboundState.isEmpty();
     }
 
     private Stream<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<TransactionV2> transactions) {
