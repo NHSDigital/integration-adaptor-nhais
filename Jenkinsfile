@@ -53,9 +53,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/*test*/*.xml'
                     sh label: 'Create logs directory', script: 'mkdir logs'
-                    sh label: 'Docker status', script: 'docker ps --all'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
                     // sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb-local > logs/outbound.log'
                     sh label: 'Copy activemq logs', script: 'docker-compose logs activemq > logs/inbound.log'
@@ -114,7 +112,7 @@ pipeline {
     }
     post {
         always {
-
+            junit 'build/test-results/**/*.xml'
             // sh label: 'Stopping containers', script: 'docker-compose down -v'
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
