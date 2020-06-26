@@ -23,6 +23,9 @@ public class MongoScheduler {
     @Autowired
     private MongoOperations mongoOperations;
 
+    @Autowired
+    private MeshClient meshClient;
+
     private static final String MESH_TIMESTAMP = "mesh_timestamp";
     private static final String TIMESTAMP = "timestamp";
 
@@ -33,7 +36,9 @@ public class MongoScheduler {
         LOGGER.info("Scheduled job for mesh messages fetching started");
         if (checkTheTimestampUpdatability()) {
             LOGGER.info("Mesh messages fetching started");
-            //here comes mesh fetching and further logic
+            for (String messageId : meshClient.getInboxMessageIds()) {
+                meshClient.getMessage(messageId);
+            }
         } else {
             LOGGER.info("Mesh messages fetching is postponed: another application instance is fetching now");
         }
