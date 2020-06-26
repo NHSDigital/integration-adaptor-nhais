@@ -7,7 +7,6 @@ import javax.net.ssl.SSLContext;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;

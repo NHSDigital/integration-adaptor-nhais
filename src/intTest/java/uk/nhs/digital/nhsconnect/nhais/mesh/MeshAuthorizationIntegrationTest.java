@@ -3,29 +3,15 @@ package uk.nhs.digital.nhsconnect.nhais.mesh;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
-import java.security.KeyStore;
-
-import javax.net.ssl.SSLContext;
 
 import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.mesh.token.MeshAuthorizationToken;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -40,7 +26,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heroku.sdk.EnvKeyStore;
 
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
