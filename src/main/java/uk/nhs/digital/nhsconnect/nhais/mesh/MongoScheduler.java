@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
@@ -37,7 +35,7 @@ public class MongoScheduler {
         if (updateTimestamp()) {
             LOGGER.info("Mesh messages fetching started");
             for (String messageId : meshClient.getInboxMessageIds()) {
-                meshClient.getMessage(messageId);
+                meshClient.getEdifactMessage(messageId);
             }
         } else {
             LOGGER.info("Mesh messages fetching is postponed: another application instance is fetching now");

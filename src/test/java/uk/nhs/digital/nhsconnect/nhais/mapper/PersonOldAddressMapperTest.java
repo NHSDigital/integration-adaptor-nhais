@@ -19,14 +19,20 @@ class PersonOldAddressMapperTest {
     @Test
     void When_MappingAddress_Then_ExpectCorrectResult() {
         Patient patient = new Patient();
-        Address address = new Address();
-        address.setUse(Address.AddressUse.OLD);
-        address.addLine("Moorside Farm")
-            .addLine("Old Lane")
-            .addLine("St Pauls Cray")
-            .addLine("Orpington")
-            .addLine("Kent");
-        patient.setAddress(List.of(address));
+        Address current = new Address();
+        current.addLine("")
+            .addLine("2 CROSSDALE COURT")
+            .addLine("SEA CLIFF CRESCENT")
+            .addLine("")
+            .addLine("SCARBOROUGH");
+        current.setPostalCode("YO11 2XZ");
+        Address previous = new Address();
+        previous.addLine("MOORSIDE FARM")
+            .addLine("OLD LANE")
+            .addLine("ST PAULS CRAY")
+            .addLine("ORPINGTON")
+            .addLine("KENT");
+        patient.setAddress(List.of(current, previous));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
@@ -37,11 +43,11 @@ class PersonOldAddressMapperTest {
 
         var expectedPersonOldAddress = PersonOldAddress
             .builder()
-            .addressLine1("Moorside Farm")
-            .addressLine2("Old Lane")
-            .addressLine3("St Pauls Cray")
-            .addressLine4("Orpington")
-            .addressLine5("Kent")
+            .addressLine1("MOORSIDE FARM")
+            .addressLine2("OLD LANE")
+            .addressLine3("ST PAULS CRAY")
+            .addressLine4("ORPINGTON")
+            .addressLine5("KENT")
             .build();
 
         assertEquals(expectedPersonOldAddress, personOldAddress);
@@ -53,6 +59,6 @@ class PersonOldAddressMapperTest {
             .addParameter(new PatientParameter());
 
         var addressOldMapper = new PersonOldAddressMapper();
-        assertThrows(IllegalStateException.class, () -> addressOldMapper.map(parameters));
+        assertThrows(FhirValidationException.class, () -> addressOldMapper.map(parameters));
     }
 }

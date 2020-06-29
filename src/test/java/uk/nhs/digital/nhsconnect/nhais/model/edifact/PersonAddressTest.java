@@ -24,6 +24,22 @@ public class PersonAddressTest {
     }
 
     @Test
+    public void When_MappingToEdifacWithPostcodet_Then_ReturnCorrectString() {
+        var expectedValue = "NAD+PAT++HIGHFIELD HOUSE:LOW PASS:HAYFIELD HAMLET:GRASSFUL:FIELDING+++++HR3  5BW'";
+
+        var personAddress = PersonAddress.builder()
+            .addressLine1("HIGHFIELD HOUSE")
+            .addressLine2("LOW PASS")
+            .addressLine3("HAYFIELD HAMLET")
+            .addressLine4("GRASSFUL")
+            .addressLine5("FIELDING")
+            .postalCode("HR3  5BW")
+            .build();
+
+        assertEquals(expectedValue, personAddress.toEdifact());
+    }
+
+    @Test
     public void When_MappingToEdifactWithMissingFields_Then_ReturnCorrectString() {
         var expectedValue = "NAD+PAT++:MOORSIDE FARM:ST PAULS CRAY::KENT'";
 
