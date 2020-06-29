@@ -51,7 +51,7 @@ public class MeshClient {
     }
 
     private MeshApiConnectionException sendMessageError(CloseableHttpResponse response) throws IOException {
-        return new MeshApiConnectionException("Couldn't send MESH message. Expected status code: " + HttpStatus.ACCEPTED.value() + ", but received: " + response.getStatusLine().getStatusCode() + " with content: " + EntityUtils.toString(response.getEntity()));
+        return new MeshApiConnectionException("Couldn't send MESH message. Expected status code: " + HttpStatus.ACCEPTED.value() + ", but received: " + response.getStatusLine().getStatusCode());
     }
 
     // TODO: stub, to be replaced by NIAD-265
