@@ -39,3 +39,5 @@ nhais:
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #fake-mesh as default
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:}
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
+    recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:XX11=A91561OT001
+      TES5=A91561OT002}
