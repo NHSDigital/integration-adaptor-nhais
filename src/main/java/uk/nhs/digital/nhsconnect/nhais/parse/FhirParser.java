@@ -28,31 +28,14 @@ public class FhirParser {
         FhirContext ctx = FhirContext.forR4();
         ctx.setParserErrorHandler(new StrictErrorHandler());
         parser = ctx.newJsonParser();
-//        validator = ctx.newValidator();
-//        IValidatorModule module1 = new SchemaBaseValidator(ctx);
-//        IValidatorModule module2 = new SchematronBaseValidator(ctx);
-//        validator.registerValidatorModule(module1);
-//        validator.registerValidatorModule(module2);
-    }
-
-    public Patient parsePatient(String body) throws FhirValidationException {
-        return parse(Patient.class, body);
     }
 
     public Parameters parseParameters(String body) throws FhirValidationException {
         return parse(Parameters.class, body);
     }
 
-//    private void validate(String resource) throws FhirValidationException {
-//        ValidationResult result = validator.validateWithResult(resource);
-//        if(!result.isSuccessful()) {
-//            throw new FhirValidationException(result);
-//        }
-//    }
-
     private <T extends IBaseResource> T parse(Class<T> type, String body) throws FhirValidationException {
         try {
-//            validate(body);
             return parser.parseResource(type, body);
         } catch (DataFormatException e) {
             throw new FhirValidationException("Unable to parse JSON resource as a " + type.getSimpleName() + ": " + e.getMessage());
