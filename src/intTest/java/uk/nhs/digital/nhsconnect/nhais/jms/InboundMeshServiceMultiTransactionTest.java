@@ -37,7 +37,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     private static final long TN_1 = 22;
     private static final long TN_2 = 23;
     private static final long TN_3 = 18;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.APPROVAL;
+    private static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.AMENDMENT;
     private static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
     private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_1);
     private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_2);

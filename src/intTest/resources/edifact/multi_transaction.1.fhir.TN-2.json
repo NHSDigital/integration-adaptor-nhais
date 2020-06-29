@@ -9,12 +9,6 @@
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "123/23/123"
-          }
-        ],
         "generalPractitioner": [
           {
             "identifier": {
