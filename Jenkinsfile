@@ -29,6 +29,7 @@ pipeline {
                             sh label: 'Create logs directory', script: 'mkdir -p logs build'
                             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
                             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
+                            sh label: 'copying test files', script: 'docker cp local/nhais-tests:/build/test-results .'
                         }
                     }
                 }
@@ -54,7 +55,7 @@ pipeline {
             }
             post {
                 always {
-                    junit 'build/test-results/test/*.xml'
+                    junit 'build/test-results/**/*.xml'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
 //                     sh label: 'Create logs directory', script: 'mkdir logs'
 //                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
