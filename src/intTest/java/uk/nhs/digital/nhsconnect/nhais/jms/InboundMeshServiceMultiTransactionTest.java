@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,14 +90,13 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         var inboundState3 = inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS_2, TN_3);
 
         var inboundStates = Stream.of(inboundState1, inboundState2, inboundState3)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
+            .flatMap(Optional::stream)
             .collect(Collectors.toList());
 
         if (inboundStates.size() == 3) {
             return inboundStates;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {

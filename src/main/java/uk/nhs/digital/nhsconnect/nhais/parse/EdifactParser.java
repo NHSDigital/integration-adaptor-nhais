@@ -4,7 +4,6 @@ import com.google.common.collect.Comparators;
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
@@ -65,7 +64,8 @@ public class EdifactParser {
             .orElse(singleMessageEdifactSegments.size() - 1);
 
         var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
-        onlyMessageLines.add(singleMessageEdifactSegments.get(singleMessageEdifactSegments.size() - 1)); // message trailer
+        var messageTrailerIndex = singleMessageEdifactSegments.size() - 1;
+        onlyMessageLines.add(singleMessageEdifactSegments.get(messageTrailerIndex));
 
         var message = new Message(onlyMessageLines);
         var transactions = parseAllTransactions(singleMessageEdifactSegments);
