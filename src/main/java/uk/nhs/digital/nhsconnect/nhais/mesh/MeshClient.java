@@ -1,14 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -17,8 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -54,9 +53,15 @@ public class MeshClient {
         return new MeshApiConnectionException("Couldn't send MESH message. Expected status code: " + HttpStatus.ACCEPTED.value() + ", but received: " + response.getStatusLine().getStatusCode());
     }
 
-    // TODO: stub, to be replaced by NIAD-265
+    @SneakyThrows
     public List<String> getInboxMessageIds() {
-        return Collections.emptyList();
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+            HttpGet httpGet = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox");
+            httpGet.setHeaders(new MeshHeaders(meshConfig).createMinimalHeaders());
+            try (CloseableHttpResponse response = client.execute(httpGet)) {
+                return Arrays.asList(parseInto(MeshMessages.class, response).getMessageIDs());
+            }
+        }
     }
 
     // TODO: stub, to be replaced by NIAD-266
