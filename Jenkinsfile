@@ -26,6 +26,7 @@ pipeline {
                 stage('Run Tests') {
                     steps {
                         script {
+                            sh label: 'Create logs directory', script: 'mkdir -p logs build'
                             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
                             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock local/nhais-tests:${BUILD_TAG} gradle check -i'
                         }
@@ -53,8 +54,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '/build/test-results/**/*.xml'
-                    sh label: 'Create logs directory', script: 'mkdir logs'
+                    junit 'build/test-results/**/*.xml'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
 //                     sh label: 'Create logs directory', script: 'mkdir logs'
 //                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
@@ -115,7 +115,7 @@ pipeline {
     }
     post {
         always {
-            // sh label: 'Stopping containers', script: 'docker-compose down -v'
+            sh label: 'Stopping containers', script: 'docker-compose down -v'
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
         }
