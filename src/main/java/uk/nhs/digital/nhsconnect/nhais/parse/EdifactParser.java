@@ -1,27 +1,20 @@
 package uk.nhs.digital.nhsconnect.nhais.parse;
 
-import com.google.common.collect.Comparators;
-import com.google.common.collect.Streams;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 @Component
 public class EdifactParser {
@@ -38,90 +31,11 @@ public class EdifactParser {
     private Interchange parseInterchange(List<String> allEdifactSegments) {
         Interchange interchange = new Interchange(extractInterchangeEdifactSegments(allEdifactSegments));
 
-        var messages = parseAllMessages(allEdifactSegments);
+        MessageList messages = new MessageList(allEdifactSegments);
         messages.forEach(message -> message.setInterchange(interchange));
         interchange.setMessages(messages);
 
         return interchange;
-    }
-
-    private List<Message> parseAllMessages(List<String> allEdifactSegments) {
-        var allMessageHeaderSegmentIndexes = findAllIndexesOfSegment(allEdifactSegments, MessageHeader.KEY);
-        var allMessageTrailerSegmentIndexes = findAllIndexesOfSegment(allEdifactSegments, MessageTrailer.KEY);
-
-        var messageHeaderTrailerIndexPairs = zipIndexes(allMessageHeaderSegmentIndexes, allMessageTrailerSegmentIndexes);
-
-        return messageHeaderTrailerIndexPairs.stream()
-            .map(messageStartEndIndexPair ->
-                allEdifactSegments.subList(messageStartEndIndexPair.getLeft(), messageStartEndIndexPair.getRight() + 1))
-            .map(this::parseMessage)
-            .collect(Collectors.toList());
-    }
-
-    private Message parseMessage(List<String> singleMessageEdifactSegments) {
-        var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01).stream()
-            .findFirst()
-            // there might be no transaction inside - RECEP - so all message lines belong to message
-            .orElse(singleMessageEdifactSegments.size() - 1);
-
-        var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
-        onlyMessageLines.add(singleMessageEdifactSegments.get(singleMessageEdifactSegments.size() - 1)); // message trailer
-
-        var message = new Message(onlyMessageLines);
-        var transactions = parseAllTransactions(singleMessageEdifactSegments);
-        transactions.forEach(transaction -> transaction.setMessage(message));
-        message.setTransactions(transactions);
-
-        return message;
-    }
-
-    private List<Transaction> parseAllTransactions(List<String> singleMessageEdifactSegments) {
-        var transactionStartIndexes = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01);
-        var transactionEndIndexes = new ArrayList<>(transactionStartIndexes);
-
-        // there might be no transactions inside - RECEP
-        if (!transactionEndIndexes.isEmpty()) {
-            // there is no transaction end indicator, so ending segment is the one before the beginning of the next transaction
-            // so end indexes are beginning without first S01
-            transactionEndIndexes.remove(0);
-            // and last transaction end indicator is the segment before message trailer
-            transactionEndIndexes.add(singleMessageEdifactSegments.size() - 1);
-        }
-
-        var transactionStartEndIndexPairs = zipIndexes(transactionStartIndexes, transactionEndIndexes);
-
-        return transactionStartEndIndexPairs.stream()
-            .map(transactionStartEndIndexPair ->
-                singleMessageEdifactSegments.subList(transactionStartEndIndexPair.getLeft(), transactionStartEndIndexPair.getRight()))
-            .map(Transaction::new)
-            .collect(Collectors.toList());
-    }
-
-    private List<Pair<Integer, Integer>> zipIndexes(List<Integer> startIndexes, List<Integer> endIndexes) {
-        if (startIndexes.size() != endIndexes.size()) {
-            throw new ToEdifactParsingException(
-                "Message header-trailer count mismatch: " + startIndexes.size() + "-" + endIndexes.size());
-        }
-
-        var indexPairs = Streams.zip(startIndexes.stream(), endIndexes.stream(), Pair::of)
-            .collect(Collectors.toList());
-
-        if (!areIndexesInOrder(indexPairs)) {
-            throw new ToEdifactParsingException("Message trailer before message header");
-        }
-
-        return indexPairs;
-    }
-
-    private boolean areIndexesInOrder(List<Pair<Integer, Integer>> messageIndexPairs) {
-        // trailer must go after header
-        // next header must go after previous trailer
-        return Comparators.isInOrder(
-            messageIndexPairs.stream()
-                .map(pair -> List.of(pair.getLeft(), pair.getRight()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList()),
-            Comparator.naturalOrder());
     }
 
     private List<String> extractInterchangeEdifactSegments(List<String> allEdifactSegments) {
