@@ -53,9 +53,9 @@ paths:
       - $ref: '#/components/parameters/Id'
     post:
       description: |
-        ## WORK IN PROGRESS
+        ## Status
 
-        This endpoint is not implemented yet and the specification is expected to change.
+        This endpoint is not implemented yet and the design is incomplete. The specification is expected to change.
 
         ## Overview
 
@@ -104,9 +104,9 @@ paths:
       - $ref: '#/components/parameters/Id'
     post:
       description: |
-        ## WORK IN PROGRESS
+        ## Status
 
-        This endpoint is not implemented yet and the specification is expected to change.
+        This endpoint is not implemented yet and the design is incomplete. The specification is expected to change.
 
         ## Overview
 
@@ -146,6 +146,11 @@ paths:
   '/fhir/Patient/$nhais.acceptance':
     post:
       description: |
+        ## Status
+
+        **Version 0.1.0**: Only data items marked REQUIRED are supported for translation to EDIFACT. Optional data items
+        are accepted by the API but not translated into EDIFACT.
+
         ## Overview
         Use this endpoint to send an Acceptance to NHAIS.
 
@@ -170,8 +175,6 @@ paths:
         * RPP Mileage
         * Blocked Route/Special District Marker
         * Walking Units
-
-        **Version 0.1.0**: Only data items marked REQUIRED are supported
 
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
@@ -278,9 +281,9 @@ paths:
       - $ref: '#/components/parameters/Id'
     patch:
       description: |
-        ## WORK IN PROGRESS
+        ## Status
 
-        This endpoint is not implemented yet and the specification is expected to change.
+        This endpoint is not implemented yet. The design is complete but some changes to specification may still be required.
 
         ## Overview
         Use this endpoint to send an Amendment to NHAIS.
