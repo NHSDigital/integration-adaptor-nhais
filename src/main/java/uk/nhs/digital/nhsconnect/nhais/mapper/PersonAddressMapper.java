@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 @Component
 public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddress> {
-    private final static Address.AddressUse ADDRESS_USE_HOME = Address.AddressUse.HOME;
 
     public PersonAddress map(Parameters parameters) {
         Address address = getAddress(parameters);
@@ -23,6 +23,7 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
             .addressLine3(getAddressLineOrNull(address.getLine(), 2))
             .addressLine4(getAddressLineOrNull(address.getLine(), 3))
             .addressLine5(getAddressLineOrNull(address.getLine(), 4))
+            .postalCode(address.getPostalCode())
             .build();
     }
 
@@ -30,9 +31,8 @@ public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddres
         Patient patient = ParametersExtension.extractPatient(parameters);
 
         return patient.getAddress().stream()
-            .filter(address -> address.getUse().equals(ADDRESS_USE_HOME))
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Address mapping problem"));
+            .orElseThrow(() -> new FhirValidationException("The Patient resource must contain an address"));
     }
 
     private String getAddressLineOrNull(List<StringType> addressLines, int index) {
