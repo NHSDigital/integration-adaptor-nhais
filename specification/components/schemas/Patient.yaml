@@ -30,7 +30,7 @@ properties:
   address:
     type: array
     description: | 
-      Current (use: home) and (if relevant to the context) previous (use: old) addresses of the patient.
+      Current (first occurrence) and previous (second occurrence) addresses of the patient.
     items:
       $ref: "Address.yaml"
   generalPractitioner:
