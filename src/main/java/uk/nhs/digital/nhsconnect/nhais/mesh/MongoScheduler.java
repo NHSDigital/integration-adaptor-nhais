@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MongoScheduler {
 
-    private final MongoOperations mongoOperations;
     private final MeshClient meshClient;
     private final SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
 
@@ -28,6 +27,7 @@ public class MongoScheduler {
     private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
 
     @Scheduled(fixedRate = 6000)
+    //TODO: set to 60_000
     public void updateConditionally() {
         LOGGER.debug("Scheduled job for mesh messages fetching started");
         if (updateTimestamp()) {
@@ -35,7 +35,7 @@ public class MongoScheduler {
             LOGGER.info("Mesh messages fetching started");
 
             for (String messageId : meshClient.getInboxMessageIds()) {
-                meshClient.getMessage(messageId);
+                meshClient.getEdifactMessage(messageId);
             }
         } else {
             LOGGER.debug("Timestamp in {} collection is after five minutes ago, so it has not been modified", MESH_TIMESTAMP_COLLECTION_NAME);
