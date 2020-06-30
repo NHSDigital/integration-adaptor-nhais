@@ -119,3 +119,5 @@ nhais:
       -----END RSA PRIVATE KEY-----}
     recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:XX11=A91561OT001
       TES5=A91561OT002}
+  scheduler:
+    interval: ${NHAIS_SCHEDULER_INTERVAL:5}
