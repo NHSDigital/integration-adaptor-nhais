@@ -50,7 +50,7 @@ class ApprovalTransactionMapperTest {
     @Test
     void testGetTransactionType() {
         assertThat(new ApprovalTransactionMapper().getTransactionType())
-            .isEqualTo(ReferenceTransactionType.TransactionType.APPROVAL);
+            .isEqualTo(ReferenceTransactionType.TransactionType.IN_APPROVAL);
     }
 
 }

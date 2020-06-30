@@ -14,11 +14,11 @@ public class NotSupportedTransactionMapper implements TransactionMapper {
 
     @Override
     public void map(Parameters parameters, Transaction transaction) {
-        throw new UnsupportedOperationException("Transaction type " + transactionType + " is not supported");
+        throw new UnsupportedOperationException("Transaction type " + transactionType.name() + " is not supported");
     }
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        throw new UnsupportedOperationException("Transaction type " + transactionType + " is not supported");
+        throw new UnsupportedOperationException("Transaction type " + transactionType.name() + " is not supported");
     }
 }

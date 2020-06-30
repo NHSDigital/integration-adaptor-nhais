@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Getter @Setter
 public class ReferenceTransactionType extends Segment {
@@ -44,7 +48,7 @@ public class ReferenceTransactionType extends Segment {
     }
 
     public static ReferenceTransactionType fromString(String edifactString) {
-        if(!edifactString.startsWith(ReferenceTransactionType.KEY_QUALIFIER)){
+        if (!edifactString.startsWith(ReferenceTransactionType.KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + ReferenceTransactionType.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = Split.byColon(edifactString);
@@ -54,23 +58,28 @@ public class ReferenceTransactionType extends Segment {
     @Getter
     @RequiredArgsConstructor
     public enum TransactionType {
-        ACCEPTANCE("G1", "ACG"),
-        AMENDMENT("G2", "AMG"),
-        REMOVAL("G3", "REG"),
-        DEDUCTION("G4", "DER"),
-        REJECTION("F3", "REF"),
-        APPROVAL("F4", "APF");
+        OUT_ACCEPTANCE("G1", "ACG"),
+        OUT_AMENDMENT("G2", "AMG"),
+        OUT_REMOVAL("G3", "REG"),
+        OUT_DEDUCTION("G4", "DER"),
+        IN_AMENDMENT("F1", "XXX"),
+        IN_DEDUCTION("F2", "YYY"),
+        IN_REJECTION("F3", "REF"),
+        IN_APPROVAL("F4", "APF");
 
         private final String code;
         private final String abbreviation;
 
         public static TransactionType fromCode(String code){
             return Arrays.stream(TransactionType.values())
-                .filter(transactionType1 -> transactionType1.code.equals(code))
+                .filter(transactionType -> transactionType.code.equals(code))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
         }
 
+        @Override
+        public String toString() {
+            return name().toLowerCase().split("_")[1];
+        }
     }
-
 }

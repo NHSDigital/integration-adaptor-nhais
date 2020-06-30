@@ -10,8 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -28,7 +31,7 @@ class RejectionTransactionMapperTest {
 
     @Test
     void testMap(SoftAssertions softly) {
-        when(transaction.getFreeText()).thenReturn(freeText);
+        when(transaction.getFreeText()).thenReturn(Optional.of(freeText));
 
         when(freeText.getTextLiteral()).thenReturn(TEXT_LITERAL);
 
@@ -42,8 +45,16 @@ class RejectionTransactionMapperTest {
     }
 
     @Test
+    void whenFreeTextIsMissing_expectException(SoftAssertions softly) {
+        when(transaction.getFreeText()).thenReturn(Optional.empty());
+
+        softly.assertThatThrownBy(() -> new RejectionTransactionMapper().map(new Parameters(), transaction))
+            .isInstanceOf(EdifactValidationException.class);
+    }
+
+    @Test
     void testGetTransactionType() {
         assertThat(new RejectionTransactionMapper().getTransactionType())
-            .isEqualTo(ReferenceTransactionType.TransactionType.REJECTION);
+            .isEqualTo(ReferenceTransactionType.TransactionType.IN_REJECTION);
     }
 }

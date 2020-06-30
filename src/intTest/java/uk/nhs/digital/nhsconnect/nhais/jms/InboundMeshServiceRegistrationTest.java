@@ -1,13 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.assertj.core.api.SoftAssertions;
+import org.hl7.fhir.r4.model.Parameters;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -16,27 +15,25 @@ import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
-import org.assertj.core.api.SoftAssertions;
-import org.hl7.fhir.r4.model.Parameters;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.test.annotation.DirtiesContext;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @DirtiesContext
 public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
-    private static final String SENDER = "TES5";
-    private static final String RECIPIENT = "XX11";
+    private static final String SENDER = "XX11";
+    private static final String RECIPIENT = "TES5";
     private static final long SIS = 3;
-    private static final long SMS = 4;
-    private static final long TN = 18;
-    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.ACCEPTANCE;
+    private static final long SMS = 9;
+    private static final long TN = 13;
+    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(1992, 1, 14, 16, 19, 0, 0, TimestampService.UKZone)
+        .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
 
     @Value("classpath:edifact/registration.dat")
@@ -84,7 +81,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("OperationId"))
             .isEqualTo(OPERATION_ID);
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("TransactionType"))
-            .isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
+            .isEqualTo(TRANSACTION_TYPE.toString());
 
         var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
         softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);

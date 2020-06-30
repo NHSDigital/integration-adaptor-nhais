@@ -3,7 +3,7 @@
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
-      "valueString": "XX11"
+      "valueString": "TES5"
     },
     {
       "name": "patient",
@@ -13,7 +13,7 @@
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "2750922,295"
+              "value": "4826940,281"
             }
           }
         ],

@@ -19,8 +19,8 @@ public class Transaction extends Section {
     private final Optional<PersonName> personName =
         extractOptionalSegment(PersonName.KEY_QUALIFIER).map(PersonName::fromString);
     @Getter(lazy = true)
-    private final FreeText freeText =
-        FreeText.fromString(extractSegment(FreeText.KEY_QUALIFIER));
+    private final Optional<FreeText> freeText =
+        extractOptionalSegment(FreeText.KEY_QUALIFIER).map(FreeText::fromString);
 
     @Getter
     @Setter

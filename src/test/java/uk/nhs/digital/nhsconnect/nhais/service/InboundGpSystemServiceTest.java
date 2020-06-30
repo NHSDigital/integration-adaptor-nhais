@@ -44,7 +44,7 @@ public class InboundGpSystemServiceTest {
     public void testPublishToGpSupplierQueue() throws JMSException {
         Parameters parameters = new Parameters();
         String operationId = "123";
-        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.TransactionType.ACCEPTANCE;
+        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE;
         String jsonEncodedFhir = "{\"resourceType\":\"Parameters\"}";
         when(fhirParser.encodeToString(parameters)).thenReturn(jsonEncodedFhir);
 
@@ -60,6 +60,6 @@ public class InboundGpSystemServiceTest {
 
         verify(session).createTextMessage(eq(jsonEncodedFhir));
         verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
-        verify(textMessage).setStringProperty(eq("TransactionType"), eq(transactionType.name().toLowerCase()));
+        verify(textMessage).setStringProperty(eq("TransactionType"), eq(transactionType.toString()));
     }
 }

@@ -9,7 +9,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Delegates to a translator based on transaction type and other information
@@ -26,13 +29,11 @@ public class FhirToEdifactSegmentTranslator {
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
         switch (transactionType) {
-            case ACCEPTANCE:
+            case OUT_ACCEPTANCE:
                 return delegateAcceptance(parameters);
-            case AMENDMENT:
-            case REMOVAL:
-            case DEDUCTION:
-            case REJECTION:
-            case APPROVAL:
+            case OUT_AMENDMENT:
+            case OUT_REMOVAL:
+            case OUT_DEDUCTION:
             default:
                 return stubTranslator.translate(parameters);
         }

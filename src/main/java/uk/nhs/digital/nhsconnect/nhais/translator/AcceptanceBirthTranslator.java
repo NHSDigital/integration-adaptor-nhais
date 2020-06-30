@@ -52,7 +52,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //DTM+137
             emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)),
+            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE)),
             //S01
             emptyMapper(new SegmentGroup(1)),
             //RFF+TN

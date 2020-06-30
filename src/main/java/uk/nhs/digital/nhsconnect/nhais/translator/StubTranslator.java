@@ -38,7 +38,7 @@ public class StubTranslator implements FhirToEdifactTranslator {
             new BeginningOfMessage(),
             new NameAndAddress(getHaCipher(parameters), NameAndAddress.QualifierAndCode.FHS),
             new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE),
             new SegmentGroup(1),
             new ReferenceTransactionNumber()
         );

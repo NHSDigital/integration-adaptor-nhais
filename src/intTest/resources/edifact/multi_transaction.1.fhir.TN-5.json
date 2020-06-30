@@ -9,11 +9,17 @@
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "RAT56"
+          }
+        ],
         "generalPractitioner": [
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "4826940,281"
+              "value": "2750922,295"
             }
           }
         ],
