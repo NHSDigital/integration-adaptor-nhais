@@ -63,7 +63,13 @@ public class RegistrationConsumerService {
         return interchange.getMessages().stream()
             .map(Message::getTransactions)
             .flatMap(Collection::stream)
-            .filter(this::isNotDuplicate)
+            .filter(transaction -> {
+                boolean hasBeenProcessed = hasAlreadyBeenProcessed(transaction);
+                if (!hasBeenProcessed) {
+                    LOGGER.info("Skipping transaction {} as it has already been processed", transaction);
+                }
+                return !hasBeenProcessed;
+            })
             .collect(Collectors.toList());
     }
 
@@ -85,7 +91,7 @@ public class RegistrationConsumerService {
         return null;
     }
 
-    private boolean isNotDuplicate(Transaction transaction) {
+    private boolean hasAlreadyBeenProcessed(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
         var messageHeader = transaction.getMessage().getMessageHeader();
 
@@ -97,7 +103,7 @@ public class RegistrationConsumerService {
             messageHeader.getSequenceNumber(),
             transaction.getReferenceTransactionNumber().getTransactionNumber());
 
-        return inboundState.isEmpty();
+        return inboundState.isPresent();
     }
 
     private List<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<Transaction> transactions) {
