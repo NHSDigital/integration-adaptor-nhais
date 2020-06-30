@@ -57,8 +57,7 @@
               "ORPINGTON",
               "KENT"
             ],
-            "postalCode": "BR12 7ET",
-            "use": "home"
+            "postalCode": "BR12 7ET"
           },
           {
             "line": [
@@ -67,8 +66,7 @@
               "",
               "HORSFORTH",
               "LEEDS"
-            ],
-            "use": "old"
+            ]
           }
         ],
         "extension": [

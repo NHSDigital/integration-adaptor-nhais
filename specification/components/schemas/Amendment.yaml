@@ -1,0 +1,36 @@
+type: object
+description: Amendment request.
+properties:
+  nhsNumber:
+    type: string
+  gpCode:
+    type: string
+  gpTradingPartnerCode:
+    type: string
+  destinationHaCipher:
+    type: string
+  freeText:
+    type: string
+  patches:
+    type: array
+    items:
+      type: object
+      required:
+        - op
+        - path
+      properties:
+        op:
+          description: Add and replace are synonymous for GP Links messaging
+          type: string
+          enum: [remove,add,replace]
+        path:
+          description: The exact path to the item being patched. Supported paths are listed in the API endpont's description.
+          type: string
+          format: jsonpointer
+          externalDocs:
+            description: IETF RFC 6901 JavaScript Object Notation (JSON) Pointer.
+            url: https://tools.ietf.org/html/rfc6901
+        value:
+          description: The information to be added or replaced.
+          type: string
+          format: json
