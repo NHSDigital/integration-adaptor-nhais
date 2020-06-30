@@ -176,6 +176,8 @@ paths:
         * Blocked Route/Special District Marker
         * Walking Units
 
+
+
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
         | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
