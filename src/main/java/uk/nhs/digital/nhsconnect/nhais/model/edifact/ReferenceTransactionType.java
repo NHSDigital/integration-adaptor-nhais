@@ -62,8 +62,8 @@ public class ReferenceTransactionType extends Segment {
         OUT_AMENDMENT("G2", "AMG"),
         OUT_REMOVAL("G3", "REG"),
         OUT_DEDUCTION("G4", "DER"),
-        IN_AMENDMENT("F1", "XXX"),
-        IN_DEDUCTION("F2", "YYY"),
+        IN_AMENDMENT("F1", "AMF"),
+        IN_DEDUCTION("F2", "DEF"),
         IN_REJECTION("F3", "REF"),
         IN_APPROVAL("F4", "APF");
 
