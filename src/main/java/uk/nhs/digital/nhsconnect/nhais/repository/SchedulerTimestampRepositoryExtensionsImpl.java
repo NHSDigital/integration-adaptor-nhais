@@ -23,7 +23,8 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
         var query =  query(where("timestamp").lt(LocalDateTime.now().minusMinutes(updateTimestampParams.getMinutes()))
             .and("schedulerType").is(updateTimestampParams.getSchedulerType()));
 
-        var update = Update.update("timestamp", LocalDateTime.now()).set("schedulerType", "meshTimestamp");
+        var update = Update.update("timestamp", updateTimestampDetails.getTimestamp())
+            .set("schedulerType", updateTimestampDetails.getSchedulerType());
 
         var result = mongoOperations.upsert(query,
             update, "meshTimestamp");
