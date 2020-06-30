@@ -12,15 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MeshRequestsTest {
 
     private final MeshConfig meshConfig = new MeshConfig("mailboxId",
-            "password",
-            "SharedKey",
-            "https://localhost:8829/messageexchange/",
-            StringUtils.EMPTY,
-            StringUtils.EMPTY);
+        "password",
+        "SharedKey",
+        "https://localhost:8829/messageexchange/",
+        StringUtils.EMPTY,
+        StringUtils.EMPTY);
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
 
     @Test
-    void testGetMessageUsesHttpGetAndCreatesCorrectUri() {
+    void When_GettingMessage_Then_ExpectHttpGetAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.getMessage("messageId");
@@ -30,7 +30,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void testSendMessageUsesHttpPostAndCreatesCorrectUri() {
+    void When_SendingMessage_Then_ExpectHttpPostAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         String recipient = "recipient";
@@ -44,7 +44,17 @@ class MeshRequestsTest {
     }
 
     @Test
-    void testAcknowledgeMessageUsesHttpPutAndCreatesCorrectUri() {
+    void When_GettingMessageIds_Then_ExpectHttpGetAndCorrectUri() {
+        MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
+
+        var request = meshRequests.getMessageIds();
+
+        assertThat(request).isExactlyInstanceOf(HttpGet.class);
+        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/inbox");
+    }
+
+    @Test
+    void When_AcknowledgeMessage_Then_ExpectHttpPutAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.acknowledge("messageId");

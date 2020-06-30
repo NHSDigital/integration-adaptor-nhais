@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -34,8 +34,8 @@ public class MeshClient {
             try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
                     throw new MeshApiConnectionException("Couldn't send MESH message.",
-                            HttpStatus.ACCEPTED,
-                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.ACCEPTED,
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
                 return parseInto(MeshMessageId.class, response);
             }
@@ -44,12 +44,12 @@ public class MeshClient {
 
     @SneakyThrows
     public String getEdifactMessage(String messageId) {
-        try(CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            try(CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))){
-                if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()){
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+            try (CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))) {
+                if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
                     throw new MeshApiConnectionException("Couldn't download MESH message using id: " + messageId,
-                            HttpStatus.OK,
-                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.OK,
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
                 return EntityUtils.toString(response.getEntity());
             }
@@ -58,13 +58,22 @@ public class MeshClient {
 
     @SneakyThrows
     public void acknowledgeMessage(String messageId) {
-        try(CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            try(CloseableHttpResponse response = client.execute(meshRequests.acknowledge(messageId))){
-                if(response.getStatusLine().getStatusCode() != HttpStatus.OK.value()){
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+            try (CloseableHttpResponse response = client.execute(meshRequests.acknowledge(messageId))) {
+                if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
                     throw new MeshApiConnectionException("Couldn't acknowledge MESH message using id: " + messageId,
-                            HttpStatus.OK,
-                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.OK,
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
+            }
+        }
+    }
+
+    @SneakyThrows
+    public List<String> getInboxMessageIds() {
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+            try (CloseableHttpResponse response = client.execute(meshRequests.getMessageIds())) {
+                return Arrays.asList(parseInto(MeshMessages.class, response).getMessageIDs());
             }
         }
     }
@@ -74,10 +83,4 @@ public class MeshClient {
         JsonParser parser = objectMapper.reader().createParser(EntityUtils.toString(response.getEntity()));
         return objectMapper.readValue(parser, clazz);
     }
-
-    // TODO: stub, to be replaced by NIAD-265
-    public List<String> getInboxMessageIds() {
-        return Collections.emptyList();
-    }
-
 }
