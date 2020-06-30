@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
+@Disabled("NIAD-390")
 class RecepProducerServiceTest {
     private static final String RECEP_EXAMPLE_PATH = "/edifact/recep_example.txt";
     private static final String SENDER = "GP123";

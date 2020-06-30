@@ -2,14 +2,20 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.google.common.collect.Lists;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
@@ -29,25 +35,25 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
 
-    //TODO: NIAD-390
-//    @Test
-//    @DirtiesContext
-//    void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
-//        createOutboundStateRecords();
-//
-//        sendToMeshInboundQueue(new MeshMessage()
-//            .setWorkflowId(WorkflowId.RECEP)
-//            .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
-//
-//        var inboundState = waitFor(
-//            () -> inboundStateRepository
-//                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null, null)
-//                .orElse(null));
-//
-//        assertInboundState(softly, inboundState);
-//
-//        assertOutboundStateRecepUpdates(softly);
-//    }
+    @Disabled("NIAD-390")
+    @Test
+    @DirtiesContext
+    void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
+        createOutboundStateRecords();
+
+        sendToMeshInboundQueue(new MeshMessage()
+            .setWorkflowId(WorkflowId.RECEP)
+            .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
+
+        var inboundState = waitFor(
+            () -> inboundStateRepository
+                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null, null)
+                .orElse(null));
+
+        assertInboundState(softly, inboundState);
+
+        assertOutboundStateRecepUpdates(softly);
+    }
 
     private void assertOutboundStateRecepUpdates(SoftAssertions softly) {
         var expectedOutboundStateRef1 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_1, ReferenceMessageRecep.RecepCode.SUCCESS);
