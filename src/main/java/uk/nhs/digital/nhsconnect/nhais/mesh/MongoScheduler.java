@@ -20,7 +20,7 @@ public class MongoScheduler {
     private final MeshClient meshClient;
     private final SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
 
-    @Value("${nhais.scheduler.interval}")
+    @Value("${nhais.scheduler.intervalInSeconds}")
     private long seconds;
 
     private static final String SCHEDULER_TYPE = "meshTimestamp";
