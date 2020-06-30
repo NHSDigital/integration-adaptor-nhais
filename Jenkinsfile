@@ -29,7 +29,7 @@ pipeline {
                             sh label: 'Create logs directory', script: 'mkdir -p logs build'
                             sh label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .'
                             sh label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock --name nhais-tests local/nhais-tests:${BUILD_TAG} gradle check -i'
-                            sh label: 'copying test files', script: 'docker cp nhais-tests:/home/gradle/src/build/reports/tests/integrationTest ./test-reports'
+                            sh label: 'copying test files', script: 'docker cp nhais-tests:/home/gradle/src/build ./test-reports'
                         }
                     }
                 }
