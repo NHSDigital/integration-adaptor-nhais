@@ -6,7 +6,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
@@ -20,7 +19,7 @@ public class RecepProducerService {
 
     private final SequenceService sequenceService;
 
-    public Recep produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
+    public List<Segment> produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
         //TODO: NIAD-390
 //        var segments = mapEdifactToRecep(receivedInterchangeFromHa);
 //
@@ -30,7 +29,7 @@ public class RecepProducerService {
         throw new NotImplementedException();
     }
 
-    private String toEdifact(List<Segment> segments) {
+    public String toEdifact(List<Segment> segments) {
         return segments.stream()
             .map(Segment::toEdifact)
             .collect(Collectors.joining("\n"));

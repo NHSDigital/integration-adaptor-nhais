@@ -11,7 +11,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -87,9 +86,6 @@ public class RegistrationConsumerServiceTest {
 
     @InjectMocks
     RegistrationConsumerService registrationConsumerService;
-
-    @Mock
-    Recep recep;
 
     @Mock
     Interchange interchange;

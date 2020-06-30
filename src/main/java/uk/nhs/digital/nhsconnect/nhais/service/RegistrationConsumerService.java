@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -133,11 +132,11 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private MeshMessage buildRecepMeshMessage(Recep recep) {
-        return new MeshMessage()
-            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
-            .setOdsCode("ods123")
-            .setWorkflowId(WorkflowId.RECEP)
-            .setContent(recep.toEdifact());
-    }
+//    private MeshMessage buildRecepMeshMessage(Recep recep) {
+//        return new MeshMessage()
+//            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
+//            .setOdsCode("ods123")
+//            .setWorkflowId(WorkflowId.RECEP)
+//            .setContent(recep.toEdifact());
+//    }
 }

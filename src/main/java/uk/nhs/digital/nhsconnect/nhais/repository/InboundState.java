@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -59,10 +59,10 @@ public class InboundState {
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }
 
-    public static InboundState fromRecep(Recep recep) {
-        var interchangeHeader = recep.getInterchangeHeader();
+    public static InboundState fromRecep(Message recep) {
+        var interchangeHeader = recep.getInterchange().getInterchangeHeader();
         var messageHeader = recep.getMessageHeader();
-        var dateTimePeriod = recep.getDateTimePeriod();
+        var dateTimePeriod = recep.getTranslationDateTime();
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
