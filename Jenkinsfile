@@ -55,7 +55,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/test-reports/*.*'
+                    junit '**/test-reports/**/*.xml'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
 //                     sh label: 'Create logs directory', script: 'mkdir logs'
 //                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
