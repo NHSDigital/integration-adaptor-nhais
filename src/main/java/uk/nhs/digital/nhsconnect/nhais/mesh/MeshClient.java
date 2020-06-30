@@ -83,8 +83,4 @@ public class MeshClient {
         JsonParser parser = objectMapper.reader().createParser(EntityUtils.toString(response.getEntity()));
         return objectMapper.readValue(parser, clazz);
     }
-
-    private MeshApiConnectionException sendMessageError(CloseableHttpResponse response) throws IOException {
-        return new MeshApiConnectionException("Couldn't send MESH message. Expected status code: " + HttpStatus.ACCEPTED.value() + ", but received: " + response.getStatusLine().getStatusCode());
-    }
 }
