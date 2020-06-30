@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-public interface SchedulerTimestampRepositoryExtentions {
+public interface SchedulerTimestampRepositoryExtensions {
     boolean updateTimestamp(
-        SchedulerTimestampRepositoryExtentions.UpdateTimestampParams updateTimestampParams,
-        SchedulerTimestampRepositoryExtentions.UpdateTimestampDetails updateTimestampDetails);
+        SchedulerTimestampRepositoryExtensions.UpdateTimestampParams updateTimestampParams,
+        SchedulerTimestampRepositoryExtensions.UpdateTimestampDetails updateTimestampDetails);
 
     @RequiredArgsConstructor
     @Getter

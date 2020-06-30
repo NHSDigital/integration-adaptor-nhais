@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTimestampRepositoryExtentions{
+public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTimestampRepositoryExtensions {
 
     private final MongoOperations mongoOperations;
 

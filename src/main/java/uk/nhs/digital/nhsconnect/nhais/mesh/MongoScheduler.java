@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepositoryExtensionsImpl;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepositoryExtentions;
+import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepositoryExtensions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +17,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MongoScheduler {
 
-    private MongoOperations mongoOperations;
-    private MeshClient meshClient;
-    private SchedulerTimestampRepository schedulerTimestampRepository;
+    private final MongoOperations mongoOperations;
+    private final MeshClient meshClient;
+    private final SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
 
     @Value("${nhais.scheduler.interval}")
     private long minutes;
@@ -46,10 +44,10 @@ public class MongoScheduler {
     }
 
     private boolean updateTimestamp() {
-            var queryParams = new SchedulerTimestampRepositoryExtensionsImpl.UpdateTimestampParams(
+            var queryParams = new SchedulerTimestampRepositoryExtensions.UpdateTimestampParams(
                 SCHEDULER_TYPE, minutes);
 
-            var timestampDetails = new SchedulerTimestampRepositoryExtentions.UpdateTimestampDetails(
+            var timestampDetails = new SchedulerTimestampRepositoryExtensions.UpdateTimestampDetails(
                 SCHEDULER_TYPE, LocalDateTime.now());
             return schedulerTimestampRepository.updateTimestamp(queryParams, timestampDetails);
 

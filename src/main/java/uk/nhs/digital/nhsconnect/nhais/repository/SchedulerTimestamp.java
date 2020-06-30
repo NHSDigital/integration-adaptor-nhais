@@ -10,13 +10,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @CompoundIndexes({
     @CompoundIndex(
-        name = "unique_document",
-        def = "{'timestamp' : 1, 'schedulerType': 1}",
+        name = "unique_document1",
+        def = "{'updateTimestamp' : 1, 'schedulerType': 1}",
         unique = true)
 })
 @Data
 @Document
 public class SchedulerTimestamp {
-    private String schedulerType;
-    private Instant timestamp;
+    private final String schedulerType;
+    private final Instant updateTimestamp;
 }
