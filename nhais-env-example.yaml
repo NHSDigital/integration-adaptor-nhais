@@ -20,3 +20,5 @@ NHAIS_MESH_ENDPOINT_PRIVATE_KEY: | #The content of the endpoint private key
   #keep 2 spaces indent for whole key
   -----END RSA PRIVATE KEY-----
 
+#scheduler settings
+NHAIS_SCHEDULER_INTERVAL: 5
