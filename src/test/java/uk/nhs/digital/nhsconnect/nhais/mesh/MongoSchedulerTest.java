@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.UpdateResult;
 
 import java.util.List;
@@ -71,7 +70,7 @@ public class MongoSchedulerTest {
     @Test
     public void WhenDocumentExistsAndTimestampIsBeforeFiveMinutesAgoThenDocumentIsUpdateAndTheJobIsExecuted() {
         when(meshClient.getInboxMessageIds()).thenReturn(List.of("messageId"));
-        when(meshClient.getMessage("messageId")).thenReturn("something");
+        when(meshClient.getEdifactMessage("messageId")).thenReturn("something");
 
         when(mongoOperations.collectionExists(MESH_TIMESTAMP)).thenReturn(true);
         when(mongoOperations.getCollection(MESH_TIMESTAMP)).thenReturn(mongoCollection);
@@ -81,7 +80,7 @@ public class MongoSchedulerTest {
 
         mongoScheduler.updateConditionally();
 
-        verify(meshClient).getMessage(any(String.class));
+        verify(meshClient).getEdifactMessage(any(String.class));
     }
 
     @Test
