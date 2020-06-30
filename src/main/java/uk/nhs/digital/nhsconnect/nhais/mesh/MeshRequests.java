@@ -27,6 +27,12 @@ public class MeshRequests {
         return request;
     }
 
+    public HttpGet getMessageIds(){
+        var request = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox");
+        request.setHeaders(meshHeaders.createMinimalHeaders());
+        return request;
+    }
+
     public HttpPut acknowledge(String messageId){
         var request = new HttpPut(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox/" + messageId + "/status/acknowledged");
         request.setHeaders(meshHeaders.createMinimalHeaders());

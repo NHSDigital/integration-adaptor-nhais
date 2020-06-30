@@ -1,12 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
-import java.time.LocalDateTime;
-
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
-
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -14,7 +9,10 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.client.result.UpdateResult;
+import java.time.LocalDateTime;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Component
 @Slf4j
