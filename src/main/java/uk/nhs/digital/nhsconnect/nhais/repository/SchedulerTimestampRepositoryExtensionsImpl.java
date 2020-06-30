@@ -12,22 +12,27 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.DuplicateKeyException;
+
 @Repository
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTimestampRepositoryExtensions {
 
+    private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
+    private static final String TIMESTAMP = "timestamp";
+    private static final String SCHEDULER_TYPE = "schedulerType";
+
     private final MongoOperations mongoOperations;
 
     @Override
-    public boolean updateTimestamp(UpdateTimestampParams updateTimestampParams, UpdateTimestampDetails updateTimestampDetails) {
-        var query =  query(where("timestamp").lt(LocalDateTime.now().minusMinutes(updateTimestampParams.getMinutes()))
-            .and("schedulerType").is(updateTimestampParams.getSchedulerType()));
+    public boolean updateTimestamp(String schedulerType, LocalDateTime timestamp, long seconds) {
+        var query =  query(where(TIMESTAMP).lt(LocalDateTime.now().minusSeconds(seconds))
+            .and(SCHEDULER_TYPE).is(schedulerType));
 
-        var update = Update.update("timestamp", updateTimestampDetails.getTimestamp())
-            .set("schedulerType", updateTimestampDetails.getSchedulerType());
+        var update = Update.update(TIMESTAMP, timestamp)
+            .set(SCHEDULER_TYPE, schedulerType);
 
-        var result = mongoOperations.upsert(query,
-            update, "meshTimestamp");
+        var result = mongoOperations.upsert(query, update, MESH_TIMESTAMP_COLLECTION_NAME);
 
         return result.getModifiedCount() == 1L;
     }

@@ -51,4 +51,4 @@ nhais:
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
     recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:}
   scheduler:
-    interval: ${NHAIS_SCHEDULER_INTERVAL:5}
+    interval: ${NHAIS_SCHEDULER_INTERVAL:300}

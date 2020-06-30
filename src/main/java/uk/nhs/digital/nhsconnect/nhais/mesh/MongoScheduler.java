@@ -21,13 +21,12 @@ public class MongoScheduler {
     private final SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
 
     @Value("${nhais.scheduler.interval}")
-    private long minutes;
+    private long seconds;
 
     private static final String SCHEDULER_TYPE = "meshTimestamp";
     private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
 
-    @Scheduled(fixedRate = 6000)
-    //TODO: set to 60_000
+    @Scheduled(fixedRate = 60000)
     public void updateConditionally() {
         LOGGER.debug("Scheduled job for mesh messages fetching started");
         if (updateTimestamp()) {
@@ -38,18 +37,13 @@ public class MongoScheduler {
                 meshClient.getEdifactMessage(messageId);
             }
         } else {
-            LOGGER.debug("Timestamp in {} collection is after five minutes ago, so it has not been modified", MESH_TIMESTAMP_COLLECTION_NAME);
+            LOGGER.debug("Timestamp in {} collection is after {} seconds ago, so it has not been modified", MESH_TIMESTAMP_COLLECTION_NAME, seconds);
             LOGGER.info("Mesh messages fetching is postponed: another application instance is fetching now");
         }
     }
 
     private boolean updateTimestamp() {
-            var queryParams = new SchedulerTimestampRepositoryExtensions.UpdateTimestampParams(
-                SCHEDULER_TYPE, minutes);
-
-            var timestampDetails = new SchedulerTimestampRepositoryExtensions.UpdateTimestampDetails(
-                SCHEDULER_TYPE, LocalDateTime.now());
-            return schedulerTimestampRepository.updateTimestamp(queryParams, timestampDetails);
+            return schedulerTimestampRepository.updateTimestamp(SCHEDULER_TYPE, LocalDateTime.now(), seconds);
 
     }
 }
