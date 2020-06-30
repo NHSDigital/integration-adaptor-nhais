@@ -53,8 +53,7 @@
               "ST PAULS CRAY",
               "ORPINGTON",
               "KENT"
-            ],
-            "use": "home"
+            ]
           },
           {
             "line": [
@@ -63,8 +62,7 @@
               null,
               "HORSFORTH",
               "LEEDS"
-            ],
-            "use": "old"
+            ]
           }
         ],
         "extension": [

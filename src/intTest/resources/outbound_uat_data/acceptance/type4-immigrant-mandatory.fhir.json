@@ -53,8 +53,7 @@
               null,
               "BROMLEY",
               "KENT"
-            ],
-            "use": "home"
+            ]
           }
         ],
         "resourceType": "Patient"
