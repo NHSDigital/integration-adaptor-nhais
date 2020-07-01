@@ -1605,7 +1605,7 @@ as such and further amendments from NHAIS will not reference this operation id.
 </p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/fhir/Patient/{id}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/fhir/Patient</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1626,7 +1626,7 @@ as such and further amendments from NHAIS will not reference this operation id.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-amendment-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH "https://localhost/fhir/Patient/{id}"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH "https://localhost/fhir/Patient"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-amendment-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -1642,10 +1642,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(id, amendment);
+            apiInstance.amendment(amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1662,10 +1661,9 @@ public class PatientsApiExample {
 
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(id, amendment);
+            apiInstance.amendment(amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1678,14 +1676,12 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *id = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-Amendment *amendment = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Amendment *amendment = ; // 
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
-[apiInstance amendmentWith:id
-    amendment:amendment
+[apiInstance amendmentWith:amendment
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1698,7 +1694,6 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
-var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var amendment = ; // {Amendment} 
 
 var callback = function(error, data, response) {
@@ -1708,7 +1703,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.amendment(id, amendment, callback);
+api.amendment(amendment, callback);
 </code></pre>
                             </div>
 
@@ -1730,13 +1725,12 @@ namespace Example
         {
             
             var apiInstance = new PatientsApi();
-            var id = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var amendment = new Amendment(); // Amendment | 
 
             try
             {
                 // Amend patient details (Amendment transaction)
-                apiInstance.amendment(id, amendment);
+                apiInstance.amendment(amendment);
             }
             catch (Exception e)
             {
@@ -1753,11 +1747,10 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
-$id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $amendment = ; // Amendment | 
 
 try {
-    $api_instance->amendment($id, $amendment);
+    $api_instance->amendment($amendment);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->amendment: ', $e->getMessage(), PHP_EOL;
 }
@@ -1770,11 +1763,10 @@ use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
-my $id = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
 
 eval { 
-    $api_instance->amendment(id => $id, amendment => $amendment);
+    $api_instance->amendment(amendment => $amendment);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->amendment: $@\n";
@@ -1790,12 +1782,11 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
-id = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 amendment =  # Amendment | 
 
 try: 
     # Amend patient details (Amendment transaction)
-    api_instance.amendment(id, amendment)
+    api_instance.amendment(amendment)
 except ApiException as e:
     print("Exception when calling PatientsApi->amendment: %s\n" % e)</code></pre>
                             </div>
@@ -1804,11 +1795,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate PatientsApi;
 
 pub fn main() {
-    let id = 9000000009; // String
     let amendment = ; // Amendment
 
     let mut context = PatientsApi::Context::default();
-    let result = client.amendment(id, amendment, &context).wait();
+    let result = client.amendment(amendment, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1823,36 +1813,6 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">id*</td>
-<td>
-
-
-    <div id="d2e199_amendment_id">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
 
 
                             <div class="methodsubtabletitle">Body parameters</div>
@@ -2060,7 +2020,7 @@ to match against the asynchronous reply from NHAIS
 </p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/fhir/Patient/{id}/$nhais.deduction</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/fhir/Patient/$nhais.deduction</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2081,7 +2041,7 @@ to match against the asynchronous reply from NHAIS
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-deduction-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/{id}/$nhais.deduction"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/$nhais.deduction"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-deduction-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -2097,10 +2057,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Parameters parameters = ; // Parameters | 
         try {
-            apiInstance.deduction(id, parameters);
+            apiInstance.deduction(parameters);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2117,10 +2076,9 @@ public class PatientsApiExample {
 
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Parameters parameters = ; // Parameters | 
         try {
-            apiInstance.deduction(id, parameters);
+            apiInstance.deduction(parameters);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2133,14 +2091,12 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-deduction-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *id = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-Parameters *parameters = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Deduct a patient (Deduction transaction)
-[apiInstance deductionWith:id
-    parameters:parameters
+[apiInstance deductionWith:parameters
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2153,7 +2109,6 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
-var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var parameters = ; // {Parameters} 
 
 var callback = function(error, data, response) {
@@ -2163,7 +2118,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deduction(id, parameters, callback);
+api.deduction(parameters, callback);
 </code></pre>
                             </div>
 
@@ -2185,13 +2140,12 @@ namespace Example
         {
             
             var apiInstance = new PatientsApi();
-            var id = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var parameters = new Parameters(); // Parameters | 
 
             try
             {
                 // Deduct a patient (Deduction transaction)
-                apiInstance.deduction(id, parameters);
+                apiInstance.deduction(parameters);
             }
             catch (Exception e)
             {
@@ -2208,11 +2162,10 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
-$id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $parameters = ; // Parameters | 
 
 try {
-    $api_instance->deduction($id, $parameters);
+    $api_instance->deduction($parameters);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->deduction: ', $e->getMessage(), PHP_EOL;
 }
@@ -2225,11 +2178,10 @@ use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
-my $id = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
 
 eval { 
-    $api_instance->deduction(id => $id, parameters => $parameters);
+    $api_instance->deduction(parameters => $parameters);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->deduction: $@\n";
@@ -2245,12 +2197,11 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
-id = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 parameters =  # Parameters | 
 
 try: 
     # Deduct a patient (Deduction transaction)
-    api_instance.deduction(id, parameters)
+    api_instance.deduction(parameters)
 except ApiException as e:
     print("Exception when calling PatientsApi->deduction: %s\n" % e)</code></pre>
                             </div>
@@ -2259,11 +2210,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate PatientsApi;
 
 pub fn main() {
-    let id = 9000000009; // String
     let parameters = ; // Parameters
 
     let mut context = PatientsApi::Context::default();
-    let result = client.deduction(id, parameters, &context).wait();
+    let result = client.deduction(parameters, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2278,36 +2228,6 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">id*</td>
-<td>
-
-
-    <div id="d2e199_deduction_id">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
 
 
                             <div class="methodsubtabletitle">Body parameters</div>
@@ -2478,7 +2398,7 @@ The request payload is a Parameters list with the following parameters:
 </p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/fhir/Patient/{id}/$nhais.removal</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/fhir/Patient/$nhais.removal</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2499,7 +2419,7 @@ The request payload is a Parameters list with the following parameters:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-removal-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/{id}/$nhais.removal"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/$nhais.removal"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-removal-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -2515,10 +2435,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Parameters parameters = ; // Parameters | 
         try {
-            apiInstance.removal(id, parameters);
+            apiInstance.removal(parameters);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2535,10 +2454,9 @@ public class PatientsApiExample {
 
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
-        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Parameters parameters = ; // Parameters | 
         try {
-            apiInstance.removal(id, parameters);
+            apiInstance.removal(parameters);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2551,14 +2469,12 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-removal-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *id = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
-Parameters *parameters = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Removal (Out of Area)
-[apiInstance removalWith:id
-    parameters:parameters
+[apiInstance removalWith:parameters
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2571,7 +2487,6 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
-var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var parameters = ; // {Parameters} 
 
 var callback = function(error, data, response) {
@@ -2581,7 +2496,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.removal(id, parameters, callback);
+api.removal(parameters, callback);
 </code></pre>
                             </div>
 
@@ -2603,13 +2518,12 @@ namespace Example
         {
             
             var apiInstance = new PatientsApi();
-            var id = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var parameters = new Parameters(); // Parameters | 
 
             try
             {
                 // Removal (Out of Area)
-                apiInstance.removal(id, parameters);
+                apiInstance.removal(parameters);
             }
             catch (Exception e)
             {
@@ -2626,11 +2540,10 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
-$id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $parameters = ; // Parameters | 
 
 try {
-    $api_instance->removal($id, $parameters);
+    $api_instance->removal($parameters);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->removal: ', $e->getMessage(), PHP_EOL;
 }
@@ -2643,11 +2556,10 @@ use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
-my $id = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
 
 eval { 
-    $api_instance->removal(id => $id, parameters => $parameters);
+    $api_instance->removal(parameters => $parameters);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->removal: $@\n";
@@ -2663,12 +2575,11 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
-id = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 parameters =  # Parameters | 
 
 try: 
     # Removal (Out of Area)
-    api_instance.removal(id, parameters)
+    api_instance.removal(parameters)
 except ApiException as e:
     print("Exception when calling PatientsApi->removal: %s\n" % e)</code></pre>
                             </div>
@@ -2677,11 +2588,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate PatientsApi;
 
 pub fn main() {
-    let id = 9000000009; // String
     let parameters = ; // Parameters
 
     let mut context = PatientsApi::Context::default();
-    let result = client.removal(id, parameters, &context).wait();
+    let result = client.removal(parameters, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2696,36 +2606,6 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">id*</td>
-<td>
-
-
-    <div id="d2e199_removal_id">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    String
-                </span>
-
-                    <div class="inner description marked">
-The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-                    </div>
-            </div>
-                <div class="inner required">
-                    Required
-                </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
 
 
                             <div class="methodsubtabletitle">Body parameters</div>

@@ -48,9 +48,7 @@ servers:
 tags:
   - name: patients
 paths:
-  '/fhir/Patient/{id}/$nhais.deduction':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient/$nhais.deduction':
     post:
       description: |
         ## Status
@@ -129,9 +127,7 @@ paths:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-  '/fhir/Patient/{id}/$nhais.removal':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient/$nhais.removal':
     post:
       description: |
         ## Status
@@ -308,9 +304,7 @@ paths:
                   summary: The request payload is invalid
                   value:
                     $ref: components/examples/responses/400-bad-request.json
-  '/fhir/Patient/{id}':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient':
     patch:
       description: |
         ## Status
