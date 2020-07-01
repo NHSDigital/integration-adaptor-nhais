@@ -48,7 +48,7 @@ servers:
 tags:
   - name: patients
 paths:
-  '/fhir/Patient/{id}/$nhais.deduction':
+  '/fhir/Patient/$nhais.deduction':
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
@@ -61,19 +61,49 @@ paths:
 
         Use this endpoint to send a Deduction transaction to NHAIS.
 
+        ## Supported Fields
+
+        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
+
+        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+
+        | GP Links Data Item      | Deduction |
+        |-------------------------|-----------|
+        | Transaction Type        | REQUIRED  |
+        | GP Code                 | REQUIRED  |
+        | GP Trading Partner Code | REQUIRED  |
+        | Destinaton HA Cipher    | REQUIRED  |
+        | NHS Number              | REQUIRED  |
+        | Date of Deduction       | REQUIRED  |
+        | Reason for Deduction    | REQUIRED  |
+        | GP Notes                | OPTIONAL  |
+
+        ## FHIR Field Mappings
+
+        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                      |
+        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|--------------------------------------------|
+        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method              |
+        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                            |
+        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                            |
+        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
+        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
+        | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
+        | Reason for Deduction    | Parameter     | reasonForDeduction                       | valueString              |                                    | See table below for deduction reason codes |
+        | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
+
+        **Deduction Reason Codes**
+
+        | Deduction Reason Code | Description  |
+        |-----------------------|--------------|
+        | 1                     | Death        |
+        | 5                     | Emigrated    |
+        | 13                    | Other reason |
+
         ## Operation Id
 
-        When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
+        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
         to match against the asynchronous reply from NHAIS
-
-        ## Payload Description
-
-        The request payload is a Parameters list. The list must contain parameters with the following names and values:
-
-        * `patient`: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * `deductionReason`: simple parameter with `valueString` one of: death, emigrated, other
-        * `deductionDate`: simple parameter with `valueDate` the date (no time) of the deduction in ISO format
-        * `freeText`: simple parameter with `valueString` a brief, free-text reason for the deduction
 
       summary: Deduct a patient (Deduction transaction)
       operationId: deduction
@@ -379,8 +409,8 @@ paths:
 
         ## Operation Id
 
-        An amendment request will produce an operation id in the response headers. This operation id MUST be retained
-        to match against the asynchronous reply from NHAIS
+        An amendment request will produce an operation id in the response headers. Amendments do not solicit replies
+        as such and further amendments from NHAIS will not reference this operation id.
 
       summary: Amend patient details (Amendment transaction)
       operationId: amendment
