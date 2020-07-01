@@ -14,10 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepositoryExtensions;
+import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 @ExtendWith(MockitoExtension.class)
 public class MongoSchedulerTest {
@@ -32,18 +33,23 @@ public class MongoSchedulerTest {
     private MeshClient meshClient;
 
     @Mock
-    private SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
+    private SchedulerTimestampRepository schedulerTimestampRepository;
+
+    @Mock
+    private TimestampService timestampService;
 
     @Test
     public void WhenCollectionIsEmptyThenSingleDocumentIsCreatedAndTheJobIsNotExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(false);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
+        when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         mongoScheduler.updateConditionally();
         verifyNoInteractions(meshClient);
     }
 
     @Test
     public void WhenDocumentExistsAndTimestampIsBeforeFiveMinutesAgoThenDocumentIsUpdateAndTheJobIsExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(true);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(true);
+        when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
         when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(EDIFACT_MESSAGE);
         mongoScheduler.updateConditionally();
@@ -52,7 +58,8 @@ public class MongoSchedulerTest {
 
     @Test
     public void WhenDocumentExistsAndTimestampIsAfterFiveMinutesAgoThenDocumentIsNotUpdateAndTheJobIsNotExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(false);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
+        when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         mongoScheduler.updateConditionally();
         verifyNoInteractions(meshClient);
     }

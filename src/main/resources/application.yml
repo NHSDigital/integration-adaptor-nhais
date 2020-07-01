@@ -51,4 +51,5 @@ nhais:
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
     recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:}
   scheduler:
-    intervalInSeconds: ${NHAIS_SCHEDULER_INTERVAL_IN_SECONDS:300}
+    overlapIntervalInSeconds: ${NHAIS_SCHEDULER_OVERLAP_INTERVAL_IN_SECONDS:300}
+    intervalInMilliSeconds: ${NHAIS_SCHEDULER_INTERVAL_IN_MILLISECONDS:6000}
