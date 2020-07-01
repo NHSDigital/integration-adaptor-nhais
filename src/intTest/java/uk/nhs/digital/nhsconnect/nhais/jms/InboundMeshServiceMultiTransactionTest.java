@@ -2,15 +2,16 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -25,6 +26,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static org.mockito.Mockito.when;
+import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
 public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest {
@@ -56,29 +60,34 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
 
+    private static final Instant RECEP_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+        .toInstant();
+    private static final String ISO_RECEP_SEND_TIMESTAMP = new TimestampService().formatInISO(RECEP_TIMESTAMP);
+
+    @MockBean
+    private TimestampService timestampService;
     @Value("classpath:edifact/multi_transaction.1.dat")
     private Resource interchange;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-1.json")
     private Resource fhirTN1;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-2.json")
     private Resource fhirTN2;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-3.json")
     private Resource fhirTN3;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-4.json")
     private Resource fhirTN4;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-5.json")
     private Resource fhirTN5;
-
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-6.json")
     private Resource fhirTN6;
-
     @Value("classpath:edifact/multi_transaction.1.recep.dat")
     private Resource recep;
+
+    @BeforeEach
+    void setUp() {
+        when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
+        when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
+    }
 
     @Test
     @DirtiesContext
@@ -95,8 +104,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
         assertGpSystemInboundQueueMessages(softly);
 
-        //TODO: NIAD-390s
-//        assertOutboundQueueRecepMessage(softly);
+        assertOutboundQueueRecepMessage(softly);
     }
 
     private List<InboundState> getAllInboundStates() {
@@ -122,13 +130,13 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
-        var gpSystemInboundQueueMessage = getOutboundQueueMessage();
+        var outboundQueueMessage = getOutboundQueueMessage();
 
-        var meshMessage = parseOutboundMessage(gpSystemInboundQueueMessage);
+        var meshMessage = parseOutboundMessage(outboundQueueMessage);
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        softly.assertThat(meshMessage.getMessageSentTimestamp()).isNotNull();
+        softly.assertThat(meshMessage.getMessageSentTimestamp()).isEqualTo(ISO_RECEP_SEND_TIMESTAMP);
         //TODO: other assertions on recep message
     }
 
@@ -205,7 +213,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = InboundMeshService.readMessage(message);
+        var body = readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }
 }

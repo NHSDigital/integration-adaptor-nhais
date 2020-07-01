@@ -11,7 +11,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -21,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+
+import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
 public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
@@ -60,8 +61,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
         assertGpSystemInboundQueueMessage(softly);
 
-        //TODO: NIAD-390
-//        assertOutboundQueueRecepMessage(softly);
+        assertOutboundQueueRecepMessage(softly);
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
@@ -103,7 +103,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = InboundMeshService.readMessage(message);
+        var body = readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }
 }
