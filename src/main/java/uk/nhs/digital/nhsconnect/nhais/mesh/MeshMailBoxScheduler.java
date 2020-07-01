@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class MailBoxScheduler {
+public class MeshMailBoxScheduler {
 
     private final SchedulerTimestampRepository schedulerTimestampRepository;
     private final TimestampService timestampService;

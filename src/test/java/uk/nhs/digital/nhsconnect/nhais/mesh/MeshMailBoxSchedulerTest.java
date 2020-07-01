@@ -18,10 +18,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MailBoxSchedulerTest {
+public class MeshMailBoxSchedulerTest {
 
     @InjectMocks
-    MailBoxScheduler mailBoxScheduler;
+    MeshMailBoxScheduler meshMailBoxScheduler;
 
     @Mock
     private SchedulerTimestampRepository schedulerTimestampRepository;
@@ -40,7 +40,7 @@ public class MailBoxSchedulerTest {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
-        boolean hasTimePassed = mailBoxScheduler.hasTimePassed(5);
+        boolean hasTimePassed = meshMailBoxScheduler.hasTimePassed(5);
 
         assertThat(hasTimePassed).isFalse();
     }
@@ -53,7 +53,7 @@ public class MailBoxSchedulerTest {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(true);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
-        boolean hasTimePassed = mailBoxScheduler.hasTimePassed(5);
+        boolean hasTimePassed = meshMailBoxScheduler.hasTimePassed(5);
 
         assertThat(hasTimePassed).isTrue();
     }
@@ -66,7 +66,7 @@ public class MailBoxSchedulerTest {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
-        boolean hasTimePassed = mailBoxScheduler.hasTimePassed(5);
+        boolean hasTimePassed = meshMailBoxScheduler.hasTimePassed(5);
 
         assertThat(hasTimePassed).isFalse();
     }
@@ -77,7 +77,7 @@ public class MailBoxSchedulerTest {
         when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("false");
         when(applicationContext.getEnvironment()).thenReturn(environment);
 
-        boolean hasTimePassed = mailBoxScheduler.hasTimePassed(5);
+        boolean hasTimePassed = meshMailBoxScheduler.hasTimePassed(5);
 
         assertThat(hasTimePassed).isFalse();
     }

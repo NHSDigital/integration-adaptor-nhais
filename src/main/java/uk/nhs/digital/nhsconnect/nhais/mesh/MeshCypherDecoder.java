@@ -1,25 +1,32 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+
 @Component
-@AllArgsConstructor
-@NoArgsConstructor
 public class MeshCypherDecoder {
 
-    private EdifactParser edifactParser;
+    private final EdifactParser edifactParser;
 
     @Value("${nhais.mesh.cypherToMailbox}")
-    private String cypherToMailbox;
+    private final String cypherToMailbox;
+
+    @Autowired
+    public MeshCypherDecoder(EdifactParser edifactParser,
+                             @Value("${nhais.mesh.cypherToMailbox}") String cypherToMailbox) {
+        this.edifactParser = edifactParser;
+        this.cypherToMailbox = cypherToMailbox;
+    }
 
     public String getRecipient(MeshMessage meshMessage) {
         Map<String, String> mappings = createMappings();
