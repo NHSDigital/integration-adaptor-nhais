@@ -40,7 +40,7 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
 
           return updateSuccessful(result);
         } else {
-            LOGGER.info("{} collection does not exits or it is empty. Document with timestamp will be created", MESH_TIMESTAMP_COLLECTION_NAME);
+            LOGGER.info("{} collection does not exist or it is empty. Document with timestamp will be created", MESH_TIMESTAMP_COLLECTION_NAME);
             Document document = new Document();
             document.put(SCHEDULER_TYPE, schedulerType);
             document.put(TIMESTAMP_FIELD_NAME, LocalDateTime.now());
