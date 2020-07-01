@@ -25,14 +25,12 @@ public class FhirToEdifactSegmentTranslator {
     private final StubTranslator stubTranslator;
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
-        switch (transactionType) {
+        switch ((ReferenceTransactionType.Outbound) transactionType) {
             case ACCEPTANCE:
                 return delegateAcceptance(parameters);
             case AMENDMENT:
             case REMOVAL:
             case DEDUCTION:
-            case REJECTION:
-            case APPROVAL:
             default:
                 return stubTranslator.translate(parameters);
         }

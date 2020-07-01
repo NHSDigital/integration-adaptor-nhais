@@ -1,14 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.hl7.fhir.r4.model.Parameters;
@@ -16,6 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -23,18 +25,18 @@ class RejectionTransactionMapperTest {
 
     private static final String TEXT_LITERAL = "some_text_literal";
     @Mock
-    Interchange interchange;
+    Transaction transaction;
     @Mock
     FreeText freeText;
 
     @Test
     void testMap(SoftAssertions softly) {
-        when(interchange.getFreeText()).thenReturn(freeText);
+        when(transaction.getFreeText()).thenReturn(Optional.of(freeText));
 
         when(freeText.getTextLiteral()).thenReturn(TEXT_LITERAL);
 
         var parameters = new Parameters();
-        new RejectionTransactionMapper().map(parameters, interchange);
+        new RejectionTransactionMapper().map(parameters, transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -43,8 +45,16 @@ class RejectionTransactionMapperTest {
     }
 
     @Test
+    void whenFreeTextIsMissing_expectException(SoftAssertions softly) {
+        when(transaction.getFreeText()).thenReturn(Optional.empty());
+
+        softly.assertThatThrownBy(() -> new RejectionTransactionMapper().map(new Parameters(), transaction))
+            .isInstanceOf(EdifactValidationException.class);
+    }
+
+    @Test
     void testGetTransactionType() {
         assertThat(new RejectionTransactionMapper().getTransactionType())
-            .isEqualTo(ReferenceTransactionType.TransactionType.REJECTION);
+            .isEqualTo(ReferenceTransactionType.Inbound.REJECTION);
     }
 }

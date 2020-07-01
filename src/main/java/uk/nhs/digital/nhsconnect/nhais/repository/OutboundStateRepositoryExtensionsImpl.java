@@ -23,8 +23,8 @@ public class OutboundStateRepositoryExtensionsImpl implements OutboundStateRepos
 
         var query = query(where("sender").is(updateRecepDetailsQueryParams.getSender())
             .and("recipient").is(updateRecepDetailsQueryParams.getRecipient())
-            .and("sendInterchangeSequence").is(updateRecepDetailsQueryParams.getInterchangeSequence())
-            .and("sendMessageSequence").is(updateRecepDetailsQueryParams.getMessageSequence()));
+            .and("interchangeSequence").is(updateRecepDetailsQueryParams.getInterchangeSequence())
+            .and("messageSequence").is(updateRecepDetailsQueryParams.getMessageSequence()));
 
         var result = mongoOperations.findAndModify(
             query,

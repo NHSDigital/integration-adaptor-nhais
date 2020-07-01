@@ -7,7 +7,14 @@ import com.mongodb.MongoClientSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+
+import java.util.List;
 
 @Configuration
 @Slf4j
@@ -56,10 +63,10 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String createConnectionString() {
         LOGGER.info("Creating a connection string for mongo client settings...");
-        if(!Strings.isNullOrEmpty(host)) {
+        if (!Strings.isNullOrEmpty(host)) {
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
-        } else if(!Strings.isNullOrEmpty(uri)) {
+        } else if (!Strings.isNullOrEmpty(uri)) {
             LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
             return uri;
         } else {
@@ -70,7 +77,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String createConnectionStringFromProperties() {
         String cs = "mongodb://";
-        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+        if (!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
             LOGGER.debug("Including a username and password in the mongo connection string");
             cs += username + ":" + password + "@";
         } else {
@@ -78,12 +85,46 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         }
         LOGGER.debug("The generated connection string will used host '{}' and port '{}'", host, port);
         cs += host + ":" + port;
-        if(!Strings.isNullOrEmpty(options)) {
+        if (!Strings.isNullOrEmpty(options)) {
             LOGGER.debug("The generated connection will use use options '{}'", options);
             cs += "/?" + options;
         } else {
             LOGGER.warn("No options for the mongodb connection string were provided. If connecting to a cluster the driver may not work as expected.");
         }
         return cs;
+    }
+
+    @Override
+    public MongoCustomConversions customConversions() {
+        return new MongoCustomConversions(List.of(
+            new TransactionTypeWriteConverter<ReferenceTransactionType.Inbound>() {
+            },
+            new TransactionTypeWriteConverter<ReferenceTransactionType.Outbound>() {
+            },
+            new TransactionTypeReadConverter()
+        ));
+    }
+
+    @WritingConverter
+    static abstract class TransactionTypeWriteConverter<T> implements Converter<T, String> {
+        @Override
+        public String convert(T source) {
+            return String.format("%s.%s", ReferenceTransactionType.Inbound.class.getSimpleName(), source.toString());
+        }
+    }
+
+    @ReadingConverter
+    static class TransactionTypeReadConverter implements Converter<String, ReferenceTransactionType.TransactionType> {
+        public ReferenceTransactionType.TransactionType convert(String s) {
+            var parts = s.split("\\.");
+            var type = parts[0];
+            var value = parts[1];
+            if (type.equals(ReferenceTransactionType.Inbound.class.getSimpleName())) {
+                return ReferenceTransactionType.Inbound.valueOf(value);
+            } else if (type.equals(ReferenceTransactionType.Outbound.class.getSimpleName())) {
+                return ReferenceTransactionType.Outbound.valueOf(value);
+            }
+            throw new IllegalStateException("Unable to parse value " + s);
+        }
     }
 }

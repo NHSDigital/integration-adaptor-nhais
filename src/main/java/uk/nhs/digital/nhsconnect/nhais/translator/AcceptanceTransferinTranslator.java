@@ -1,12 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.translator;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
+import org.hl7.fhir.r4.model.Parameters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceCodeMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceDateMapper;
@@ -25,9 +22,11 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -50,7 +49,7 @@ public class AcceptanceTransferinTranslator implements FhirToEdifactTranslator {
             emptyMapper(new BeginningOfMessage()),
             partyQualifierMapper,
             emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE)),
+            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             emptyMapper(new SegmentGroup(1)),
             emptyMapper(new ReferenceTransactionNumber()),
             gpNameAndAddressMapper,
