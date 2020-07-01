@@ -1040,25 +1040,31 @@ Type 5 - Ex-Services is no longer used. Such patients are now registered as Type
 
 ## Supported Fields
 
-Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+Refer to GP Links Specification Chapter 3 for the complete requirements for manually-entered acceptances. The
 values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
 https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-Three fields are deprecated and not supported by the adaptor:
+Three fields are DEPRECATED and not supported by the adaptor:
 
 * RPP Mileage
 * Blocked Route/Special District Marker
 * Walking Units
 
+REQUIRED - If any of these data items are not provided or are blank then the adaptor will produce a 400 error
+OPTIONAL - These data items may be included if available
+DEPRECATED - The adaptor provides no FHIR representation for these items and it is not possible to include them
+NOT REQUIRED - These data items are will be ignored if provided
 
+Any other values not listed in the tables below and provided in the request that are valid for a FHIR R4
+Parameter or Patient resource will be ignored.
 
 | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
 |---------------------------------------|----------------|----------------|----------------------|--------------------|
 | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-| Patient&#39;s Responsible GP (GMC Code)   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+| Patient&#39;s Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | Patient&#39;s Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
 | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
@@ -1079,11 +1085,11 @@ Three fields are deprecated and not supported by the adaptor:
 | Walking Units                         | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
 | Residential Institute Code            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
 | Free Text (GP Notes)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
-| Previous Address - 5 fields           | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
-| Previous GP Name                      | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
-| Previous HA Cipher                    | NOT PERMITTED  | NOT PERMITTED  | OPTIONAL             | OPTIONAL           |
-| Date of Entry into the UK             | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | REQUIRED           |
-| Date Patient left the UK              | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | OPTIONAL           |
+| Previous Address - 5 fields           | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
+| Previous GP Name                      | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
+| Previous HA Cipher                    | NOT REQUIRED   | NOT REQUIRED   | OPTIONAL             | OPTIONAL           |
+| Date of Entry into the UK             | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | REQUIRED           |
+| Date Patient left the UK              | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | OPTIONAL           |
 
 ## FHIR Field Mappings
 
@@ -1976,7 +1982,7 @@ Use this endpoint to send a Deduction transaction to NHAIS.
 
 ## Supported Fields
 
-Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+Refer to GP Links Specification Chapter 3 for the complete requirements for deductions. The
 values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
 https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation

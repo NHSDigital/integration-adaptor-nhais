@@ -61,7 +61,7 @@ paths:
 
         ## Supported Fields
 
-        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        Refer to GP Links Specification Chapter 3 for the complete requirements for deductions. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
@@ -191,7 +191,7 @@ paths:
 
         ## Supported Fields
 
-        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        Refer to GP Links Specification Chapter 3 for the complete requirements for manually-entered acceptances. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
@@ -449,13 +449,3 @@ paths:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-components:
-  parameters:
-    Id:
-      name: id
-      in: path
-      description: The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-      required: true
-      schema:
-        type: string
-        example: "9000000009"
