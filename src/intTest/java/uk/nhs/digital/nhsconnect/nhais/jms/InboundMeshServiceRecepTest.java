@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.google.common.collect.Lists;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -34,6 +35,7 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
 
+    @Disabled("NIAD-390")
     @Test
     @DirtiesContext
     void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
@@ -44,7 +46,9 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
             .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
 
         var inboundState = waitFor(
-            () -> inboundStateRepository.findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null));
+            () -> inboundStateRepository
+                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null, null)
+                .orElse(null));
 
         assertInboundState(softly, inboundState);
 
@@ -78,8 +82,8 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setReceiveMessageSequence(MESSAGE_SEQUENCE)
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE)
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
@@ -95,8 +99,8 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     private OutboundState buildOutboundState(long refMessageSequence1) {
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSendInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setSendMessageSequence(refMessageSequence1)
+            .setInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
+            .setMessageSequence(refMessageSequence1)
             .setSender(RECIPIENT)
             .setRecipient(SENDER);
     }

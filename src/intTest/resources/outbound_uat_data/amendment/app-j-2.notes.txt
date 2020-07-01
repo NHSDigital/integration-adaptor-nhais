@@ -2,3 +2,9 @@ NHS Number 123/23/123.
 New Address : Flat 49, 23 Jackson Square, St Pauls Cray, Orpington, Kent.
 Registered with GP 281 (GMC National GP Code 4826940).
 --DEPRECATED-- New Address no longer has RPP Mileage, Blocked Route/Special District Classification or Walking Units. --DEPRECATED--
+
+Removed from original data
+
+QTY+951:%'
+QTY+952:%'
+HEA+BM+%:ZZZ'

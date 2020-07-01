@@ -6,16 +6,18 @@ import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class MeshRecipientDecoder {
+
+    private EdifactParser edifactParser;
 
     @Value("${nhais.mesh.recipientCodes}")
     private String recipientMapping;
@@ -25,7 +27,7 @@ public class MeshRecipientDecoder {
             .map(row -> row.split("="))
             .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
 
-        String recipient = new EdifactMessage(meshMessage.getContent()).getInterchangeHeader().getRecipient();
+        String recipient = edifactParser.parse(meshMessage.getContent()).getInterchangeHeader().getRecipient();
         if(!mappings.containsKey(recipient)) {
             throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);
         }
