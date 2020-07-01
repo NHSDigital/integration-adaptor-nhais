@@ -52,7 +52,7 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
             //DTM+956:19920115:102' (acceptance date)
             emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950:G1'
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE)),
+            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01+1'
             emptyMapper(new SegmentGroup(1)),
             //RFF+TN:20'

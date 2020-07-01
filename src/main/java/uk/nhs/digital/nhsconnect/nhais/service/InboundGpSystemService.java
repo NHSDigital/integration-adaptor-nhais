@@ -31,7 +31,7 @@ public class InboundGpSystemService {
         jmsTemplate.send(gpSystemInboundQueueName, session -> {
             var message = session.createTextMessage(jsonMessage);
             message.setStringProperty(JmsHeaders.OPERATION_ID, dataToSend.getOperationId());
-            message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, dataToSend.getTransactionType().toString());
+            message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, dataToSend.getTransactionType().name().toLowerCase());
             return message;
         });
         LOGGER.debug("Published message to inbound gp system queue");

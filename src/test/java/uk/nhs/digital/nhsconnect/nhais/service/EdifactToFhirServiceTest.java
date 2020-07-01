@@ -87,9 +87,9 @@ class EdifactToFhirServiceTest {
     @BeforeEach
     void setUp() {
         transactionMappers = Map.of(
-            ReferenceTransactionType.TransactionType.IN_REJECTION, rejectionMapper,
-            ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE, acceptanceMapper,
-            ReferenceTransactionType.TransactionType.IN_APPROVAL, approvalMapper);
+            ReferenceTransactionType.Inbound.REJECTION, rejectionMapper,
+            ReferenceTransactionType.Outbound.ACCEPTANCE, acceptanceMapper,
+            ReferenceTransactionType.Inbound.APPROVAL, approvalMapper);
     }
 
     @Test

@@ -14,6 +14,6 @@ public class DeductionTransactionMapper implements TransactionMapper {
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.TransactionType.IN_DEDUCTION;
+        return ReferenceTransactionType.Inbound.DEDUCTION;
     }
 }

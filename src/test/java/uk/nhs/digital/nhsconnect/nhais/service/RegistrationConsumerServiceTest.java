@@ -49,8 +49,8 @@ public class RegistrationConsumerServiceTest {
     public static final long TN_4 = 21L;
     public static final String SENDER = "TES5";
     public static final String RECIPIENT = "XX11";
-    public static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE;
-    public static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_APPROVAL;
+    public static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Outbound.ACCEPTANCE;
+    public static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     public static final long RECEP_INTERCHANGE_SEQUENCE = 100L;
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;

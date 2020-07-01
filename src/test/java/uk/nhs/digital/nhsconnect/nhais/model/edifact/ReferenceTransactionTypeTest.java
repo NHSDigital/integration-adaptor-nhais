@@ -12,7 +12,7 @@ public class ReferenceTransactionTypeTest {
     @Test
     public void testValidReferenceTransactionType() throws EdifactValidationException {
         ReferenceTransactionType referenceTransactionType =
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_AMENDMENT);
+            new ReferenceTransactionType(ReferenceTransactionType.Outbound.AMENDMENT);
 
         String edifact = referenceTransactionType.toEdifact();
 
@@ -22,7 +22,7 @@ public class ReferenceTransactionTypeTest {
     @Test
     void testFromString() {
         ReferenceTransactionType referenceTransactionType =
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_AMENDMENT);
+            new ReferenceTransactionType(ReferenceTransactionType.Outbound.AMENDMENT);
 
         assertThat(ReferenceTransactionType.fromString("RFF+950:G2").getValue()).isEqualTo(referenceTransactionType.getValue());
         assertThatThrownBy(() -> ReferenceTransactionType.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);

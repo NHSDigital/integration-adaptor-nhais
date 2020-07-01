@@ -41,7 +41,7 @@ public class AcceptanceController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> acceptance(@RequestBody String body) throws FhirValidationException {
         Parameters parameters = fhirParser.parseParameters(body);
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE);
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.Outbound.ACCEPTANCE);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
         outboundMeshService.publishToOutboundQueue(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
