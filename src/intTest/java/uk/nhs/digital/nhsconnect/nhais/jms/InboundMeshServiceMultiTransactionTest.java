@@ -90,7 +90,6 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     }
 
     @Test
-    @DirtiesContext
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)

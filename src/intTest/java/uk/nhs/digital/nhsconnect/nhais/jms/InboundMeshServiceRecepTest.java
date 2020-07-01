@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+@DirtiesContext
 public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
@@ -35,7 +36,6 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     private Resource recep;
 
     @Test
-    @DirtiesContext
     void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
         createOutboundStateRecords();
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
@@ -27,12 +28,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 
-//import uk.nhs.digital.nhsconnect.nhais.container.MongoDbInitializer;
-
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
+@DirtiesContext
 public class SequenceServiceIntegrationTest {
     private final static String SENDER_1 = "test-sender-1";
     private final static String SENDER_2 = "test-sender-2";
@@ -124,8 +124,8 @@ public class SequenceServiceIntegrationTest {
         resetCounter(TRANSACTION_KEY);
 
         List<Long> expectedList = LongStream.rangeClosed(1, 100)
-                .boxed()
-                .collect(Collectors.toList());
+            .boxed()
+            .collect(Collectors.toList());
 
         assertThat(generateMultiThreadedSeqList()).isEqualTo(expectedList);
     }
@@ -149,10 +149,10 @@ public class SequenceServiceIntegrationTest {
         }
 
         await().atMost(20, SECONDS)
-                .untilAsserted(() -> MatcherAssert.assertThat(seqList.size(), Matchers.is(100)));
+            .untilAsserted(() -> MatcherAssert.assertThat(seqList.size(), Matchers.is(100)));
 
         return seqList.stream()
-                .sorted()
-                .collect(Collectors.toList());
+            .sorted()
+            .collect(Collectors.toList());
     }
 }
