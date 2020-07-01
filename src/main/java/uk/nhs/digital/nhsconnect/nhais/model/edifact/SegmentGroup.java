@@ -6,9 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-/**
- * class declaration:
- */
 @Getter
 @Setter
 @RequiredArgsConstructor
