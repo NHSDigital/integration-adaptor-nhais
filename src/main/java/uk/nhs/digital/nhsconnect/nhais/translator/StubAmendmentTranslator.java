@@ -40,7 +40,7 @@ public class StubAmendmentTranslator implements AmendmentToEdifactTranslator {
             new BeginningOfMessage(),
             new NameAndAddress(amendment.getHealthcarePartyCode(), NameAndAddress.QualifierAndCode.FHS),
             new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.AMENDMENT),
+            new ReferenceTransactionType(ReferenceTransactionType.Outbound.AMENDMENT),
             new SegmentGroup(1),
             new ReferenceTransactionNumber(),
             new GpNameAndAddress(amendment.getGpCode(), "900"),
