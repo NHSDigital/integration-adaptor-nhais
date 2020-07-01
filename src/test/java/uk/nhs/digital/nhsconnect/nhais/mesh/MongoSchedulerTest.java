@@ -1,8 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -36,14 +36,14 @@ public class MongoSchedulerTest {
 
     @Test
     public void WhenCollectionIsEmptyThenSingleDocumentIsCreatedAndTheJobIsNotExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(isA(String.class), isA(LocalDateTime.class), anyLong())).thenReturn(false);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(false);
         mongoScheduler.updateConditionally();
         verifyNoInteractions(meshClient);
     }
 
     @Test
     public void WhenDocumentExistsAndTimestampIsBeforeFiveMinutesAgoThenDocumentIsUpdateAndTheJobIsExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(isA(String.class), isA(LocalDateTime.class), anyLong())).thenReturn(true);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
         when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(EDIFACT_MESSAGE);
         mongoScheduler.updateConditionally();
@@ -52,7 +52,7 @@ public class MongoSchedulerTest {
 
     @Test
     public void WhenDocumentExistsAndTimestampIsAfterFiveMinutesAgoThenDocumentIsNotUpdateAndTheJobIsNotExecuted() {
-        when(schedulerTimestampRepository.updateTimestamp(isA(String.class), isA(LocalDateTime.class), anyLong())).thenReturn(false);
+        when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(LocalDateTime.class), anyLong())).thenReturn(false);
         mongoScheduler.updateConditionally();
         verifyNoInteractions(meshClient);
     }

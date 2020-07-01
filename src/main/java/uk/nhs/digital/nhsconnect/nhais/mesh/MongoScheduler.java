@@ -21,16 +21,16 @@ public class MongoScheduler {
     private final SchedulerTimestampRepositoryExtensions schedulerTimestampRepository;
 
     @Value("${nhais.scheduler.intervalInSeconds}")
-    private long seconds;
+    private long seconds = 10;
 
     private static final String SCHEDULER_TYPE = "meshTimestamp";
     private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60_000)
     public void updateConditionally() {
         LOGGER.debug("Scheduled job for mesh messages fetching started");
         if (updateTimestamp()) {
-            LOGGER.debug("Timestamp in {} collection has been set to current timestamp.", MESH_TIMESTAMP_COLLECTION_NAME);
+            LOGGER.debug("Timestamp in {} collection is less than {} seconds in the past, so it has not been modified", MESH_TIMESTAMP_COLLECTION_NAME, seconds);
             LOGGER.info("Mesh messages fetching started");
 
             for (String messageId : meshClient.getInboxMessageIds()) {
