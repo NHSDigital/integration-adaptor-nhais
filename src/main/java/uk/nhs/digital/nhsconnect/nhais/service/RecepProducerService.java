@@ -87,6 +87,7 @@ public class RecepProducerService {
             .setNumberOfSegments(recepMessageSegments.size() - 2); // excluding UNB and UNZ
 
         var currentTimestamp = timestampService.getCurrentTimestamp();
+        recepInterchangeHeader.setTranslationTime(currentTimestamp);
         recepBeginningOfMessage.setTimestamp(currentTimestamp);
         recepTranslationDateTime.setTimestamp(currentTimestamp);
 

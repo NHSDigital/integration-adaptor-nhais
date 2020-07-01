@@ -3,8 +3,10 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.r4.model.Parameters;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+import static org.mockito.Mockito.when;
 import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
@@ -36,12 +39,22 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
         .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
+    private static final Instant RECEP_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+        .toInstant();
+    private static final String ISO_RECEP_SEND_TIMESTAMP = new TimestampService().formatInISO(RECEP_TIMESTAMP);
 
+    @MockBean
+    private TimestampService timestampService;
     @Value("classpath:edifact/registration.dat")
     private Resource interchange;
-
     @Value("classpath:edifact/registration_recep.dat")
     private Resource recep;
+
+    @BeforeEach
+    void setUp() {
+        when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
+        when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
+    }
 
     @Test
     @DirtiesContext
