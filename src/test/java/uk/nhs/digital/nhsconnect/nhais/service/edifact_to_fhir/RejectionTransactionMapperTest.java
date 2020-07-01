@@ -55,6 +55,6 @@ class RejectionTransactionMapperTest {
     @Test
     void testGetTransactionType() {
         assertThat(new RejectionTransactionMapper().getTransactionType())
-            .isEqualTo(ReferenceTransactionType.TransactionType.IN_REJECTION);
+            .isEqualTo(ReferenceTransactionType.Inbound.REJECTION);
     }
 }

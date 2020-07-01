@@ -44,7 +44,7 @@ public class InboundStateTest {
         .setMessageSequence(MESSAGE_SEQUENCE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
     private static final long TRANSACTION_NUMBER = 345L;
-    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE;
+    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.Outbound.ACCEPTANCE;
     public static final InboundState EXPECTED_INTERCHANGE_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)

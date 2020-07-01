@@ -20,6 +20,6 @@ public class ApprovalTransactionMapper implements TransactionMapper {
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.TransactionType.IN_APPROVAL;
+        return ReferenceTransactionType.Inbound.APPROVAL;
     }
 }

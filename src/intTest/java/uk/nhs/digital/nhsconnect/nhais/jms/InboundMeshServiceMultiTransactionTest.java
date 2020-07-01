@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,10 +42,10 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     private static final long TN_4 = 12;
     private static final long TN_5 = 13;
     private static final long TN_6 = 14;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_AMENDMENT;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_DEDUCTION;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_REJECTION;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.TransactionType.IN_APPROVAL;
+    private static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.AMENDMENT;
+    private static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.DEDUCTION;
+    private static final ReferenceTransactionType.TransactionType MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
+    private static final ReferenceTransactionType.TransactionType MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_1);
     private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_2);
     private static final String TRANSACTION_3_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_3);
@@ -162,7 +161,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         softly.assertThat(message.getStringProperty("OperationId"))
             .isEqualTo(expectedOperationId);
         softly.assertThat(message.getStringProperty("TransactionType"))
-            .isEqualTo(expectedTransactionType.toString());
+            .isEqualTo(expectedTransactionType.name().toLowerCase());
         softly.assertThat(parseTextMessage(message))
             .isEqualTo(new String(Files.readAllBytes(expectedFhir.getFile().toPath())));
     }

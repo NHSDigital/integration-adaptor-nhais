@@ -14,6 +14,6 @@ public class AmendmentTransactionMapper implements TransactionMapper {
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.TransactionType.IN_AMENDMENT;
+        return ReferenceTransactionType.Inbound.AMENDMENT;
     }
 }

@@ -29,6 +29,6 @@ public class RejectionTransactionMapper implements TransactionMapper {
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.TransactionType.IN_REJECTION;
+        return ReferenceTransactionType.Inbound.REJECTION;
     }
 }

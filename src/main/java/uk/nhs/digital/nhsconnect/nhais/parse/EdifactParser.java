@@ -58,13 +58,13 @@ public class EdifactParser {
     }
 
     private Message parseMessage(List<String> singleMessageEdifactSegments) {
+        var messageTrailerIndex = singleMessageEdifactSegments.size() - 1;
         var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01).stream()
             .findFirst()
-            // there might be no transaction inside - RECEP - so all message lines belong to message
-            .orElse(singleMessageEdifactSegments.size() - 1);
+            // there might be no transaction inside - RECEP - so all message lines belong to the message
+            .orElse(messageTrailerIndex);
 
         var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
-        var messageTrailerIndex = singleMessageEdifactSegments.size() - 1;
         onlyMessageLines.add(singleMessageEdifactSegments.get(messageTrailerIndex));
 
         var message = new Message(onlyMessageLines);
@@ -85,7 +85,8 @@ public class EdifactParser {
             // so end indexes are beginning without first S01
             transactionEndIndexes.remove(0);
             // and last transaction end indicator is the segment before message trailer
-            transactionEndIndexes.add(singleMessageEdifactSegments.size() - 1);
+            var messageTrailerIndex = singleMessageEdifactSegments.size() - 1;
+            transactionEndIndexes.add(messageTrailerIndex);
         }
 
         var transactionStartEndIndexPairs = zipIndexes(transactionStartIndexes, transactionEndIndexes);

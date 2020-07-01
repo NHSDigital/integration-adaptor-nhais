@@ -37,7 +37,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class MeshServiceBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
-    protected static final int WAIT_FOR_IN_SECONDS = 5;
+    protected static final int WAIT_FOR_IN_SECONDS = 25;
     private static final int RECEIVE_TIMEOUT = 5000;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);

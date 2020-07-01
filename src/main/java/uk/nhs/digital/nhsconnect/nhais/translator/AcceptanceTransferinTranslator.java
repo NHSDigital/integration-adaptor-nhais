@@ -49,7 +49,7 @@ public class AcceptanceTransferinTranslator implements FhirToEdifactTranslator {
             emptyMapper(new BeginningOfMessage()),
             partyQualifierMapper,
             emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.TransactionType.OUT_ACCEPTANCE)),
+            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             emptyMapper(new SegmentGroup(1)),
             emptyMapper(new ReferenceTransactionNumber()),
             gpNameAndAddressMapper,
