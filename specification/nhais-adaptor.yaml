@@ -206,6 +206,8 @@ paths:
         * Blocked Route/Special District Marker
         * Walking Units
 
+
+
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
         | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
@@ -329,8 +331,10 @@ paths:
         * The only supported operations are add, replace, and remove
         * The add and replace operations are synonymous for GP Links
         * The GP System must only use remove operations for data items for which GP Links permits removal
-        * The GP System must use remove operations to erase an existing value. Performing an add or replace with an
-          empty or null value will not work.
+        * With the exceptions of Drugs Dispensed Marker and Residential Institute Code, the GP System must use remove
+          operations to erase an existing value. Performing an add or replace with an empty or null value will not work.
+        * Each path most only be used once within the amendment request. It is not possible to, for example, perform a
+          remove and an add on the same path within the same request.
 
         ## Supported Fields
 
@@ -345,63 +349,69 @@ paths:
         * Blocked Route/Special District Marker
         * Walking Units
 
-        | GP Links Data Item                        | Amendment  |
-        |-------------------------------------------|------------|
-        | Transaction Type                          | REQUIRED   |
-        | Existing GP Code                          | REQUIRED   |
-        | GP Trading Partner Code                   | REQUIRED   |
-        | Destination HA Cipher                     | REQUIRED   |
-        | NHS Number                                | REQUIRED   |
-        | New Surname                               | OPTIONAL   |
-        | New Previous Surname                      | OPTIONAL   |
-        | New First Forename                        | OPTIONAL   |
-        | New Second Forename                       | OPTIONAL   |
-        | New Other Forenames                       | OPTIONAL   |
-        | New Title                                 | OPTIONAL   |
-        | New Sex                                   | OPTIONAL   |
-        | New Date of Birth                         | OPTIONAL   |
-        | New Address - House Name                  | OPTIONAL   |
-        | New Address - Number/Road Name            | OPTIONAL   |
-        | New Address - Locality                    | OPTIONAL   |
-        | New Address - Post Town                   | OPTIONAL   |
-        | New Address - County                      | OPTIONAL   |
-        | New Address - Postcode                    | OPTIONAL   |
-        | New Drugs Dispensed Marker                | OPTIONAL   |
-        | New RPP Mileage                           | DEPRECATED |
-        | New Blocked Route/Special District Marker | DEPRECATED |
-        | New Walking Units                         | DEPRECATED |
-        | New Residential Institute Code            | OPTIONAL   |
-        | GP Notes                                  | OPTIONAL   |
+        | GP Links Data Item                        | Amendment  | Erasable |
+        |-------------------------------------------|------------|----------|
+        | Transaction Type                          | REQUIRED   | n/a      |
+        | Existing GP Code                          | REQUIRED   | n/a      |
+        | GP Trading Partner Code                   | REQUIRED   | n/a      |
+        | Destination HA Cipher                     | REQUIRED   | n/a      |
+        | NHS Number                                | REQUIRED   | n/a      |
+        | New Surname                               | OPTIONAL   | NO       |
+        | New Previous Surname                      | OPTIONAL   | YES      |
+        | New First Forename                        | OPTIONAL   | YES (1)  |
+        | New Second Forename                       | OPTIONAL   | YES (1)  |
+        | New Other Forenames                       | OPTIONAL   | YES (1)  |
+        | New Title                                 | OPTIONAL   | YES      |
+        | New Sex                                   | OPTIONAL   | NO       |
+        | New Date of Birth                         | OPTIONAL   | NO       |
+        | New Address - House Name                  | OPTIONAL   | YES      |
+        | New Address - Number/Road Name            | OPTIONAL   | YES      |
+        | New Address - Locality                    | OPTIONAL   | YES      |
+        | New Address - Post Town                   | OPTIONAL   | NO       |
+        | New Address - County                      | OPTIONAL   | YES      |
+        | New Address - Postcode                    | OPTIONAL   | YES      |
+        | New Drugs Dispensed Marker                | OPTIONAL   | YES (2)  |
+        | New RPP Mileage                           | DEPRECATED | n/a      |
+        | New Blocked Route/Special District Marker | DEPRECATED | n/a      |
+        | New Walking Units                         | DEPRECATED | n/a      |
+        | New Residential Institute Code            | OPTIONAL   | YES (3)  |
+        | GP Notes                                  | OPTIONAL   | n/a      |
+
+        (1) Forenames cannot be erased individually. The entire group of forenames must be erased instead.
+
+        (2) The Drugs Dispensed Marker is "erased" by settings its value to false
+
+        (3) The Residential Institute Code is "erased" by using an add/replace operation with "valueString" JSON value of null
 
         ## FHIR / JSONPatch Field Mappings
 
-        | GP Links Data Item                    | Property Name        | JSONPatch "path" value | "value" format, if different from GP Links | Notes                                               |
-        |---------------------------------------|----------------------|------------------------|--------------------------------------------|-----------------------------------------------------|
-        | Transaction Type                      | n/a                  | n/a                    | n/a                                        | Determined by REST API method                       |
-        | Existing GP Code                      | gpCode               |                        |                                            |                                                     |
-        | GP Trading Partner Code               | gpTradingPartnerCode |                        |                                            |                                                     |
-        | Destination HA Cipher                 | destinationHaCipher  |                        |                                            |                                                     |
-        | NHS Number                            | nhsNumber            |                        |                                            |                                                     |
-        | New Surname                           |                      | /name/0/family         |                                            |                                                     |
-        | New Previous Surname                  |                      | /name/1/family         |                                            |                                                     |
-        | New First Forename                    |                      | /name/0/given/0        |                                            |                                                     |
-        | New Second Forename                   |                      | /name/0/given/1        |                                            |                                                     |
-        | New Other Forenames                   |                      | /name/0/given/2        |                                            |                                                     |
-        | New Title                             |                      | /name/0/prefix/0       |                                            |                                                     |
-        | New Sex                               |                      | /gender                | male/female/unknown/other                  |                                                     |
-        | New Date of Birth                     |                      | /birthDate             | ISO 8601 Date                              |                                                     |
-        | New Address - House Name              |                      | /address/0/line/0      | Use JSON null for empty/no value           | If address is changed then all 5 lines are required |
-        | New Address - Number/Road Name        |                      | /address/0/line/1      | Use JSON null for empty/no value           | If address is changed then all 5 lines are required |
-        | New Address - Locality                |                      | /address/0/line/2      | Use JSON null for empty/no value           | If address is changed then all 5 lines are required |
-        | New Address - Post Town               |                      | /address/0/line/3      | Use JSON null for empty/no value           | If address is changed then all 5 lines are required |
-        | New Address - County                  |                      | /address/0/line/4      | Use JSON null for empty/no value           | If address is changed then all 5 lines are required |
-        | New Address - Postcode                |                      | /address/0/postalCode  |                                            |                                                     |
-        | Drugs Dispensed Marker                |                      | /extension/0           | (1)                                        |                                                     |
-        | RPP Mileage                           | N/A                  |                        |                                            |                                                     |
-        | Blocked Route/Special District Marker | N/A                  |                        |                                            |                                                     |
-        | Walking Units                         | N/A                  |                        |                                            |                                                     |
-        | Residential Institute Code            |                      | /extension/0           | (2)                                        |                                                     |
-        | GP Notes                              | freeText             |                        |                                            |                                                     |
+        | Data Item                             | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
+        |---------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
+        | Transaction Type                      | n/a                  | n/a                                      | n/a                                        | Determined by REST API method                                       |
+        | Existing GP Code                      | gpCode               |                                          |                                            |                                                                     |
+        | GP Trading Partner Code               | gpTradingPartnerCode |                                          |                                            |                                                                     |
+        | Destination HA Cipher                 | destinationHaCipher  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
+        | NHS Number                            | nhsNumber            |                                          |                                            |                                                                     |
+        | New Surname                           |                      | /name/0/family                           |                                            |                                                                     |
+        | New Previous Surname                  |                      | /name/1/family                           |                                            |                                                                     |
+        | New First Forename                    |                      | /name/0/given/0 For remove: name/0/given |                                            | Forenames cannot be erased individually                             |
+        | New Second Forename                   |                      | /name/0/given/1 For remove: name/0/given |                                            | Forenames cannot be erased individually                             |
+        | New Other Forenames                   |                      | /name/0/given/2 For remove: name/0/given |                                            | Forenames cannot be erased individually                             |
+        | New Title                             |                      | /name/0/prefix/0                         |                                            |                                                                     |
+        | New Sex                               |                      | /gender                                  | male/female/unknown/other                  |                                                                     |
+        | New Date of Birth                     |                      | /birthDate                               | ISO 8601 Date                              |                                                                     |
+        | New Address - House Name              |                      | /address/0/line/0                        | Use JSON null for empty/no value           | If address is changed then all 5 lines are required                 |
+        | New Address - Number/Road Name        |                      | /address/0/line/1                        | Use JSON null for empty/no value           | If address is changed then all 5 lines are required                 |
+        | New Address - Locality                |                      | /address/0/line/2                        | Use JSON null for empty/no value           | If address is changed then all 5 lines are required                 |
+        | New Address - Post Town               |                      | /address/0/line/3                        | Use JSON null for empty/no value           | If address is changed then all 5 lines are required                 |
+        | New Address - County                  |                      | /address/0/line/4                        | Use JSON null for empty/no value           | If address is changed then all 5 lines are required                 |
+        | New Address - Postcode                |                      | /address/0/postalCode                    |                                            |                                                                     |
+        | Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                 |
+        | RPP Mileage                           | N/A                  |                                          |                                            |                                                                     |
+        | Blocked Route/Special District Marker | N/A                  |                                          |                                            |                                                                     |
+        | Walking Units                         | N/A                  |                                          |                                            |                                                                     |
+        | Residential Institute Code            |                      | /extension/0                             | (2)                                        | The value 'null' erases the Residential Institute Code              |
+        | GP Notes                              | freeText             |                                          |                                            |                                                                     |
 
         (1) The `value` of the patch must be the entire extension including `url` and `valueBoolean` properties.
 
