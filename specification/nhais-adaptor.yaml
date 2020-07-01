@@ -48,7 +48,7 @@ servers:
 tags:
   - name: patients
 paths:
-  '/fhir/Patient/$nhais.deduction':
+  '/fhir/Patient/{id}/$nhais.deduction':
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
