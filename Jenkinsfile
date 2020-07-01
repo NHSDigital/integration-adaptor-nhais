@@ -64,6 +64,7 @@ pipeline {
 //                     sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb-local > logs/outbound.log'
 //                     sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
                     sh label: 'Stopping containers', script: 'docker-compose down -v'
+                    sh "gradle clean"
                 }
             }
         }
