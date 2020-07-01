@@ -54,34 +54,6 @@ public class ReferenceTransactionType extends Segment {
         // no stateful properties to validate
     }
 
-//    @Getter
-//    @RequiredArgsConstructor
-//    public enum TransactionType {
-//        OUT_ACCEPTANCE("G1", "ACG"),
-//        OUT_AMENDMENT("G2", "AMG"),
-//        OUT_REMOVAL("G3", "REG"),
-//        OUT_DEDUCTION("G4", "DER"),
-//        IN_AMENDMENT("F1", "AMF"),
-//        IN_DEDUCTION("F2", "DEF"),
-//        IN_REJECTION("F3", "REF"),
-//        IN_APPROVAL("F4", "APF");
-//
-//        private final String code;
-//        private final String abbreviation;
-//
-//        public static TransactionType fromCode(String code){
-//            return Arrays.stream(TransactionType.values())
-//                .filter(transactionType -> transactionType.code.equals(code))
-//                .findAny()
-//                .orElseThrow(IllegalArgumentException::new);
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return name().toLowerCase().split("_")[1];
-//        }
-//    }
-
     @Getter
     @RequiredArgsConstructor
     public enum Inbound implements TransactionType {
@@ -92,13 +64,6 @@ public class ReferenceTransactionType extends Segment {
 
         private final String code;
         private final String abbreviation;
-
-//        public static Inbound fromCode(String code){
-//            return Arrays.stream(Inbound.values())
-//                .filter(transactionType -> transactionType.code.equals(code))
-//                .findAny()
-//                .orElseThrow(IllegalArgumentException::new);
-//        }
     }
 
     @Getter
@@ -111,13 +76,6 @@ public class ReferenceTransactionType extends Segment {
 
         private final String code;
         private final String abbreviation;
-
-//        public static Outbound fromCode(String code){
-//            return Arrays.stream(Outbound.values())
-//                .filter(transactionType -> transactionType.code.equals(code))
-//                .findAny()
-//                .orElseThrow(IllegalArgumentException::new);
-//        }
     }
 
     public interface TransactionType {
