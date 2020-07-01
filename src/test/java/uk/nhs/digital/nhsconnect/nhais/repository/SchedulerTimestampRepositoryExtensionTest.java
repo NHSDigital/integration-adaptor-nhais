@@ -1,14 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.Time;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
@@ -20,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
-import org.bson.Document;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;

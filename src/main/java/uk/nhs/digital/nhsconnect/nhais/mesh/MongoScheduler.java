@@ -1,16 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import java.time.LocalDateTime;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepositoryExtensions;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

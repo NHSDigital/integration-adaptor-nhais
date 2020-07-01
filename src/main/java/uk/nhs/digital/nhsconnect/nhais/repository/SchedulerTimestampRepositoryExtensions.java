@@ -4,5 +4,5 @@ import java.time.Instant;
 
 public interface SchedulerTimestampRepositoryExtensions {
 
-    boolean updateTimestamp(String schedulerType, Instant timestamp, long minutes);
+    boolean updateTimestamp(String schedulerType, Instant timestamp, long seconds);
 }
