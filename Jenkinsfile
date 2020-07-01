@@ -55,7 +55,7 @@ pipeline {
             }
             post {
                 always {
-                    cobertura coberturaReportFile: '**/coverage.xml'
+                    // cobertura coberturaReportFile: '**/coverage.xml'
                     junit '**/test-reports/**/*.xml'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
                     sh label: 'Copy activemq logs', script: 'docker-compose logs activemq > logs/inbound.log'
