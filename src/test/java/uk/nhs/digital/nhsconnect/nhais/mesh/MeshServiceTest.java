@@ -29,7 +29,7 @@ class MeshServiceTest {
     @Mock
     private MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private long intervalInSeconds = 5L;
+    private long scanDelayInSeconds = 5L;
     private static final String MESSAGE_ID = "messageId";
     private MeshService meshService;
     private MeshMessage meshMessage;
@@ -43,7 +43,7 @@ class MeshServiceTest {
                 edifactToMeshMessageService,
                 inboundQueueService,
                 meshMailBoxScheduler,
-                intervalInSeconds);
+                scanDelayInSeconds);
     }
 
     @Test
@@ -52,8 +52,8 @@ class MeshServiceTest {
                 edifactToMeshMessageService,
                 inboundQueueService,
                 meshMailBoxScheduler,
-                intervalInSeconds);
-        when(meshMailBoxScheduler.hasTimePassed(intervalInSeconds)).thenReturn(true);
+                scanDelayInSeconds);
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
         when(edifactToMeshMessageService.fromEdifactString(any(), any())).thenReturn(meshMessage);
 
@@ -66,7 +66,7 @@ class MeshServiceTest {
 
     @Test
     public void When_IntervalHasNotPassed_Then_DoNothing() {
-        when(meshMailBoxScheduler.hasTimePassed(intervalInSeconds)).thenReturn(false);
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(false);
 
         meshService.scanMeshInboxForMessages();
 
@@ -76,7 +76,7 @@ class MeshServiceTest {
 
     @Test
     public void When_IntervalHasPassedButNoMessagesFound_Then_DoNothing() {
-        when(meshMailBoxScheduler.hasTimePassed(intervalInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of());
 
         meshService.scanMeshInboxForMessages();

@@ -23,25 +23,25 @@ public class MeshService {
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private final Long intervalInSeconds;
+    private final Long scanDelayInSeconds;
 
     @Autowired
     public MeshService(MeshClient meshClient,
                        EdifactToMeshMessageService edifactToMeshMessageService,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
-                       @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long intervalInSeconds) {
+                       @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long scanDelayInSeconds) {
         this.meshClient = meshClient;
         this.edifactToMeshMessageService = edifactToMeshMessageService;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
-        this.intervalInSeconds = intervalInSeconds;
+        this.scanDelayInSeconds = scanDelayInSeconds;
     }
 
     @Scheduled(fixedRateString = "${nhais.mesh.scanMailboxIntervalInMilliseconds}")
     public void scanMeshInboxForMessages() {
         LOGGER.debug("Scheduled job for mesh messages fetching started");
-        if (meshMailBoxScheduler.hasTimePassed(intervalInSeconds)) {
+        if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
             LOGGER.info("Mesh messages fetching started");
             List<String> inboxMessageIds = meshClient.getInboxMessageIds();
             if(inboxMessageIds.isEmpty()){
