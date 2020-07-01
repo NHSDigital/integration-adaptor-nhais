@@ -52,4 +52,4 @@ nhais:
     recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:}
   scheduler:
     overlapIntervalInSeconds: ${NHAIS_SCHEDULER_OVERLAP_INTERVAL_IN_SECONDS:300}
-    intervalInMilliSeconds: ${NHAIS_SCHEDULER_INTERVAL_IN_MILLISECONDS:6000}
+    intervalInMilliSeconds: ${NHAIS_SCHEDULER_INTERVAL_IN_MILLISECONDS:60000}
