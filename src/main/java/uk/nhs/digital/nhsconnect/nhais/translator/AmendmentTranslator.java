@@ -31,8 +31,7 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Deprecated
-public class StubAmendmentTranslator implements AmendmentToEdifactTranslator {
+public class AmendmentTranslator implements AmendmentToEdifactTranslator {
 
     @Override
     public List<Segment> translate(Amendment amendment) throws FhirValidationException {
