@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.uat;
 
 import org.hl7.fhir.r4.model.Parameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -35,8 +36,15 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @BeforeEach
     void setUp() throws Exception{
-        meshMailBoxScheduler.hasTimePassed(1); //First run creates collection in MongoDb
-        Thread.sleep(1000L); //wait till it's done
+        System.setProperty("NHAIS_SCHEDULER_ENABLED", "true"); //enable scheduling
+        while(!meshMailBoxScheduler.hasTimePassed(0)) { //First run creates collection in MongoDb
+            Thread.sleep(200L); //wait till it's done
+        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setProperty("NHAIS_SCHEDULER_ENABLED", "false");
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
