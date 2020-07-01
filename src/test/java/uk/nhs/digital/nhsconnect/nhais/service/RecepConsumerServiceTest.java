@@ -43,6 +43,7 @@ class RecepConsumerServiceTest {
     private static final ReferenceMessageRecep.RecepCode MESSAGE_2_RECEP_CODE = ReferenceMessageRecep.RecepCode.INCOMPLETE;
     private static final Instant DATE_TIME_PERIOD = new TimestampService().getCurrentTimestamp();
     private static final Instant INTERCHANGE_DATE_TIME_PERIOD = DATE_TIME_PERIOD.plusSeconds(10);
+    private final MeshMessage MESH_MESSAGE = new MeshMessage().setContent(CONTENT);
     @Mock
     private RecepParser recepParser;
     @Mock
@@ -51,11 +52,8 @@ class RecepConsumerServiceTest {
     private InboundStateRepository inboundStateRepository;
     @Mock
     private Recep recep;
-
     @InjectMocks
     private RecepConsumerService recepConsumerService;
-
-    private final MeshMessage MESH_MESSAGE = new MeshMessage().setContent(CONTENT);
 
     @BeforeEach
     void setUp() {
@@ -87,8 +85,8 @@ class RecepConsumerServiceTest {
         assertThat(inboundStateArgumentCaptor.getValue()).isEqualTo(
             new InboundState()
                 .setWorkflowId(WorkflowId.RECEP)
-                .setReceiveInterchangeSequence(INTERCHANGE_SEQUENCE)
-                .setReceiveMessageSequence(MESSAGE_SEQUENCE)
+                .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+                .setMessageSequence(MESSAGE_SEQUENCE)
                 .setSender(SENDER)
                 .setRecipient(RECIPIENT)
                 .setTranslationTimestamp(DATE_TIME_PERIOD));

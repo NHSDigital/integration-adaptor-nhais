@@ -6,10 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 
 class MeshRecipientDecoderTest {
 
-    private final MeshRecipientDecoder meshRecipientDecoder = new MeshRecipientDecoder("XX11=A91561OT001\nabc=cde");
+    private final MeshRecipientDecoder meshRecipientDecoder = new MeshRecipientDecoder(new EdifactParser(), "XX11=A91561OT001\nabc=cde");
 
     private final String edifactString = "UNB+UNOA:2+TES5+XX11+200610:1438+00000001'\n" +
         "UNH+00000001+FHSREG:0:1:FH:FHS001'\n" +
