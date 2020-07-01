@@ -80,7 +80,7 @@ public class FhirToEdifactServiceTest {
             new BeginningOfMessage(),
             new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
             new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+            new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE),
             new SegmentGroup(1),
             new ReferenceTransactionNumber()
         ));
@@ -90,7 +90,7 @@ public class FhirToEdifactServiceTest {
     public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
         Parameters patient = createPatient();
 
-        fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
+        fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
         verify(sequenceService).generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
         verify(sequenceService).generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
@@ -101,10 +101,10 @@ public class FhirToEdifactServiceTest {
         expected.setWorkflowId(WorkflowId.REGISTRATION);
         expected.setRecipient(HA_TRADING_PARTNER_CODE);
         expected.setSender(GP_TRADING_PARTNER_CODE);
-        expected.setSendInterchangeSequence(SIS);
-        expected.setSendMessageSequence(SMS);
+        expected.setInterchangeSequence(SIS);
+        expected.setMessageSequence(SMS);
         expected.setTransactionId(TN);
-        expected.setTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE.getAbbreviation());
+        expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE.getAbbreviation());
         expected.setTransactionTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
@@ -114,7 +114,7 @@ public class FhirToEdifactServiceTest {
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
         Parameters patient = createPatient();
 
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.TransactionType.ACCEPTANCE);
+        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA41+200427:1737+00000045'\n" +
             "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +

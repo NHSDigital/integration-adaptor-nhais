@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
 	id "io.freefair.lombok" version "5.1.0"
+	id 'jacoco'
 }
 
 group = 'uk.nhs.digital.nhsconnect'
@@ -66,6 +67,10 @@ test {
 	useJUnitPlatform() {
 		excludeTags 'component'
 	}
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 }
 
 task componentTest(type: Test) {

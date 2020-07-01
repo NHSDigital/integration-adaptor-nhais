@@ -9,3 +9,8 @@ and a Residential Institute Code of AA.
 The GP has added some free text (GP Notes) at the time of registration.
 
 # RPP Mileage, Special District, and Walking Units are deprecated and not incl
+
+Removed from the original data
+QTY+951:7'
+QTY+952:6'
+HEA+BM+S:ZZZ'

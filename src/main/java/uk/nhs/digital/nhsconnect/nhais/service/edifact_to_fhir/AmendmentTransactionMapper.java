@@ -2,18 +2,18 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 
 @Component
-public class AcceptanceTransactionMapper implements TransactionMapper {
+public class AmendmentTransactionMapper implements TransactionMapper {
     @Override
-    public void map(Parameters parameters, Interchange interchange) {
+    public void map(Parameters parameters, Transaction transaction) {
         //TODO: to be implemented
     }
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.TransactionType.ACCEPTANCE;
+        return ReferenceTransactionType.Inbound.AMENDMENT;
     }
 }

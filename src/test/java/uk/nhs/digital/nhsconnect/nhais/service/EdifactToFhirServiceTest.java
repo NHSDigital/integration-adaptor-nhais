@@ -1,17 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-import java.util.Map;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
@@ -88,15 +87,15 @@ class EdifactToFhirServiceTest {
     @BeforeEach
     void setUp() {
         transactionMappers = Map.of(
-            ReferenceTransactionType.TransactionType.REJECTION, rejectionMapper,
-            ReferenceTransactionType.TransactionType.ACCEPTANCE, acceptanceMapper,
-            ReferenceTransactionType.TransactionType.APPROVAL, approvalMapper);
+            ReferenceTransactionType.Inbound.REJECTION, rejectionMapper,
+            ReferenceTransactionType.Outbound.ACCEPTANCE, acceptanceMapper,
+            ReferenceTransactionType.Inbound.APPROVAL, approvalMapper);
     }
 
     @Test
     void convertRejectionToFhir() {
         Parameters parameters = new EdifactToFhirService(transactionMappers)
-            .convertToFhir(new EdifactParser().parse(rejectionMessage));
+            .convertToFhir(new EdifactParser().parse(rejectionMessage).getMessages().get(0).getTransactions().get(0));
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -120,7 +119,7 @@ class EdifactToFhirServiceTest {
     @Test
     void convertApprovalToFhir() {
         Parameters parameters = new EdifactToFhirService(transactionMappers)
-            .convertToFhir(new EdifactParser().parse(approvalMessage));
+            .convertToFhir(new EdifactParser().parse(approvalMessage).getMessages().get(0).getTransactions().get(0));
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 

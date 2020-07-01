@@ -36,14 +36,14 @@ public class OutboundStateRepositoryExtensionsImplTest {
         var outboundState = new OutboundState()
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
-            .setSendInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setSendMessageSequence(MESSAGE_SEQUENCE);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
 
         var otherOutboundState = new OutboundState()
             .setSender(OTHER_SENDER)
             .setRecipient(RECIPIENT)
-            .setSendInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setSendMessageSequence(MESSAGE_SEQUENCE);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
 
         outboundState = outboundStateRepository.save(outboundState);
         otherOutboundState = outboundStateRepository.save(otherOutboundState);

@@ -44,11 +44,11 @@ public class InboundGpSystemServiceTest {
     public void testPublishToGpSupplierQueue() throws JMSException {
         Parameters parameters = new Parameters();
         String operationId = "123";
-        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.TransactionType.ACCEPTANCE;
+        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.Outbound.ACCEPTANCE;
         String jsonEncodedFhir = "{\"resourceType\":\"Parameters\"}";
         when(fhirParser.encodeToString(parameters)).thenReturn(jsonEncodedFhir);
 
-        inboundGpSystemService.publishToSupplierQueue(parameters, operationId, transactionType);
+        inboundGpSystemService.publishToSupplierQueue(new InboundGpSystemService.DataToSend(parameters, operationId, transactionType));
 
         var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 
