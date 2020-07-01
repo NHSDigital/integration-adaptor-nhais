@@ -3,9 +3,11 @@ package uk.nhs.digital.nhsconnect.nhais.uat;
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
@@ -19,6 +21,7 @@ import javax.jms.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
 public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
