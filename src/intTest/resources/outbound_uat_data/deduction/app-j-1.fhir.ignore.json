@@ -40,7 +40,7 @@
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "N/10/10"
           }
-        ]
+        ],
         "resourceType": "Patient"
       }
     }
