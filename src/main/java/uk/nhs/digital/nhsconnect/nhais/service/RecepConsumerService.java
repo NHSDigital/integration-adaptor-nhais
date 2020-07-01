@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -98,11 +99,17 @@ public class RecepConsumerService {
 
     private List<Message> filterOutDuplicates(Interchange interchange) {
         return interchange.getMessages().stream()
-            .filter(this::isNotDuplicate)
+            .filter(message -> {
+                boolean hasBeenProcessed = hasAlreadyBeenProcessed(message);
+                if (!hasBeenProcessed) {
+                    LOGGER.info("Skipping message {} as it has already been processed", message);
+                }
+                return !hasBeenProcessed;
+            })
             .collect(Collectors.toList());
     }
 
-    private boolean isNotDuplicate(Message message) {
+    private boolean hasAlreadyBeenProcessed(Message message) {
         var interchangeHeader = message.getInterchange().getInterchangeHeader();
         var messageHeader = message.getMessageHeader();
 
@@ -114,6 +121,6 @@ public class RecepConsumerService {
             messageHeader.getSequenceNumber(),
             null);
 
-        return inboundState.isEmpty();
+        return inboundState.isPresent();
     }
 }

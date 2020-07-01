@@ -35,7 +35,7 @@ public class RecepProducerService {
         return toEdifact(segments);
     }
 
-    public String toEdifact(List<Segment> segments) {
+    private String toEdifact(List<Segment> segments) {
         return segments.stream()
             .map(Segment::toEdifact)
             .collect(Collectors.joining("\n"));
