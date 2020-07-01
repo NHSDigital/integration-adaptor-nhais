@@ -29,17 +29,17 @@ pipeline {
                             sh label: 'Create logs directory', script: 'mkdir -p logs build'
                             if (sh(label: 'Build nhais', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .', returnStatus: true) != 0) {error("Failed to build docker image for tests")}
                             if (sh(label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock --name nhais-tests local/nhais-tests:${BUILD_TAG} gradle check -i', returnStatus: true) != 0) {error("Some tests failed, check the logs")}
-                            if (sh(label: 'Copying test files locally', script: 'docker cp nhais-tests:/home/gradle/src/build .', returnStatus: true) != 0) {error("Failed to copy test files locally")}
                         }
                     }
                     post {
                         always {
+                            sh "docker cp nhais-tests:/home/gradle/src/build ."
                             junit '**/build/test-results/**/*.xml'
                             step([
-                                $class           : 'JacocoPublisher',
-                                execPattern      : '**/build/jacoco/*.exec',
-                                classPattern     : '**/build/classes/java',
-                                sourcePattern    : 'src/main/java',
+                                $class : 'JacocoPublisher',
+                                execPattern : '**/build/jacoco/*.exec',
+                                classPattern : '**/build/classes/java',
+                                sourcePattern : 'src/main/java',
                                 exclusionPattern : '**/*Test.class'
                             ])
                             sh "rm -rf build"
