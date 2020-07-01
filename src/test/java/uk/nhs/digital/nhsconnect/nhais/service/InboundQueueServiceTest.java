@@ -17,28 +17,28 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class InboundMeshServiceTest {
+public class InboundQueueServiceTest {
 
     @Mock
-    RegistrationConsumerService registrationConsumerService;
+    private RegistrationConsumerService registrationConsumerService;
 
     @Mock
-    RecepConsumerService recepConsumerService;
+    private RecepConsumerService recepConsumerService;
 
     @Spy
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
-    InboundMeshService inboundMeshService;
+    private InboundQueueService inboundQueueService;
 
     @Mock
-    Message message;
+    private Message message;
 
     @Test
     public void registrationMessage_handledByRegistrationConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
 
-        inboundMeshService.handleInboundMessage(message);
+        inboundQueueService.receive(message);
 
         MeshMessage expectedMeshMessage = new MeshMessage();
         expectedMeshMessage.setWorkflowId(WorkflowId.REGISTRATION);
@@ -51,7 +51,7 @@ public class InboundMeshServiceTest {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
         doThrow(RuntimeException.class).when(registrationConsumerService).handleRegistration(any(MeshMessage.class));
 
-        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message));
+        assertThrows(RuntimeException.class, () -> inboundQueueService.receive(message));
 
         verify(message, times(0)).acknowledge();
     }
@@ -60,7 +60,7 @@ public class InboundMeshServiceTest {
     public void recepMessage_handledByRecepConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
 
-        inboundMeshService.handleInboundMessage(message);
+        inboundQueueService.receive(message);
 
         MeshMessage expectedMeshMessage = new MeshMessage();
         expectedMeshMessage.setWorkflowId(WorkflowId.RECEP);
@@ -73,7 +73,7 @@ public class InboundMeshServiceTest {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
         doThrow(RuntimeException.class).when(recepConsumerService).handleRecep(any(MeshMessage.class));
 
-        assertThrows(RuntimeException.class, () -> inboundMeshService.handleInboundMessage(message));
+        assertThrows(RuntimeException.class, () -> inboundQueueService.receive(message));
 
         verify(message, times(0)).acknowledge();
     }
@@ -82,7 +82,7 @@ public class InboundMeshServiceTest {
     public void unknownWorkflow_throwsUnknownWorkflowException_noAck() throws Exception{
         when(message.getBody(String.class)).thenReturn("{}");
 
-        assertThrows(UnknownWorkflowException.class, () -> inboundMeshService.handleInboundMessage(message));
+        assertThrows(UnknownWorkflowException.class, () -> inboundQueueService.receive(message));
 
         verifyNoInteractions(recepConsumerService, registrationConsumerService);
         verify(message, times(0)).acknowledge();

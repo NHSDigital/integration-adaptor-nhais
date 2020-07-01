@@ -77,7 +77,7 @@ public class RegistrationConsumerServiceTest {
     OutboundStateRepository outboundStateRepository;
 
     @Mock
-    OutboundMeshService outboundMeshService;
+    OutboundQueueService outboundQueueService;
 
     @Mock
     RecepProducerService recepProducerService;
@@ -244,6 +244,6 @@ public class RegistrationConsumerServiceTest {
 
         verifyNoInteractions(inboundGpSystemService);
         verifyNoInteractions(outboundStateRepository);
-        verifyNoInteractions(outboundMeshService);
+        verifyNoInteractions(outboundQueueService);
     }
 }

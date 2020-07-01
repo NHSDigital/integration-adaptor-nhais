@@ -20,7 +20,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
-import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
+import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 
 import java.nio.file.Files;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class AcceptanceControllerTest {
     private Resource paramsPayload;
 
     @MockBean
-    private OutboundMeshService outboundMeshService;
+    private OutboundQueueService outboundQueueService;
 
     @MockBean
     private FhirToEdifactService fhirToEdifactService;
@@ -82,7 +82,7 @@ public class AcceptanceControllerTest {
             .andExpect(status().isAccepted())
             .andExpect(header().string("OperationId", OPERATION_ID));
 
-        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+        verify(outboundQueueService).publish(meshMessage);
     }
 
     @Test

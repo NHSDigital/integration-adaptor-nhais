@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,24 +18,22 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
-import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
+import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
 
 import java.util.Collections;
 
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AcceptanceController {
-    @Autowired
-    private OutboundMeshService outboundMeshService;
 
-    @Autowired
-    private FhirToEdifactService fhirToEdifactService;
+    private final OutboundQueueService outboundQueueService;
 
-    @Autowired
-    private EdifactToMeshMessageService edifactToMeshMessageService;
+    private final FhirToEdifactService fhirToEdifactService;
 
-    @Autowired
-    private FhirParser fhirParser;
+    private final EdifactToMeshMessageService edifactToMeshMessageService;
+
+    private final FhirParser fhirParser;
 
 
     @PostMapping(path = "/fhir/Patient/$nhais.acceptance", consumes = "application/json", produces = "application/json")
@@ -43,7 +42,7 @@ public class AcceptanceController {
         Parameters parameters = fhirParser.parseParameters(body);
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.Outbound.ACCEPTANCE);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
-        outboundMeshService.publishToOutboundQueue(meshMessage);
+        outboundQueueService.publish(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(translatedInterchange.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);

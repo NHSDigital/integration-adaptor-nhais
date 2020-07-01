@@ -14,17 +14,15 @@ import java.util.stream.Stream;
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeshRecipientDecoder {
+public class MeshCypherDecoder {
 
     private EdifactParser edifactParser;
 
-    @Value("${nhais.mesh.recipientCodes}")
-    private String recipientMapping;
+    @Value("${nhais.mesh.cypherToMailbox}")
+    private String cypherToMailbox;
 
     public String getRecipient(MeshMessage meshMessage) {
-        Map<String, String> mappings = Stream.of(recipientMapping.replaceAll(" ", "\n").split("\n"))
-            .map(row -> row.split("="))
-            .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
+        Map<String, String> mappings = createMappings();
 
         String recipient = edifactParser.parse(meshMessage.getContent()).getInterchangeHeader().getRecipient();
         if(!mappings.containsKey(recipient)) {
@@ -32,5 +30,22 @@ public class MeshRecipientDecoder {
         }
 
         return mappings.get(recipient);
+    }
+
+    public String getSender(String edifactMessage) {
+        Map<String, String> mappings = createMappings();
+
+        String sender = edifactParser.parse(edifactMessage).getInterchangeHeader().getSender();
+        if(!mappings.containsKey(sender)) {
+            throw new MeshRecipientUnknownException("Couldn't decode sender: " + sender);
+        }
+
+        return mappings.get(sender);
+    }
+
+    private Map<String, String> createMappings() {
+        return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
+                .map(row -> row.split("="))
+                .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
     }
 }

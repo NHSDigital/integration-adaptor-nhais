@@ -18,6 +18,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
+import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -29,7 +31,6 @@ import java.util.function.Supplier;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
-import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @ExtendWith({SpringExtension.class, SoftAssertionsExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
@@ -49,6 +50,9 @@ public abstract class MeshServiceBaseTest {
     protected OutboundStateRepository outboundStateRepository;
     @Autowired
     protected ObjectMapper objectMapper;
+    @Autowired
+    private InboundQueueService inboundQueueService;
+
     @Value("${nhais.amqp.meshInboundQueueName}")
     protected String meshInboundQueueName;
     @Value("${nhais.amqp.meshOutboundQueueName}")
@@ -69,7 +73,7 @@ public abstract class MeshServiceBaseTest {
     }
 
     protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
-        sendToMeshInboundQueue(serializeMeshMessage(meshMessage));
+        inboundQueueService.publish(meshMessage);
     }
 
     protected void sendToMeshInboundQueue(String data) {
@@ -105,12 +109,7 @@ public abstract class MeshServiceBaseTest {
         if (message == null) {
             return null;
         }
-        return readMessage(message);
-    }
-
-    @SneakyThrows
-    private String serializeMeshMessage(MeshMessage meshMessage) {
-        return objectMapper.writeValueAsString(meshMessage);
+        return JmsReader.readMessage(message);
     }
 
     @SneakyThrows

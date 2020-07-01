@@ -31,7 +31,7 @@ public class RegistrationConsumerService {
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
     private final OutboundStateRepository outboundStateRepository;
-    private final OutboundMeshService outboundMeshService;
+    private final OutboundQueueService outboundQueueService;
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;

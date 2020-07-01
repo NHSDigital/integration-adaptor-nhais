@@ -1,15 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class MeshRecipientDecoderTest {
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
-    private final MeshRecipientDecoder meshRecipientDecoder = new MeshRecipientDecoder(new EdifactParser(), "XX11=A91561OT001\nabc=cde");
+import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+
+class MeshCypherDecoderTest {
+
+    private final MeshCypherDecoder meshCypherDecoder = new MeshCypherDecoder(new EdifactParser(), "XX11=A91561OT001\nabc=cde\nTES5=cypher");
 
     private final String edifactString = "UNB+UNOA:2+TES5+XX11+200610:1438+00000001'\n" +
         "UNH+00000001+FHSREG:0:1:FH:FHS001'\n" +
@@ -31,7 +32,7 @@ class MeshRecipientDecoderTest {
         "UNT+17+00000001'\n" +
         "UNZ+1+00000001'";
 
-    private final String edifactStringWithUnknownRecipient = "UNB+UNOA:2+TES5+9999+200610:1438+00000001'\n" +
+    private final String edifactStringWithUnknownRecipient = "UNB+UNOA:2+8888+9999+200610:1438+00000001'\n" +
         "UNH+00000001+FHSREG:0:1:FH:FHS001'\n" +
         "BGM+++507'\n" +
         "NAD+FHS+XX1:954'\n" +
@@ -55,16 +56,27 @@ class MeshRecipientDecoderTest {
     void When_RecipientCypherAvailable_Then_MapToCorrectValue() {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent(edifactString);
-        assertThat(meshRecipientDecoder.getRecipient(meshMessage)).isEqualTo("A91561OT001");
-        assertThat(meshRecipientDecoder.getRecipient(meshMessage)).isEqualTo("A91561OT001");
+        assertThat(meshCypherDecoder.getRecipient(meshMessage)).isEqualTo("A91561OT001");
     }
 
     @Test
     void When_RecipientCypherIsUnavailable_Then_ThrowException() {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent(edifactStringWithUnknownRecipient);
-        assertThatThrownBy(() -> meshRecipientDecoder.getRecipient(meshMessage))
+        assertThatThrownBy(() -> meshCypherDecoder.getRecipient(meshMessage))
             .isExactlyInstanceOf(MeshRecipientUnknownException.class)
             .hasMessage("Couldn't decode recipient: 9999");
+    }
+
+    @Test
+    void When_SenderCypherAvailable_Then_MapToCorrectValue() {
+        assertThat(meshCypherDecoder.getSender(edifactString)).isEqualTo("cypher");
+    }
+
+    @Test
+    void When_SenderCypherIsUnavailable_Then_ThrowException() {
+        assertThatThrownBy(() -> meshCypherDecoder.getSender(edifactStringWithUnknownRecipient))
+                .isExactlyInstanceOf(MeshRecipientUnknownException.class)
+                .hasMessage("Couldn't decode sender: 8888");
     }
 }
