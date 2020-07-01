@@ -1,0 +1,28 @@
+{
+  "nhsNumber": "SEQ12",
+  "gpCode": "2750922,295",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "remove",
+      "path": "/address/0/line/0"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/1"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/2"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/4"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/postalCode"
+    }
+  ]
+}
