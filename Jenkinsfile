@@ -27,9 +27,22 @@ pipeline {
                     steps {
                         script {
                             sh label: 'Create logs directory', script: 'mkdir -p logs build'
-                            if (sh(label: 'Build tests', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .', returnStatus: true) != 0) {error("Failed to build docker image for tests")}
+                            if (sh(label: 'Build nhais', script: 'docker build -t local/nhais-tests:${BUILD_TAG} -f Dockerfile.tests .', returnStatus: true) != 0) {error("Failed to build docker image for tests")}
                             if (sh(label: 'Running tests', script: 'docker run -v /var/run/docker.sock:/var/run/docker.sock --name nhais-tests local/nhais-tests:${BUILD_TAG} gradle check -i', returnStatus: true) != 0) {error("Some tests failed, check the logs")}
-                            if (sh(label: 'Copying test files locally', script: 'docker cp nhais-tests:/home/gradle/src/build ./test-reports', returnStatus: true) != 0) {error("Failed to copy test files locally")}
+                            if (sh(label: 'Copying test files locally', script: 'docker cp nhais-tests:/home/gradle/src/build .', returnStatus: true) != 0) {error("Failed to copy test files locally")}
+                        }
+                    }
+                    post {
+                        always {
+                            junit '**/build/test-results/**/*.xml'
+                            step([
+                                $class           : 'JacocoPublisher',
+                                execPattern      : '**/build/jacoco/*.exec',
+                                classPattern     : '**/build/classes/java',
+                                sourcePattern    : 'src/main/java',
+                                exclusionPattern : '**/*Test.class'
+                            ])
+                            sh "rm -rf build"
                         }
                     }
                 }
@@ -55,14 +68,12 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/test-reports/**/*.xml'
                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
-//                     sh label: 'Create logs directory', script: 'mkdir logs'
+                    sh label: 'Copy activemq logs', script: 'docker-compose logs activemq > logs/inbound.log'
+                    archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
 //                     sh label: 'Copy nhais container logs', script: 'docker-compose logs nhais > logs/nhais.log'
 //                     sh label: 'Copy dynamo container logs', script: 'docker-compose logs dynamodb-local > logs/outbound.log'
-//                     sh label: 'Copy activemq logs', script: 'docker-compose logs activemq > logs/inbound.log'
 //                     sh label: 'Copy nhais-tests logs', script: 'docker-compose logs nhais-tests > logs/nhais-tests.log'
-//                     archiveArtifacts artifacts: 'logs/*.log', fingerprint: true
                     sh label: 'Stopping containers', script: 'docker-compose down -v'
                 }
             }
