@@ -36,18 +36,20 @@ public class RecepConsumerService {
 
         var messagesToProcess = filterOutDuplicates(recep);
 
-        var outboundStateUpdates = prepareOutboundStateParams(messagesToProcess);
+        var outboundStateUpdates = prepareOutboundStateUpdates(messagesToProcess);
         var inboundStateInserts = prepareInboundStateInserts(messagesToProcess);
 
-        performOutboundStateUpdates(outboundStateUpdates);
-        performInboundStateInserts(inboundStateInserts);
+        updateOutboundStateWithRecepDetails(outboundStateUpdates);
+        insertInboundState(inboundStateInserts);
     }
 
-    private void performInboundStateInserts(List<InboundState> inboundStateInserts) {
+    private void insertInboundState(List<InboundState> inboundStateInserts) {
+        LOGGER.debug("Inserting InboundState records {}", inboundStateInserts);
         inboundStateInserts.forEach(inboundStateRepository::save);
     }
 
-    private void performOutboundStateUpdates(List<OutboundStateRepositoryExtensions.UpdateRecepParams> updateRecepParams) {
+    private void updateOutboundStateWithRecepDetails(List<OutboundStateRepositoryExtensions.UpdateRecepParams> updateRecepParams) {
+        LOGGER.debug("Updating OutboundState with recep details {}", updateRecepParams);
         updateRecepParams.forEach(updateRecepParam -> {
             outboundStateRepository.updateRecepDetails(updateRecepParam).ifPresentOrElse(
                 outboundState -> LOGGER.debug("Updated outbound state recep details using {}", updateRecepParams),
@@ -62,7 +64,7 @@ public class RecepConsumerService {
             .collect(Collectors.toList());
     }
 
-    private List<OutboundStateRepositoryExtensions.UpdateRecepParams> prepareOutboundStateParams(List<Message> messagesToProcess) {
+    private List<OutboundStateRepositoryExtensions.UpdateRecepParams> prepareOutboundStateUpdates(List<Message> messagesToProcess) {
         return messagesToProcess.stream()
             .map(this::prepareOutboundStateUpdateParams)
             .flatMap(Collection::stream)
@@ -70,7 +72,6 @@ public class RecepConsumerService {
     }
 
     private List<OutboundStateRepositoryExtensions.UpdateRecepParams> prepareOutboundStateUpdateParams(Message message) {
-        LOGGER.info("Handling recep message {}", message);
         //sender is swapped with recipient as communication is done the opposite way
         var outbound_sender = message.getInterchange().getInterchangeHeader().getRecipient();
         var outbound_recipient = message.getInterchange().getInterchangeHeader().getSender();
