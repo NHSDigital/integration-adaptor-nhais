@@ -11,6 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.container.FakeMeshContainer;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbContainer;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.SequenceDao;
 
 import java.util.Collection;
@@ -59,8 +60,10 @@ public class IntegrationTestsExtension implements BeforeAllCallback, BeforeEachC
         var outboundStateRepository = applicationContext.getBean(OutboundStateRepository.class);
         var inboundStateRepository = applicationContext.getBean(InboundStateRepository.class);
         var sequenceRepository = applicationContext.getBean(SequenceDao.class);
+        var schedulerTimestampRepository = applicationContext.getBean(SchedulerTimestampRepository.class);
         outboundStateRepository.deleteAll();
         inboundStateRepository.deleteAll();
         sequenceRepository.deleteAll();
+        schedulerTimestampRepository.deleteAll();
     }
 }

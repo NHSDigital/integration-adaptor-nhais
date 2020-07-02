@@ -16,10 +16,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -39,7 +39,7 @@ public class FhirToEdifactService {
     private final TimestampService timestampService;
     private final FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
-    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
+    public MeshMessage convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.parameters = parameters;
         translationItems.patient = new ParametersExtension(parameters).extractPatient();
@@ -193,17 +193,17 @@ public class FhirToEdifactService {
         }
     }
 
-    private TranslatedInterchange translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
+    private MeshMessage translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
         List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
         for (Segment segment : translationItems.segments) {
             segmentStrings.add(segment.toEdifact());
         }
         String edifact = String.join("\n", segmentStrings);
-        TranslatedInterchange interchange = new TranslatedInterchange();
-        interchange.setEdifact(edifact);
-        interchange.setInterchangeType(TranslatedInterchange.InterchangeType.REGISTRATION);
-        interchange.setOperationId(translationItems.operationId);
-        return interchange;
+        MeshMessage meshMessage = new MeshMessage();
+        meshMessage.setContent(edifact);
+        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
+        meshMessage.setOperationId(translationItems.operationId);
+        return meshMessage;
     }
 
     private static class TranslationItems {

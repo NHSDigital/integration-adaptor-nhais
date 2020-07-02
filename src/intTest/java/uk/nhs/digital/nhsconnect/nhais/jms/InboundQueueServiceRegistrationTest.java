@@ -13,6 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -24,10 +25,9 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import static org.mockito.Mockito.when;
-import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
-public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
+public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
 
     private static final String SENDER = "XX11";
     private static final String RECIPIENT = "TES5";
@@ -60,7 +60,8 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
+            .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())))
+            .setMeshMessageId("12345");
 
         sendToMeshInboundQueue(meshMessage);
 
@@ -77,9 +78,9 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
-        var gpSystemInboundQueueMessage = getOutboundQueueMessage();
+        var outboundQueueMessage = getOutboundQueueMessage();
 
-        var meshMessage = parseOutboundMessage(gpSystemInboundQueueMessage);
+        var meshMessage = parseOutboundMessage(outboundQueueMessage);
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -115,7 +116,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = readMessage(message);
+        var body = JmsReader.readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }
 }

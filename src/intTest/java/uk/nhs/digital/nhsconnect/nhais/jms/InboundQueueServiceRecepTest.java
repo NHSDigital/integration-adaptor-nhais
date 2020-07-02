@@ -19,7 +19,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @DirtiesContext
-public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
+public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
     private static final long MESSAGE_SEQUENCE = 28;
@@ -41,7 +41,8 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
 
         sendToMeshInboundQueue(new MeshMessage()
             .setWorkflowId(WorkflowId.RECEP)
-            .setContent(new String(Files.readAllBytes(recep.getFile().toPath()))));
+            .setContent(new String(Files.readAllBytes(recep.getFile().toPath())))
+            .setMeshMessageId("12345"));
 
         var inboundState = waitFor(
             () -> inboundStateRepository
