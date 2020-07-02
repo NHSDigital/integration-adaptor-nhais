@@ -53,8 +53,8 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        await().atMost(20, TimeUnit.SECONDS)
-            .pollDelay(Durations.TEN_SECONDS)
+        await().atMost(10, TimeUnit.SECONDS)
+            .pollDelay(Durations.FIVE_SECONDS)
             .until(this::isMeshClean);
     }
 
@@ -67,13 +67,14 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         sendToApi(testData.getFhir(), transactionType);
 
         // fetch EDIFACT message from MESH
+        await().atMost(10, TimeUnit.SECONDS)
+            .pollDelay(Durations.FIVE_SECONDS)
+            .until(this::isNewMessageAvailable);
+
         List<String> msgs = meshClient.getInboxMessageIds();
 
         // assert output EDIFACT is correct
         assertMessageBody(meshClient.getEdifactMessage(msgs.get(0)), testData.getEdifact());
-
-        // acknowledge message will remove it from MESH
-        meshClient.acknowledgeMessage(msgs.get(0));
     }
 
     private void sendToApi(String fhirInput, String transactionType) throws Exception {
@@ -86,8 +87,13 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     }
 
     private Boolean isMeshClean() {
+        // acknowledge message will remove it from MESH
         meshClient.getInboxMessageIds()
             .forEach(id -> meshClient.acknowledgeMessage(id));
         return meshClient.getInboxMessageIds().size() == 0;
+    }
+
+    private Boolean isNewMessageAvailable() {
+        return meshClient.getInboxMessageIds().size() > 0;
     }
 }
