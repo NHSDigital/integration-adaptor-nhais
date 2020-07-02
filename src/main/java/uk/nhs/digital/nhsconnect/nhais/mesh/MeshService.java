@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class MeshService {
             }
             for (String messageId : inboxMessageIds) {
                 try {
-                    MeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
+                    InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
                     inboundQueueService.publish(meshMessage);
                     meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
                 } catch (Exception ex) {

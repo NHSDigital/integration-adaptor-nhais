@@ -14,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -72,7 +74,7 @@ public abstract class MeshServiceBaseTest {
         this.jmsTemplate.setReceiveTimeout(originalReceiveTimeout);
     }
 
-    protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
+    protected void sendToMeshInboundQueue(InboundMeshMessage meshMessage) {
         inboundQueueService.publish(meshMessage);
     }
 
@@ -100,7 +102,7 @@ public abstract class MeshServiceBaseTest {
         return new FhirParser().parse(body);
     }
 
-    protected MeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
+    protected OutboundMeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
         var body = parseTextMessage(message);
         return deserializeMeshMessage(body);
     }
@@ -113,7 +115,7 @@ public abstract class MeshServiceBaseTest {
     }
 
     @SneakyThrows
-    private MeshMessage deserializeMeshMessage(String meshMessage) {
+    private OutboundMeshMessage deserializeMeshMessage(String meshMessage) {
         return objectMapper.readValue(meshMessage, MeshMessage.class);
     }
 

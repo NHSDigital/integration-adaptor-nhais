@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
@@ -115,7 +116,7 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }
 
-    private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
+    private OutboundMeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
         var body = JmsReader.readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }

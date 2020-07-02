@@ -20,6 +20,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -39,7 +40,7 @@ public class FhirToEdifactService {
     private final TimestampService timestampService;
     private final FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
-    public MeshMessage convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
+    public OutboundMeshMessage convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.parameters = parameters;
         translationItems.patient = new ParametersExtension(parameters).extractPatient();
@@ -193,7 +194,7 @@ public class FhirToEdifactService {
         }
     }
 
-    private MeshMessage translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
+    private OutboundMeshMessage translateInterchange(TranslationItems translationItems) throws EdifactValidationException {
         List<String> segmentStrings = new ArrayList<>(translationItems.segments.size());
         for (Segment segment : translationItems.segments) {
             segmentStrings.add(segment.toEdifact());
