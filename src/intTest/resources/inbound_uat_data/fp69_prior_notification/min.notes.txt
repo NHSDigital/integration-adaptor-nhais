@@ -1,9 +1,1 @@
-FP69 Prior Notification for Charles Anthony Stevens, NHS Number TE26.
-Date of Birth : 23/05/1940.
-Address : Moorside Farm, Old Lane, St Pauls Cray, Orpington, Kent, BR6 7EW.
-FP69 Expiry Date : 25/07/1992.
-FP69 Reason : Other Reason.
-Free Text : Patient thought to be in Scotland.
-Registered with GP 295 (GMC National GP Code 2750922).
-
-Example has been change to give Charles a third name: RICHARD
+Contains only fields marked as required
