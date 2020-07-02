@@ -1,0 +1,7 @@
+NHS Number N/10/10.
+Deduction Date : 25/12/1991, Deduction Reason : Death, Free Text : Died on holiday in Majorca.
+Registered with GP 281 (GMC National GP Code 4826940).
+
+Information transmitted within Interchange 2, Message 3, Transaction Number 17 at 13:17 on 13/01/1992.
+
+The identifiers and timestamps have been modified to work with the UAT test framework.
