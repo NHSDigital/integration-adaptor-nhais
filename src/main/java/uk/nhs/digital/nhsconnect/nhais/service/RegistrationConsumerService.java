@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -35,6 +36,7 @@ public class RegistrationConsumerService {
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
+    private final MeshConfig meshConfig;
 
     public void handleRegistration(MeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
@@ -131,8 +133,7 @@ public class RegistrationConsumerService {
 
     private MeshMessage buildRecepMeshMessage(String edifactRecep) {
         return new MeshMessage()
-            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
-            .setHaTradingPartnerCode("ods123")
+            .setHaTradingPartnerCode(meshConfig.getMailboxId())
             .setWorkflowId(WorkflowId.RECEP)
             .setContent(edifactRecep);
     }
