@@ -3,6 +3,9 @@ package uk.nhs.digital.nhsconnect.nhais.model.mesh;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshWorkflowUnknownException;
+
+import java.util.Arrays;
 
 @RequiredArgsConstructor @Getter
 public enum WorkflowId {
@@ -15,5 +18,12 @@ public enum WorkflowId {
     @Override
     public String toString() {
         return workflowId;
+    }
+
+    public static WorkflowId fromString(String workflowId){
+        return Arrays.stream(WorkflowId.values())
+                .filter(workflow -> workflow.workflowId.equalsIgnoreCase(workflowId))
+                .findFirst()
+                .orElseThrow(() -> new MeshWorkflowUnknownException(workflowId));
     }
 }

@@ -2,11 +2,12 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.qpid.jms.message.JmsBytesMessage;
-import org.apache.qpid.jms.message.JmsTextMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.UnknownWorkflowException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class InboundMeshService {
+public class InboundQueueService {
 
     private final RegistrationConsumerService registrationConsumerService;
 
@@ -27,11 +28,18 @@ public class InboundMeshService {
 
     private final ObjectMapper objectMapper;
 
+    private final TimestampService timestampService;
+
+    private final JmsTemplate jmsTemplate;
+
+    @Value("${nhais.amqp.meshInboundQueueName}")
+    private String meshInboundQueueName;
+
     @JmsListener(destination = "${nhais.amqp.meshInboundQueueName}")
-    public void handleInboundMessage(Message message) throws IOException, JMSException {
+    public void receive(Message message) throws IOException, JMSException {
         LOGGER.debug("Received message: {}", message);
         try {
-            String body = readMessage(message);
+            String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
@@ -53,26 +61,14 @@ public class InboundMeshService {
         }
     }
 
-    public static String readMessage(Message message) throws JMSException {
-        if (message instanceof JmsTextMessage) {
-            return readTextMessage((JmsTextMessage) message);
-        }
-        if (message instanceof JmsBytesMessage) {
-            return readBytesMessage((JmsBytesMessage) message);
-        }
-        if (message != null) {
-            return message.getBody(String.class);
-        }
-        return null;
+    @SneakyThrows
+    public void publish(MeshMessage message) {
+        message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
+        jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
 
-    private static String readBytesMessage(JmsBytesMessage message) throws JMSException {
-        byte[] bytes = new byte[(int) message.getBodyLength()];
-        message.readBytes(bytes);
-        return new String(bytes);
-    }
-
-    private static String readTextMessage(JmsTextMessage message) throws JMSException {
-        return message.getText();
+    @SneakyThrows
+    private String serializeMeshMessage(MeshMessage meshMessage) {
+        return objectMapper.writeValueAsString(meshMessage);
     }
 }

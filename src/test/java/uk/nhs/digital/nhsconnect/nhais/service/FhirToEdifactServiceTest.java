@@ -15,10 +15,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -104,7 +104,7 @@ public class FhirToEdifactServiceTest {
         expected.setInterchangeSequence(SIS);
         expected.setMessageSequence(SMS);
         expected.setTransactionId(TN);
-        expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE.getAbbreviation());
+        expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
         expected.setTransactionTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
@@ -114,7 +114,7 @@ public class FhirToEdifactServiceTest {
     public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
         Parameters patient = createPatient();
 
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
+        MeshMessage meshMessage = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
         String expected = "UNB+UNOA:2+GP123+HA41+200427:1737+00000045'\n" +
             "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
@@ -127,7 +127,7 @@ public class FhirToEdifactServiceTest {
             "UNT+8+00000056'\n" +
             "UNZ+1+00000045'";
 
-        assertThat(translatedInterchange.getEdifact()).isEqualTo(expected);
+        assertThat(meshMessage.getContent()).isEqualTo(expected);
     }
 
     private Parameters createPatient() {

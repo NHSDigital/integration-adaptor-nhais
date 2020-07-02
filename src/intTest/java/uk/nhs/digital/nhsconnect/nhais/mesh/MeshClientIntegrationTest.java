@@ -1,12 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.util.List;
 
@@ -16,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @Slf4j
+@DirtiesContext
 public class MeshClientIntegrationTest {
 
     @Autowired
@@ -24,12 +29,17 @@ public class MeshClientIntegrationTest {
     @Autowired
     private MeshConfig meshConfig;
 
+    @AfterEach
+    void tearDown() {
+        List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+        inboxMessageIds.forEach( messageId -> meshClient.acknowledgeMessage(messageId));
+    }
+
     @Test
     void when_CallingMeshSendMessageEndpoint_Then_MessageIdIsReturned() {
         MeshMessageId meshMessageId = meshClient.sendEdifactMessage("edifact\nmessage", "recipient");
         assertThat(meshMessageId).isNotNull();
         assertThat(meshMessageId.getMessageID()).isNotEmpty();
-        LOGGER.info(meshMessageId.getMessageID());
     }
 
     @Test
@@ -37,9 +47,9 @@ public class MeshClientIntegrationTest {
         String messageContent = "test_message";
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(messageContent, meshConfig.getMailboxId());
 
-        String edifactMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
-        assertThat(edifactMessage).isEqualTo(messageContent);
-        LOGGER.info(edifactMessage);
+        MeshMessage meshMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
+        assertThat(meshMessage.getContent()).isEqualTo(messageContent);
+        assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
     }
 
     @Test

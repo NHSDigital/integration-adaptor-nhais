@@ -269,7 +269,20 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 ## MESH API
 
-TODO: GP Links - NHAIS Adaptor MESH configuration when MESH integration is implemented
+MESH configuration is done using environment variables:
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_MESH_MAILBOX_ID            | N/A                       | Your MESH mailbox id (sender)
+| NHAIS_MESH_MAILBOX_PASSWORD      | N/A                       | The password for MAILBOX_ID
+| NHAIS_MESH_SHARED_KEY            | N/A                       | Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
+| NHAIS_MESH_HOST                  | N/A                       | Hostname of MESH service
+| NHAIS_MESH_ENDPOINT_CERT         | N/A                       | Certificate used for connecting to MESH
+| NHAIS_MESH_ENDPOINT_PRIVATE_KEY  | N/A                       | Private key of certificate used for connecting to MESH
+| NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox 
+| NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS | 60000          | Interval to check MESH mailbox, default 1 minute (60 000 ms)
+| NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS | 300                    | Delay of MESH mailbox message download (allow to download messages not before x seconds passed from last access), default 5 minutes (300 seconds)
+| NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
 

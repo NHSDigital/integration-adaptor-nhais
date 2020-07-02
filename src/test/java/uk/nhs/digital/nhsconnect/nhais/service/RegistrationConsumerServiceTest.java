@@ -11,7 +11,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -21,6 +20,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 
 import java.time.Instant;
@@ -50,8 +50,8 @@ public class RegistrationConsumerServiceTest {
     public static final long TN_4 = 21L;
     public static final String SENDER = "TES5";
     public static final String RECIPIENT = "XX11";
-    public static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Outbound.ACCEPTANCE;
-    public static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    public static final ReferenceTransactionType.Inbound MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
+    public static final ReferenceTransactionType.Inbound MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     public static final long RECEP_INTERCHANGE_SEQUENCE = 100L;
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
@@ -77,7 +77,7 @@ public class RegistrationConsumerServiceTest {
     OutboundStateRepository outboundStateRepository;
 
     @Mock
-    OutboundMeshService outboundMeshService;
+    OutboundQueueService outboundQueueService;
 
     @Mock
     RecepProducerService recepProducerService;
@@ -87,9 +87,6 @@ public class RegistrationConsumerServiceTest {
 
     @InjectMocks
     RegistrationConsumerService registrationConsumerService;
-
-    @Mock
-    Recep recep;
 
     @Mock
     Interchange interchange;
@@ -111,6 +108,12 @@ public class RegistrationConsumerServiceTest {
 
     @Mock
     Transaction transaction4;
+
+    @Mock
+    Interchange recep;
+
+    @Mock
+    Message recepMessage;
 
     @Mock
     EdifactParser edifactParser;
@@ -148,25 +151,24 @@ public class RegistrationConsumerServiceTest {
             .thenReturn(Optional.of(new InboundState()));
     }
 
-    //TODO: NIAD-390
-//    private void mockInterchangeRecepRequiredSegments() {
-//        when(recep.getInterchangeHeader()).thenReturn(
-//            new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
-//        when(recep.getMessageHeader()).thenReturn(
-//            new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
-//        when(recep.getDateTimePeriod()).thenReturn(
-//            new DateTimePeriod(TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
-//
-//        when(recep.toEdifact()).thenReturn(RECEP_AS_EDIFACT);
-//    }
+    private void mockRecepSegments() {
+        when(recep.getMessages()).thenReturn(List.of(recepMessage));
+        when(recep.getInterchangeHeader()).thenReturn(
+            new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, MESSAGE_1_TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
+        when(recepMessage.getInterchange()).thenReturn(recep);
+        when(recepMessage.getMessageHeader()).thenReturn(
+            new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
+        when(recepMessage.getTranslationDateTime()).thenReturn(
+            new DateTimePeriod(MESSAGE_1_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+
+        when(recepProducerService.produceRecep(interchange)).thenReturn(RECEP_AS_EDIFACT);
+        when(edifactParser.parse(RECEP_AS_EDIFACT)).thenReturn(recep);
+    }
 
     @Test
     public void registrationMessage_publishedToSupplierQueue() {
         mockInterchangeSegments();
-        //TODO: NIAD-390
-//        mockInterchangeRecepRequiredSegments();
-
-//        when(recepProducerService.produceRecep(interchange)).thenReturn(recep);
+        mockRecepSegments();
 
         var meshInterchangeMessage = new MeshMessage();
         meshInterchangeMessage.setWorkflowId(WorkflowId.REGISTRATION);
@@ -192,26 +194,25 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(1), SMS_1, TN_2, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
 
-        //TODO: NIAD-390
-//        var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
-//        verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
-//        var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
-//        var expectedRecepOutboundState = new OutboundState()
-//            .setWorkflowId(WorkflowId.RECEP)
-//            .setSender(RECEP_SENDER)
-//            .setRecipient(RECEP_RECIPIENT)
-//            .setSendInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
-//            .setSendMessageSequence(RECEP_MESSAGE_SEQUENCE)
-//            .setTransactionTimestamp(TRANSLATION_TIME);
+        var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
+        verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
+        var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
+        var expectedRecepOutboundState = new OutboundState()
+            .setWorkflowId(WorkflowId.RECEP)
+            .setSender(RECEP_SENDER)
+            .setRecipient(RECEP_RECIPIENT)
+            .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
+            .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
+            .setTransactionTimestamp(MESSAGE_1_TRANSLATION_TIME);
 
-//        assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
+        assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
-//        var meshRecepMessageArgumentCaptor = ArgumentCaptor.forClass(MeshMessage.class);
-//        verify(outboundMeshService).publishToOutboundQueue(meshRecepMessageArgumentCaptor.capture());
+        var meshRecepMessageArgumentCaptor = ArgumentCaptor.forClass(MeshMessage.class);
+        verify(outboundQueueService).publish(meshRecepMessageArgumentCaptor.capture());
 
-//        var sentRecep = meshRecepMessageArgumentCaptor.getValue();
-//        assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-//        assertThat(sentRecep.getContent()).isEqualTo(RECEP_AS_EDIFACT);
+        var sentRecep = meshRecepMessageArgumentCaptor.getValue();
+        assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
+        assertThat(sentRecep.getContent()).isEqualTo(RECEP_AS_EDIFACT);
     }
 
     private void assertPublishToGpQueue(
@@ -243,6 +244,6 @@ public class RegistrationConsumerServiceTest {
 
         verifyNoInteractions(inboundGpSystemService);
         verifyNoInteractions(outboundStateRepository);
-        verifyNoInteractions(outboundMeshService);
+        verifyNoInteractions(outboundQueueService);
     }
 }
