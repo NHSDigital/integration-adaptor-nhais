@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class MeshClient {
     }
 
     @SneakyThrows
-    public String getEdifactMessage(String messageId) {
+    public MeshMessage getEdifactMessage(String messageId) {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             try (CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {

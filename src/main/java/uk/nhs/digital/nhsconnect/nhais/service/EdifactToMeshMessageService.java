@@ -26,7 +26,7 @@ public class EdifactToMeshMessageService {
     public MeshMessage toMeshMessage(TranslatedInterchange translatedInterchange) {
         // TODO: determine ODS code: probably via ENV?
         MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setOdsCode("ods123");
+        meshMessage.setHaTradingPartnerCode("ods123");
         switch(translatedInterchange.getInterchangeType()) {
             case REGISTRATION:
                 meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
@@ -46,7 +46,7 @@ public class EdifactToMeshMessageService {
         //send to inbound queue
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent(edifactString);
-        meshMessage.setOdsCode(meshCypherDecoder.getSender(edifactString));
+        meshMessage.setHaTradingPartnerCode(meshCypherDecoder.getSender(edifactString));
         meshMessage.setWorkflowId(RecepMessage.isRecep(edifactString) ? WorkflowId.RECEP : WorkflowId.REGISTRATION);
         meshMessage.setCorrelationId(UUID.randomUUID().toString()); //TODO: implement correlation id handling
         meshMessage.setMeshMessageId(messageId);

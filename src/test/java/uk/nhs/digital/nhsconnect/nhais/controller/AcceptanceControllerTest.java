@@ -70,7 +70,7 @@ public class AcceptanceControllerTest {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent("EDI");
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        meshMessage.setOdsCode("odsCode");
+        meshMessage.setHaTradingPartnerCode("odsCode");
 
         when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
         when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);

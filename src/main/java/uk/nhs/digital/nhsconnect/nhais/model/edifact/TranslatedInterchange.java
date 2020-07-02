@@ -8,6 +8,7 @@ public class TranslatedInterchange {
 
     private String edifact;
     private InterchangeType interchangeType;
+
     private String operationId;
     // other metadata needed for processing
 
