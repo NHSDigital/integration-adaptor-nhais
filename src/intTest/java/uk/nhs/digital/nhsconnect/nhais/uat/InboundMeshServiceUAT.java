@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
@@ -28,15 +26,8 @@ import static org.awaitility.Awaitility.await;
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
 public class InboundMeshServiceUAT extends MeshServiceBaseTest {
-
     @Autowired
     private FhirParser fhirParser;
-
-    @Autowired
-    private MeshClient meshClient;
-
-    @Autowired
-    private MeshConfig meshConfig;
 
     @Autowired
     private MeshMailBoxScheduler meshMailBoxScheduler;

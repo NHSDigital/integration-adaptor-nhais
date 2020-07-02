@@ -13,8 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
@@ -34,12 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private MeshClient meshClient;
-
-    @Autowired
-    private MeshConfig meshConfig;
 
     @MockBean
     private TimestampService timestampService;
