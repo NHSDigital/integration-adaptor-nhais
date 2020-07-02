@@ -18,8 +18,11 @@ import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
@@ -37,11 +40,18 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @Autowired
     private MeshMailBoxScheduler meshMailBoxScheduler;
 
+    private boolean schedulerConfigured;
+
     @BeforeEach
-    void setUp() throws Exception{
+    void setUp() {
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "true"); //enable scheduling
-        while(!meshMailBoxScheduler.hasTimePassed(0)) { //First run creates collection in MongoDb
-            Thread.sleep(200L); //wait till it's done
+        if(!schedulerConfigured) { // do configuration only once per test run
+            meshMailBoxScheduler.hasTimePassed(0); //First run creates collection in MongoDb
+            await().atMost(10, SECONDS)
+                    .pollDelay(500, TimeUnit.MILLISECONDS)
+                    .pollInterval(500, TimeUnit.MILLISECONDS)
+                    .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
+            schedulerConfigured = true;
         }
     }
 
