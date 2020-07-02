@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
@@ -21,18 +21,11 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 @SpringBootTest
 @Slf4j
 @DirtiesContext
-public class MeshClientIntegrationTest {
-
-    @Autowired
-    private MeshClient meshClient;
-
-    @Autowired
-    private MeshConfig meshConfig;
+public class MeshClientIntegrationTest extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        List<String> inboxMessageIds = meshClient.getInboxMessageIds();
-        inboxMessageIds.forEach(messageId -> meshClient.acknowledgeMessage(messageId));
+        clearMeshQueue();
     }
 
     @Test

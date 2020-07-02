@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.r4.model.Parameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,11 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
         when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
     }
 
+    @AfterEach
+    void tearDown() {
+        clearMeshQueue();
+    }
+
     @Test
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
@@ -118,5 +124,12 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
             .setTransactionNumber(TN)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
+    }
+
+    private Boolean isMeshClean() {
+        // acknowledge message will remove it from MESH
+        meshClient.getInboxMessageIds()
+            .forEach(id -> meshClient.acknowledgeMessage(id));
+        return meshClient.getInboxMessageIds().size() == 0;
     }
 }

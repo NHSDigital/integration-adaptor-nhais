@@ -53,9 +53,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        await().atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Durations.FIVE_SECONDS)
-            .until(this::isMeshClean);
+        clearMeshQueue();
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
@@ -84,13 +82,6 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     private void assertMessageBody(MeshMessage meshMessage, String expectedEdifact) {
         assertThat(meshMessage.getContent()).isEqualTo(expectedEdifact);
-    }
-
-    private Boolean isMeshClean() {
-        // acknowledge message will remove it from MESH
-        meshClient.getInboxMessageIds()
-            .forEach(id -> meshClient.acknowledgeMessage(id));
-        return meshClient.getInboxMessageIds().size() == 0;
     }
 
     private Boolean isNewMessageAvailable() {

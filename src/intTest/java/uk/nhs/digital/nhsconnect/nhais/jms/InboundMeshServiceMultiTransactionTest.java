@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -96,6 +95,11 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     void setUp() {
         when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
         when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
+    }
+
+    @AfterEach
+    void tearDown() {
+        clearMeshQueue();
     }
 
     @Test
@@ -216,10 +220,5 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
             .setTransactionNumber(expectedTN)
             .setTranslationTimestamp(MESSAGE_TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
-    }
-
-    private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = JmsReader.readMessage(message);
-        return objectMapper.readValue(body, MeshMessage.class);
     }
 }
