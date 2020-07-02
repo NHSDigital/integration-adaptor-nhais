@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.TransationTypeMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
@@ -40,7 +39,7 @@ public class FhirController {
         Parameters parameters = fhirParser.parseParameters(body);
         ReferenceTransactionType.Outbound transactionType = new TransationTypeMapper().mapTransactionType(transactionTypeParam);
         MeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, transactionType);
-        outboundMeshService.publish(meshMessage);
+        outboundQueueService.publish(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);

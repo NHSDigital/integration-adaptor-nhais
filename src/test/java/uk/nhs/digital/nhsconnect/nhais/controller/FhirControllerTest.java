@@ -60,7 +60,7 @@ public class FhirControllerTest {
     @Test
     void whenValidAcceptanceInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
-        MeshMessage meshMessage = new MeshMessage();
+        MeshMessage meshMessage = getMeshMessage();
         meshMessage.setContent("EDI");
         meshMessage.setOperationId(OPERATION_ID);
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
@@ -80,10 +80,10 @@ public class FhirControllerTest {
     @Test
     void whenValidRemovalInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
-        TranslatedInterchange translatedInterchange = getTranslatedInterchange();
         MeshMessage meshMessage = getMeshMessage();
 
-        mockServicesBehaviour(requestBody, translatedInterchange, meshMessage);
+        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
+        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/$nhais.removal")
             .contentType("application/json")
@@ -91,16 +91,16 @@ public class FhirControllerTest {
             .andExpect(status().isAccepted())
             .andExpect(header().string("OperationId", OPERATION_ID));
 
-        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+        verify(outboundQueueService).publish(meshMessage);
     }
 
     @Test
     void whenValidDeductionInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
-        TranslatedInterchange translatedInterchange = getTranslatedInterchange();
         MeshMessage meshMessage = getMeshMessage();
 
-        mockServicesBehaviour(requestBody, translatedInterchange, meshMessage);
+        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
+        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/$nhais.removal")
             .contentType("application/json")
@@ -108,30 +108,16 @@ public class FhirControllerTest {
             .andExpect(status().isAccepted())
             .andExpect(header().string("OperationId", OPERATION_ID));
 
-        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
-    }
-
-    private void mockServicesBehaviour(String requestBody, TranslatedInterchange translatedInterchange, MeshMessage meshMessage) {
-        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
-        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
-        when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
+        verify(outboundQueueService).publish(meshMessage);
     }
 
     @NotNull
     private MeshMessage getMeshMessage() {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent("EDI");
+        meshMessage.setOperationId(OPERATION_ID);
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        meshMessage.setOdsCode("odsCode");
         return meshMessage;
-    }
-
-    @NotNull
-    private TranslatedInterchange getTranslatedInterchange() {
-        TranslatedInterchange translatedInterchange = new TranslatedInterchange();
-        translatedInterchange.setEdifact("EDI");
-        translatedInterchange.setOperationId(OPERATION_ID);
-        return translatedInterchange;
     }
 
     @Test
