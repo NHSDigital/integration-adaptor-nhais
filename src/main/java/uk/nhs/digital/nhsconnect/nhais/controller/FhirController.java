@@ -42,7 +42,7 @@ public class FhirController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> acceptance(@PathVariable String transactionTypeParam, @RequestBody String body) throws FhirValidationException {
         Parameters parameters = fhirParser.parseParameters(body);
-        ReferenceTransactionType.TransactionType transactionType = new TransationTypeMapper().mapTransactionType(transactionTypeParam);
+        ReferenceTransactionType.Outbound transactionType = new TransationTypeMapper().mapTransactionType(transactionTypeParam);
         TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, transactionType);
         MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
         outboundMeshService.publishToOutboundQueue(meshMessage);
