@@ -11,7 +11,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.UnknownWorkflowException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import javax.jms.JMSException;
@@ -42,7 +41,7 @@ public class InboundQueueService {
         try {
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
-            InboundMeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
+            InboundMeshMessage meshMessage = objectMapper.readValue(body, InboundMeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
             // TODO: get the correlation id and attach to logger?
 

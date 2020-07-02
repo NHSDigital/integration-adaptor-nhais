@@ -214,6 +214,6 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
     private OutboundMeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
         var body = JmsReader.readMessage(message);
-        return objectMapper.readValue(body, MeshMessage.class);
+        return objectMapper.readValue(body, OutboundMeshMessage.class);
     }
 }

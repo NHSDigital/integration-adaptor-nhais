@@ -15,7 +15,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
@@ -116,7 +115,7 @@ public abstract class MeshServiceBaseTest {
 
     @SneakyThrows
     private OutboundMeshMessage deserializeMeshMessage(String meshMessage) {
-        return objectMapper.readValue(meshMessage, MeshMessage.class);
+        return objectMapper.readValue(meshMessage, OutboundMeshMessage.class);
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {
