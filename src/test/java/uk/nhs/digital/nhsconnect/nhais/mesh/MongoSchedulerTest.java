@@ -1,5 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+
+import java.time.Instant;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -7,18 +18,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.Instant;
-import java.util.List;
-
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 @ExtendWith(MockitoExtension.class)
 public class MongoSchedulerTest {

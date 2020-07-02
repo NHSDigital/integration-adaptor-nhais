@@ -2,14 +2,23 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,15 +28,11 @@ import java.util.stream.Collectors;
 public class RecepProducerService {
 
     private final SequenceService sequenceService;
+    private final TimestampService timestampService;
 
-    public Recep produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
-        //TODO: NIAD-390
-//        var segments = mapEdifactToRecep(receivedInterchangeFromHa);
-//
-//        var edifact = toEdifact(segments);
-//        var recepMessage = new RecepMessage(edifact);
-//        return new Recep(recepMessage);
-        throw new NotImplementedException();
+    public String produceRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
+        var segments = mapEdifactToRecep(receivedInterchangeFromHa);
+        return toEdifact(segments);
     }
 
     private String toEdifact(List<Segment> segments) {
@@ -36,96 +41,96 @@ public class RecepProducerService {
             .collect(Collectors.joining("\n"));
     }
 
-//    private List<Segment> mapEdifactToRecep(InterchangeV2 receivedInterchangeFromHa) throws EdifactValidationException {
-//        List<Segment> recepMessageSegments = new ArrayList<>();
-//
-//        var recepInterchangeHeader = mapToRecipInterchangeHeader(receivedInterchangeFromHa);
-//        var recepMessageHeader = mapToRecipMessageHeader(receivedInterchangeFromHa);
-//        var recepMessageTrailer = mapToRecepMessageTrailer(2);//TODO: change when multiple messages handling is implemented
-//        var recepInterchangeTrailer = mapToRecepInterchangeTrailer(receivedInterchangeFromHa);
-//
-//        recepMessageSegments.add(recepInterchangeHeader);
-//        recepMessageSegments.add(recepMessageHeader);
-//        recepMessageSegments.add(mapToRecepBeginningOfMessage(receivedInterchangeFromHa));
-//        recepMessageSegments.add(mapToRecepNameAndAddress(receivedInterchangeFromHa));
-//        recepMessageSegments.add(mapToRecepTranslationDateTime(receivedInterchangeFromHa));
-//        recepMessageSegments.add(mapToReferenceMessageRecep(receivedInterchangeFromHa));
-//        recepMessageSegments.add(mapToReferenceInterchangeRecep(receivedInterchangeFromHa));
-//        recepMessageSegments.add(recepMessageTrailer);
-//        recepMessageSegments.add(recepInterchangeTrailer);
-//
-//        recepMessageSegments.forEach(Segment::preValidate);
-//
-//        var recepInterchangeSequence = sequenceService.generateInterchangeId(
-//            recepInterchangeHeader.getSender(),
-//            recepInterchangeHeader.getRecipient());
-//        var recepMessageSequence = sequenceService.generateMessageId(
-//            recepInterchangeHeader.getSender(),
-//            recepInterchangeHeader.getRecipient());
-//
-//        recepInterchangeHeader.setSequenceNumber(recepInterchangeSequence);
-//        recepInterchangeTrailer
-//            .setSequenceNumber(recepInterchangeSequence)
-//            .setNumberOfMessages(1); //TODO: change when multiple messages handling is implemented
-//
-//        recepMessageHeader.setSequenceNumber(recepMessageSequence);
-//        recepMessageTrailer
-//            .setSequenceNumber(recepMessageSequence)
-//            .setNumberOfSegments(7); //TODO: change when multiple messages handling is implemented. How many segments are there in message in total, including header and trailer
-//
-//        recepMessageSegments.forEach(Segment::validate);
-//
-//        return recepMessageSegments;
-//    }
-//
-//    private InterchangeTrailer mapToRecepInterchangeTrailer(Interchange receivedInterchangeFromHa) {
-//        return new InterchangeTrailer(receivedInterchangeFromHa.getInterchangeTrailer().getNumberOfMessages());
-//    }
-//
-//    private MessageTrailer mapToRecepMessageTrailer(int refSegmentCount) {
-//        if (refSegmentCount < 2) {
-//            throw new IllegalStateException("There should be at least 2 ref segments. 1..1 ref interchange and 1..N ref message");
-//        }
-//        // there are 5 const segments and variable count of ref segments
-//        return new MessageTrailer(5 + refSegmentCount);
-//    }
-//
-//    private DateTimePeriod mapToRecepTranslationDateTime(Interchange receivedInterchangeFromHa) {
-//        return new DateTimePeriod(
-//            receivedInterchangeFromHa.getTranslationDateTime().getTimestamp(),
-//            receivedInterchangeFromHa.getTranslationDateTime().getTypeAndFormat());
-//    }
-//
-//    private RecepHeader mapToRecipInterchangeHeader(Interchange interchange) {
-//        var recepSender = interchange.getInterchangeHeader().getRecipient();
-//        var recepRecipient = interchange.getInterchangeHeader().getSender();
-//
-//        return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime());
-//    }
-//
-//    private RecepMessageHeader mapToRecipMessageHeader(Interchange interchange) {
-//        return new RecepMessageHeader()
-//            .setSequenceNumber(interchange.getMessageHeader().getSequenceNumber());
-//    }
-//
-//    private RecepBeginningOfMessage mapToRecepBeginningOfMessage(Interchange interchange) {
-//        return new RecepBeginningOfMessage(interchange.getTranslationDateTime().getTimestamp());
-//    }
-//
-//    private RecepNameAndAddress mapToRecepNameAndAddress(Interchange interchange) {
-//        return new RecepNameAndAddress(interchange.getInterchangeHeader().getSender());
-//    }
-//
-//    private ReferenceMessageRecep mapToReferenceMessageRecep(Interchange interchange) {
-//        return new ReferenceMessageRecep(
-//            interchange.getMessageHeader().getSequenceNumber(), ReferenceMessageRecep.RecepCode.SUCCESS);
-//    }
-//
-//    private ReferenceInterchangeRecep mapToReferenceInterchangeRecep(Interchange interchange) {
-//        return new ReferenceInterchangeRecep(
-//            interchange.getInterchangeHeader().getSequenceNumber(),
-//            ReferenceInterchangeRecep.RecepCode.RECEIVED,
-//            interchange.getInterchangeTrailer().getNumberOfMessages());
-//    }
+    private List<Segment> mapEdifactToRecep(Interchange receivedInterchangeFromHa) throws EdifactValidationException {
+        List<Segment> segments = new ArrayList<>();
+
+        var interchangeHeader = mapToInterchangeHeader(receivedInterchangeFromHa);
+        var messageHeader = new RecepMessageHeader();
+        segments.add(interchangeHeader);
+        segments.add(messageHeader);
+        var beginningOfMessage = new RecepBeginningOfMessage();
+        segments.add(beginningOfMessage);
+        segments.add(mapToNameAndAddress(receivedInterchangeFromHa));
+        var translationDateTime = mapToTranslationDateTime();
+        segments.add(translationDateTime);
+        segments.addAll(mapToReferenceMessageReceps(receivedInterchangeFromHa));
+        segments.add(mapToReferenceInterchange(receivedInterchangeFromHa));
+        var messageTrailer = new MessageTrailer(0);
+        var interchangeTrailer = mapToInterchangeTrailer(receivedInterchangeFromHa);
+        segments.add(messageTrailer);
+        segments.add(interchangeTrailer);
+
+        segments.forEach(Segment::preValidate);
+
+        setSequenceNumbers(segments, interchangeHeader, messageHeader, messageTrailer, interchangeTrailer);
+        setTimestamps(interchangeHeader, beginningOfMessage, translationDateTime);
+
+        segments.forEach(Segment::validate);
+
+        return segments;
+    }
+
+    private List<ReferenceMessageRecep> mapToReferenceMessageReceps(Interchange receivedInterchangeFromHa) {
+        return receivedInterchangeFromHa.getMessages().stream()
+            .map(this::mapToReferenceMessage)
+            .collect(Collectors.toList());
+    }
+
+    private void setTimestamps(RecepHeader recepInterchangeHeader, RecepBeginningOfMessage recepBeginningOfMessage, DateTimePeriod recepTranslationDateTime) {
+        var currentTimestamp = timestampService.getCurrentTimestamp();
+        recepInterchangeHeader.setTranslationTime(currentTimestamp);
+        recepBeginningOfMessage.setTimestamp(currentTimestamp);
+        recepTranslationDateTime.setTimestamp(currentTimestamp);
+    }
+
+    private void setSequenceNumbers(List<Segment> recepMessageSegments, RecepHeader recepInterchangeHeader, RecepMessageHeader recepMessageHeader, MessageTrailer recepMessageTrailer, InterchangeTrailer recepInterchangeTrailer) {
+        var recepInterchangeSequence = sequenceService.generateInterchangeId(
+            recepInterchangeHeader.getSender(),
+            recepInterchangeHeader.getRecipient());
+        var recepMessageSequence = sequenceService.generateMessageId(
+            recepInterchangeHeader.getSender(),
+            recepInterchangeHeader.getRecipient());
+
+        recepInterchangeHeader.setSequenceNumber(recepInterchangeSequence);
+        recepInterchangeTrailer
+            .setSequenceNumber(recepInterchangeSequence)
+            .setNumberOfMessages(1); // we always build recep with single message inside
+
+        recepMessageHeader.setSequenceNumber(recepMessageSequence);
+        recepMessageTrailer
+            .setSequenceNumber(recepMessageSequence)
+            .setNumberOfSegments(recepMessageSegments.size() - 2); // excluding UNB and UNZ
+    }
+
+    private InterchangeTrailer mapToInterchangeTrailer(Interchange receivedInterchangeFromHa) {
+        return new InterchangeTrailer(receivedInterchangeFromHa.getInterchangeTrailer().getNumberOfMessages());
+    }
+
+    private DateTimePeriod mapToTranslationDateTime() {
+        return new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
+    }
+
+    private RecepHeader mapToInterchangeHeader(Interchange interchange) {
+        var recepSender = interchange.getInterchangeHeader().getRecipient();
+        var recepRecipient = interchange.getInterchangeHeader().getSender();
+
+        return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime());
+    }
+
+    private RecepNameAndAddress mapToNameAndAddress(Interchange interchange) {
+        return new RecepNameAndAddress(interchange.getInterchangeHeader().getSender());
+    }
+
+    private ReferenceMessageRecep mapToReferenceMessage(Message message) {
+        return new ReferenceMessageRecep(
+            message.getMessageHeader().getSequenceNumber(), ReferenceMessageRecep.RecepCode.SUCCESS);
+    }
+
+    private ReferenceInterchangeRecep mapToReferenceInterchange(Interchange interchange) {
+        return new ReferenceInterchangeRecep(
+            interchange.getInterchangeHeader().getSequenceNumber(),
+            ReferenceInterchangeRecep.RecepCode.RECEIVED,
+            interchange.getInterchangeTrailer().getNumberOfMessages());
+    }
 
 }

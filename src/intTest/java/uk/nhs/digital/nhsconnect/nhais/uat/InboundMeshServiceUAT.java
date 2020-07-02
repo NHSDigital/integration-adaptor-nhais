@@ -4,6 +4,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -15,6 +16,7 @@ import javax.jms.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DirtiesContext
 public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @Autowired

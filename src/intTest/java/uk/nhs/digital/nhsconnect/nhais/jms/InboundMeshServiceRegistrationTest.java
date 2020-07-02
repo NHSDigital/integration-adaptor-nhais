@@ -3,15 +3,16 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
 import org.hl7.fhir.r4.model.Parameters;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -22,6 +23,9 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+import static org.mockito.Mockito.when;
+import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
+
 @DirtiesContext
 public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
@@ -30,20 +34,29 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     private static final long SIS = 3;
     private static final long SMS = 9;
     private static final long TN = 13;
-    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
         .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
+    private static final Instant RECEP_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+        .toInstant();
+    private static final String ISO_RECEP_SEND_TIMESTAMP = new TimestampService().formatInISO(RECEP_TIMESTAMP);
 
+    @MockBean
+    private TimestampService timestampService;
     @Value("classpath:edifact/registration.dat")
     private Resource interchange;
-
     @Value("classpath:edifact/registration_recep.dat")
     private Resource recep;
 
+    @BeforeEach
+    void setUp() {
+        when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
+        when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
+    }
+
     @Test
-    @DirtiesContext
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
@@ -60,8 +73,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
 
         assertGpSystemInboundQueueMessage(softly);
 
-        //TODO: NIAD-390
-//        assertOutboundQueueRecepMessage(softly);
+        assertOutboundQueueRecepMessage(softly);
     }
 
     private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
@@ -103,7 +115,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = InboundMeshService.readMessage(message);
+        var body = readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }
 }

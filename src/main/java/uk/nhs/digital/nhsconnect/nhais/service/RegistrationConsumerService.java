@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -45,8 +45,10 @@ public class RegistrationConsumerService {
         var inboundStateRecords = prepareInboundStateRecords(transactionsToProcess);
         var supplierQueueDataToSend = prepareSupplierQueueDataToSend(transactionsToProcess);
 
-        var recepOutboundState = prepareRecepOutboundState(interchange);
-        var recepOutboundMessage = prepareRecepOutboundMessage(interchange);
+        var recepEdifact = recepProducerService.produceRecep(interchange);
+        var recep = edifactParser.parse(recepEdifact);
+        var recepOutboundState = prepareRecepOutboundState(recep);
+        var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact);
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
@@ -54,9 +56,8 @@ public class RegistrationConsumerService {
                 inboundStateRepository.save(pair.getLeft());
             });
 
-        //TODO: NIAD-390
-//        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
-//        outboundStateRepository.save(recepOutboundState);
+        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
+        outboundStateRepository.save(recepOutboundState);
     }
 
     private List<Transaction> filterOutDuplicates(Interchange interchange) {
@@ -73,22 +74,17 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private MeshMessage prepareRecepOutboundMessage(Interchange interchange) {
-        //TODO: NIAD-390
-//        var recepMeshMessage = buildRecepMeshMessage(recep);
-//        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
-//        outboundMeshService.publishToOutboundQueue(recepMeshMessage);
-//        LOGGER.debug("Published recep to outbound queue");
-        return null;
+    private OutboundState prepareRecepOutboundState(Interchange recep) {
+        if (recep.getMessages().size() != 1) {
+            throw new EdifactValidationException("Recep should have a 1 message");
+        }
+        return OutboundState.fromRecep(recep.getMessages().get(0));
     }
 
-    private OutboundState prepareRecepOutboundState(Interchange interchange) {
-        //TODO: NIAD-390
-//        var recep = recepProducerService.produceRecep(interchange);
-//        var recepOutboundState = OutboundState.fromRecep(recep);
-//        outboundStateRepository.save(recepOutboundState);
-//        LOGGER.debug("Saved recep in outbound state: {}", recepOutboundState);
-        return null;
+    private MeshMessage prepareRecepOutboundMessage(String recep) {
+        var recepMeshMessage = buildRecepMeshMessage(recep);
+        LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
+        return recepMeshMessage;
     }
 
     private boolean hasAlreadyBeenProcessed(Transaction transaction) {
@@ -133,11 +129,11 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private MeshMessage buildRecepMeshMessage(Recep recep) {
+    private MeshMessage buildRecepMeshMessage(String edifactRecep) {
         return new MeshMessage()
             // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
             .setOdsCode("ods123")
             .setWorkflowId(WorkflowId.RECEP)
-            .setContent(recep.toEdifact());
+            .setContent(edifactRecep);
     }
 }

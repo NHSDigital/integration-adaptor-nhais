@@ -4,18 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EntityNotFoundException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
+@DirtiesContext
 public class OutboundStateRepositoryExtensionsImplTest {
 
     private static final String SENDER = "some_sender";
@@ -55,10 +55,8 @@ public class OutboundStateRepositoryExtensionsImplTest {
         assertThat(otherOutboundState.getRecepDateTime()).isNull();
 
         outboundStateRepository.updateRecepDetails(
-            new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
-            new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                RECEP_CODE, RECEP_DATE_TIME));
+            new OutboundStateRepositoryExtensions.UpdateRecepParams(
+                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME));
 
         outboundState = outboundStateRepository.findById(outboundState.getId()).orElseThrow();
         otherOutboundState = outboundStateRepository.findById(otherOutboundState.getId()).orElseThrow();
@@ -72,12 +70,9 @@ public class OutboundStateRepositoryExtensionsImplTest {
 
     @Test
     void whenUpdatingNonExistingEntity_thenThrowsException() {
-        assertThatThrownBy(
-            () -> outboundStateRepository.updateRecepDetails(
-                new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                    NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
-                new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                    RECEP_CODE, RECEP_DATE_TIME)))
-            .isInstanceOf(EntityNotFoundException.class);
+        var updateRecepParams = new OutboundStateRepositoryExtensions.UpdateRecepParams(
+            NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME);
+
+        assertThat(outboundStateRepository.updateRecepDetails(updateRecepParams)).isEmpty();
     }
 }

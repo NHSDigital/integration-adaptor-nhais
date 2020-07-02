@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.jms;
 
 import com.google.common.collect.Lists;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -19,6 +18,7 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
+@DirtiesContext
 public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
@@ -35,9 +35,7 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
 
-    @Disabled("NIAD-390")
     @Test
-    @DirtiesContext
     void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
         createOutboundStateRecords();
 
@@ -47,7 +45,7 @@ public class InboundMeshServiceRecepTest extends MeshServiceBaseTest {
 
         var inboundState = waitFor(
             () -> inboundStateRepository
-                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, null, null)
+                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, null)
                 .orElse(null));
 
         assertInboundState(softly, inboundState);
