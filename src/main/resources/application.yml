@@ -46,10 +46,11 @@ nhais:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:}
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:}
-    host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #fake-mesh as default
+    host: ${NHAIS_MESH_HOST:}
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:}
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
-    recipientCodes: ${NHAIS_MESH_RECIPIENT_CODES:}
+    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:}
+    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:60000}
+    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:300}
   scheduler:
-    overlapIntervalInSeconds: ${NHAIS_SCHEDULER_OVERLAP_INTERVAL_IN_SECONDS:300}
-    intervalInMilliSeconds: ${NHAIS_SCHEDULER_INTERVAL_IN_MILLISECONDS:60000}
+    enabled: ${NHAIS_SCHEDULER_ENABLED:true}

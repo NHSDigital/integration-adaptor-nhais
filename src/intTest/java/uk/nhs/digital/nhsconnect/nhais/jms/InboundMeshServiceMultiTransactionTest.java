@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -28,7 +29,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
-import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
 public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest {
@@ -212,7 +212,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     }
 
     private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = readMessage(message);
+        var body = JmsReader.readMessage(message);
         return objectMapper.readValue(body, MeshMessage.class);
     }
 }

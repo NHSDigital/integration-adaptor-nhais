@@ -77,7 +77,7 @@ public class RegistrationConsumerServiceTest {
     OutboundStateRepository outboundStateRepository;
 
     @Mock
-    OutboundMeshService outboundMeshService;
+    OutboundQueueService outboundQueueService;
 
     @Mock
     RecepProducerService recepProducerService;
@@ -208,7 +208,7 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
         var meshRecepMessageArgumentCaptor = ArgumentCaptor.forClass(MeshMessage.class);
-        verify(outboundMeshService).publishToOutboundQueue(meshRecepMessageArgumentCaptor.capture());
+        verify(outboundQueueService).publish(meshRecepMessageArgumentCaptor.capture());
 
         var sentRecep = meshRecepMessageArgumentCaptor.getValue();
         assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -244,6 +244,6 @@ public class RegistrationConsumerServiceTest {
 
         verifyNoInteractions(inboundGpSystemService);
         verifyNoInteractions(outboundStateRepository);
-        verifyNoInteractions(outboundMeshService);
+        verifyNoInteractions(outboundQueueService);
     }
 }

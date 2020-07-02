@@ -31,7 +31,7 @@ public class RegistrationConsumerService {
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
     private final OutboundStateRepository outboundStateRepository;
-    private final OutboundMeshService outboundMeshService;
+    private final OutboundQueueService outboundQueueService;
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
@@ -56,7 +56,7 @@ public class RegistrationConsumerService {
                 inboundStateRepository.save(pair.getLeft());
             });
 
-        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
+        outboundQueueService.publish(recepOutboundMessage);
         outboundStateRepository.save(recepOutboundState);
     }
 
@@ -132,7 +132,7 @@ public class RegistrationConsumerService {
     private MeshMessage buildRecepMeshMessage(String edifactRecep) {
         return new MeshMessage()
             // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
-            .setOdsCode("ods123")
+            .setHaTradingPartnerCode("ods123")
             .setWorkflowId(WorkflowId.RECEP)
             .setContent(edifactRecep);
     }
