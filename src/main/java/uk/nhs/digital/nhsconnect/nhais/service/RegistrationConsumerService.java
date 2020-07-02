@@ -56,7 +56,7 @@ public class RegistrationConsumerService {
                 inboundStateRepository.save(pair.getLeft());
             });
 
-        outboundMeshService.publishToOutboundQueue(recepOutboundMessage);
+        outboundQueueService.publish(recepOutboundMessage);
         outboundStateRepository.save(recepOutboundState);
     }
 

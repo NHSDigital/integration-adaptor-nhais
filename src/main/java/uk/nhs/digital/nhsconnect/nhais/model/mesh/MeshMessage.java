@@ -42,7 +42,7 @@ public class MeshMessage {
     private String meshMessageId;
 
     /**
-     * If SENDING TO MESH: Correlation id for GP system
+     * If SENDING TO MESH: Value of OperationId response header for GP System
      * If DOWNLOADING FROM MESH: DO NOT USE
      */
     private String operationId;

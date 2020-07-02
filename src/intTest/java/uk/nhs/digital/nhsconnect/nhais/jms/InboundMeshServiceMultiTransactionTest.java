@@ -29,7 +29,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
-import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @DirtiesContext
 public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest {

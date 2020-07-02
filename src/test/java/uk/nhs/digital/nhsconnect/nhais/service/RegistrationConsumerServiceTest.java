@@ -208,7 +208,7 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
         var meshRecepMessageArgumentCaptor = ArgumentCaptor.forClass(MeshMessage.class);
-        verify(outboundMeshService).publishToOutboundQueue(meshRecepMessageArgumentCaptor.capture());
+        verify(outboundQueueService).publish(meshRecepMessageArgumentCaptor.capture());
 
         var sentRecep = meshRecepMessageArgumentCaptor.getValue();
         assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
