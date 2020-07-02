@@ -51,7 +51,10 @@ public class OutboundQueueService {
             LOGGER.debug("Received message body: {}", body);
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
-            meshClient.sendEdifactMessage(meshMessage.getContent(), meshMessage.getHaTradingPartnerCode());
+            meshClient.sendEdifactMessage(
+                meshMessage.getContent(),
+                meshMessage.getHaTradingPartnerCode(),
+                meshMessage.getWorkflowId());
 
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);

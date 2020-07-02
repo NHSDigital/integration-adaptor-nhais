@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -15,9 +16,9 @@ public class MeshRequests {
 
     private final MeshHeaders meshHeaders;
 
-    public HttpPost sendMessage(String recipient){
+    public HttpPost sendMessage(String recipient, WorkflowId workflowId){
         var request = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId() + "/outbox/");
-        request.setHeaders(meshHeaders.createSendHeaders(recipient));
+        request.setHeaders(meshHeaders.createSendHeaders(recipient, workflowId));
         return request;
     }
 

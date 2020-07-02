@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +35,7 @@ class MeshRequestsTest {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         String recipient = "recipient";
-        var request = meshRequests.sendMessage(recipient);
+        var request = meshRequests.sendMessage(recipient, WorkflowId.REGISTRATION);
 
         assertThat(request).isExactlyInstanceOf(HttpPost.class);
         assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");

@@ -32,12 +32,15 @@ public class MeshClientIntegrationTest {
     @AfterEach
     void tearDown() {
         List<String> inboxMessageIds = meshClient.getInboxMessageIds();
-        inboxMessageIds.forEach( messageId -> meshClient.acknowledgeMessage(messageId));
+        inboxMessageIds.forEach(messageId -> meshClient.acknowledgeMessage(messageId));
     }
 
     @Test
     void when_CallingMeshSendMessageEndpoint_Then_MessageIdIsReturned() {
-        MeshMessageId meshMessageId = meshClient.sendEdifactMessage("edifact\nmessage", "recipient");
+        MeshMessageId meshMessageId = meshClient.sendEdifactMessage(
+            "edifact\nmessage",
+            "recipient",
+            WorkflowId.REGISTRATION);
         assertThat(meshMessageId).isNotNull();
         assertThat(meshMessageId.getMessageID()).isNotEmpty();
     }
@@ -45,7 +48,10 @@ public class MeshClientIntegrationTest {
     @Test
     void when_CallingMeshGetMessageEndpoint_Then_MessageIsReturned() {
         String messageContent = "test_message";
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(messageContent, meshConfig.getMailboxId());
+        MeshMessageId testMessageId = meshClient.sendEdifactMessage(
+            messageContent,
+            meshConfig.getMailboxId(),
+            WorkflowId.REGISTRATION);
 
         MeshMessage meshMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
         assertThat(meshMessage.getContent()).isEqualTo(messageContent);
@@ -55,7 +61,10 @@ public class MeshClientIntegrationTest {
     @Test
     void when_CallingMeshAcknowledgeEndpoint_Then_NoExceptionIsThrown() {
         String messageContent = "test_message";
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(messageContent, meshConfig.getMailboxId());
+        MeshMessageId testMessageId = meshClient.sendEdifactMessage(
+            messageContent,
+            meshConfig.getMailboxId(),
+            WorkflowId.REGISTRATION);
 
         assertThatCode(() -> meshClient.acknowledgeMessage(testMessageId.getMessageID()))
             .doesNotThrowAnyException();
@@ -69,7 +78,10 @@ public class MeshClientIntegrationTest {
     @Test
     void When_PollingFromMeshAfterSendingMsg_Then_ListWithMsgIdIsReturned() {
         String messageContent = "test_message";
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(messageContent, meshConfig.getMailboxId());
+        MeshMessageId testMessageId = meshClient.sendEdifactMessage(
+            messageContent,
+            meshConfig.getMailboxId(),
+            WorkflowId.REGISTRATION);
 
         assertThat(meshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
     }

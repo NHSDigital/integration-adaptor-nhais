@@ -13,6 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
@@ -45,12 +46,12 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @BeforeEach
     void setUp() {
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "true"); //enable scheduling
-        if(!schedulerConfigured) { // do configuration only once per test run
+        if (!schedulerConfigured) { // do configuration only once per test run
             meshMailBoxScheduler.hasTimePassed(0); //First run creates collection in MongoDb
             await().atMost(10, SECONDS)
-                    .pollDelay(500, TimeUnit.MILLISECONDS)
-                    .pollInterval(500, TimeUnit.MILLISECONDS)
-                    .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
+                .pollDelay(500, TimeUnit.MILLISECONDS)
+                .pollInterval(500, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
             schedulerConfigured = true;
         }
     }
@@ -64,7 +65,10 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @ArgumentsSource(CustomArgumentsProvider.Inbound.class)
     void testTranslatingFromEdifactToFhir(String category, TestData testData) throws JMSException {
         // send EDIFACT to MESH mailbox
-        meshClient.sendEdifactMessage(testData.getEdifact(), meshConfig.getMailboxId());
+        meshClient.sendEdifactMessage(
+            testData.getEdifact(),
+            meshConfig.getMailboxId(),
+            WorkflowId.REGISTRATION);
 
         var expectedTransactionType = category.split("/")[0];
 

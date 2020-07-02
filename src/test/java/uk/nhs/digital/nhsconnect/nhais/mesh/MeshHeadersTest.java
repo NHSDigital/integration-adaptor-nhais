@@ -1,15 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.http.message.BasicHeader;
+import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MeshHeadersTest {
 
@@ -19,7 +18,7 @@ class MeshHeadersTest {
     @Test
     void createSendHeaders() {
         String meshRecipient = "meshRecipient";
-        List<String> headerNames = Arrays.stream(meshHeaders.createSendHeaders(meshRecipient))
+        List<String> headerNames = Arrays.stream(meshHeaders.createSendHeaders(meshRecipient, WorkflowId.REGISTRATION))
             .map(BasicHeader.class::cast)
             .map(BasicHeader::getName)
             .collect(Collectors.toList());
@@ -34,7 +33,7 @@ class MeshHeadersTest {
             "Mex-FileName",
             "Mex-MessageType");
 
-        BasicHeader mexToHeader = Arrays.stream(meshHeaders.createSendHeaders(meshRecipient))
+        BasicHeader mexToHeader = Arrays.stream(meshHeaders.createSendHeaders(meshRecipient, WorkflowId.REGISTRATION))
             .map(BasicHeader.class::cast)
             .filter(header -> "Mex-To".equals(header.getName()))
             .findFirst()

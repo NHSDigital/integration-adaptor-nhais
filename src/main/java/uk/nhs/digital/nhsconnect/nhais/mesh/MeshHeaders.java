@@ -6,6 +6,7 @@ import org.apache.http.message.BasicHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.token.MeshAuthorizationToken;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,12 +22,11 @@ public class MeshHeaders {
         new BasicHeader("Mex-OSName", "Unix"));
     private final MeshConfig meshConfig;
 
-    public Header[] createSendHeaders(String recipient) {
+    public Header[] createSendHeaders(String recipient, WorkflowId workflowId) {
         List<BasicHeader> sendHeaders = List.of(
             new BasicHeader("Mex-From", meshConfig.getMailboxId()),
             new BasicHeader("Mex-To", recipient),
-            //TODO NIAD-122 distinguish REG and RECEP messages
-            new BasicHeader("Mex-WorkflowID", "NHAIS_REG"),
+            new BasicHeader("Mex-WorkflowID", workflowId.getWorkflowId()),
             new BasicHeader("Mex-FileName", "edifact.dat"),
             new BasicHeader("Mex-MessageType", "DATA"));
         return Stream.concat(Arrays.stream(createMinimalHeaders()), sendHeaders.stream())

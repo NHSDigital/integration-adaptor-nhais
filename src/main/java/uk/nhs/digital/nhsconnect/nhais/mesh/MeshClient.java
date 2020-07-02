@@ -12,8 +12,8 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,9 +29,9 @@ public class MeshClient {
     private final MeshRequests meshRequests;
 
     @SneakyThrows
-    public MeshMessageId sendEdifactMessage(String messageContent, String recipient) {
+    public MeshMessageId sendEdifactMessage(String messageContent, String recipient, WorkflowId workflowId) {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            var request = meshRequests.sendMessage(recipient);
+            var request = meshRequests.sendMessage(recipient, workflowId);
             request.setEntity(new StringEntity(messageContent));
             try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
