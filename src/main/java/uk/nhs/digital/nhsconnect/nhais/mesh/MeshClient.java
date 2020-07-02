@@ -12,6 +12,8 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,7 +45,7 @@ public class MeshClient {
     }
 
     @SneakyThrows
-    public String getEdifactMessage(String messageId) {
+    public MeshMessage getEdifactMessage(String messageId) {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             try (CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
@@ -51,7 +53,11 @@ public class MeshClient {
                         HttpStatus.OK,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
-                return EntityUtils.toString(response.getEntity());
+                var meshMessage = new MeshMessage();
+                meshMessage.setContent(EntityUtils.toString(response.getEntity()));
+                meshMessage.setWorkflowId(WorkflowId.fromString(response.getHeaders("Mex-WorkflowID")[0].getValue()));
+                meshMessage.setMeshMessageId(messageId);
+                return meshMessage;
             }
         }
     }

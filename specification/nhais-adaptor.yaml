@@ -136,14 +136,39 @@ paths:
 
         ## Overview
 
-        Use this endpoint to send a Removal (Out of Area) transaction to NHAIS.
+        Use this endpoint to send a Removal transaction to NHAIS.
 
-        ## Payload Description
+        ## Supported Fields
 
-        The request payload is a Parameters list with the following parameters:
+        Refer to GP Links Specification Chapter 3 for the complete requirements for removals. The
+        values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        * patient: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * freeText: simple parameter with `valueString` a brief, free-text reason for the removal
+        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+
+        | GP Links Data Item      | Removal  |
+        |-------------------------|----------|
+        | Transaction Type        | REQUIRED |
+        | GP Code                 | REQUIRED |
+        | GP Trading Partner Code | REQUIRED |
+        | Destinaton HA Cipher    | REQUIRED |
+        | NHS Number              | REQUIRED |
+        | Reason for Removal      | REQUIRED |
+
+        ## FHIR Field Mappings
+
+        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
+        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
+        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method |
+        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                               |
+        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                               |
+        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
+        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
+        | Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
+
+        ## Operation Id
+
+        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
+        to match against the asynchronous reply from NHAIS
 
       summary: Removal (Out of Area)
       operationId: removal

@@ -4,11 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.qpid.jms.message.JmsBytesMessage;
-import org.apache.qpid.jms.message.JmsTextMessage;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 @Getter
 @Setter
@@ -16,38 +11,39 @@ import javax.jms.Message;
 @EqualsAndHashCode
 public class MeshMessage {
 
-    private String odsCode;
-    private WorkflowId workflowId;
-    private String content;
     /**
-     * Correlation id associated with the request - used for distributed tracing
+     * If SENDING TO MESH: set to the HA Trading Partner Code (recipient)
+     * If DOWNLOADING FROM MESH: DO NOT USE
      */
-    private String correlationId;
+    private String haTradingPartnerCode;
+
     /**
-     * The timestamp (ISO format, UTC) when this message was sent - used for debugging and tracing
+     * If SENDING TO MESH: set based on the type of transaction being sent
+     * If DOWNLOADING FROM MESH: set to the Mex-WorkflowID response header
+     */
+    private WorkflowId workflowId;
+
+    /**
+     * If SENDING TO MESH: the content of the MESH message
+     * If DOWNLOADING FROM MESH: the body of the download response
+     */
+    private String content;
+
+    /**
+     * If SENDING TO MESH: the time this message was published to the outbound mesh MQ
+     * If DOWNLOADING FROM MESH: the time this message was published to the inbound mesh MQ
      */
     private String messageSentTimestamp;
 
-    public static String readMessage(Message message) throws JMSException {
-        if (message instanceof JmsTextMessage) {
-            return readTextMessage((JmsTextMessage) message);
-        }
-        if (message instanceof JmsBytesMessage) {
-            return readBytesMessage((JmsBytesMessage) message);
-        }
-        if (message != null) {
-            return message.getBody(String.class);
-        }
-        return null;
-    }
+    /**
+     * If SENDING TO MESH: DO NOT USE
+     * If DOWNLOADING FROM MESH: the message id of the message that was downloaded from MESH
+     */
+    private String meshMessageId;
 
-    private static String readBytesMessage(JmsBytesMessage message) throws JMSException {
-        byte[] bytes = new byte[(int) message.getBodyLength()];
-        message.readBytes(bytes);
-        return new String(bytes);
-    }
-
-    private static String readTextMessage(JmsTextMessage message) throws JMSException {
-        return message.getText();
-    }
+    /**
+     * If SENDING TO MESH: Value of OperationId response header for GP System
+     * If DOWNLOADING FROM MESH: DO NOT USE
+     */
+    private String operationId;
 }

@@ -3,11 +3,7 @@
     {
       "name": "gpTradingPartnerCode",
       "valueString": "TES5"
-    },
-    {
-      "name": "freeText",
-      "valueString": "PATIENT NOW LIVES 24 MILES FROM PRACTICE"
-    },
+    }
     {
       "name": "patient",
       "resource": {
@@ -25,12 +21,6 @@
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
               "value": "4826940,281"
             }
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "T247"
           }
         ],
         "resourceType": "Patient"

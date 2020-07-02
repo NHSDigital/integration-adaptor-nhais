@@ -61,4 +61,5 @@ public class RecepMessage {
     public String getEdifact() {
         return String.join("'\n", this.rows) + "'";
     }
+
 }

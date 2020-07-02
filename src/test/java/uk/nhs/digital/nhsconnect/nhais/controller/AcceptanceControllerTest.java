@@ -14,13 +14,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
-import uk.nhs.digital.nhsconnect.nhais.service.OutboundMeshService;
+import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 
 import java.nio.file.Files;
 import java.util.UUID;
@@ -50,13 +48,10 @@ public class AcceptanceControllerTest {
     private Resource paramsPayload;
 
     @MockBean
-    private OutboundMeshService outboundMeshService;
+    private OutboundQueueService outboundQueueService;
 
     @MockBean
     private FhirToEdifactService fhirToEdifactService;
-
-    @MockBean
-    private EdifactToMeshMessageService edifactToMeshMessageService;
 
     @MockBean
     private FhirParser fhirParser;
@@ -64,17 +59,13 @@ public class AcceptanceControllerTest {
     @Test
     void whenValidInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
-        TranslatedInterchange translatedInterchange = new TranslatedInterchange();
-        translatedInterchange.setEdifact("EDI");
-        translatedInterchange.setOperationId(OPERATION_ID);
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent("EDI");
+        meshMessage.setOperationId(OPERATION_ID);
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        meshMessage.setOdsCode("odsCode");
 
         when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
-        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
-        when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
+        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("application/json")
@@ -82,7 +73,7 @@ public class AcceptanceControllerTest {
             .andExpect(status().isAccepted())
             .andExpect(header().string("OperationId", OPERATION_ID));
 
-        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+        verify(outboundQueueService).publish(any(MeshMessage.class));
     }
 
     @Test
