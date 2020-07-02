@@ -10,9 +10,9 @@ public class TransationTypeMapper {
 
     public ReferenceTransactionType.TransactionType mapTransactionType(String transactionTypeParam) {
         switch(transactionTypeParam) {
-            case "$nhais.acceptance": return ReferenceTransactionType.TransactionType.ACCEPTANCE;
-            case "$nhais.removal": return ReferenceTransactionType.TransactionType.REMOVAL;
-            case "$nhais.deduction": return ReferenceTransactionType.TransactionType.DEDUCTION;
+            case "$nhais.acceptance": return ReferenceTransactionType.Outbound.ACCEPTANCE;
+            case "$nhais.removal": return ReferenceTransactionType.Outbound.REMOVAL;
+            case "$nhais.deduction": return ReferenceTransactionType.Outbound.DEDUCTION;
             default: throw new ParameterValidationException("Provided transaction type is not allowed");
         }
     }
