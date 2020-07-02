@@ -33,7 +33,7 @@ public class InboundStateTest {
     private static final long INTERCHANGE_SEQUENCE = 123L;
     private static final long MESSAGE_SEQUENCE = 234L;
     private static final long TRANSACTION_NUMBER = 345L;
-    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.Outbound.ACCEPTANCE;
+    private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     public static final InboundState EXPECTED_INTERCHANGE_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)

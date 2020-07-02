@@ -90,6 +90,17 @@ public class ReferenceTransactionType extends Segment {
                 .orElseThrow(IllegalArgumentException::new);
         }
 
+        static TransactionType fromAbbreviation(String abbreviation) {
+            return Stream.of(
+                Arrays.stream(Inbound.values()),
+                Arrays.stream(Outbound.values()))
+                .flatMap(Function.identity())
+                .map(TransactionType.class::cast)
+                .filter(transactionType -> transactionType.getAbbreviation().equals(abbreviation))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        }
+
         String getCode();
 
         String getAbbreviation();

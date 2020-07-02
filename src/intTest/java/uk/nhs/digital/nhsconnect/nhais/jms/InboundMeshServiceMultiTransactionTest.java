@@ -46,10 +46,10 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     private static final long TN_4 = 12;
     private static final long TN_5 = 13;
     private static final long TN_6 = 14;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.AMENDMENT;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.DEDUCTION;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
-    private static final ReferenceTransactionType.TransactionType MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    private static final ReferenceTransactionType.Inbound MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.AMENDMENT;
+    private static final ReferenceTransactionType.Inbound MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.DEDUCTION;
+    private static final ReferenceTransactionType.Inbound MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
+    private static final ReferenceTransactionType.Inbound MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_1);
     private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_2);
     private static final String TRANSACTION_3_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_3);
@@ -196,7 +196,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         String expectedOperationId,
         Long expectedSMS,
         Long expectedTN,
-        ReferenceTransactionType.TransactionType expectedTransactionType) {
+        ReferenceTransactionType.Inbound expectedTransactionType) {
 
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)

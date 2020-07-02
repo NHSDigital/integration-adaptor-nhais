@@ -35,7 +35,7 @@ public class InboundState {
     private String recipient;
     private Long transactionNumber;
     private Instant translationTimestamp;
-    private ReferenceTransactionType.TransactionType transactionType;
+    private ReferenceTransactionType.Inbound transactionType;
 
     public static InboundState fromTransaction(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
@@ -55,7 +55,7 @@ public class InboundState {
             .setInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(transactionNumber)
-            .setTransactionType(referenceTransactionType.getTransactionType())
+            .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }
 

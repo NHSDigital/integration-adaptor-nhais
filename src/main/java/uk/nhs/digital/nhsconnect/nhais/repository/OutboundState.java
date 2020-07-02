@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.time.Instant;
@@ -29,7 +30,7 @@ public class OutboundState {
     private String operationId;
     private Long transactionId;
     private Instant transactionTimestamp;
-    private String transactionType;
+    private ReferenceTransactionType.Outbound transactionType;
     private Long interchangeSequence;
     private Long messageSequence;
     private String sender;

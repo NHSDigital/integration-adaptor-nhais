@@ -34,7 +34,7 @@ public class InboundMeshServiceRegistrationTest extends MeshServiceBaseTest {
     private static final long SIS = 3;
     private static final long SMS = 9;
     private static final long TN = 13;
-    private static final ReferenceTransactionType.TransactionType TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
         .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
