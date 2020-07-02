@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -89,12 +88,8 @@ public class RecepConsumerService {
         var messageSequence = referenceMessageRecep.getMessageSequenceNumber();
         var recepCode = referenceMessageRecep.getRecepCode();
 
-        var queryParams = new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-            outbound_sender, outbound_recipient, interchangeSequence, messageSequence);
-        var recepDetails = new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-            recepCode, dateTimePeriod);
-
-        return new OutboundStateRepositoryExtensions.UpdateRecepParams(queryParams, recepDetails);
+        return new OutboundStateRepositoryExtensions.UpdateRecepParams(
+            outbound_sender, outbound_recipient, interchangeSequence, messageSequence, recepCode, dateTimePeriod);
     }
 
     private List<Message> filterOutDuplicates(Interchange interchange) {

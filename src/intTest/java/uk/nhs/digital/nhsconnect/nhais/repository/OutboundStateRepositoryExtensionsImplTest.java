@@ -56,10 +56,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
 
         outboundStateRepository.updateRecepDetails(
             new OutboundStateRepositoryExtensions.UpdateRecepParams(
-                new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                    SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
-                new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                    RECEP_CODE, RECEP_DATE_TIME)));
+                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME));
 
         outboundState = outboundStateRepository.findById(outboundState.getId()).orElseThrow();
         otherOutboundState = outboundStateRepository.findById(otherOutboundState.getId()).orElseThrow();
@@ -74,10 +71,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
     @Test
     void whenUpdatingNonExistingEntity_thenThrowsException() {
         var updateRecepParams = new OutboundStateRepositoryExtensions.UpdateRecepParams(
-            new OutboundStateRepositoryExtensions.UpdateRecepDetailsQueryParams(
-                NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE),
-            new OutboundStateRepositoryExtensions.UpdateRecepDetails(
-                RECEP_CODE, RECEP_DATE_TIME));
+            NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME);
 
         assertThat(outboundStateRepository.updateRecepDetails(updateRecepParams)).isEmpty();
     }

@@ -141,15 +141,12 @@ class RecepConsumerServiceTest {
         ReferenceMessageRecep.RecepCode recepCode,
         Instant recepDateTime) {
 
-        var queryParams = updateRecepParams.getUpdateRecepDetailsQueryParams();
-        var updateRecepDetails = updateRecepParams.getUpdateRecepDetails();
-
-        assertThat(queryParams.getSender()).isEqualTo(RECIPIENT);
-        assertThat(queryParams.getRecipient()).isEqualTo(SENDER);
-        assertThat(queryParams.getInterchangeSequence()).isEqualTo(refSis);
-        assertThat(queryParams.getMessageSequence()).isEqualTo(refSms);
-        assertThat(updateRecepDetails.getRecepCode()).isEqualTo(recepCode);
-        assertThat(updateRecepDetails.getRecepDateTime()).isEqualTo(recepDateTime);
+        assertThat(updateRecepParams.getSender()).isEqualTo(RECIPIENT);
+        assertThat(updateRecepParams.getRecipient()).isEqualTo(SENDER);
+        assertThat(updateRecepParams.getInterchangeSequence()).isEqualTo(refSis);
+        assertThat(updateRecepParams.getMessageSequence()).isEqualTo(refSms);
+        assertThat(updateRecepParams.getRecepCode()).isEqualTo(recepCode);
+        assertThat(updateRecepParams.getRecepDateTime()).isEqualTo(recepDateTime);
     }
 
     private void assertInboundState(InboundState inboundState, long sms, Instant translationTimestamp) {
