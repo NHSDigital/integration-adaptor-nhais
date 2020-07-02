@@ -19,7 +19,9 @@ import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,7 +64,8 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         assertMessageBody(meshClient.getEdifactMessage(msgs.get(0)), testData.getEdifact());
 
         // acknowledge message will remove it from MESH
-        meshClient.acknowledgeMessage(msgs.get(0));
+        await().atMost(10, SECONDS)
+            .untilAsserted(() -> meshClient.acknowledgeMessage(msgs.get(0)));
     }
 
     private void sendToApi(String fhirInput, String transactionType) throws Exception {
