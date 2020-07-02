@@ -35,13 +35,19 @@ public class MeshService {
 
     @Scheduled(fixedRateString = "${nhais.mesh.scanMailboxIntervalInMilliseconds}")
     public void scanMeshInboxForMessages() {
-        LOGGER.debug("Scheduled job for mesh messages fetching started");
+        LOGGER.debug("Trying to scan MESH mailbox");
+        if (!meshMailBoxScheduler.isEnabled()){
+            LOGGER.warn("MESH mailbox scheduler is disabled. Set proper env var to enable it");
+            return;
+        }
         if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
-            LOGGER.info("Mesh messages fetching started");
+            LOGGER.info("Mesh messages scan started");
             List<String> inboxMessageIds = meshClient.getInboxMessageIds();
             if(inboxMessageIds.isEmpty()){
                 LOGGER.info("No new MESH messages found");
                 return;
+            } else {
+                LOGGER.info("Found {} MESH messages in inbox", inboxMessageIds.size());
             }
             for (String messageId : inboxMessageIds) {
                 try {
@@ -49,12 +55,12 @@ public class MeshService {
                     inboundQueueService.publish(meshMessage);
                     meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
                 } catch (Exception ex) {
-                    LOGGER.error("Error during reading of MESH messages. Message id: {}", messageId, ex);
+                    LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
                 }
             }
-            LOGGER.info("Mesh messages fetching finished");
+            LOGGER.info("Mesh mailbox scanning finished");
         } else {
-            LOGGER.info("Mesh messages fetching is postponed: another application instance is fetching now");
+            LOGGER.info("Can't scan MESH mailbox - scan delay time hasn't passed yet or another instance did the scan");
         }
     }
 }
