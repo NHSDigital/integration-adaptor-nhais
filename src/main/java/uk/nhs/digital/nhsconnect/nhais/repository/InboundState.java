@@ -7,9 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -18,7 +18,7 @@ import java.time.Instant;
 @CompoundIndexes({
     @CompoundIndex(
         name = "unique_message",
-        def = "{'receiveInterchangeSequence' : 1, 'receiveMessageSequence': 1, 'sender': 1, 'recipient': 1}",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
         unique = true)
 })
 @Data
@@ -29,22 +29,20 @@ public class InboundState {
     private String id;
     private WorkflowId workflowId;
     private String operationId;
-    private Long receiveInterchangeSequence;
-    private Long receiveMessageSequence;
+    private Long interchangeSequence;
+    private Long messageSequence;
     private String sender;
     private String recipient;
     private Long transactionNumber;
     private Instant translationTimestamp;
     private ReferenceTransactionType.TransactionType transactionType;
 
-    public static InboundState fromInterchange(Interchange interchange) {
-        //TODO initial assumption that interchange can have a single message only
-
-        var interchangeHeader = interchange.getInterchangeHeader();
-        var translationDateTime = interchange.getTranslationDateTime();
-        var messageHeader = interchange.getMessageHeader();
-        var referenceTransactionNumber = interchange.getReferenceTransactionNumber();
-        var referenceTransactionType = interchange.getReferenceTransactionType();
+    public static InboundState fromTransaction(Transaction transaction) {
+        var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
+        var translationDateTime = transaction.getMessage().getTranslationDateTime();
+        var messageHeader = transaction.getMessage().getMessageHeader();
+        var referenceTransactionNumber = transaction.getReferenceTransactionNumber();
+        var referenceTransactionType = transaction.getMessage().getReferenceTransactionType();
 
         var recipient = interchangeHeader.getRecipient();
         var transactionNumber = referenceTransactionNumber.getTransactionNumber();
@@ -54,8 +52,8 @@ public class InboundState {
             .setOperationId(OperationId.buildOperationId(recipient, transactionNumber))
             .setSender(interchangeHeader.getSender())
             .setRecipient(recipient)
-            .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setReceiveMessageSequence(messageHeader.getSequenceNumber())
+            .setInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(transactionNumber)
             .setTransactionType(referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
@@ -68,8 +66,8 @@ public class InboundState {
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setReceiveInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setReceiveMessageSequence(messageHeader.getSequenceNumber())
+            .setInterchangeSequence(interchangeHeader.getSequenceNumber())
+            .setMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
             .setTranslationTimestamp(dateTimePeriod.getTimestamp());

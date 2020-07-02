@@ -1,11 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
+import java.util.Optional;
+
 @Repository
 public interface InboundStateRepository extends CrudRepository<InboundState, String> {
-    InboundState findBy(
-        WorkflowId workflowId, String sender, String recipient, long receiveInterchangeSequence, Long receiveMessageSequence);
+    @Query("{ 'workflowId' : ?0, 'sender' : ?1, 'recipient' : ?2, 'interchangeSequence' : ?3, 'messageSequence' : ?4, 'transactionNumber' : ?5}")
+    Optional<InboundState> findBy(WorkflowId workflowId, String sender, String recipient, Long interchangeSequence, Long messageSequence, Long transactionNumber);
 }

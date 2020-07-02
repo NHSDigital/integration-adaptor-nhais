@@ -21,3 +21,6 @@ NHAIS_MESH_ENDPOINT_PRIVATE_KEY: | #The content of the endpoint private key
   -----END RSA PRIVATE KEY-----
 NHAIS_MESH_RECIPIENT_CODES: #recipient codes translation in format cypher=mesh_recipient_code (one per line)
 
+#scheduler settings
+NHAIS_SCHEDULER_OVERLAP_INTERVAL_IN_SECONDS: 300
+NHAIS_SCHEDULER_INTERVAL_IN_MILISECONDS: 60000

@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.qpid.jms.message.JmsBytesMessage;
@@ -17,7 +16,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import java.io.IOException;
 
-@Component @Slf4j
+@Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InboundMeshService {
 

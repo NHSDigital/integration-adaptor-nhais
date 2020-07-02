@@ -41,7 +41,7 @@ public class StubTranslator implements FhirToEdifactTranslator {
             new BeginningOfMessage(),
             new NameAndAddress(getHaCipher(parameters), NameAndAddress.QualifierAndCode.FHS),
             new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-            new ReferenceTransactionType(ReferenceTransactionType.TransactionType.ACCEPTANCE),
+            new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE),
             new SegmentGroup(1),
             new ReferenceTransactionNumber(),
             getGp(parameters)
@@ -82,17 +82,17 @@ public class StubTranslator implements FhirToEdifactTranslator {
 
     @Deprecated
     private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if(value == null) {
+        if (value == null) {
             throw new FhirValidationException("Missing element at " + path);
         }
-        if(value instanceof List) {
+        if (value instanceof List) {
             List list = (List) value;
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
-        } else if(value instanceof String) {
+        } else if (value instanceof String) {
             String str = (String) value;
-            if(str.isBlank()) {
+            if (str.isBlank()) {
                 throw new FhirValidationException("Missing element at " + path);
             }
         }
