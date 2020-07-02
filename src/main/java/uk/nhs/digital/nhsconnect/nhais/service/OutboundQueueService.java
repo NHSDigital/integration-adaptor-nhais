@@ -6,9 +6,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import javax.jms.JMSException;
@@ -24,12 +26,14 @@ public class OutboundQueueService {
     private final ObjectMapper objectMapper;
     private final TimestampService timestampService;
     private final MeshClient meshClient;
+    private final MeshConfig meshConfig;
 
     @Value("${nhais.amqp.meshOutboundQueueName}")
     private String meshOutboundQueueName;
 
     @SneakyThrows
     public void publish(MeshMessage message) {
+        message.setHaTradingPartnerCode(meshConfig.getMailboxId());
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
@@ -39,7 +43,7 @@ public class OutboundQueueService {
         return objectMapper.writeValueAsString(meshMessage);
     }
 
-//    @JmsListener(destination = "${nhais.amqp.meshOutboundQueueName}") //TODO: enable for NIAD-122 Sending MESH
+    @JmsListener(destination = "${nhais.amqp.meshOutboundQueueName}")
     public void receive(Message message) throws IOException, JMSException {
         LOGGER.debug("Received message: {}", message);
         try {
@@ -47,9 +51,7 @@ public class OutboundQueueService {
             LOGGER.debug("Received message body: {}", body);
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
-            // TODO: get the correlation id and attach to logger?
-//            String recipient = meshCypherDecoder.getRecipient(meshMessage);
-//            meshClient.sendEdifactMessage(meshMessage.getContent(), recipient);
+            meshClient.sendEdifactMessage(meshMessage.getContent(), meshMessage.getHaTradingPartnerCode());
 
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);
