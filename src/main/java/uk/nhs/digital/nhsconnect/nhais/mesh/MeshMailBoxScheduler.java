@@ -26,6 +26,7 @@ public class MeshMailBoxScheduler {
         if (isSchedulerEnabled()) {
             return updateTimestamp(seconds);
         }
+        LOGGER.warn("MESH mailbox scheduler is disabled. Set proper env var to enable it");
         return false;
     }
 

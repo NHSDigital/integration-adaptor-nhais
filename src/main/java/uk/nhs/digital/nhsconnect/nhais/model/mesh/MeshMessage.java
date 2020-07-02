@@ -40,4 +40,10 @@ public class MeshMessage {
      * If DOWNLOADING FROM MESH: the message id of the message that was downloaded from MESH
      */
     private String meshMessageId;
+
+    /**
+     * If SENDING TO MESH: Correlation id for GP system
+     * If DOWNLOADING FROM MESH: DO NOT USE
+     */
+    private String operationId;
 }

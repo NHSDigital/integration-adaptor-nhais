@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import javax.jms.JMSException;
@@ -25,7 +24,6 @@ public class OutboundQueueService {
     private final ObjectMapper objectMapper;
     private final TimestampService timestampService;
     private final MeshClient meshClient;
-    private final MeshCypherDecoder meshCypherDecoder;
 
     @Value("${nhais.amqp.meshOutboundQueueName}")
     private String meshOutboundQueueName;
@@ -50,8 +48,8 @@ public class OutboundQueueService {
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
             // TODO: get the correlation id and attach to logger?
-            String recipient = meshCypherDecoder.getRecipient(meshMessage);
-            meshClient.sendEdifactMessage(meshMessage.getContent(), recipient);
+//            String recipient = meshCypherDecoder.getRecipient(meshMessage);
+//            meshClient.sendEdifactMessage(meshMessage.getContent(), recipient);
 
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);

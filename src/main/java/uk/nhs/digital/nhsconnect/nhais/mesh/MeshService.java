@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
 
 import java.util.List;
@@ -17,8 +16,6 @@ public class MeshService {
 
     private final MeshClient meshClient;
 
-    private final EdifactToMeshMessageService edifactToMeshMessageService;
-
     private final InboundQueueService inboundQueueService;
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
@@ -27,12 +24,10 @@ public class MeshService {
 
     @Autowired
     public MeshService(MeshClient meshClient,
-                       EdifactToMeshMessageService edifactToMeshMessageService,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
                        @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long scanDelayInSeconds) {
         this.meshClient = meshClient;
-        this.edifactToMeshMessageService = edifactToMeshMessageService;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
         this.scanDelayInSeconds = scanDelayInSeconds;
@@ -50,8 +45,7 @@ public class MeshService {
             }
             for (String messageId : inboxMessageIds) {
                 try {
-                    String edifactString = meshClient.getEdifactMessage(messageId);
-                    MeshMessage meshMessage = edifactToMeshMessageService.fromEdifactString(edifactString, messageId);
+                    MeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
                     inboundQueueService.publish(meshMessage);
                     meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
                 } catch (Exception ex) {

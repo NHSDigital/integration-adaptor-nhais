@@ -46,7 +46,7 @@ nhais:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:}
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:}
-    host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
+    host: ${NHAIS_MESH_HOST:}
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:}
     endpointPrivateKey: ${NHAIS_MESH_ENDPOINT_PRIVATE_KEY:}
     cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:}

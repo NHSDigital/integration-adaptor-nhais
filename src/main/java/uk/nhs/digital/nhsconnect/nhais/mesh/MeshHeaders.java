@@ -27,7 +27,7 @@ public class MeshHeaders {
         List<BasicHeader> sendHeaders = List.of(
             new BasicHeader("Mex-From", meshConfig.getMailboxId()),
             new BasicHeader("Mex-To", recipient),
-            new BasicHeader("Mex-WorkflowID", "workflow1"),
+            new BasicHeader("Mex-WorkflowID", "NHAIS_REG"), //TODO NIAD-122 distinguish REG and RECEP messages
             new BasicHeader("Mex-FileName", "edifact.dat"),
             new BasicHeader("Mex-MessageType", "DATA"));
         return Stream.concat(Arrays.stream(createMinimalHeaders()), sendHeaders.stream())

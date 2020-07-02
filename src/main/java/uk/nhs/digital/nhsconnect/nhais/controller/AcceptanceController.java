@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.TranslatedInterchange;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
@@ -31,8 +29,6 @@ public class AcceptanceController {
 
     private final FhirToEdifactService fhirToEdifactService;
 
-    private final EdifactToMeshMessageService edifactToMeshMessageService;
-
     private final FhirParser fhirParser;
 
 
@@ -40,11 +36,10 @@ public class AcceptanceController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> acceptance(@RequestBody String body) throws FhirValidationException {
         Parameters parameters = fhirParser.parseParameters(body);
-        TranslatedInterchange translatedInterchange = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.Outbound.ACCEPTANCE);
-        MeshMessage meshMessage = edifactToMeshMessageService.toMeshMessage(translatedInterchange);
+        MeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, ReferenceTransactionType.Outbound.ACCEPTANCE);
         outboundQueueService.publish(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(translatedInterchange.getOperationId()));
+        headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
     }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;

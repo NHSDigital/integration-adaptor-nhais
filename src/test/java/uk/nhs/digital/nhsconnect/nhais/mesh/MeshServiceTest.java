@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.service.EdifactToMeshMessageService;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
 
 import java.util.List;
@@ -19,9 +18,6 @@ class MeshServiceTest {
 
     @Mock
     private MeshClient meshClient;
-
-    @Mock
-    private EdifactToMeshMessageService edifactToMeshMessageService;
 
     @Mock
     private InboundQueueService inboundQueueService;
@@ -40,7 +36,6 @@ class MeshServiceTest {
         meshMessage.setMeshMessageId(MESSAGE_ID);
 
         meshService = new MeshService(meshClient,
-                edifactToMeshMessageService,
                 inboundQueueService,
                 meshMailBoxScheduler,
                 scanDelayInSeconds);
@@ -49,13 +44,12 @@ class MeshServiceTest {
     @Test
     public void When_IntervalPassedAndMessagesFound_Then_DownloadAndPublishMessage() {
         MeshService meshService = new MeshService(meshClient,
-                edifactToMeshMessageService,
                 inboundQueueService,
                 meshMailBoxScheduler,
                 scanDelayInSeconds);
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
-        when(edifactToMeshMessageService.fromEdifactString(any(), any())).thenReturn(meshMessage);
+        when(meshClient.getEdifactMessage(any())).thenReturn(meshMessage);
 
         meshService.scanMeshInboxForMessages();
 
