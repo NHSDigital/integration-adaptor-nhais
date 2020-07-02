@@ -20,7 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class InboundStateTest {
+public class InboundStateInterchangeTest {
 
     public static final Interchange INTERCHANGE = Mockito.mock(Interchange.class);
     public static final Message MESSAGE = Mockito.mock(Message.class);

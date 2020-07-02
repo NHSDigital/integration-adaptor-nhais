@@ -1,12 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
+import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-
-import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 
 class MeshRecipientDecoderTest {
 

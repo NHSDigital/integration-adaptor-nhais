@@ -2,28 +2,25 @@ package uk.nhs.digital.nhsconnect.nhais.mesh;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MongoScheduler {
 
+    private static final String SCHEDULER_TYPE = "meshTimestamp";
+    private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
     private final MeshClient meshClient;
     private final SchedulerTimestampRepository schedulerTimestampRepository;
     private final TimestampService timestampService;
-
     @Value("${nhais.scheduler.overlapIntervalInSeconds}")
     private long seconds;
-
-    private static final String SCHEDULER_TYPE = "meshTimestamp";
-    private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
 
     @Scheduled(fixedRateString = "${nhais.scheduler.intervalInMilliSeconds}")
     public void updateConditionally() {
@@ -42,7 +39,7 @@ public class MongoScheduler {
     }
 
     private boolean updateTimestamp() {
-            return schedulerTimestampRepository.updateTimestamp(SCHEDULER_TYPE, timestampService.getCurrentTimestamp(), seconds);
+        return schedulerTimestampRepository.updateTimestamp(SCHEDULER_TYPE, timestampService.getCurrentTimestamp(), seconds);
 
     }
 }

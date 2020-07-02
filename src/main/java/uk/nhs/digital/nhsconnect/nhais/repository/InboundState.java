@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
@@ -35,7 +35,7 @@ public class InboundState {
     private String recipient;
     private Long transactionNumber;
     private Instant translationTimestamp;
-    private ReferenceTransactionType.TransactionType transactionType;
+    private ReferenceTransactionType.Inbound transactionType;
 
     public static InboundState fromTransaction(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
@@ -55,14 +55,14 @@ public class InboundState {
             .setInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setTransactionNumber(transactionNumber)
-            .setTransactionType(referenceTransactionType.getTransactionType())
+            .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }
 
-    public static InboundState fromRecep(Recep recep) {
-        var interchangeHeader = recep.getInterchangeHeader();
+    public static InboundState fromRecep(Message recep) {
+        var interchangeHeader = recep.getInterchange().getInterchangeHeader();
         var messageHeader = recep.getMessageHeader();
-        var dateTimePeriod = recep.getDateTimePeriod();
+        var dateTimePeriod = recep.getTranslationDateTime();
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)

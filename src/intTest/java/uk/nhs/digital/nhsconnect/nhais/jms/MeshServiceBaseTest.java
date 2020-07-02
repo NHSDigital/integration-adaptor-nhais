@@ -18,7 +18,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,6 +29,7 @@ import java.util.function.Supplier;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @ExtendWith({SpringExtension.class, SoftAssertionsExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
@@ -37,7 +37,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class MeshServiceBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
-    protected static final int WAIT_FOR_IN_SECONDS = 25;
+    protected static final int WAIT_FOR_IN_SECONDS = 5;
     private static final int RECEIVE_TIMEOUT = 5000;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);
@@ -105,7 +105,7 @@ public abstract class MeshServiceBaseTest {
         if (message == null) {
             return null;
         }
-        return InboundMeshService.readMessage(message);
+        return readMessage(message);
     }
 
     @SneakyThrows

@@ -3,8 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.qpid.jms.message.JmsBytesMessage;
-import org.apache.qpid.jms.message.JmsTextMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -15,6 +13,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.io.IOException;
+
+import static uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage.readMessage;
 
 @Component
 @Slf4j
@@ -51,28 +51,5 @@ public class InboundMeshService {
             // TODO: deadletter if something goes pop instead of throwing exception
             throw e;
         }
-    }
-
-    public static String readMessage(Message message) throws JMSException {
-        if (message instanceof JmsTextMessage) {
-            return readTextMessage((JmsTextMessage) message);
-        }
-        if (message instanceof JmsBytesMessage) {
-            return readBytesMessage((JmsBytesMessage) message);
-        }
-        if (message != null) {
-            return message.getBody(String.class);
-        }
-        return null;
-    }
-
-    private static String readBytesMessage(JmsBytesMessage message) throws JMSException {
-        byte[] bytes = new byte[(int) message.getBodyLength()];
-        message.readBytes(bytes);
-        return new String(bytes);
-    }
-
-    private static String readTextMessage(JmsTextMessage message) throws JMSException {
-        return message.getText();
     }
 }

@@ -1,13 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.when;
-
-import java.time.Instant;
-
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
-
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.UpdateResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,9 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.result.UpdateResult;
+import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SchedulerTimestampRepositoryExtensionTest {

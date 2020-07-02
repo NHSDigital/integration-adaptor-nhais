@@ -1,12 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
-import java.time.Instant;
-
 import lombok.Data;
-
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(

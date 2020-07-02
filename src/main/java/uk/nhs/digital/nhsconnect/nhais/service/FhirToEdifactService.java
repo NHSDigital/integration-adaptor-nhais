@@ -39,7 +39,7 @@ public class FhirToEdifactService {
     private final TimestampService timestampService;
     private final FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
-    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException, EdifactValidationException {
+    public TranslatedInterchange convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
         TranslationItems translationItems = new TranslationItems();
         translationItems.parameters = parameters;
         translationItems.patient = new ParametersExtension(parameters).extractPatient();
@@ -161,7 +161,7 @@ public class FhirToEdifactService {
             .setMessageSequence(translationItems.sendMessageSequence)
             .setTransactionId(translationItems.transactionNumber)
 
-            .setTransactionType(translationItems.transactionType.getAbbreviation())
+            .setTransactionType(translationItems.transactionType)
             .setTransactionTimestamp(translationItems.translationTimestamp)
             .setOperationId(translationItems.operationId);
         outboundStateRepository.save(outboundState);
@@ -209,7 +209,7 @@ public class FhirToEdifactService {
     private static class TranslationItems {
         private Patient patient;
         private Parameters parameters;
-        private ReferenceTransactionType.TransactionType transactionType;
+        private ReferenceTransactionType.Outbound transactionType;
         private List<Segment> segments = new ArrayList<>();
         private String sender;
         private String recipient;

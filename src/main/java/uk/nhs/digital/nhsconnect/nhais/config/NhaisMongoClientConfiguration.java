@@ -97,34 +97,31 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     @Override
     public MongoCustomConversions customConversions() {
         return new MongoCustomConversions(List.of(
-            new TransactionTypeWriteConverter<ReferenceTransactionType.Inbound>() {
-            },
-            new TransactionTypeWriteConverter<ReferenceTransactionType.Outbound>() {
-            },
-            new TransactionTypeReadConverter()
+            new TransactionTypeWriteConverter(),
+            new InboundTransactionTypeReadConverter(),
+            new OutboundTransactionTypeReadConverter()
         ));
     }
 
     @WritingConverter
-    static abstract class TransactionTypeWriteConverter<T> implements Converter<T, String> {
+    static class TransactionTypeWriteConverter implements Converter<ReferenceTransactionType.TransactionType, String> {
         @Override
-        public String convert(T source) {
-            return String.format("%s.%s", ReferenceTransactionType.Inbound.class.getSimpleName(), source.toString());
+        public String convert(ReferenceTransactionType.TransactionType source) {
+            return source.getAbbreviation();
         }
     }
 
     @ReadingConverter
-    static class TransactionTypeReadConverter implements Converter<String, ReferenceTransactionType.TransactionType> {
-        public ReferenceTransactionType.TransactionType convert(String s) {
-            var parts = s.split("\\.");
-            var type = parts[0];
-            var value = parts[1];
-            if (type.equals(ReferenceTransactionType.Inbound.class.getSimpleName())) {
-                return ReferenceTransactionType.Inbound.valueOf(value);
-            } else if (type.equals(ReferenceTransactionType.Outbound.class.getSimpleName())) {
-                return ReferenceTransactionType.Outbound.valueOf(value);
-            }
-            throw new IllegalStateException("Unable to parse value " + s);
+    static class InboundTransactionTypeReadConverter implements Converter<String, ReferenceTransactionType.Inbound> {
+        public ReferenceTransactionType.Inbound convert(String s) {
+            return (ReferenceTransactionType.Inbound) ReferenceTransactionType.TransactionType.fromAbbreviation(s);
+        }
+    }
+
+    @ReadingConverter
+    static class OutboundTransactionTypeReadConverter implements Converter<String, ReferenceTransactionType.Outbound> {
+        public ReferenceTransactionType.Outbound convert(String s) {
+            return (ReferenceTransactionType.Outbound) ReferenceTransactionType.TransactionType.fromAbbreviation(s);
         }
     }
 }
