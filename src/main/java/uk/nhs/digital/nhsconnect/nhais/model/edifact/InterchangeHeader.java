@@ -46,15 +46,6 @@ public class InterchangeHeader extends Segment {
         return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
     }
 
-    public static boolean isRecep(String edifactString) {
-        try {
-            fromString(edifactString);
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-        return edifactString.endsWith(RECEP_ENDING);
-    }
-
     @Override
     public String getKey() {
         return KEY;

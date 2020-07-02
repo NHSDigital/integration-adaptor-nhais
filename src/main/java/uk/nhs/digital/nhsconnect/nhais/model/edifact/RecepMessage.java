@@ -62,7 +62,4 @@ public class RecepMessage {
         return String.join("'\n", this.rows) + "'";
     }
 
-    public static boolean isRecep(String edifactString){
-        return InterchangeHeader.isRecep(edifactString);
-    }
 }
