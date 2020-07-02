@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Parameters;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Tag("component")
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = AcceptanceController.class)
-public class AcceptanceControllerTest {
+@WebMvcTest(controllers = FhirController.class)
+public class FhirControllerTest {
 
     private static final String OPERATION_ID = UUID.randomUUID().toString();
 
@@ -62,19 +63,12 @@ public class AcceptanceControllerTest {
     private FhirParser fhirParser;
 
     @Test
-    void whenValidInput_thenReturns202() throws Exception {
+    void whenValidAcceptanceInput_thenReturns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
-        TranslatedInterchange translatedInterchange = new TranslatedInterchange();
-        translatedInterchange.setEdifact("EDI");
-        translatedInterchange.setOperationId(OPERATION_ID);
-        MeshMessage meshMessage = new MeshMessage();
-        meshMessage.setContent("EDI");
-        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
-        meshMessage.setOdsCode("odsCode");
+        TranslatedInterchange translatedInterchange = getTranslatedInterchange();
+        MeshMessage meshMessage = getMeshMessage();
 
-        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
-        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
-        when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
+        mockServicesBehaviour(requestBody, translatedInterchange, meshMessage);
 
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("application/json")
@@ -83,6 +77,63 @@ public class AcceptanceControllerTest {
             .andExpect(header().string("OperationId", OPERATION_ID));
 
         verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+    }
+
+    @Test
+    void whenValidRemovalInput_thenReturns202() throws Exception {
+        String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
+        TranslatedInterchange translatedInterchange = getTranslatedInterchange();
+        MeshMessage meshMessage = getMeshMessage();
+
+        mockServicesBehaviour(requestBody, translatedInterchange, meshMessage);
+
+        mockMvc.perform(post("/fhir/Patient/$nhais.removal")
+            .contentType("application/json")
+            .content(requestBody))
+            .andExpect(status().isAccepted())
+            .andExpect(header().string("OperationId", OPERATION_ID));
+
+        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+    }
+
+    @Test
+    void whenValidDeductionInput_thenReturns202() throws Exception {
+        String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
+        TranslatedInterchange translatedInterchange = getTranslatedInterchange();
+        MeshMessage meshMessage = getMeshMessage();
+
+        mockServicesBehaviour(requestBody, translatedInterchange, meshMessage);
+
+        mockMvc.perform(post("/fhir/Patient/$nhais.removal")
+            .contentType("application/json")
+            .content(requestBody))
+            .andExpect(status().isAccepted())
+            .andExpect(header().string("OperationId", OPERATION_ID));
+
+        verify(outboundMeshService).publishToOutboundQueue(meshMessage);
+    }
+
+    private void mockServicesBehaviour(String requestBody, TranslatedInterchange translatedInterchange, MeshMessage meshMessage) {
+        when(fhirParser.parseParameters(requestBody)).thenReturn(new Parameters());
+        when(fhirToEdifactService.convertToEdifact(any(Parameters.class), any())).thenReturn(translatedInterchange);
+        when(edifactToMeshMessageService.toMeshMessage(translatedInterchange)).thenReturn(meshMessage);
+    }
+
+    @NotNull
+    private MeshMessage getMeshMessage() {
+        MeshMessage meshMessage = new MeshMessage();
+        meshMessage.setContent("EDI");
+        meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
+        meshMessage.setOdsCode("odsCode");
+        return meshMessage;
+    }
+
+    @NotNull
+    private TranslatedInterchange getTranslatedInterchange() {
+        TranslatedInterchange translatedInterchange = new TranslatedInterchange();
+        translatedInterchange.setEdifact("EDI");
+        translatedInterchange.setOperationId(OPERATION_ID);
+        return translatedInterchange;
     }
 
     @Test
