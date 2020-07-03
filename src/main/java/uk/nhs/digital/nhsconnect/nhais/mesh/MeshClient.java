@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
@@ -45,7 +46,7 @@ public class MeshClient {
     }
 
     @SneakyThrows
-    public MeshMessage getEdifactMessage(String messageId) {
+    public InboundMeshMessage getEdifactMessage(String messageId) {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             try (CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {

@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class MeshClientIntegrationTest {
         String messageContent = "test_message";
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(messageContent, meshConfig.getMailboxId());
 
-        MeshMessage meshMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
+        InboundMeshMessage meshMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
         assertThat(meshMessage.getContent()).isEqualTo(messageContent);
         assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
     }

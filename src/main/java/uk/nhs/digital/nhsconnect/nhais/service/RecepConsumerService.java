@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
@@ -29,7 +29,7 @@ public class RecepConsumerService {
     private final OutboundStateRepository outboundStateRepository;
     private final InboundStateRepository inboundStateRepository;
 
-    public void handleRecep(MeshMessage meshMessage) {
+    public void handleRecep(InboundMeshMessage meshMessage) {
         LOGGER.info("Received RECEP message: {}", meshMessage);
         var recep = edifactParser.parse(meshMessage.getContent());
         LOGGER.debug("Parsed RECEP message into: {}", recep);
