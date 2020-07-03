@@ -6,7 +6,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransationTypeMapper {
+public class TransactionTypeMapper {
 
     public ReferenceTransactionType.Outbound mapTransactionType(String transactionTypeParam) {
         switch(transactionTypeParam) {
