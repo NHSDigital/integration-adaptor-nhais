@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class MeshMessage {
+public class MeshMessage implements InboundMeshMessage, OutboundMeshMessage {
 
     /**
      * If SENDING TO MESH: set to the HA Trading Partner Code (recipient)
@@ -46,4 +46,5 @@ public class MeshMessage {
      * If DOWNLOADING FROM MESH: DO NOT USE
      */
     private String operationId;
+
 }

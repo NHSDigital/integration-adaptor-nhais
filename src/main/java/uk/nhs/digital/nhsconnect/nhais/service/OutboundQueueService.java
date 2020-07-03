@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -29,13 +29,13 @@ public class OutboundQueueService {
     private String meshOutboundQueueName;
 
     @SneakyThrows
-    public void publish(MeshMessage message) {
+    public void publish(OutboundMeshMessage message) {
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
 
     @SneakyThrows
-    private String serializeMeshMessage(MeshMessage meshMessage) {
+    private String serializeMeshMessage(OutboundMeshMessage meshMessage) {
         return objectMapper.writeValueAsString(meshMessage);
     }
 
@@ -45,7 +45,7 @@ public class OutboundQueueService {
         try {
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
-            MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
+            OutboundMeshMessage meshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
             // TODO: get the correlation id and attach to logger?
 //            String recipient = meshCypherDecoder.getRecipient(meshMessage);

@@ -10,7 +10,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
@@ -36,7 +38,7 @@ public class RegistrationConsumerService {
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
 
-    public void handleRegistration(MeshMessage meshMessage) {
+    public void handleRegistration(InboundMeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
         Interchange interchange = edifactParser.parse(meshMessage.getContent());
 
@@ -81,7 +83,7 @@ public class RegistrationConsumerService {
         return OutboundState.fromRecep(recep.getMessages().get(0));
     }
 
-    private MeshMessage prepareRecepOutboundMessage(String recep) {
+    private OutboundMeshMessage prepareRecepOutboundMessage(String recep) {
         var recepMeshMessage = buildRecepMeshMessage(recep);
         LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
         return recepMeshMessage;
@@ -129,7 +131,7 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private MeshMessage buildRecepMeshMessage(String edifactRecep) {
+    private OutboundMeshMessage buildRecepMeshMessage(String edifactRecep) {
         return new MeshMessage()
             // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
             .setHaTradingPartnerCode("ods123")

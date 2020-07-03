@@ -23,14 +23,10 @@ public class MeshMailBoxScheduler {
 
     @SneakyThrows
     public boolean hasTimePassed(long seconds) {
-        if (isSchedulerEnabled()) {
-            return updateTimestamp(seconds);
-        }
-        LOGGER.warn("MESH mailbox scheduler is disabled. Set proper env var to enable it");
-        return false;
+        return updateTimestamp(seconds);
     }
 
-    private boolean isSchedulerEnabled() {
+    public boolean isEnabled() {
         return BooleanUtils.toBoolean(applicationContext.getEnvironment().getProperty("nhais.scheduler.enabled"));
     }
 
