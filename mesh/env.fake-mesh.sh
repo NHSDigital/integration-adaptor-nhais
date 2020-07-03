@@ -24,3 +24,6 @@ export OPENTEST_ENDPOINT_CERT="./fakemesh.ca.cert.pem"
 
 # (optional) provide different flags / options for the curl command
 #export CURL_FLAGS="-s -i -k -o /dev/null"
+
+# WorkflowID used to send MESH messages. Can be either NHAIS_REG or NHAIS_RECEP
+export WORKFLOW_ID=NHAIS_REG
