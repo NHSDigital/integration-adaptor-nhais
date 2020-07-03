@@ -48,6 +48,7 @@ class MeshServiceTest {
                 meshMailBoxScheduler,
                 scanDelayInSeconds);
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
         when(meshClient.getEdifactMessage(any())).thenReturn(meshMessage);
 
@@ -61,6 +62,7 @@ class MeshServiceTest {
     @Test
     public void When_IntervalHasNotPassed_Then_DoNothing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(false);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
 
         meshService.scanMeshInboxForMessages();
 
@@ -71,10 +73,22 @@ class MeshServiceTest {
     @Test
     public void When_IntervalHasPassedButNoMessagesFound_Then_DoNothing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of());
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID);
+        verifyNoInteractions(inboundQueueService);
+    }
+
+    @Test
+    public void When_SchedulerIsDisabled_Then_DoNothing() {
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(false);
+
+        meshService.scanMeshInboxForMessages();
+
+        verify(meshMailBoxScheduler, times(0)).hasTimePassed(scanDelayInSeconds);
         verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID);
         verifyNoInteractions(inboundQueueService);
     }
