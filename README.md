@@ -325,6 +325,22 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
     docker-compose build
     docker-compose up
+    
+### Running with Docker Compose and Load Balancer
+
+Docker compose configuration allows running multiple instances of NHAIS application with an NGINX load balancer in front using round robin routing by default.
+
+    docker-compose build
+    docker-compose -f docker-compose.yml -f docker-compose.lb.override.yml up --scale nhais=3
+
+This command will spawn 3 instances of NHAIS and an LB working on port 8080
+There are 2 options on how to change the scale number while all services are running:
+
+* stop and start the whole cluster with new scale value
+
+or
+
+* run the same "up" command with new scale value while the cluster is running and then restart the LB container so it will be aware of instance count change 
 
 ### Running Tests
 
