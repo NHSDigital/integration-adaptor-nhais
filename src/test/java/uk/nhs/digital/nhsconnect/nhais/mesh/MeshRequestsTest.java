@@ -38,7 +38,7 @@ class MeshRequestsTest {
         String recipient = "recipient";
         var request = meshRequests.sendMessage(recipient, WorkflowId.REGISTRATION);
 
-        assertSending(request, recipient);
+        assertSending(request, recipient, WorkflowId.REGISTRATION);
     }
 
     @Test
@@ -48,7 +48,7 @@ class MeshRequestsTest {
         String recipient = "recipient";
         var request = meshRequests.sendMessage(recipient, WorkflowId.RECEP);
 
-        assertSending(request, recipient);
+        assertSending(request, recipient, WorkflowId.RECEP);
     }
 
     @Test
@@ -71,12 +71,12 @@ class MeshRequestsTest {
         assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/inbox/messageId/status/acknowledged");
     }
 
-    private void assertSending(HttpEntityEnclosingRequestBase request, String recipient) {
+    private void assertSending(HttpEntityEnclosingRequestBase request, String recipient, WorkflowId workflowId) {
         assertThat(request).isExactlyInstanceOf(HttpPost.class);
         assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");
         Header[] mexToHeader = request.getHeaders("Mex-To");
         assertThat(mexToHeader.length).isEqualTo(1);
         assertThat(mexToHeader[0].getValue()).isEqualTo(recipient);
+        assertThat(request.getHeaders("Mex-WorkflowID")[0].getValue()).isEqualTo(workflowId.getWorkflowId());
     }
-
 }
