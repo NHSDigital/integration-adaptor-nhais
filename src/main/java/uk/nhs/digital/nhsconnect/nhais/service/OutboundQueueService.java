@@ -10,7 +10,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 
 import javax.jms.JMSException;
@@ -26,14 +26,13 @@ public class OutboundQueueService {
     private final ObjectMapper objectMapper;
     private final TimestampService timestampService;
     private final MeshClient meshClient;
-    private final MeshConfig meshConfig;
+    private final MeshCypherDecoder meshCypherDecoder;
 
     @Value("${nhais.amqp.meshOutboundQueueName}")
     private String meshOutboundQueueName;
 
     @SneakyThrows
     public void publish(MeshMessage message) {
-        message.setHaTradingPartnerCode(meshConfig.getMailboxId());
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
@@ -51,9 +50,10 @@ public class OutboundQueueService {
             LOGGER.debug("Received message body: {}", body);
             MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
+            String recipient = meshCypherDecoder.getRecipient(meshMessage);
             meshClient.sendEdifactMessage(
                 meshMessage.getContent(),
-                meshMessage.getHaTradingPartnerCode(),
+                recipient,
                 meshMessage.getWorkflowId());
 
         } catch (Exception e) {
