@@ -120,5 +120,6 @@ services:
     image: nhsdev/fake-mesh:0.1.6
     ports:
       - "8829:8829"
-    volumes:
-      - ./fake_mesh_dir:/tmp/fake_mesh_dir
+# Enable if you need to inspect the fake-mesh database for any reason
+#    volumes:
+#      - ./fake_mesh_dir:/tmp/fake_mesh_dir
