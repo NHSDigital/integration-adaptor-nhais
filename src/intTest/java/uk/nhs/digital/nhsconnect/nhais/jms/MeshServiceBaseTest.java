@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -79,7 +79,7 @@ public abstract class MeshServiceBaseTest {
         this.jmsTemplate.setReceiveTimeout(originalReceiveTimeout);
     }
 
-    protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
+    protected void sendToMeshInboundQueue(InboundMeshMessage meshMessage) {
         inboundQueueService.publish(meshMessage);
     }
 

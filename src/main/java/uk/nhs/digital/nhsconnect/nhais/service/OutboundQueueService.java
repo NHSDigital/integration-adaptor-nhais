@@ -11,7 +11,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -32,13 +32,13 @@ public class OutboundQueueService {
     private String meshOutboundQueueName;
 
     @SneakyThrows
-    public void publish(MeshMessage message) {
+    public void publish(OutboundMeshMessage message) {
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
 
     @SneakyThrows
-    private String serializeMeshMessage(MeshMessage meshMessage) {
+    private String serializeMeshMessage(OutboundMeshMessage meshMessage) {
         return objectMapper.writeValueAsString(meshMessage);
     }
 
@@ -48,13 +48,13 @@ public class OutboundQueueService {
         try {
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
-            MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
-            LOGGER.debug("Decoded message: {}", meshMessage);
-            String recipient = meshCypherDecoder.getRecipient(meshMessage);
+            OutboundMeshMessage outboundMeshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
+            LOGGER.debug("Decoded message: {}", outboundMeshMessage);
+            String recipient = meshCypherDecoder.getRecipient(outboundMeshMessage);
             meshClient.sendEdifactMessage(
-                meshMessage.getContent(),
+                outboundMeshMessage.getContent(),
                 recipient,
-                meshMessage.getWorkflowId());
+                outboundMeshMessage.getWorkflowId());
 
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);

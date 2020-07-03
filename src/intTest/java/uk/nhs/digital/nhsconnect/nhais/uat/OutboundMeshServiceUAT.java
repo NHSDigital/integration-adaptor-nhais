@@ -13,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.ZonedDateTime;
@@ -72,7 +72,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
             .andExpect(status().isAccepted());
     }
 
-    private void assertMessageBody(MeshMessage meshMessage, String expectedEdifact) {
+    private void assertMessageBody(InboundMeshMessage meshMessage, String expectedEdifact) {
         assertThat(meshMessage.getContent()).isEqualTo(expectedEdifact);
     }
 

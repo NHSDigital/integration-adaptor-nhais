@@ -3,8 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.mesh;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,23 +11,18 @@ import java.util.stream.Stream;
 
 @Component
 public class MeshCypherDecoder {
-
-    private final EdifactParser edifactParser;
-
     @Value("${nhais.mesh.cypherToMailbox}")
     private final String cypherToMailbox;
 
     @Autowired
-    public MeshCypherDecoder(EdifactParser edifactParser,
-                             @Value("${nhais.mesh.cypherToMailbox}") String cypherToMailbox) {
-        this.edifactParser = edifactParser;
+    public MeshCypherDecoder(@Value("${nhais.mesh.cypherToMailbox}") String cypherToMailbox) {
         this.cypherToMailbox = cypherToMailbox;
     }
 
-    public String getRecipient(MeshMessage meshMessage) {
+    public String getRecipient(OutboundMeshMessage outboundMeshMessage) {
         Map<String, String> mappings = createMappings();
 
-        String recipient = edifactParser.parse(meshMessage.getContent()).getInterchangeHeader().getRecipient();
+        String recipient = outboundMeshMessage.getHaTradingPartnerCode();
         if (!mappings.containsKey(recipient)) {
             throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);
         }
