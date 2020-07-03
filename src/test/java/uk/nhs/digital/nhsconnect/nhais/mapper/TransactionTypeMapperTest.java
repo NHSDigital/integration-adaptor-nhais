@@ -45,6 +45,5 @@ public class TransactionTypeMapperTest {
         String parameter = "$nhais.addPatient";
         assertThatThrownBy(() -> transactionTypeMapper.mapTransactionType(parameter))
             .isExactlyInstanceOf(ParameterValidationException.class);
-
     }
 }

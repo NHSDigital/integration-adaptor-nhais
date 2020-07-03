@@ -13,7 +13,7 @@ public class TransactionTypeMapper {
             case "$nhais.acceptance": return ReferenceTransactionType.Outbound.ACCEPTANCE;
             case "$nhais.removal": return ReferenceTransactionType.Outbound.REMOVAL;
             case "$nhais.deduction": return ReferenceTransactionType.Outbound.DEDUCTION;
-            default: throw new ParameterValidationException("Provided transaction type is not allowed");
+            default: throw new ParameterValidationException("Unknown Patient operation " + transactionTypeParam);
         }
     }
 

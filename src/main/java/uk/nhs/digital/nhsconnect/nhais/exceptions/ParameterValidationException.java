@@ -12,7 +12,7 @@ public class ParameterValidationException extends NhaisBaseException implements 
 
     public ParameterValidationException(String message) {
         super(message);
-        operationOutcome = OperationOutcomeUtils.createFromMessage(message, OperationOutcome.IssueType.UNKNOWN);
+        operationOutcome = OperationOutcomeUtils.createFromMessage(message, OperationOutcome.IssueType.NOTFOUND);
     }
 
     @Override
@@ -22,6 +22,6 @@ public class ParameterValidationException extends NhaisBaseException implements 
 
     @Override
     public HttpStatus getStatusCode() {
-        return HttpStatus.BAD_REQUEST;
+        return HttpStatus.NOT_FOUND;
     }
 }

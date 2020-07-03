@@ -29,9 +29,6 @@ public class FhirControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Value("classpath:patient/validAcceptanceInput.json")
-    private Resource validAcceptancePayload;
-
     @Value("classpath:patient/not-json.xml")
     private Resource notJsonPayload;
 
@@ -58,14 +55,6 @@ public class FhirControllerIntegrationTest {
 
     @Value("classpath:patient/removal-invalid-json-structure.fhir.json")
     private Resource removalInvalidJsonStructure;
-
-    @Test
-    void whenValidAcceptanceInput_thenReturns202() throws Exception {
-        String requestBody = new String(Files.readAllBytes(validAcceptancePayload.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
-            .andExpect(status().isAccepted())
-            .andExpect(header().string("OperationId", expectedOperationId));
-    }
 
     @Test
     void whenNotJson_thenReturns400() throws Exception {
