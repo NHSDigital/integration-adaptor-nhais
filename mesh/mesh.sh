@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source env.sh
+#source env.sh #custom configuration (i.e. OpentTest)
+source fake-mesh-env.sh
 
 TO_MAILBOX=${TO_MAILBOX:-${MAILBOX_ID}}
 TOKEN=''

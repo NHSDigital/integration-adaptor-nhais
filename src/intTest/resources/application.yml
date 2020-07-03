@@ -35,7 +35,7 @@ nhais:
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
   mesh:
-    mailboxId: ${NHAIS_MESH_MAILBOX_ID:test_mailbox} #defaults below are used by fake-mesh
+    mailboxId: ${NHAIS_MESH_MAILBOX_ID:fake_mailboxId} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
