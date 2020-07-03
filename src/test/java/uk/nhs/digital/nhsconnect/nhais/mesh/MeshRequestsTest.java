@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.mesh;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -31,17 +32,23 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_SendingMessage_Then_ExpectHttpPostAndCorrectUri() {
+    void When_SendingRegistrationMessage_Then_ExpectHttpPostAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         String recipient = "recipient";
         var request = meshRequests.sendMessage(recipient, WorkflowId.REGISTRATION);
 
-        assertThat(request).isExactlyInstanceOf(HttpPost.class);
-        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");
-        Header[] mexToHeader = request.getHeaders("Mex-To");
-        assertThat(mexToHeader.length).isEqualTo(1);
-        assertThat(mexToHeader[0].getValue()).isEqualTo(recipient);
+        assertSending(request, recipient);
+    }
+
+    @Test
+    void When_SendingRecepMessage_Then_ExpectHttpPostAndCorrectUri() {
+        MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
+
+        String recipient = "recipient";
+        var request = meshRequests.sendMessage(recipient, WorkflowId.RECEP);
+
+        assertSending(request, recipient);
     }
 
     @Test
@@ -62,6 +69,14 @@ class MeshRequestsTest {
 
         assertThat(request).isExactlyInstanceOf(HttpPut.class);
         assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/inbox/messageId/status/acknowledged");
+    }
+
+    private void assertSending(HttpEntityEnclosingRequestBase request, String recipient) {
+        assertThat(request).isExactlyInstanceOf(HttpPost.class);
+        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");
+        Header[] mexToHeader = request.getHeaders("Mex-To");
+        assertThat(mexToHeader.length).isEqualTo(1);
+        assertThat(mexToHeader[0].getValue()).isEqualTo(recipient);
     }
 
 }

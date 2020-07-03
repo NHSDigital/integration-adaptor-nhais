@@ -49,7 +49,7 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        clearMeshQueue();
+        clearMeshMailbox();
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "false");
     }
 

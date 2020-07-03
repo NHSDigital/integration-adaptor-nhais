@@ -57,7 +57,7 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        clearMeshQueue();
+        clearMeshMailbox();
     }
 
     @Test

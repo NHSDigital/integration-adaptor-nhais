@@ -127,16 +127,16 @@ public abstract class MeshServiceBaseTest {
         return dataToReturn.get();
     }
 
-    protected void clearMeshQueue() {
+    protected void clearMeshMailbox() {
         await().atMost(10, TimeUnit.SECONDS)
             .pollDelay(Durations.FIVE_SECONDS)
-            .until(this::isMeshClean);
+            .until(this::acknowledgeAllMeshMessages);
     }
 
-    private Boolean isMeshClean() {
+    private Boolean acknowledgeAllMeshMessages() {
         // acknowledge message will remove it from MESH
         meshClient.getInboxMessageIds()
             .forEach(id -> meshClient.acknowledgeMessage(id));
-        return meshClient.getInboxMessageIds().size() == 0;
+        return meshClient.getInboxMessageIds().isEmpty();
     }
 }

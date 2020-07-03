@@ -45,7 +45,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        clearMeshQueue();
+        clearMeshMailbox();
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")

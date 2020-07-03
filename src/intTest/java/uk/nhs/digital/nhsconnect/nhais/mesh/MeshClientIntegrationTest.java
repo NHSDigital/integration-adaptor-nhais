@@ -25,7 +25,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
 
     @AfterEach
     void tearDown() {
-        clearMeshQueue();
+        clearMeshMailbox();
     }
 
     @Test
