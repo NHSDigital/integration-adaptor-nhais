@@ -36,17 +36,6 @@ public class MeshCypherDecoder {
         return mappings.get(recipient);
     }
 
-    public String getSender(String edifactMessage) {
-        Map<String, String> mappings = createMappings();
-
-        String sender = edifactParser.parse(edifactMessage).getInterchangeHeader().getSender();
-        if (!mappings.containsKey(sender)) {
-            throw new MeshRecipientUnknownException("Couldn't decode sender: " + sender);
-        }
-
-        return mappings.get(sender);
-    }
-
     private Map<String, String> createMappings() {
         return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
             .map(row -> row.split("="))
