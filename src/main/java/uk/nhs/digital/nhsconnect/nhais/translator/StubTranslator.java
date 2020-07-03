@@ -37,11 +37,15 @@ public class StubTranslator implements FhirToEdifactTranslator {
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
+        throw new FhirValidationException("Please use translate(isA(Parameters.class),isA(TransactionType.class)");
+    }
+
+    public List<Segment> translate(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
         return Arrays.asList(
             new BeginningOfMessage(),
             new NameAndAddress(getHaCipher(parameters), NameAndAddress.QualifierAndCode.FHS),
             new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
-            new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE),
+            new ReferenceTransactionType(transactionType),
             new SegmentGroup(1),
             new ReferenceTransactionNumber(),
             getGp(parameters)
