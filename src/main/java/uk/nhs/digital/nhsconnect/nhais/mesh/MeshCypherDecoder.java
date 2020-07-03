@@ -21,7 +21,6 @@ public class MeshCypherDecoder {
 
     public String getRecipient(OutboundMeshMessage outboundMeshMessage) {
         Map<String, String> mappings = createMappings();
-
         String recipient = outboundMeshMessage.getHaTradingPartnerCode();
         if (!mappings.containsKey(recipient)) {
             throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);

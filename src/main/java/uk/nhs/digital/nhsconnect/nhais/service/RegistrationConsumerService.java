@@ -52,7 +52,7 @@ public class RegistrationConsumerService {
         var recepEdifact = recepProducerService.produceRecep(interchange);
         var recep = edifactParser.parse(recepEdifact);
         var recepOutboundState = prepareRecepOutboundState(recep);
-        var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact);
+        var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact, recep);
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
@@ -85,8 +85,8 @@ public class RegistrationConsumerService {
         return OutboundState.fromRecep(recep.getMessages().get(0));
     }
 
-    private OutboundMeshMessage prepareRecepOutboundMessage(String recep) {
-        var recepMeshMessage = buildRecepMeshMessage(recep);
+    private OutboundMeshMessage prepareRecepOutboundMessage(String recep, Interchange interchange) {
+        var recepMeshMessage = buildRecepMeshMessage(recep, interchange);
         LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
         return recepMeshMessage;
     }
@@ -133,9 +133,9 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private OutboundMeshMessage buildRecepMeshMessage(String edifactRecep) {
+    private OutboundMeshMessage buildRecepMeshMessage(String edifactRecep, Interchange interchange) {
         return new MeshMessage()
-            .setHaTradingPartnerCode(meshConfig.getMailboxId())
+            .setHaTradingPartnerCode(interchange.getInterchangeHeader().getSender())
             .setWorkflowId(WorkflowId.RECEP)
             .setContent(edifactRecep);
     }
