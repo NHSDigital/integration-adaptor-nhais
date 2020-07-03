@@ -72,7 +72,7 @@ public class ReferenceTransactionType extends Segment {
         ACCEPTANCE("G1", "ACG"),
         AMENDMENT("G2", "AMG"),
         REMOVAL("G3", "REG"),
-        DEDUCTION("G4", "DER");
+        DEDUCTION("G5", "DER");
 
         private final String code;
         private final String abbreviation;
@@ -86,6 +86,17 @@ public class ReferenceTransactionType extends Segment {
                 .flatMap(Function.identity())
                 .map(TransactionType.class::cast)
                 .filter(transactionType -> transactionType.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        }
+
+        static TransactionType fromAbbreviation(String abbreviation) {
+            return Stream.of(
+                Arrays.stream(Inbound.values()),
+                Arrays.stream(Outbound.values()))
+                .flatMap(Function.identity())
+                .map(TransactionType.class::cast)
+                .filter(transactionType -> transactionType.getAbbreviation().equals(abbreviation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
         }

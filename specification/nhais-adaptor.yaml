@@ -48,9 +48,7 @@ servers:
 tags:
   - name: patients
 paths:
-  '/fhir/Patient/{id}/$nhais.deduction':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient/$nhais.deduction':
     post:
       description: |
         ## Status
@@ -61,19 +59,49 @@ paths:
 
         Use this endpoint to send a Deduction transaction to NHAIS.
 
+        ## Supported Fields
+
+        Refer to GP Links Specification Chapter 3 for the complete requirements for deductions. The
+        values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
+
+        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+
+        | GP Links Data Item      | Deduction |
+        |-------------------------|-----------|
+        | Transaction Type        | REQUIRED  |
+        | GP Code                 | REQUIRED  |
+        | GP Trading Partner Code | REQUIRED  |
+        | Destinaton HA Cipher    | REQUIRED  |
+        | NHS Number              | REQUIRED  |
+        | Date of Deduction       | REQUIRED  |
+        | Reason for Deduction    | REQUIRED  |
+        | GP Notes                | OPTIONAL  |
+
+        ## FHIR Field Mappings
+
+        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                      |
+        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|--------------------------------------------|
+        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method              |
+        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                            |
+        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                            |
+        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
+        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
+        | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
+        | Reason for Deduction    | Parameter     | reasonForDeduction                       | valueString              |                                    | See table below for deduction reason codes |
+        | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
+
+        **Deduction Reason Codes**
+
+        | Deduction Reason Code | Description  |
+        |-----------------------|--------------|
+        | 1                     | Death        |
+        | 5                     | Emigrated    |
+        | 13                    | Other reason |
+
         ## Operation Id
 
-        When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
+        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
         to match against the asynchronous reply from NHAIS
-
-        ## Payload Description
-
-        The request payload is a Parameters list. The list must contain parameters with the following names and values:
-
-        * `patient`: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * `deductionReason`: simple parameter with `valueString` one of: death, emigrated, other
-        * `deductionDate`: simple parameter with `valueDate` the date (no time) of the deduction in ISO format
-        * `freeText`: simple parameter with `valueString` a brief, free-text reason for the deduction
 
       summary: Deduct a patient (Deduction transaction)
       operationId: deduction
@@ -99,9 +127,7 @@ paths:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-  '/fhir/Patient/{id}/$nhais.removal':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient/$nhais.removal':
     post:
       description: |
         ## Status
@@ -110,14 +136,39 @@ paths:
 
         ## Overview
 
-        Use this endpoint to send a Removal (Out of Area) transaction to NHAIS.
+        Use this endpoint to send a Removal transaction to NHAIS.
 
-        ## Payload Description
+        ## Supported Fields
 
-        The request payload is a Parameters list with the following parameters:
+        Refer to GP Links Specification Chapter 3 for the complete requirements for removals. The
+        values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        * patient: Patient `resource` containing id, generalPractitioner, and managingOrganization
-        * freeText: simple parameter with `valueString` a brief, free-text reason for the removal
+        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+
+        | GP Links Data Item      | Removal  |
+        |-------------------------|----------|
+        | Transaction Type        | REQUIRED |
+        | GP Code                 | REQUIRED |
+        | GP Trading Partner Code | REQUIRED |
+        | Destinaton HA Cipher    | REQUIRED |
+        | NHS Number              | REQUIRED |
+        | Reason for Removal      | REQUIRED |
+
+        ## FHIR Field Mappings
+
+        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
+        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
+        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method |
+        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                               |
+        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                               |
+        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
+        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
+        | Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
+
+        ## Operation Id
+
+        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
+        to match against the asynchronous reply from NHAIS
 
       summary: Removal (Out of Area)
       operationId: removal
@@ -165,25 +216,31 @@ paths:
 
         ## Supported Fields
 
-        Refer to GP Links Specification Chapter 3 for the complete requirements for mantually-entered acceptances. The
+        Refer to GP Links Specification Chapter 3 for the complete requirements for manually-entered acceptances. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-        Three fields are deprecated and not supported by the adaptor:
+        Three fields are DEPRECATED and not supported by the adaptor:
 
         * RPP Mileage
         * Blocked Route/Special District Marker
         * Walking Units
 
+        REQUIRED - If any of these data items are not provided or are blank then the adaptor will produce a 400 error
+        OPTIONAL - These data items may be included if available
+        DEPRECATED - The adaptor provides no FHIR representation for these items and it is not possible to include them
+        NOT REQUIRED - These data items are will be ignored if provided
 
+        Any other values not listed in the tables below and provided in the request that are valid for a FHIR R4
+        Parameter or Patient resource will be ignored.
 
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
         | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Patient's Responsible GP (GMC Code)   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Patient's Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Patient's Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
@@ -204,11 +261,11 @@ paths:
         | Walking Units                         | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
         | Residential Institute Code            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Free Text (GP Notes)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
-        | Previous Address - 5 fields           | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
-        | Previous GP Name                      | NOT PERMITTED  | NOT PERMITTED  | REQUIRED             | OPTIONAL           |
-        | Previous HA Cipher                    | NOT PERMITTED  | NOT PERMITTED  | OPTIONAL             | OPTIONAL           |
-        | Date of Entry into the UK             | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | REQUIRED           |
-        | Date Patient left the UK              | NOT PERMITTED  | NOT PERMITTED  | NOT PERMITTED        | OPTIONAL           |
+        | Previous Address - 5 fields           | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
+        | Previous GP Name                      | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
+        | Previous HA Cipher                    | NOT REQUIRED   | NOT REQUIRED   | OPTIONAL             | OPTIONAL           |
+        | Date of Entry into the UK             | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | REQUIRED           |
+        | Date Patient left the UK              | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | OPTIONAL           |
 
         ## FHIR Field Mappings
 
@@ -278,9 +335,7 @@ paths:
                   summary: The request payload is invalid
                   value:
                     $ref: components/examples/responses/400-bad-request.json
-  '/fhir/Patient/{id}':
-    parameters:
-      - $ref: '#/components/parameters/Id'
+  '/fhir/Patient':
     patch:
       description: |
         ## Status
@@ -389,8 +444,8 @@ paths:
 
         ## Operation Id
 
-        An amendment request will produce an operation id in the response headers. This operation id MUST be retained
-        to match against the asynchronous reply from NHAIS
+        An amendment request will produce an operation id in the response headers. Amendments do not solicit replies
+        as such and further amendments from NHAIS will not reference this operation id.
 
       summary: Amend patient details (Amendment transaction)
       operationId: amendment
@@ -419,13 +474,3 @@ paths:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
-components:
-  parameters:
-    Id:
-      name: id
-      in: path
-      description: The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
-      required: true
-      schema:
-        type: string
-        example: "9000000009"

@@ -7,8 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Recep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.time.Instant;
@@ -29,7 +30,7 @@ public class OutboundState {
     private String operationId;
     private Long transactionId;
     private Instant transactionTimestamp;
-    private String transactionType;
+    private ReferenceTransactionType.Outbound transactionType;
     private Long interchangeSequence;
     private Long messageSequence;
     private String sender;
@@ -37,10 +38,10 @@ public class OutboundState {
     private ReferenceMessageRecep.RecepCode recepCode;
     private Instant recepDateTime;
 
-    public static OutboundState fromRecep(Recep recep) {
-        var interchangeHeader = recep.getInterchangeHeader();
-        var messageHeader = recep.getMessageHeader();
-        var dateTimePeriod = recep.getDateTimePeriod();
+    public static OutboundState fromRecep(Message message) {
+        var interchangeHeader = message.getInterchange().getInterchangeHeader();
+        var messageHeader = message.getMessageHeader();
+        var dateTimePeriod = message.getTranslationDateTime();
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)

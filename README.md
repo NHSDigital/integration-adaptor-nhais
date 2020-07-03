@@ -269,7 +269,35 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 ## MESH API
 
-TODO: GP Links - NHAIS Adaptor MESH configuration when MESH integration is implemented
+MESH configuration is done using environment variables:
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_MESH_MAILBOX_ID            | N/A                       | Your MESH mailbox id (sender)
+| NHAIS_MESH_MAILBOX_PASSWORD      | N/A                       | The password for MAILBOX_ID
+| NHAIS_MESH_SHARED_KEY            | N/A                       | Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
+| NHAIS_MESH_HOST                  | N/A                       | Hostname of MESH service
+| NHAIS_MESH_ENDPOINT_CERT         | N/A                       | Certificate used for connecting to MESH (content of it)
+| NHAIS_MESH_ENDPOINT_PRIVATE_KEY  | N/A                       | Private key of certificate used for connecting to MESH (content of it)
+| NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox 
+| NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
+
+The following two variables control how often the adaptor checks its MESH mailbox for new messages. To prevent
+duplicate processing of MESH messages only one instance of the adaptor downloads messages at a time. The MESH API
+specifies that a MESH mailbox should not be checked more than once every five minutes. The variable 
+`NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS` controls how often the adaptor will check its mailbox for new messages. After
+checking the mailbox for new messages the same adaptor instance will proceed to download and acknowledge all of the 
+new messages.
+
+A database lock is used to prevent more than one instance of the adaptor from downloading messages at the same time.
+The variable `NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS` controls how often each instance of the adaptor will attempt
+to obtain this lock.
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
+| NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
+
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
 

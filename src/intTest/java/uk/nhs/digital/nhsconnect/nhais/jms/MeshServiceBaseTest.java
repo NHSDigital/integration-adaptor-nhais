@@ -14,11 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.service.InboundMeshService;
+import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
+import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,7 +39,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class MeshServiceBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
-    protected static final int WAIT_FOR_IN_SECONDS = 25;
+    protected static final int WAIT_FOR_IN_SECONDS = 5;
     private static final int RECEIVE_TIMEOUT = 5000;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);
@@ -49,6 +51,9 @@ public abstract class MeshServiceBaseTest {
     protected OutboundStateRepository outboundStateRepository;
     @Autowired
     protected ObjectMapper objectMapper;
+    @Autowired
+    private InboundQueueService inboundQueueService;
+
     @Value("${nhais.amqp.meshInboundQueueName}")
     protected String meshInboundQueueName;
     @Value("${nhais.amqp.meshOutboundQueueName}")
@@ -68,8 +73,8 @@ public abstract class MeshServiceBaseTest {
         this.jmsTemplate.setReceiveTimeout(originalReceiveTimeout);
     }
 
-    protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
-        sendToMeshInboundQueue(serializeMeshMessage(meshMessage));
+    protected void sendToMeshInboundQueue(InboundMeshMessage meshMessage) {
+        inboundQueueService.publish(meshMessage);
     }
 
     protected void sendToMeshInboundQueue(String data) {
@@ -96,7 +101,7 @@ public abstract class MeshServiceBaseTest {
         return new FhirParser().parse(body);
     }
 
-    protected MeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
+    protected OutboundMeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
         var body = parseTextMessage(message);
         return deserializeMeshMessage(body);
     }
@@ -105,17 +110,12 @@ public abstract class MeshServiceBaseTest {
         if (message == null) {
             return null;
         }
-        return InboundMeshService.readMessage(message);
+        return JmsReader.readMessage(message);
     }
 
     @SneakyThrows
-    private String serializeMeshMessage(MeshMessage meshMessage) {
-        return objectMapper.writeValueAsString(meshMessage);
-    }
-
-    @SneakyThrows
-    private MeshMessage deserializeMeshMessage(String meshMessage) {
-        return objectMapper.readValue(meshMessage, MeshMessage.class);
+    private OutboundMeshMessage deserializeMeshMessage(String meshMessage) {
+        return objectMapper.readValue(meshMessage, OutboundMeshMessage.class);
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {

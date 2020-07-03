@@ -3,12 +3,9 @@ package uk.nhs.digital.nhsconnect.nhais.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.EntityNotFoundException;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -17,26 +14,15 @@ public class OutboundStateRepositoryExtensionsImpl implements OutboundStateRepos
     private final MongoOperations mongoOperations;
 
     @Override
-    public OutboundState updateRecepDetails(
-        UpdateRecepDetailsQueryParams updateRecepDetailsQueryParams,
-        UpdateRecepDetails updateRecepDetails) {
-
-        var query = query(where("sender").is(updateRecepDetailsQueryParams.getSender())
-            .and("recipient").is(updateRecepDetailsQueryParams.getRecipient())
-            .and("interchangeSequence").is(updateRecepDetailsQueryParams.getInterchangeSequence())
-            .and("messageSequence").is(updateRecepDetailsQueryParams.getMessageSequence()));
+    public Optional<OutboundState> updateRecepDetails(UpdateRecepParams updateRecepParams) {
 
         var result = mongoOperations.findAndModify(
-            query,
-            new Update()
-                .set("recepCode", updateRecepDetails.getRecepCode())
-                .set("recepDateTime", updateRecepDetails.getRecepDateTime()),
+            updateRecepParams.buildQuery(),
+            updateRecepParams.buildUpdate(),
             OutboundState.class);
 
-        if (result == null) {
-            throw new EntityNotFoundException(query.toString());
-        }
-
-        return result;
+        return Optional.ofNullable(result);
     }
+
+
 }
