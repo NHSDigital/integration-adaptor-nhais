@@ -124,7 +124,6 @@ public class RegistrationConsumerServiceTest {
     MeshConfig meshConfig;
 
     private void mockInterchangeSegments() {
-        when(meshConfig.getMailboxId()).thenReturn(MAILBOX_ID);
         when(edifactParser.parse(CONTENT)).thenReturn(interchange);
 
         when(interchange.getInterchangeHeader()).thenReturn(new InterchangeHeader(SENDER, RECIPIENT, MESSAGE_1_TRANSLATION_TIME).setSequenceNumber(SIS));

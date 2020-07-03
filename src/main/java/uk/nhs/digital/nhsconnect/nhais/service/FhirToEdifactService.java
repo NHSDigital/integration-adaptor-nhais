@@ -205,7 +205,6 @@ public class FhirToEdifactService {
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOperationId(translationItems.operationId);
         meshMessage.setHaTradingPartnerCode(translationItems.recipient);
-        meshMessage.setMessageSentTimestamp(translationItems.translationTimestamp.toString());
         return meshMessage;
     }
 
