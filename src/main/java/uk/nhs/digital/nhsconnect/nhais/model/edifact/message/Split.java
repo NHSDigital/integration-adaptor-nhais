@@ -10,41 +10,41 @@ public class Split {
     private static final char SUB_FIELD_TERMINATOR = ':';
 
     public static String[] bySegmentTerminator(String input) {
-        return tokenizeString(input, SEGMENT_TERMINATOR);
+        return splitString(input, SEGMENT_TERMINATOR);
     }
 
     public static String[] byPlus(String input) {
-        return tokenizeString(input, FIELD_TERMINATOR);
+        return splitString(input, FIELD_TERMINATOR);
     }
 
     public static String[] byColon(String input) {
-        return tokenizeString(input, SUB_FIELD_TERMINATOR);
+        return splitString(input, SUB_FIELD_TERMINATOR);
     }
 
-    public static String[] tokenizeString(String s, char sep) {
-        List<String> tokens = new ArrayList<>();
+    static String[] splitString(String input, char separator) {
+        List<String> parts = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
 
-        int escChars = 0;
-        char[] charArray = s.toCharArray();
+        int adjacentEscCharsCount = 0;
+        char[] charArray = input.toCharArray();
         for (char c : charArray) {
             if (c == ESC_CHAR) {
-                escChars++;
-            } else if (c == sep && escChars % 2 == 0) {
-                escChars = 0;
-                tokens.add(sb.toString());
+                adjacentEscCharsCount++;
+            } else if (c == separator && adjacentEscCharsCount % 2 == 0) {
+                adjacentEscCharsCount = 0;
+                parts.add(sb.toString());
                 sb.setLength(0);
                 continue;
             } else {
-                escChars = 0;
+                adjacentEscCharsCount = 0;
             }
 
             sb.append(c);
         }
-        tokens.add(sb.toString());
+        parts.add(sb.toString());
 
-        String[] array = new String[tokens.size()];
-        tokens.toArray(array);
+        String[] array = new String[parts.size()];
+        parts.toArray(array);
         return array;
     }
 }
