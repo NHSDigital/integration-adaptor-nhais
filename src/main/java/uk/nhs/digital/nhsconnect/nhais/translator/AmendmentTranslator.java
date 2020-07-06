@@ -14,7 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
-
+import uk.nhs.digital.nhsconnect.nhais.service.JsonPatchTranslationItems;
 
 import java.util.Arrays;
 import java.util.List;

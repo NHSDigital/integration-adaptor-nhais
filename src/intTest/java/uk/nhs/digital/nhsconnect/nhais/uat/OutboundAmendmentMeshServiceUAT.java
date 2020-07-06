@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
-public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
+public class OutboundAmendmentMeshServiceUAT extends MeshServiceBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -49,12 +49,11 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
-    @ArgumentsSource(CustomArgumentsProvider.Outbound.class)
-    void testTranslatingFromFhirToEdifact(String category, TestData testData) throws Exception {
-        var transactionType = category.split("/")[0];
+    @ArgumentsSource(CustomArgumentsProvider.OutboundAmendment.class)
+    void testTranslatingFromJsonPatchToEdifact(String category, TestData testData) throws Exception {
 
         // send EDIFACT to API
-        sendToApi(testData.getJson(), transactionType);
+        sendToApi(testData.getJson());
 
         // fetch EDIFACT message from MESH
         await().atMost(10, TimeUnit.SECONDS)
@@ -68,8 +67,9 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         assertMessageBody(meshClient.getEdifactMessage(messageIds.get(0)), testData.getEdifact());
     }
 
-    private void sendToApi(String fhirInput, String transactionType) throws Exception {
-        mockMvc.perform(post("/fhir/Patient/$nhais." + transactionType).contentType("application/json").content(fhirInput))
+    private void sendToApi(String jsonPatchInput) throws Exception {
+        //have to use 9999999999 NHS number in all tests
+        mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(jsonPatchInput))
             .andExpect(status().isAccepted());
     }
 

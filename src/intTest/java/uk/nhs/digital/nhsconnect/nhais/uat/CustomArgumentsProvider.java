@@ -52,7 +52,7 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
                 Map.Entry::getKey,
                 es -> TestData.builder()
                     .edifact(readResource(es.getValue(),EDIFACT_FILE_ENDING))
-                    .fhir(readResource(es.getValue(),FHIR_FILE_ENDING))
+                    .json(readResource(es.getValue(),FHIR_FILE_ENDING))
                     .build()));
 
         return grouped.entrySet().stream()
@@ -89,6 +89,12 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
     public static class Outbound extends CustomArgumentsProvider {
         public Outbound() {
             super("outbound_uat_data");
+        }
+    }
+
+    public static class OutboundAmendment extends CustomArgumentsProvider {
+        public OutboundAmendment() {
+            super("outbound_amendment_uat_data");
         }
     }
 }

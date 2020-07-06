@@ -73,7 +73,7 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
         // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
         // assert output FHIR is correct
-        assertMessageBody(gpSystemInboundQueueMessage, testData.getFhir());
+        assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
     }
 
     private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedFhir) throws JMSException {
