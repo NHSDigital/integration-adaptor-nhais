@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 
 public class FhirParserTest {
 
@@ -17,6 +20,12 @@ public class FhirParserTest {
         String json = new String(Files.readAllBytes(Paths.get(getClass().getResource("/patient/parameters.json").toURI())));
         Parameters parameters = fhirParser.parseParameters(json);
         assertThat(parameters.getParameter()).isEmpty();
+    }
+
+    @Test
+    public void When_parseNotJson_Then_returnFhirValidationException(){
+        String xml = "<item></item>";
+        assertThatThrownBy(() -> fhirParser.parseParameters(xml)).isExactlyInstanceOf(FhirValidationException.class);
     }
 
 }
