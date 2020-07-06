@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -56,6 +57,7 @@ public class RegistrationConsumerServiceTest {
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
     public static final String RECEP_RECIPIENT = SENDER;
+    private static final String MAILBOX_ID = "mailbox";
     private static final String TN_1_OPERATION_ID = "241edf33054d1570ada7fdf1f4cdb3180c0097cf56ab1932ccd111d6cf3f2771";
     private static final String TN_2_OPERATION_ID = "972cca19643ea501d7bd6319c836f7181e1892f01483185bc245284b5a0f7d88";
     private static final String TN_3_OPERATION_ID = "df5c78da3dab361476798142762a6b3da7ee47d6bfb92780883bbb5f5e8a42c9";
@@ -118,6 +120,9 @@ public class RegistrationConsumerServiceTest {
     @Mock
     EdifactParser edifactParser;
 
+    @Mock
+    MeshConfig meshConfig;
+
     private void mockInterchangeSegments() {
         when(edifactParser.parse(CONTENT)).thenReturn(interchange);
 
@@ -176,6 +181,11 @@ public class RegistrationConsumerServiceTest {
 
         registrationConsumerService.handleRegistration(meshInterchangeMessage);
 
+        assertInboundMessageHandling();
+        assertOutboundRecepProducer();
+    }
+
+    private void assertInboundMessageHandling() {
         var dataToSendArgumentCaptor = ArgumentCaptor.forClass(InboundGpSystemService.DataToSend.class);
         verify(inboundGpSystemService, times(3)).publishToSupplierQueue(dataToSendArgumentCaptor.capture());
 
@@ -193,7 +203,9 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(0), SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(1), SMS_1, TN_2, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
+    }
 
+    private void assertOutboundRecepProducer() {
         var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
         verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
@@ -213,6 +225,7 @@ public class RegistrationConsumerServiceTest {
         var sentRecep = meshRecepMessageArgumentCaptor.getValue();
         assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
         assertThat(sentRecep.getContent()).isEqualTo(RECEP_AS_EDIFACT);
+        assertThat(sentRecep.getHaTradingPartnerCode()).isEqualTo(RECEP_RECIPIENT);
     }
 
     private void assertPublishToGpQueue(
