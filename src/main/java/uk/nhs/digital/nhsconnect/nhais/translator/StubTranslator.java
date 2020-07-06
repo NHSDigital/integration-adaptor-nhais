@@ -18,6 +18,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.utils.MissingOrEmptyElementUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,10 +54,21 @@ public class StubTranslator implements FhirToEdifactTranslator {
     }
 
     private GpNameAndAddress getGp(Parameters parameters) {
+        checkGpCodePresence(parameters);
         return GpNameAndAddress.builder()
             .identifier(getPersonGP(parameters))
             .code(GP_CODE)
             .build();
+    }
+
+    private void checkGpCodePresence(Parameters parameters) {
+        Patient patient = ParametersExtension.extractPatient(parameters);
+        String path = "patient.generalPractitioner";
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitioner());
+        path += ".identifier";
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier());
+        path += ".value";
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier().getValue());
     }
 
     private String getPersonGP(Parameters parameters) {
@@ -67,38 +79,21 @@ public class StubTranslator implements FhirToEdifactTranslator {
     private String getHaCipher(Parameters parameters) throws FhirValidationException {
         Patient patient = ParametersExtension.extractPatient(parameters);
         String path = "patient.managingOrganization";
-        exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
         Reference haReference = patient.getManagingOrganization();
         return getOrganizationIdentifier(path, haReference);
     }
 
     @Deprecated
     private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
-        exceptionIfMissingOrEmpty(path, reference);
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference);
         path += ".identifier";
-        exceptionIfMissingOrEmpty(path, reference.getIdentifier());
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference.getIdentifier());
         Identifier gpId = reference.getIdentifier();
-        exceptionIfMissingOrEmpty(path, gpId);
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId);
         path += ".value";
-        exceptionIfMissingOrEmpty(path, gpId.getValue());
+        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId.getValue());
         return gpId.getValue();
     }
 
-    @Deprecated
-    private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if (value == null) {
-            throw new FhirValidationException("Missing element at " + path);
-        }
-        if (value instanceof List) {
-            List list = (List) value;
-            if (list.isEmpty()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        } else if (value instanceof String) {
-            String str = (String) value;
-            if (str.isBlank()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        }
-    }
 }
