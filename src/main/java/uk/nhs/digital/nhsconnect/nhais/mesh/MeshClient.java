@@ -80,6 +80,11 @@ public class MeshClient {
     public List<String> getInboxMessageIds() {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             try (CloseableHttpResponse response = client.execute(meshRequests.getMessageIds())) {
+                if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+                    throw new MeshApiConnectionException("Couldn't receive MESH message list",
+                            HttpStatus.OK,
+                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                }
                 return Arrays.asList(parseInto(MeshMessages.class, response).getMessageIDs());
             }
         }
