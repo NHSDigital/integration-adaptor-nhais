@@ -78,12 +78,12 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
 
         assertGpSystemInboundQueueMessage(softly);
 
-        assertOutboundQueueRecepMessage(softly);
+        assertOutboundRecepMessage(softly);
     }
 
-    private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws IOException {
-        List<String> msgs = meshClient.getInboxMessageIds();
-        var meshMessage = meshClient.getEdifactMessage(msgs.get(0));
+    private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
+        List<String> messageIds = meshClient.getInboxMessageIds();
+        var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
