@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -37,6 +38,7 @@ public class RegistrationConsumerService {
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final EdifactToFhirService edifactToFhirService;
+    private final MeshConfig meshConfig;
 
     public void handleRegistration(InboundMeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
@@ -50,7 +52,7 @@ public class RegistrationConsumerService {
         var recepEdifact = recepProducerService.produceRecep(interchange);
         var recep = edifactParser.parse(recepEdifact);
         var recepOutboundState = prepareRecepOutboundState(recep);
-        var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact);
+        var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact, recep);
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
@@ -83,8 +85,8 @@ public class RegistrationConsumerService {
         return OutboundState.fromRecep(recep.getMessages().get(0));
     }
 
-    private OutboundMeshMessage prepareRecepOutboundMessage(String recep) {
-        var recepMeshMessage = buildRecepMeshMessage(recep);
+    private OutboundMeshMessage prepareRecepOutboundMessage(String recepEdifact, Interchange recep) {
+        var recepMeshMessage = buildRecepMeshMessage(recepEdifact, recep);
         LOGGER.debug("Wrapped recep in mesh message: {}", recepMeshMessage);
         return recepMeshMessage;
     }
@@ -131,10 +133,9 @@ public class RegistrationConsumerService {
             .collect(Collectors.toList());
     }
 
-    private OutboundMeshMessage buildRecepMeshMessage(String edifactRecep) {
+    private OutboundMeshMessage buildRecepMeshMessage(String edifactRecep, Interchange recep) {
         return new MeshMessage()
-            // TODO: determine ODS code: probably via ENV? or should it be taken from incoming mesh message?
-            .setHaTradingPartnerCode("ods123")
+            .setHaTradingPartnerCode(recep.getInterchangeHeader().getRecipient())
             .setWorkflowId(WorkflowId.RECEP)
             .setContent(edifactRecep);
     }
