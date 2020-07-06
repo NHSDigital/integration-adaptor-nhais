@@ -21,7 +21,7 @@ public class Split {
         return splitString(input, SUB_FIELD_TERMINATOR);
     }
 
-    static String[] splitString(String input, char separator) {
+    private static String[] splitString(String input, char separator) {
         List<String> parts = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
 
@@ -43,8 +43,6 @@ public class Split {
         }
         parts.add(sb.toString());
 
-        String[] array = new String[parts.size()];
-        parts.toArray(array);
-        return array;
+        return parts.toArray(String[]::new);
     }
 }
