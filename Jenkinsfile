@@ -156,9 +156,15 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     parametersList = parameters
     parametersList.add("-no-color")
     //parametersList.add("-compact-warnings")  /TODO update terraform to have this working
+
+    // Get the secret variables for global
+    String secretsFile = "etc/secrets.tfvars"
+    writeVariablesToFile(secretsFile,getAllSecretsForEnvironment(environment,"nia",region))
+
     List<String> variableFilesList = [
       "-var-file=../../etc/global.tfvars",
-      "-var-file=../../etc/${region}_${environment}.tfvars"
+      "-var-file=../../etc/${region}_${environment}.tfvars",
+      "-var-file=../../${secretsFile}"
     ]
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
     List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
@@ -172,4 +178,60 @@ int ecrLogin(String aws_region) {
     String ecrCommand = "aws ecr get-login --region ${aws_region}"
     String dockerLogin = sh (label: "Getting Docker login from ECR", script: ecrCommand, returnStdout: true).replace("-e none","") // some parameters that AWS provides and docker does not recognize
     return sh(label: "Logging in with Docker", script: dockerLogin, returnStatus: true)
+}
+
+// Retrieving Secrets from AWS Secrets
+String getSecretValue(String secretName, String region) {
+  String awsCommand = "aws secretsmanager get-secret-value --region ${region} --secret-id ${secretName} --query SecretString --output text"
+  return sh(script: awsCommand, returnStdout: true).trim()
+}
+
+Map<String,Object> decodeSecretKeyValue(String rawSecret) {
+  List<String> secretsSplitted = rawSecret.replace("{","").replace("}","").split(",")
+  Map<String,Object> secretsDecoded = [:]
+  secretsSplitted.each {
+    String key = it.split(":")[0].trim().replace("\"","")
+    Object value = it.split(":")[1]
+    secretsDecoded.put(key,value)
+  }
+  return secretsDecoded
+}
+
+List<String> getSecretsByPrefix(String prefix, String region) {
+  String awsCommand = "aws secretsmanager list-secrets --region ${region} --query SecretList[].Name --output text"
+  List<String> awsReturnValue = sh(script: awsCommand, returnStdout: true).split()
+  return awsReturnValue.findAll { it.startsWith(prefix) }
+}
+
+Map<String,Object> getAllSecretsForEnvironment(String environment, String secretsPrefix, String region) {
+  List<String> globalSecrets = getSecretsByPrefix("${secretsPrefix}-global",region)
+  println "global secrets:" + globalSecrets
+  List<String> environmentSecrets = getSecretsByPrefix("${secretsPrefix}-${environment}",region)
+  println "env secrets:" + environmentSecrets
+  Map<String,Object> secretsMerged = [:]
+  globalSecrets.each {
+    String rawSecret = getSecretValue(it,region)
+    if (it.contains("-kvp")) {
+      secretsMerged << decodeSecretKeyValue(rawSecret)
+    } else {
+      secretsMerged.put(it.replace("${secretsPrefix}-global-",""),rawSecret)
+    }
+  }
+  environmentSecrets.each {
+    String rawSecret = getSecretValue(it,region)
+    if (it.contains("-kvp")) {
+      secretsMerged << decodeSecretKeyValue(rawSecret)
+    } else {
+      secretsMerged.put(it.replace("${secretsPrefix}-${environment}-",""),rawSecret)
+    }
+  }
+  return secretsMerged
+}
+
+void writeVariablesToFile(String fileName, Map<String,Object> variablesMap) {
+  List<String> variablesList=variablesMap.collect { key, value -> "${key} = ${value}" }
+  sh (script: "touch ${fileName} && echo '\n' > ${fileName}")
+  variablesList.each {
+    sh (script: "echo '${it}' >> ${fileName}")
+  }
 }
