@@ -19,7 +19,7 @@ public class MeshCypherDecoder {
         this.cypherToMailbox = cypherToMailbox;
     }
 
-    public String getRecipient(OutboundMeshMessage outboundMeshMessage) {
+    public String getRecipientMailbox(OutboundMeshMessage outboundMeshMessage) {
         Map<String, String> mappings = createMappings();
         String recipient = outboundMeshMessage.getHaTradingPartnerCode();
         if (!mappings.containsKey(recipient)) {

@@ -181,6 +181,11 @@ public class RegistrationConsumerServiceTest {
 
         registrationConsumerService.handleRegistration(meshInterchangeMessage);
 
+        assertInboundMessageHandling();
+        assertOutboundRecepProducer();
+    }
+
+    private void assertInboundMessageHandling() {
         var dataToSendArgumentCaptor = ArgumentCaptor.forClass(InboundGpSystemService.DataToSend.class);
         verify(inboundGpSystemService, times(3)).publishToSupplierQueue(dataToSendArgumentCaptor.capture());
 
@@ -198,7 +203,9 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(0), SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(1), SMS_1, TN_2, MESSAGE_1_TRANSACTION_TYPE, MESSAGE_1_TRANSLATION_TIME);
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
+    }
 
+    private void assertOutboundRecepProducer() {
         var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
         verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
@@ -218,6 +225,7 @@ public class RegistrationConsumerServiceTest {
         var sentRecep = meshRecepMessageArgumentCaptor.getValue();
         assertThat(sentRecep.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
         assertThat(sentRecep.getContent()).isEqualTo(RECEP_AS_EDIFACT);
+        assertThat(sentRecep.getHaTradingPartnerCode()).isEqualTo(RECEP_RECIPIENT);
     }
 
     private void assertPublishToGpQueue(

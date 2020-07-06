@@ -11,7 +11,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
@@ -56,11 +58,12 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.Inbound.class)
     void testTranslatingFromEdifactToFhir(String category, TestData testData) throws JMSException {
+        var recipient = new EdifactParser().parse(testData.getEdifact())
+            .getInterchangeHeader().getRecipient();
+
         // send EDIFACT to MESH mailbox
-        meshClient.sendEdifactMessage(
-            testData.getEdifact(),
-            meshConfig.getMailboxId(),
-            WorkflowId.REGISTRATION);
+        meshClient.sendEdifactMessage(OutboundMeshMessage.create(
+            recipient, WorkflowId.REGISTRATION, testData.getEdifact(), null, null));
 
         var expectedTransactionType = category.split("/")[0];
 

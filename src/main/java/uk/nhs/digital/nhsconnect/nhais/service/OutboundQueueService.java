@@ -10,7 +10,6 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 
 import javax.jms.JMSException;
@@ -26,7 +25,6 @@ public class OutboundQueueService {
     private final ObjectMapper objectMapper;
     private final TimestampService timestampService;
     private final MeshClient meshClient;
-    private final MeshCypherDecoder meshCypherDecoder;
 
     @Value("${nhais.amqp.meshOutboundQueueName}")
     private String meshOutboundQueueName;
@@ -49,12 +47,8 @@ public class OutboundQueueService {
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
             OutboundMeshMessage outboundMeshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
-            LOGGER.debug("Decoded message: {}", outboundMeshMessage);
-            String recipient = meshCypherDecoder.getRecipient(outboundMeshMessage);
-            meshClient.sendEdifactMessage(
-                outboundMeshMessage.getContent(),
-                recipient,
-                outboundMeshMessage.getWorkflowId());
+            LOGGER.debug("Parsed message into object: {}", outboundMeshMessage);
+            meshClient.sendEdifactMessage(outboundMeshMessage);
 
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);

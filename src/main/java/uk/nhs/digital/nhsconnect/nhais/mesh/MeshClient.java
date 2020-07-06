@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.io.IOException;
@@ -26,14 +27,16 @@ import java.util.List;
 public class MeshClient {
 
     private final MeshConfig meshConfig;
-
     private final MeshRequests meshRequests;
+    private final MeshCypherDecoder meshCypherDecoder;
 
     @SneakyThrows
-    public MeshMessageId sendEdifactMessage(String messageContent, String recipient, WorkflowId workflowId) {
+    public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
+        String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
+
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            var request = meshRequests.sendMessage(recipient, workflowId);
-            request.setEntity(new StringEntity(messageContent));
+            var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
+            request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
             try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
                     throw new MeshApiConnectionException("Couldn't send MESH message.",

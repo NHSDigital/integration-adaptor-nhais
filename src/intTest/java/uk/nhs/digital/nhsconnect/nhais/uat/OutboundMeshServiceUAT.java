@@ -58,13 +58,14 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
 
         // fetch EDIFACT message from MESH
         await().atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Durations.FIVE_SECONDS)
+            .pollDelay(Durations.ONE_SECOND)
+            .pollInterval(Durations.TWO_HUNDRED_MILLISECONDS)
             .until(this::isNewMessageAvailable);
 
-        List<String> msgs = meshClient.getInboxMessageIds();
+        List<String> messageIds = meshClient.getInboxMessageIds();
 
         // assert output EDIFACT is correct
-        assertMessageBody(meshClient.getEdifactMessage(msgs.get(0)), testData.getEdifact());
+        assertMessageBody(meshClient.getEdifactMessage(messageIds.get(0)), testData.getEdifact());
     }
 
     private void sendToApi(String fhirInput, String transactionType) throws Exception {
