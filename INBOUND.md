@@ -36,27 +36,30 @@ REQUIRED - NHAIS will always provide this value for the transaction and the adap
 OPTIONAL - NHAIS may optionally provide this value for the transaction and the adaptor will translate it to FHIR if provided
 BLANK - the value is not used by this transaction type
 
-| Data Item                                    | Approval | Rejection | FP69 Prior Notification |
-|----------------------------------------------|----------|-----------|-------------------------|
-| GP Trading Partner Code                      | REQUIRED | REQUIRED  | REQUIRED                |
-| Patient's Responsible GP (GP Code)           | REQUIRED | REQUIRED  | REQUIRED                |
-| Patient's Responsible HA (Sending HA Cipher) | REQUIRED | REQUIRED  | REQUIRED                |
-| NHS Number                                   | OPTIONAL |           | REQUIRED                |
-| Rejection Details (Free Text)                |          | OPTIONAL  |                         |
-| Surname                                      |          |           | REQUIRED                |
-| First Given Forename                         |          |           | REQUIRED                |
-| Second Forename                              |          |           | OPTIONAL                |
-| Other Forenames                              |          |           | OPTIONAL                |
-| Date of Birth                                |          |           | REQUIRED                |
-| Address - House Name                         |          |           | OPTIONAL                |
-| Address - Number / Road Name                 |          |           | OPTIONAL                |
-| Address - Locality                           |          |           | OPTIONAL                |
-| Address - Post Town                          |          |           | REQUIRED                |
-| Address - County                             |          |           | OPTIONAL                |
-| Address - Postcode                           |          |           | OPTIONAL                |
-| FP69 Expiry Date                             |          |           | REQUIRED                |
-| FP69 Reason Code                             |          |           | REQUIRED                |
-| HA Notes (Free Text)                         |          |           | OPTIONAL                |
+| Data Item                                    | Approval | Rejection | FP69 Prior Notification | FP69 Flag Removal | Deduction | Deduction Request Rejection |
+|----------------------------------------------|----------|-----------|-------------------------|-------------------|-----------|-----------------------------|
+| GP Trading Partner Code                      | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| Patient's Responsible GP (GP Code)           | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| Patient's Responsible HA (Sending HA Cipher) | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| NHS Number                                   | OPTIONAL |           | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| Rejection Details (Free Text)                |          | OPTIONAL  |                         |                   |           |                             |
+| Surname                                      |          |           | REQUIRED                |                   |           |                             |
+| First Given Forename                         |          |           | REQUIRED                |                   |           |                             |
+| Second Forename                              |          |           | OPTIONAL                |                   |           |                             |
+| Other Forenames                              |          |           | OPTIONAL                |                   |           |                             |
+| Date of Birth                                |          |           | REQUIRED                |                   |           |                             |
+| Address - House Name                         |          |           | OPTIONAL                |                   |           |                             |
+| Address - Number / Road Name                 |          |           | OPTIONAL                |                   |           |                             |
+| Address - Locality                           |          |           | OPTIONAL                |                   |           |                             |
+| Address - Post Town                          |          |           | REQUIRED                |                   |           |                             |
+| Address - County                             |          |           | OPTIONAL                |                   |           |                             |
+| Address - Postcode                           |          |           | OPTIONAL                |                   |           |                             |
+| FP69 Expiry Date                             |          |           | REQUIRED                |                   |           |                             |
+| FP69 Reason Code                             |          |           | REQUIRED                |                   |           |                             |
+| HA Notes (Free Text)                         |          |           | OPTIONAL                |                   |           | REQUIRED                    |
+| Date of Deduction                            |          |           |                         |                   | REQUIRED  |                             |
+| Reason for Deduction                         |          |           |                         |                   | REQUIRED  |                             |
+| New HA Cipher                                |          |           |                         |                   | OPTIONAL  |                             |
 
 ### Approval
 
@@ -76,6 +79,28 @@ BLANK - the value is not used by this transaction type
 | Patient's Responsible HA | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
 | NHS Number               | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
 | Rejection Details        | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
+
+### Deduction
+
+| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+| Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
+| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    |       |
+| New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |       |
+
+### Deduction Request Rejection
+
+| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+| Free Text               | Parameter     | freeText                                 | valueString              |                                    |       |
 
 ### FP69 Prior Notification
 
@@ -100,6 +125,15 @@ BLANK - the value is not used by this transaction type
 | FP69 Reason Code             | Parameters    | fp69ReasonCode                          | valueString              |                                    |                                                                                         |
 | HA Notes (Free Text)         | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
 
+### FP69 Flag Removal
+
+| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+
 ## Messages with JSONPatch Data Type
 
-Amendment transaction use a JSONPatch data type instead of FHIR
+Amendment transaction uses a JSONPatch data type instead of FHIR
