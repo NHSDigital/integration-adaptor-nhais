@@ -70,7 +70,7 @@ public class RegistrationConsumerService {
             .flatMap(Collection::stream)
             .filter(transaction -> {
                 boolean hasBeenProcessed = hasAlreadyBeenProcessed(transaction);
-                if (!hasBeenProcessed) {
+                if (hasBeenProcessed) {
                     LOGGER.info("Skipping transaction {} as it has already been processed", transaction);
                 }
                 return !hasBeenProcessed;
