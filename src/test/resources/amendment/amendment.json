@@ -1,0 +1,22 @@
+{
+  "nhsNumber": "1234567890",
+  "gpCode": "2750922,295",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/address/0/line/0",
+      "value": "LINE 1"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/1",
+      "value": "LINE 2"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/2"
+    }
+  ]
+}

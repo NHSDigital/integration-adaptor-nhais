@@ -188,6 +188,7 @@ public class FhirToEdifactService {
         meshMessage.setContent(edifact);
         meshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         meshMessage.setOperationId(translationItems.operationId);
+        meshMessage.setHaTradingPartnerCode(translationItems.recipient);
         return meshMessage;
     }
 

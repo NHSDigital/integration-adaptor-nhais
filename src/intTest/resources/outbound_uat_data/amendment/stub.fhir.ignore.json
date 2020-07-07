@@ -1,0 +1,14 @@
+{
+  "nhsNumber": "9999999999",
+  "gpCode": "8880232,G82697",
+  "gpTradingPartnerCode": "CHC5",
+  "haCipher": "KC01",
+  "healthcarePartyCode": "KC",
+  "patches": [
+    {
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "AT LEAST ONE PATCH REQUIRED"
+    }
+  ]
+}

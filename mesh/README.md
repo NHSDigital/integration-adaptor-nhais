@@ -33,7 +33,7 @@ Send a message with message content provided on the command line
     
 Send a message with message content provided by a file
 
-    ./mesh.sh send "@GPHA_SAMPLE.dat"
+    ./mesh.sh send "@../src/intTest/resources/inbound_uat_data/approval/app-j-with-nhs-number.edifact.dat"
     
 ### Download a message
 
