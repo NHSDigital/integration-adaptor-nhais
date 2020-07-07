@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JsonPatches {
 
+    public static final String ALL_FORENAMES_PATH = "/name/0/given/";
     private static final String TITLE_PATH = "/name/0/prefix/0";
     private static final String SURNAME_PATH = "/name/0/family/";
     private static final String PREVIOUS_SURNAME_PATH = "/name/1/family/";
@@ -22,6 +24,8 @@ public class JsonPatches {
     private static final String COUNTY_PATH = "/address/0/line/3";
     private static final String POSTAL_CODE_PATH = "/address/0/postalCode";
 
+    @Getter
+    private final AmendmentBody amendmentBody;
     private final List<AmendmentPatch> patches;
 
     public Optional<AmendmentPatch> getTitle(){
@@ -46,6 +50,10 @@ public class JsonPatches {
 
     public Optional<AmendmentPatch> getOtherForenames(){
         return filterSimpleValues(OTHER_FORENAMES_PATH);
+    }
+
+    public Optional<AmendmentPatch> getAllForenamesPath() {
+        return filterSimpleValues(ALL_FORENAMES_PATH);
     }
 
     public Optional<AmendmentPatch> getSex(){

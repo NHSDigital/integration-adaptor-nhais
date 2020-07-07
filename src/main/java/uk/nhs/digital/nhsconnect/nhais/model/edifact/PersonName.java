@@ -1,7 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
@@ -21,6 +23,8 @@ import java.util.stream.Stream;
 
 @Getter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+@ToString
 public class PersonName extends Segment {
 
     public static final String KEY = "PNA";
@@ -107,10 +111,6 @@ public class PersonName extends Segment {
             .ifPresent(values::add);
 
         return String.join(PLUS_SEPARATOR, values);
-    }
-
-    public Optional<NhsIdentifier> getNhsNumber() {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
     }
 
     private boolean containsName() {

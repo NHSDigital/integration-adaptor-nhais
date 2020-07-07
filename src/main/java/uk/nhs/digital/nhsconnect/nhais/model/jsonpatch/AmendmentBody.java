@@ -18,6 +18,6 @@ public class AmendmentBody {
     private List<AmendmentPatch> patches;
 
     public JsonPatches getJsonPatches() {
-        return new JsonPatches(patches);
+        return new JsonPatches(this, patches);
     }
 }
