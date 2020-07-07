@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.model.fhir;
+package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +11,6 @@ public class AmendmentPatch {
 
     private AmendmentPatchOperation op;
     private String path;
-    private String value;
+    private AmendmentValue value;
 
 }

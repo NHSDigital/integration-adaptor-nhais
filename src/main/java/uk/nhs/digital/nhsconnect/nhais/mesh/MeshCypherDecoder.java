@@ -32,6 +32,13 @@ public class MeshCypherDecoder {
     private Map<String, String> createMappings() {
         return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
             .map(row -> row.split("="))
+            .peek(this::validateMappings)
             .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
+    }
+
+    private void validateMappings(String[] rows) {
+        if (rows.length < 2) {
+            throw new MeshRecipientUnknownException("NHAIS_MESH_CYPHER_TO_MAILBOX env var doesn't contain valid recipient to mailbox mapping");
+        }
     }
 }

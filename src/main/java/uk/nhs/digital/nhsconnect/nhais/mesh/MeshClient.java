@@ -33,7 +33,7 @@ public class MeshClient {
     @SneakyThrows
     public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
         String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
-
+        LOGGER.debug("Sending EDIFACT message - recipient: {} MESH mailbox: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox);
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
             request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
@@ -43,7 +43,9 @@ public class MeshClient {
                         HttpStatus.ACCEPTED,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
-                return parseInto(MeshMessageId.class, response);
+                MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response);
+                LOGGER.debug("Successfully sent MESH message to mailbox {}. Message id: {}", recipientMailbox, meshMessageId.getMessageID());
+                return meshMessageId;
             }
         }
     }

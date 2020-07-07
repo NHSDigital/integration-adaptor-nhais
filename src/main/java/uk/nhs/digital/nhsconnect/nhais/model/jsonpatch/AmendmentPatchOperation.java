@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.model.fhir;
+package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
