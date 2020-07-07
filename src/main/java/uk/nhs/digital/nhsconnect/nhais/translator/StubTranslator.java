@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.translator;
 
 import lombok.RequiredArgsConstructor;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -18,7 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.utils.MissingOrEmptyElementUtils;
+import uk.nhs.digital.nhsconnect.nhais.utils.FhirElementUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,21 +53,11 @@ public class StubTranslator implements FhirToEdifactTranslator {
     }
 
     private GpNameAndAddress getGp(Parameters parameters) {
-        checkGpCodePresence(parameters);
+        FhirElementUtils.checkGpCodePresence(ParametersExtension.extractPatient(parameters));
         return GpNameAndAddress.builder()
             .identifier(getPersonGP(parameters))
             .code(GP_CODE)
             .build();
-    }
-
-    private void checkGpCodePresence(Parameters parameters) {
-        Patient patient = ParametersExtension.extractPatient(parameters);
-        String path = "patient.generalPractitioner";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitioner());
-        path += ".identifier";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier());
-        path += ".value";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier().getValue());
     }
 
     private String getPersonGP(Parameters parameters) {
@@ -78,22 +67,9 @@ public class StubTranslator implements FhirToEdifactTranslator {
 
     private String getHaCipher(Parameters parameters) throws FhirValidationException {
         Patient patient = ParametersExtension.extractPatient(parameters);
-        String path = "patient.managingOrganization";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
         Reference haReference = patient.getManagingOrganization();
-        return getOrganizationIdentifier(path, haReference);
-    }
-
-    @Deprecated
-    private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference);
-        path += ".identifier";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference.getIdentifier());
-        Identifier gpId = reference.getIdentifier();
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId);
-        path += ".value";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId.getValue());
-        return gpId.getValue();
+        FhirElementUtils.checkManagingOrganizationPresence(patient);
+        return haReference.getIdentifier().getValue();
     }
 
 }
