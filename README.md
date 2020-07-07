@@ -277,12 +277,27 @@ MESH configuration is done using environment variables:
 | NHAIS_MESH_MAILBOX_PASSWORD      | N/A                       | The password for MAILBOX_ID
 | NHAIS_MESH_SHARED_KEY            | N/A                       | Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
 | NHAIS_MESH_HOST                  | N/A                       | Hostname of MESH service
-| NHAIS_MESH_ENDPOINT_CERT         | N/A                       | Certificate used for connecting to MESH
-| NHAIS_MESH_ENDPOINT_PRIVATE_KEY  | N/A                       | Private key of certificate used for connecting to MESH
+| NHAIS_MESH_ENDPOINT_CERT         | N/A                       | Certificate used for connecting to MESH (content of it)
+| NHAIS_MESH_ENDPOINT_PRIVATE_KEY  | N/A                       | Private key of certificate used for connecting to MESH (content of it)
 | NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox 
-| NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS | 60000          | Interval to check MESH mailbox, default 1 minute (60 000 ms)
-| NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS | 300                    | Delay of MESH mailbox message download (allow to download messages not before x seconds passed from last access), default 5 minutes (300 seconds)
 | NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
+
+The following two variables control how often the adaptor checks its MESH mailbox for new messages. To prevent
+duplicate processing of MESH messages only one instance of the adaptor downloads messages at a time. The MESH API
+specifies that a MESH mailbox should not be checked more than once every five minutes. The variable 
+`NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS` controls how often the adaptor will check its mailbox for new messages. After
+checking the mailbox for new messages the same adaptor instance will proceed to download and acknowledge all of the 
+new messages.
+
+A database lock is used to prevent more than one instance of the adaptor from downloading messages at the same time.
+The variable `NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS` controls how often each instance of the adaptor will attempt
+to obtain this lock.
+
+| Environment Variable             | Default                   | Description 
+| ---------------------------------|---------------------------|-------------
+| NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
+| NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
+
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
 
@@ -310,6 +325,22 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
     docker-compose build
     docker-compose up
+    
+### Running with Docker Compose and Load Balancer
+
+Docker compose configuration allows running multiple instances of NHAIS application with an NGINX load balancer in front using round robin routing by default.
+
+    docker-compose build
+    docker-compose -f docker-compose.yml -f docker-compose.lb.override.yml up --scale nhais=3
+
+This command will spawn 3 instances of NHAIS and an LB working on port 8080
+There are 2 options on how to change the scale number while all services are running:
+
+* stop and start the whole cluster with new scale value
+
+or
+
+* run the same "up" command with new scale value while the cluster is running and then restart the LB container so it will be aware of instance count change 
 
 ### Running Tests
 

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
 
 import java.util.List;
@@ -35,26 +35,37 @@ public class MeshService {
 
     @Scheduled(fixedRateString = "${nhais.mesh.scanMailboxIntervalInMilliseconds}")
     public void scanMeshInboxForMessages() {
-        LOGGER.debug("Scheduled job for mesh messages fetching started");
+        LOGGER.debug("Trying to scan MESH mailbox");
+        if (!meshMailBoxScheduler.isEnabled()){
+            LOGGER.warn("MESH mailbox scheduler is disabled. Set proper env var to enable it");
+            return;
+        }
         if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
-            LOGGER.info("Mesh messages fetching started");
-            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
-            if(inboxMessageIds.isEmpty()){
-                LOGGER.info("No new MESH messages found");
-                return;
-            }
+            LOGGER.info("Mesh messages scan started");
+            List<String> inboxMessageIds = downloadMessageIds();
             for (String messageId : inboxMessageIds) {
                 try {
-                    MeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
+                    InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
                     inboundQueueService.publish(meshMessage);
                     meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
                 } catch (Exception ex) {
-                    LOGGER.error("Error during reading of MESH messages. Message id: {}", messageId, ex);
+                    LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
+                    //ignore exception and try to download next message
                 }
             }
-            LOGGER.info("Mesh messages fetching finished");
+            LOGGER.info("Mesh mailbox scanning finished");
         } else {
-            LOGGER.info("Mesh messages fetching is postponed: another application instance is fetching now");
+            LOGGER.info("Can't scan MESH mailbox - scan delay time hasn't passed yet or another instance did the scan");
         }
+    }
+
+    private List<String> downloadMessageIds() {
+        List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+        if(inboxMessageIds.isEmpty()){
+            LOGGER.info("No new MESH messages found");
+        } else {
+            LOGGER.info("Found {} MESH messages in inbox", inboxMessageIds.size());
+        }
+        return inboxMessageIds;
     }
 }

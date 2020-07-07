@@ -9,11 +9,11 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
@@ -28,15 +28,8 @@ import static org.awaitility.Awaitility.await;
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
 public class InboundMeshServiceUAT extends MeshServiceBaseTest {
-
     @Autowired
     private FhirParser fhirParser;
-
-    @Autowired
-    private MeshClient meshClient;
-
-    @Autowired
-    private MeshConfig meshConfig;
 
     @Autowired
     private MeshMailBoxScheduler meshMailBoxScheduler;
@@ -46,26 +39,31 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @BeforeEach
     void setUp() {
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "true"); //enable scheduling
-        if(!schedulerConfigured) { // do configuration only once per test run
+        if (!schedulerConfigured) { // do configuration only once per test run
             meshMailBoxScheduler.hasTimePassed(0); //First run creates collection in MongoDb
             await().atMost(10, SECONDS)
-                    .pollDelay(500, TimeUnit.MILLISECONDS)
-                    .pollInterval(500, TimeUnit.MILLISECONDS)
-                    .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
+                .pollDelay(500, TimeUnit.MILLISECONDS)
+                .pollInterval(500, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
             schedulerConfigured = true;
         }
     }
 
     @AfterEach
     void tearDown() {
+        clearMeshMailbox();
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "false");
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
     @ArgumentsSource(CustomArgumentsProvider.Inbound.class)
     void testTranslatingFromEdifactToFhir(String category, TestData testData) throws JMSException {
+        var recipient = new EdifactParser().parse(testData.getEdifact())
+            .getInterchangeHeader().getRecipient();
+
         // send EDIFACT to MESH mailbox
-        meshClient.sendEdifactMessage(testData.getEdifact(), meshConfig.getMailboxId());
+        meshClient.sendEdifactMessage(OutboundMeshMessage.create(
+            recipient, WorkflowId.REGISTRATION, testData.getEdifact(), null, null));
 
         var expectedTransactionType = category.split("/")[0];
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.awaitility.Durations;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
@@ -25,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -51,14 +55,17 @@ public abstract class MeshServiceBaseTest {
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
-    private InboundQueueService inboundQueueService;
-
+    protected MeshClient meshClient;
+    @Autowired
+    protected MeshConfig meshConfig;
     @Value("${nhais.amqp.meshInboundQueueName}")
     protected String meshInboundQueueName;
     @Value("${nhais.amqp.meshOutboundQueueName}")
     protected String meshOutboundQueueName;
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     protected String gpSystemInboundQueueName;
+    @Autowired
+    private InboundQueueService inboundQueueService;
     private long originalReceiveTimeout;
 
     @PostConstruct
@@ -72,7 +79,7 @@ public abstract class MeshServiceBaseTest {
         this.jmsTemplate.setReceiveTimeout(originalReceiveTimeout);
     }
 
-    protected void sendToMeshInboundQueue(MeshMessage meshMessage) {
+    protected void sendToMeshInboundQueue(InboundMeshMessage meshMessage) {
         inboundQueueService.publish(meshMessage);
     }
 
@@ -86,11 +93,6 @@ public abstract class MeshServiceBaseTest {
     }
 
     @SneakyThrows
-    protected Message getOutboundQueueMessage() {
-        return jmsTemplate.receive(meshOutboundQueueName);
-    }
-
-    @SneakyThrows
     protected Message getDeadLetterInboundQueueMessage() {
         return jmsTemplate.receive(DLQ_PREFIX + meshInboundQueueName);
     }
@@ -100,21 +102,11 @@ public abstract class MeshServiceBaseTest {
         return new FhirParser().parse(body);
     }
 
-    protected MeshMessage parseOutboundQueueMessage(Message message) throws JMSException {
-        var body = parseTextMessage(message);
-        return deserializeMeshMessage(body);
-    }
-
     protected String parseTextMessage(Message message) throws JMSException {
         if (message == null) {
             return null;
         }
         return JmsReader.readMessage(message);
-    }
-
-    @SneakyThrows
-    private MeshMessage deserializeMeshMessage(String meshMessage) {
-        return objectMapper.readValue(meshMessage, MeshMessage.class);
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {
@@ -133,5 +125,18 @@ public abstract class MeshServiceBaseTest {
             });
 
         return dataToReturn.get();
+    }
+
+    protected void clearMeshMailbox() {
+        await().atMost(10, TimeUnit.SECONDS)
+            .pollDelay(Durations.FIVE_SECONDS)
+            .until(this::acknowledgeAllMeshMessages);
+    }
+
+    private Boolean acknowledgeAllMeshMessages() {
+        // acknowledge message will remove it from MESH
+        meshClient.getInboxMessageIds()
+            .forEach(id -> meshClient.acknowledgeMessage(id));
+        return meshClient.getInboxMessageIds().isEmpty();
     }
 }

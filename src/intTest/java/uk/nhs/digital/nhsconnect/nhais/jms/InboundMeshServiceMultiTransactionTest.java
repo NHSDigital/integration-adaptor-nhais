@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.jms;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.service.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -89,6 +88,11 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
     }
 
+    @AfterEach
+    void tearDown() {
+        clearMeshMailbox();
+    }
+
     @Test
     void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
         var meshMessage = new MeshMessage()
@@ -103,7 +107,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
         assertGpSystemInboundQueueMessages(softly);
 
-        assertOutboundQueueRecepMessage(softly);
+        assertOutboundRecepMessage(softly);
     }
 
     private List<InboundState> getAllInboundStates() {
@@ -128,14 +132,12 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         return inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, sms, tn);
     }
 
-    private void assertOutboundQueueRecepMessage(SoftAssertions softly) throws JMSException, IOException {
-        var outboundQueueMessage = getOutboundQueueMessage();
-
-        var meshMessage = parseOutboundMessage(outboundQueueMessage);
+    private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
+        List<String> messageIds = meshClient.getInboxMessageIds();
+        var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        softly.assertThat(meshMessage.getMessageSentTimestamp()).isEqualTo(ISO_RECEP_SEND_TIMESTAMP);
         //TODO: other assertions on recep message
     }
 
@@ -209,10 +211,5 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
             .setTransactionNumber(expectedTN)
             .setTranslationTimestamp(MESSAGE_TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
-    }
-
-    private MeshMessage parseOutboundMessage(Message message) throws JMSException, JsonProcessingException {
-        var body = JmsReader.readMessage(message);
-        return objectMapper.readValue(body, MeshMessage.class);
     }
 }
