@@ -103,18 +103,45 @@ class MeshServiceTest {
                 meshMailBoxScheduler,
                 scanDelayInSeconds);
 
-
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID));
-        when(meshClient.getEdifactMessage(MESSAGE_ID)).thenThrow(new MeshApiConnectionException("error"));
-        when(meshClient.getEdifactMessage(ERROR_MESSAGE_ID)).thenReturn(meshMessage);
+        when(meshClient.getEdifactMessage(ERROR_MESSAGE_ID)).thenThrow(new MeshApiConnectionException("error"));
+        when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(meshMessage);
 
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(meshClient).getEdifactMessage(MESSAGE_ID);
         verify(inboundQueueService).publish(meshMessage);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID);
+    }
+
+    @Test
+    public void When_IntervalPassedAndAcknowledgeMeshMessageFails_Then_SkipMessageAndDownloadNextOne() {
+        MeshService meshService = new MeshService(meshClient,
+            inboundQueueService,
+            meshMailBoxScheduler,
+            scanDelayInSeconds);
+
+        MeshMessage messageForAckError = new MeshMessage();
+        messageForAckError.setMeshMessageId(ERROR_MESSAGE_ID);
+
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID));
+        doThrow(new MeshApiConnectionException("error")).when(meshClient).acknowledgeMessage(ERROR_MESSAGE_ID);
+        doNothing().when(meshClient).acknowledgeMessage(MESSAGE_ID);
+        when(meshClient.getEdifactMessage(ERROR_MESSAGE_ID)).thenReturn(messageForAckError);
+        when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(meshMessage);
+
+        meshService.scanMeshInboxForMessages();
+
+        verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
+        verify(meshClient).getEdifactMessage(MESSAGE_ID);
+        verify(inboundQueueService).publish(messageForAckError);
+        verify(inboundQueueService).publish(meshMessage);
+        verify(meshClient).acknowledgeMessage(ERROR_MESSAGE_ID);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID);
     }
 
