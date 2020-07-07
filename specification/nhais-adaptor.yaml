@@ -335,7 +335,9 @@ paths:
                   summary: The request payload is invalid
                   value:
                     $ref: components/examples/responses/400-bad-request.json
-  '/fhir/Patient':
+  '/fhir/Patient/{id}':
+    parameters:
+      - $ref: '#/components/parameters/Id'
     patch:
       description: |
         ## Status
@@ -474,3 +476,13 @@ paths:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      description: The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
+      required: true
+      schema:
+        type: string
+        example: "9000000009"

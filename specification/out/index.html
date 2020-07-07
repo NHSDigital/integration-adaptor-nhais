@@ -1611,7 +1611,7 @@ as such and further amendments from NHAIS will not reference this operation id.
 </p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/fhir/Patient</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="patch"><code><span class="pln">/fhir/Patient/{id}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1632,7 +1632,7 @@ as such and further amendments from NHAIS will not reference this operation id.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-amendment-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH "https://localhost/fhir/Patient"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH "https://localhost/fhir/Patient/{id}"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-amendment-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -1648,9 +1648,10 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         
         PatientsApi apiInstance = new PatientsApi();
+        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(amendment);
+            apiInstance.amendment(id, amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1667,9 +1668,10 @@ public class PatientsApiExample {
 
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
+        String id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         try {
-            apiInstance.amendment(amendment);
+            apiInstance.amendment(id, amendment);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1682,12 +1684,14 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Amendment *amendment = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">String *id = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
+Amendment *amendment = ; // 
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
-[apiInstance amendmentWith:amendment
+[apiInstance amendmentWith:id
+    amendment:amendment
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1700,6 +1704,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
+var id = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var amendment = ; // {Amendment} 
 
 var callback = function(error, data, response) {
@@ -1709,7 +1714,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.amendment(amendment, callback);
+api.amendment(id, amendment, callback);
 </code></pre>
                             </div>
 
@@ -1731,12 +1736,13 @@ namespace Example
         {
             
             var apiInstance = new PatientsApi();
+            var id = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var amendment = new Amendment(); // Amendment | 
 
             try
             {
                 // Amend patient details (Amendment transaction)
-                apiInstance.amendment(amendment);
+                apiInstance.amendment(id, amendment);
             }
             catch (Exception e)
             {
@@ -1753,10 +1759,11 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
+$id = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $amendment = ; // Amendment | 
 
 try {
-    $api_instance->amendment($amendment);
+    $api_instance->amendment($id, $amendment);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->amendment: ', $e->getMessage(), PHP_EOL;
 }
@@ -1769,10 +1776,11 @@ use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
+my $id = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
 
 eval { 
-    $api_instance->amendment(amendment => $amendment);
+    $api_instance->amendment(id => $id, amendment => $amendment);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->amendment: $@\n";
@@ -1788,11 +1796,12 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
+id = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 amendment =  # Amendment | 
 
 try: 
     # Amend patient details (Amendment transaction)
-    api_instance.amendment(amendment)
+    api_instance.amendment(id, amendment)
 except ApiException as e:
     print("Exception when calling PatientsApi->amendment: %s\n" % e)</code></pre>
                             </div>
@@ -1801,10 +1810,11 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate PatientsApi;
 
 pub fn main() {
+    let id = 9000000009; // String
     let amendment = ; // Amendment
 
     let mut context = PatientsApi::Context::default();
-    let result = client.amendment(amendment, &context).wait();
+    let result = client.amendment(id, amendment, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1819,6 +1829,36 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_amendment_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+The patient&#39;s NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
 
                             <div class="methodsubtabletitle">Body parameters</div>
@@ -2393,14 +2433,39 @@ This endpoint is not implemented yet and the design is incomplete. The specifica
 
 ## Overview
 
-Use this endpoint to send a Removal (Out of Area) transaction to NHAIS.
+Use this endpoint to send a Removal transaction to NHAIS.
 
-## Payload Description
+## Supported Fields
 
-The request payload is a Parameters list with the following parameters:
+Refer to GP Links Specification Chapter 3 for the complete requirements for removals. The
+values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-* patient: Patient &#x60;resource&#x60; containing id, generalPractitioner, and managingOrganization
-* freeText: simple parameter with &#x60;valueString&#x60; a brief, free-text reason for the removal
+https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+
+| GP Links Data Item      | Removal  |
+|-------------------------|----------|
+| Transaction Type        | REQUIRED |
+| GP Code                 | REQUIRED |
+| GP Trading Partner Code | REQUIRED |
+| Destinaton HA Cipher    | REQUIRED |
+| NHS Number              | REQUIRED |
+| Reason for Removal      | REQUIRED |
+
+## FHIR Field Mappings
+
+| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
+|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
+| Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method |
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                               |
+| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                               |
+| Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
+| Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
+
+## Operation Id
+
+When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
+to match against the asynchronous reply from NHAIS
 </p>
                         <p></p>
                         <br />
