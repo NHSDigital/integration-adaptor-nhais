@@ -97,7 +97,7 @@ public class RecepConsumerService {
         return interchange.getMessages().stream()
             .filter(message -> {
                 boolean hasBeenProcessed = hasAlreadyBeenProcessed(message);
-                if (!hasBeenProcessed) {
+                if (hasBeenProcessed) {
                     LOGGER.info("Skipping message {} as it has already been processed", message);
                 }
                 return !hasBeenProcessed;

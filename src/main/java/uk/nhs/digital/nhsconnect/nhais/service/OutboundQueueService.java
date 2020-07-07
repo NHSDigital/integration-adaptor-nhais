@@ -49,11 +49,9 @@ public class OutboundQueueService {
             OutboundMeshMessage outboundMeshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
             LOGGER.debug("Parsed message into object: {}", outboundMeshMessage);
             meshClient.sendEdifactMessage(outboundMeshMessage);
-
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);
-            // TODO: deadletter if something goes pop instead of throwing exception
-            throw e;
+            throw e; //message will be sent to DLQ after few unsuccessful redeliveries
         }
     }
 }

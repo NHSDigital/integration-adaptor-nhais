@@ -64,7 +64,7 @@ public class MeshService {
         if(inboxMessageIds.isEmpty()){
             LOGGER.info("No new MESH messages found");
         } else {
-            LOGGER.info("Found {} MESH messages in inbox", inboxMessageIds.size());
+            LOGGER.info("Found {} MESH message(s) in inbox", inboxMessageIds.size());
         }
         return inboxMessageIds;
     }
