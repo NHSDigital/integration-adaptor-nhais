@@ -1,0 +1,70 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    },
+    {
+      "name": "fp69ReasonCode",
+      "valueString": "8"
+    },
+    {
+      "name": "fp69ExpiryDate",
+      "valueString": "1992-07-25"
+    },
+    {
+      "name": "freeText",
+      "valueString": "PATIENT THOUGHT TO BE IN SCOTLAND"
+    },
+    {
+      "name": "patient",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "TE26"
+          }
+        ],
+        "name": [
+          {
+            "family": "STEVENS",
+            "given": [
+              "CHARLES",
+              "ANTHONY",
+              "RICHARD"
+            ]
+          }
+        ],
+        "birthDate": "1940-05-23",
+        "address": [
+          {
+            "line": [
+              "MOORSIDE FARM",
+              "OLD LANE",
+              "ST PAULS CRAY",
+              "ORPINGTON",
+              "KENT"
+            ],
+            "postalCode": "BR6  7EW"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
+            }
+          }
+        ],
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
+        }
+      }
+    }
+  ]
+}
