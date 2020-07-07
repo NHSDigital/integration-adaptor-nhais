@@ -6,32 +6,22 @@ import org.springframework.stereotype.Component;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.utils.MissingOrEmptyElementUtils;
+import uk.nhs.digital.nhsconnect.nhais.utils.FhirElementsUtils;
 
 @Component
 public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAndAddress> {
     private final static String GP_CODE = "900";
 
     public GpNameAndAddress map(Parameters parameters) {
-        checkGpCodePresence(parameters);
+        Patient patient = ParametersExtension.extractPatient(parameters);
+        FhirElementsUtils.checkGpCodePresence(patient);
         return GpNameAndAddress.builder()
-            .identifier(getPersonGP(parameters))
+            .identifier(getPersonGP(patient))
             .code(GP_CODE)
             .build();
     }
 
-    private void checkGpCodePresence(Parameters parameters) {
-        Patient patient = ParametersExtension.extractPatient(parameters);
-        String path = "patient.generalPractitioner";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitioner());
-        path += ".identifier";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier());
-        path += ".value";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getGeneralPractitionerFirstRep().getIdentifier().getValue());
-    }
-
-    private String getPersonGP(Parameters parameters) {
-        Patient patient = ParametersExtension.extractPatient(parameters);
+    private String getPersonGP(Patient patient) {
         return patient.getGeneralPractitionerFirstRep().getIdentifier().getValue();
     }
 }

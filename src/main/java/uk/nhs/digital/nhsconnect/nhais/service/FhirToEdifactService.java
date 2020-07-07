@@ -25,7 +25,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactSegmentTranslator;
-import uk.nhs.digital.nhsconnect.nhais.utils.MissingOrEmptyElementUtils;
+import uk.nhs.digital.nhsconnect.nhais.utils.FhirElementsUtils;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
@@ -72,10 +72,9 @@ public class FhirToEdifactService {
     }
 
     private String getHaCipher(Patient patient) throws FhirValidationException {
-        String path = "patient.managingOrganization";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
+        FhirElementsUtils.checkHaCipherPresence(patient);
         Reference haReference = patient.getManagingOrganization();
-        return getOrganizationIdentifier(path, haReference);
+        return getOrganizationIdentifier(haReference);
     }
 
     private String getRecipientTradingPartnerCode(Patient patient) throws FhirValidationException {
@@ -87,14 +86,8 @@ public class FhirToEdifactService {
         }
     }
 
-    private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference);
-        path += ".identifier";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, reference.getIdentifier());
+    private String getOrganizationIdentifier(Reference reference) throws FhirValidationException {
         Identifier gpId = reference.getIdentifier();
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId);
-        path += ".value";
-        MissingOrEmptyElementUtils.exceptionIfMissingOrEmpty(path, gpId.getValue());
         return gpId.getValue();
     }
 
