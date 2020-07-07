@@ -25,6 +25,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactSegmentTranslator;
+import uk.nhs.digital.nhsconnect.nhais.utils.FhirElementsUtils;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
@@ -71,10 +72,9 @@ public class FhirToEdifactService {
     }
 
     private String getHaCipher(Patient patient) throws FhirValidationException {
-        String path = "patient.managingOrganization";
-        exceptionIfMissingOrEmpty(path, patient.getManagingOrganization());
+        FhirElementsUtils.checkHaCipherPresence(patient);
         Reference haReference = patient.getManagingOrganization();
-        return getOrganizationIdentifier(path, haReference);
+        return getOrganizationIdentifier(haReference);
     }
 
     private String getRecipientTradingPartnerCode(Patient patient) throws FhirValidationException {
@@ -86,32 +86,9 @@ public class FhirToEdifactService {
         }
     }
 
-    private String getOrganizationIdentifier(String path, Reference reference) throws FhirValidationException {
-        exceptionIfMissingOrEmpty(path, reference);
-        path += ".identifier";
-        exceptionIfMissingOrEmpty(path, reference.getIdentifier());
+    private String getOrganizationIdentifier(Reference reference) throws FhirValidationException {
         Identifier gpId = reference.getIdentifier();
-        exceptionIfMissingOrEmpty(path, gpId);
-        path += ".value";
-        exceptionIfMissingOrEmpty(path, gpId.getValue());
         return gpId.getValue();
-    }
-
-    private void exceptionIfMissingOrEmpty(String path, Object value) throws FhirValidationException {
-        if (value == null) {
-            throw new FhirValidationException("Missing element at " + path);
-        }
-        if (value instanceof List) {
-            List list = (List) value;
-            if (list.isEmpty()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        } else if (value instanceof String) {
-            String str = (String) value;
-            if (str.isBlank()) {
-                throw new FhirValidationException("Missing element at " + path);
-            }
-        }
     }
 
     private <T> T castOrError(String path, Class<T> type, Object value) throws FhirValidationException {
