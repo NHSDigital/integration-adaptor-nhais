@@ -33,7 +33,7 @@ Send a message with message content provided on the command line
     
 Send a message with message content provided by a file
 
-    ./mesh.sh send "@GPHA_SAMPLE.dat"
+    ./mesh.sh send "@../src/intTest/resources/inbound_uat_data/approval/app-j-with-nhs-number.edifact.dat"
     
 ### Download a message
 
@@ -51,16 +51,10 @@ is used in this example. Get the message id from the response of the `inbox` or 
 
 ## Using with Fake MESH
 
-Use the following in your `env.sh`
-
-    export MAILBOX_ID='anything' 
-    export MAILBOX_PASSWORD='password' 
-    export HOST='localhost:8829'
-    export SHARED_KEY='SharedKey'
-    export OPENTEST_ENDPOINT_PRIVATE_KEY='PATH_TO/fake-mesh/client.key.pem'
-    export OPENTEST_ENDPOINT_CERT='PATH_TO/fake-mesh/client.cert.pem'
+Copy `env.fake-mesh.sh` to `env.sh`
     
-The mailbox id can actually be anything you want.
+Note the value of MAILBOX_ID. This should be changed for the scenario being tested to reflect the mailbox id that the 
+application uses to send or receive messages.
 
 ### Benchmarking
 

@@ -34,9 +34,6 @@ public class MeshMailBoxSchedulerTest {
 
     @Test
     public void When_CollectionIsEmpty_Then_SingleDocumentIsCreatedAndTheJobIsNotExecuted() {
-        Environment environment = mock(Environment.class);
-        when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("true");
-        when(applicationContext.getEnvironment()).thenReturn(environment);
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -47,9 +44,6 @@ public class MeshMailBoxSchedulerTest {
 
     @Test
     public void When_DocumentExistsAndTimestampIsBeforeProvidedTime_Then_DocumentIsUpdateAndTheJobIsExecuted() {
-        Environment environment = mock(Environment.class);
-        when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("true");
-        when(applicationContext.getEnvironment()).thenReturn(environment);
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(true);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -60,9 +54,6 @@ public class MeshMailBoxSchedulerTest {
 
     @Test
     public void When_DocumentExistsAndTimestampIsAfterProvidedTime_Then_DocumentIsNotUpdateAndTheJobIsNotExecuted() {
-        Environment environment = mock(Environment.class);
-        when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("true");
-        when(applicationContext.getEnvironment()).thenReturn(environment);
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -72,13 +63,20 @@ public class MeshMailBoxSchedulerTest {
     }
 
     @Test
-    public void When_SchedulerIsDisabled_Then_DoNothing() {
+    void When_SchedulerIsDisabled_Then_ReturnFalse() {
         Environment environment = mock(Environment.class);
         when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("false");
         when(applicationContext.getEnvironment()).thenReturn(environment);
 
-        boolean hasTimePassed = meshMailBoxScheduler.hasTimePassed(5);
+        assertThat(meshMailBoxScheduler.isEnabled()).isFalse();
+    }
 
-        assertThat(hasTimePassed).isFalse();
+    @Test
+    void When_SchedulerIsEnabled_Then_ReturnTrue() {
+        Environment environment = mock(Environment.class);
+        when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("true");
+        when(applicationContext.getEnvironment()).thenReturn(environment);
+
+        assertThat(meshMailBoxScheduler.isEnabled()).isTrue();
     }
 }

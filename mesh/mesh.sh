@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#source env.sh #custom configuration (i.e. OpentTest)
 source env.sh
 
 TO_MAILBOX=${TO_MAILBOX:-${MAILBOX_ID}}
@@ -10,6 +11,7 @@ OPENTEST_ENDPOINT_PRIVATE_KEY="${OPENTEST_ENDPOINT_PRIVATE_KEY:-${HOME}/opentest
 # "Your endpoint certificate" from your OpenTest registration e-mail
 OPENTEST_ENDPOINT_CERT="${OPENTEST_ENDPOINT_CERT:-${HOME}/opentest.endpoint.cert}"
 CURL_FLAGS="${CURL_FLAGS:--i -k}" # insecure, disable cert validation for fake-mesh. Add -i for headers
+WORKFLOW_ID="${WORKFLOW_ID:NHAIS_REG}"
 
 create_token() {
   local nonce
@@ -43,7 +45,7 @@ send() {
   body="$1"
   curl ${CURL_FLAGS} -X POST "https://${HOST}/messageexchange/${MAILBOX_ID}/outbox" \
     --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H "Authorization: ${TOKEN}" -d "${body}" \
-    -H "Mex-From: ${MAILBOX_ID}" -H "Mex-To: ${TO_MAILBOX}" -H 'Mex-WorkflowID: workflow1' \
+    -H "Mex-From: ${MAILBOX_ID}" -H "Mex-To: ${TO_MAILBOX}" -H "Mex-WorkflowID: ${WORKFLOW_ID}" \
     -H 'Content-Type:application/octet-stream' -H 'Mex-MessageType: DATA'  -H 'Mex-FileName: test-filename.txt' -H 'Mex-Version: 1.0' \
     -H 'Mex-ClientVersion: 1.0' -H 'Mex-JavaVersion: 1.7.0_60' -H 'Mex-OSArchitecture: Windows 7' -H 'Mex-OSName: x86' -H 'Mex-OSVersion: 6.1'
 }

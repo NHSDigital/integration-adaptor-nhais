@@ -32,7 +32,7 @@ public class FhirToEdifactSegmentTranslator {
             case REMOVAL:
             case DEDUCTION:
             default:
-                return stubTranslator.translate(parameters);
+                return stubTranslator.translate(parameters, transactionType);
         }
     }
 

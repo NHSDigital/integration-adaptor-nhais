@@ -10,7 +10,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.UnknownWorkflowException;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import javax.jms.JMSException;
@@ -41,7 +41,7 @@ public class InboundQueueService {
         try {
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
-            MeshMessage meshMessage = objectMapper.readValue(body, MeshMessage.class);
+            InboundMeshMessage meshMessage = objectMapper.readValue(body, InboundMeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
             // TODO: get the correlation id and attach to logger?
 
@@ -62,13 +62,13 @@ public class InboundQueueService {
     }
 
     @SneakyThrows
-    public void publish(MeshMessage message) {
+    public void publish(InboundMeshMessage message) {
         message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
     }
 
     @SneakyThrows
-    private String serializeMeshMessage(MeshMessage meshMessage) {
+    private String serializeMeshMessage(InboundMeshMessage meshMessage) {
         return objectMapper.writeValueAsString(meshMessage);
     }
 }
