@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class TestData {
     private final String edifact;
-    private final String fhir;
+    private final String json;
 }

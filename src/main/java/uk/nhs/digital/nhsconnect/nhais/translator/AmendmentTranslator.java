@@ -15,7 +15,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 
-
 import java.util.Arrays;
 import java.util.List;
 
