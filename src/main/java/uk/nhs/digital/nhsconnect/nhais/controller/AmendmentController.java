@@ -77,16 +77,16 @@ public class AmendmentController {
     }
 
     private void validateRequiredFields(AmendmentBody amendmentBody) {
-        if (StringUtils.isEmpty(amendmentBody.getNhsNumber())) {
+        if (StringUtils.isBlank(amendmentBody.getNhsNumber())) {
             throw new AmendmentValidationException("NHS number is missing in request body");
         }
-        if (StringUtils.isEmpty(amendmentBody.getGpCode())) {
+        if (StringUtils.isBlank(amendmentBody.getGpCode())) {
             throw new AmendmentValidationException("Existing GP Code is missing in request body");
         }
-        if (StringUtils.isEmpty(amendmentBody.getHealthcarePartyCode())) {
+        if (StringUtils.isBlank(amendmentBody.getHealthcarePartyCode())) {
             throw new AmendmentValidationException("Healthcare authority party code is missing in request body");
         }
-        if (StringUtils.isEmpty(amendmentBody.getGpTradingPartnerCode())) {
+        if (StringUtils.isBlank(amendmentBody.getGpTradingPartnerCode())) {
             throw new AmendmentValidationException("GP Trading Partner Code is missing in request body");
         }
         if (CollectionUtils.isEmpty(amendmentBody.getPatches())) {
