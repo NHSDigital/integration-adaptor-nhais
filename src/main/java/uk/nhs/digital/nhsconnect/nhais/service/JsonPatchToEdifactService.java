@@ -9,16 +9,26 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentFhirToEdifactTranslatorFactory;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatchTranslationItems> {
 
+    private final AmendmentFhirToEdifactTranslatorFactory translatorFactory;
+
     @Autowired
-    public JsonPatchToEdifactService(SequenceService sequenceService, TimestampService timestampService, OutboundStateRepository outboundStateRepository) {
+    public JsonPatchToEdifactService(
+        SequenceService sequenceService,
+        TimestampService timestampService,
+        OutboundStateRepository outboundStateRepository,
+        AmendmentFhirToEdifactTranslatorFactory translatorFactory) {
+
         super(sequenceService, timestampService, outboundStateRepository);
+        this.translatorFactory = translatorFactory;
     }
 
     public OutboundMeshMessage convertToEdifact(AmendmentBody amendmentBody) throws FhirValidationException, EdifactValidationException {
@@ -33,7 +43,9 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
 
     @Override
     protected List<Segment> createMessageSegments(JsonPatchTranslationItems translationItems) {
-        return new AmendmentTranslator().translate(translationItems.getAmendmentBody());
+        return translatorFactory.getTranslators().stream()
+            .map(translator -> translator.translate(translationItems.getAmendmentBody()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
     }
-
 }
