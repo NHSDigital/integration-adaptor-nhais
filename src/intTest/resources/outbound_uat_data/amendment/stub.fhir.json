@@ -1,0 +1,14 @@
+{
+  "nhsNumber": "9999999999",
+  "gpCode": "8880232,G82697",
+  "gpTradingPartnerCode": "TES5",
+  "haCipher": "XX11",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "AT LEAST ONE PATCH REQUIRED"
+    }
+  ]
+}
