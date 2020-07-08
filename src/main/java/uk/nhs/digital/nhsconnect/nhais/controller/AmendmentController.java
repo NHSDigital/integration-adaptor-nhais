@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,16 +77,16 @@ public class AmendmentController {
     }
 
     private void validateRequiredFields(AmendmentBody amendmentBody) {
-        if (amendmentBody.getNhsNumber() == null) {
+        if (StringUtils.isEmpty(amendmentBody.getNhsNumber())) {
             throw new AmendmentValidationException("NHS number is missing in request body");
         }
-        if (amendmentBody.getGpCode() == null) {
+        if (StringUtils.isEmpty(amendmentBody.getGpCode())) {
             throw new AmendmentValidationException("Existing GP Code is missing in request body");
         }
-        if (amendmentBody.getHealthcarePartyCode() == null) {
+        if (StringUtils.isEmpty(amendmentBody.getHealthcarePartyCode())) {
             throw new AmendmentValidationException("Healthcare authority party code is missing in request body");
         }
-        if (amendmentBody.getGpTradingPartnerCode() == null) {
+        if (StringUtils.isEmpty(amendmentBody.getGpTradingPartnerCode())) {
             throw new AmendmentValidationException("GP Trading Partner Code is missing in request body");
         }
         if (CollectionUtils.isEmpty(amendmentBody.getPatches())) {

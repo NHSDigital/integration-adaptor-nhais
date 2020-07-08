@@ -92,9 +92,4 @@ public abstract class CustomArgumentsProvider implements ArgumentsProvider {
         }
     }
 
-    public static class OutboundAmendment extends CustomArgumentsProvider {
-        public OutboundAmendment() {
-            super("outbound_amendment_uat_data");
-        }
-    }
 }
