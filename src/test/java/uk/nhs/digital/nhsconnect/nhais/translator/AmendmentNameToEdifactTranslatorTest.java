@@ -7,12 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
@@ -26,31 +25,20 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
-class AmendmentNameToEdifactTranslatorTest {
-
-    private static final String REMOVE_INDICATOR = "%";
+class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String NHS_NUMBER = "1234";
     private static final String FAMILY_NAME = "Smith";
-//    private static final String PREVIOUS_SURNAME = "Snow";
     private static final String FIRST_FORENAME = "John";
     private static final String SECOND_FORENAME = "Adam";
     private static final String OTHER_FORENAME = "Jacob";
     private static final String TITLE = "Mr";
 
     private final AmendmentNameToEdifactTranslator translator = new AmendmentNameToEdifactTranslator();
-
-    private static Stream<Arguments> getAddOrReplaceEnums() {
-        return Stream.of(
-            AmendmentPatchOperation.ADD,
-            AmendmentPatchOperation.REPLACE)
-            .map(Arguments::of);
-    }
 
     @Mock
     private AmendmentBody amendmentBody;
@@ -80,8 +68,6 @@ class AmendmentNameToEdifactTranslatorTest {
             .setOp(operation).setValue(AmendmentValue.from(OTHER_FORENAME))));
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(TITLE))));
-//        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
-//            .setOp(operation).setValue(AmendmentValue.from(PREVIOUS_SURNAME))));
 
         var segments = translator.translate(amendmentBody);
 
@@ -102,8 +88,6 @@ class AmendmentNameToEdifactTranslatorTest {
             .setOp(AmendmentPatchOperation.REMOVE)));
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
-//        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
-//            .setOp(AmendmentPatchOperation.REMOVE)));
 
         var segments = translator.translate(amendmentBody);
 
@@ -121,7 +105,7 @@ class AmendmentNameToEdifactTranslatorTest {
             .setOp(AmendmentPatchOperation.REMOVE)));
 
         assertThatThrownBy(() -> translator.translate(amendmentBody))
-            .isInstanceOf(EdifactValidationException.class)
+            .isInstanceOf(FhirValidationException.class)
             .hasMessage("Removing surnames is illegal");
     }
 
@@ -143,7 +127,7 @@ class AmendmentNameToEdifactTranslatorTest {
                 ));
 
                 softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
-                    .isInstanceOf(EdifactValidationException.class)
+                    .isInstanceOf(FhirValidationException.class)
                     .hasMessage("Illegal to modify forenames and remove all at the same time");
             });
     }
@@ -162,14 +146,14 @@ class AmendmentNameToEdifactTranslatorTest {
                 ));
 
                 softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
-                    .isInstanceOf(EdifactValidationException.class)
+                    .isInstanceOf(FhirValidationException.class)
                     .hasMessage("Removing /some/json/path/ is illegal. Use /name/0/given/ to remove all forenames instead");
             });
     }
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrRemoveValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath("/title/")
@@ -177,10 +161,6 @@ class AmendmentNameToEdifactTranslatorTest {
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath("/surname/")
-            .setValue(AmendmentValue.from(StringUtils.EMPTY))));
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation)
-            .setPath("/previous_surname/")
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
         when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
@@ -196,7 +176,7 @@ class AmendmentNameToEdifactTranslatorTest {
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
 
         assertThatThrownBy(() -> translator.translate(amendmentBody))
-            .isInstanceOf(EdifactValidationException.class)
-            .hasMessage("Invalid values for: [/title/, /surname/, /previous_surname/, /first_forename/, /second_forename/, /other_forename/]");
+            .isInstanceOf(FhirValidationException.class)
+            .hasMessage("Invalid values for: [/title/, /surname/, /first_forename/, /second_forename/, /other_forename/]");
     }
 }

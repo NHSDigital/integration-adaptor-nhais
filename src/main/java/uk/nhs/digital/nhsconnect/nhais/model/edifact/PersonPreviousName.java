@@ -1,42 +1,53 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+ * Example PNA+PER++++SU:PATTERSON'
  */
 
 @Getter
 @Builder
+@EqualsAndHashCode(callSuper = false)
+@ToString
+@Slf4j
 public class PersonPreviousName extends Segment {
 
     public static final String KEY = "PNA";
     public static final String QUALIFIER = "PER";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
-    //all properties are optional
     private final String previousFamilyName;
 
     public static PersonPreviousName fromString(String edifactString) {
         if (!edifactString.startsWith(PersonPreviousName.KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + PersonPreviousName.class.getSimpleName() + " from " + edifactString);
         }
-        return PersonPreviousName.builder()
-//            .previousFamilyName(extractNamePart("SU", edifactString))
-            .build();
+
+        var fields = Split.byPlus(edifactString);
+        var builder = PersonPreviousName.builder();
+        if (fields.length >= 6) {
+            var fieldParts = Split.byColon(fields[5]);
+            if (fieldParts.length == 2 && fieldParts[0].equals("SU")) {
+                builder.previousFamilyName(fieldParts[1]);
+            } else {
+                throw new IllegalArgumentException("Illegal surname value");
+            }
+        }
+        return builder.build();
     }
 
     @Override
@@ -49,7 +60,9 @@ public class PersonPreviousName extends Segment {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
 
-        String namesDelimiter = containsName() ? "++" : "";
+        if (containsName()) {
+            IntStream.range(0, 3).forEach(x -> values.add(StringUtils.EMPTY));
+        }
 
         Optional.ofNullable(this.previousFamilyName)
             .filter(StringUtils::isNotBlank)
@@ -61,7 +74,7 @@ public class PersonPreviousName extends Segment {
 
     private boolean containsName() {
         return Stream.of(this.previousFamilyName)
-            .anyMatch(Objects::nonNull);
+            .anyMatch(StringUtils::isNotBlank);
     }
 
     @Override
@@ -71,5 +84,6 @@ public class PersonPreviousName extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
+        //NOP
     }
 }
