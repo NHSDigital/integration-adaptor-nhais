@@ -12,17 +12,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
-
+import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentAddressTranslator;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentController {
 
+    private final AmendmentAddressTranslator ammendmentAddressTranslator;
+
     @PatchMapping(path= "/fhir/Patient/{nhsNumber}", consumes="application/json", produces="application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> amendment(@PathVariable(name= "nhsNumber") String nhsNumber, @RequestBody AmendmentBody amendmentBody) {
         LOGGER.info("Amendment request: {}", amendmentBody);
+        ammendmentAddressTranslator.translate(amendmentBody);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
