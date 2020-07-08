@@ -69,6 +69,8 @@ public class PersonPreviousName extends Segment {
             .map(value -> "SU:" + value)
             .ifPresent(values::add);
 
+        values = removeEmptyLeadingFields(values, StringUtils::isNotBlank);
+
         return String.join(PLUS_SEPARATOR, values);
     }
 
