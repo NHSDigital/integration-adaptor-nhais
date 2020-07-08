@@ -20,48 +20,35 @@ import java.util.stream.Stream;
 public class AmendmentNameToEdifactTranslator extends AmendmentToEdifactTranslator {
     @Override
     protected List<Segment> mapAllPatches(JsonPatches patches) {
-        if (shouldCreatePersonNameSegment(patches)) {
-            var title = patches.getTitle()
-                .map(this::getValue)
-                .orElse(null);
-            var surname = patches.getSurname()
-                .map(this::getValue)
-                .orElse(null);
-            var firstName = patches.getFirstForename()
-                .or(() -> patches
-                    .getAllForenamesPath()
-                    .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE))
-                .map(this::getValue)
-                .orElse(null);
-            var secondName = patches.getSecondForename()
-                .map(this::getValue)
-                .orElse(null);
-            var otherName = patches.getOtherForenames()
-                .map(this::getValue)
-                .orElse(null);
+        var title = patches.getTitle()
+            .map(this::getValue)
+            .orElse(null);
+        var surname = patches.getSurname()
+            .map(this::getValue)
+            .orElse(null);
+        var firstName = patches.getFirstForename()
+            .or(() -> patches
+                .getAllForenamesPath()
+                .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE))
+            .map(this::getValue)
+            .orElse(null);
+        var secondName = patches.getSecondForename()
+            .map(this::getValue)
+            .orElse(null);
+        var otherName = patches.getOtherForenames()
+            .map(this::getValue)
+            .orElse(null);
 
-            var personName = PersonName.builder()
-                .nhsNumber(patches.getAmendmentBody().getNhsNumber())
-                .title(title)
-                .familyName(surname)
-                .forename(firstName)
-                .middleName(secondName)
-                .thirdForename(otherName)
-                .build();
-            return Collections.singletonList(personName);
-        }
-        return Collections.emptyList();
-    }
-
-    private boolean shouldCreatePersonNameSegment(JsonPatches patches) {
-        return Stream.of(
-            patches.getTitle(),
-            patches.getSurname(),
-            patches.getFirstForename(),
-            patches.getSecondForename(),
-            patches.getOtherForenames(),
-            patches.getAllForenamesPath())
-            .anyMatch(Optional::isPresent);
+        var personName = PersonName.builder()
+            .nhsNumber(patches.getAmendmentBody().getNhsNumber())
+            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .title(title)
+            .familyName(surname)
+            .forename(firstName)
+            .middleName(secondName)
+            .thirdForename(otherName)
+            .build();
+        return Collections.singletonList(personName);
     }
 
     @Override

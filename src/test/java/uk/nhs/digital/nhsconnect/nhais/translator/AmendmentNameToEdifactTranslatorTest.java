@@ -75,6 +75,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
+                .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .familyName(FAMILY_NAME)
                 .forename(FIRST_FORENAME)
                 .middleName(SECOND_FORENAME)
@@ -95,6 +96,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
+                .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .forename(REMOVE_INDICATOR)
                 .title(REMOVE_INDICATOR)
                 .build());
@@ -145,7 +147,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
 
                 softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
                     .isInstanceOf(FhirValidationException.class)
-                    .hasMessage("Removing /some/json/path/ is illegal. Use /name/0/given/ to remove all forenames instead");
+                    .hasMessage("Removing /some/json/path/ is illegal. Use /name/0/given to remove all forenames instead");
             });
     }
 

@@ -9,10 +9,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JsonPatches {
 
-    public static final String ALL_FORENAMES_PATH = "/name/0/given/";
+    public static final String ALL_FORENAMES_PATH = "/name/0/given";
     private static final String TITLE_PATH = "/name/0/prefix/0";
-    private static final String SURNAME_PATH = "/name/0/family/";
-    private static final String PREVIOUS_SURNAME_PATH = "/name/1/family/";
+    private static final String SURNAME_PATH = "/name/0/family";
+    private static final String PREVIOUS_SURNAME_PATH = "/name/1/family";
     private static final String FIRST_FORENAME_PATH = "/name/0/given/0";
     private static final String SECOND_FORENAME_PATH = "/name/0/given/1";
     private static final String OTHER_FORENAMES_PATH = "/name/0/given/2";
@@ -28,27 +28,27 @@ public class JsonPatches {
     private final AmendmentBody amendmentBody;
     private final List<AmendmentPatch> patches;
 
-    public Optional<AmendmentPatch> getTitle(){
+    public Optional<AmendmentPatch> getTitle() {
         return filterSimpleValues(TITLE_PATH);
     }
 
-    public Optional<AmendmentPatch> getSurname(){
+    public Optional<AmendmentPatch> getSurname() {
         return filterSimpleValues(SURNAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getPreviousSurname(){
+    public Optional<AmendmentPatch> getPreviousSurname() {
         return filterSimpleValues(PREVIOUS_SURNAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getFirstForename(){
+    public Optional<AmendmentPatch> getFirstForename() {
         return filterSimpleValues(FIRST_FORENAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getSecondForename(){
+    public Optional<AmendmentPatch> getSecondForename() {
         return filterSimpleValues(SECOND_FORENAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getOtherForenames(){
+    public Optional<AmendmentPatch> getOtherForenames() {
         return filterSimpleValues(OTHER_FORENAMES_PATH);
     }
 
@@ -56,60 +56,60 @@ public class JsonPatches {
         return filterSimpleValues(ALL_FORENAMES_PATH);
     }
 
-    public Optional<AmendmentPatch> getSex(){
+    public Optional<AmendmentPatch> getSex() {
         return filterSimpleValues(SEX_PATH);
     }
 
-    public Optional<AmendmentPatch> getBirthDate(){
+    public Optional<AmendmentPatch> getBirthDate() {
         return filterSimpleValues(BIRTH_DATE_PATH);
     }
 
-    public Optional<AmendmentPatch> getHouseName(){
+    public Optional<AmendmentPatch> getHouseName() {
         return filterSimpleValues(HOUSE_NAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getHouseNumber(){
+    public Optional<AmendmentPatch> getHouseNumber() {
         return filterSimpleValues(HOUSE_NUMBER_PATH);
     }
 
-    public Optional<AmendmentPatch> getPostTown(){
+    public Optional<AmendmentPatch> getPostTown() {
         return filterSimpleValues(POST_TOWN_PATH);
     }
 
-    public Optional<AmendmentPatch> getCounty(){
+    public Optional<AmendmentPatch> getCounty() {
         return filterSimpleValues(COUNTY_PATH);
     }
 
-    public Optional<AmendmentPatch> getPostalCode(){
+    public Optional<AmendmentPatch> getPostalCode() {
         return filterSimpleValues(POSTAL_CODE_PATH);
     }
 
     private Optional<AmendmentPatch> filterSimpleValues(String path) {
         return patches.stream()
-                .filter(patch -> path.equalsIgnoreCase(patch.getPath()))
-                .findFirst();
+            .filter(patch -> path.equalsIgnoreCase(patch.getPath()))
+            .findFirst();
     }
 
     public <T extends AmendmentExtension> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
         return patches.stream()
-                .filter(patch -> patch.getValue() instanceof AmendmentExtension)
-                .filter(patch -> clazz.isAssignableFrom(patch.getValue().getClass()))
-                .findFirst();
+            .filter(patch -> patch.getValue() instanceof AmendmentExtension)
+            .filter(patch -> clazz.isAssignableFrom(patch.getValue().getClass()))
+            .findFirst();
     }
 
-    public Optional<AmendmentPatch> getDrugsDispensedMarker(){
+    public Optional<AmendmentPatch> getDrugsDispensedMarker() {
         return getExtension(AmendmentExtension.DrugsDispensedMarker.class);
     }
 
-    public Optional<AmendmentPatch> getBirthplace(){
+    public Optional<AmendmentPatch> getBirthplace() {
         return getExtension(AmendmentExtension.Birthplace.class);
     }
 
-    public Optional<AmendmentPatch> getPreviousGp(){
+    public Optional<AmendmentPatch> getPreviousGp() {
         return getExtension(AmendmentExtension.PreviousGp.class);
     }
 
-    public Optional<AmendmentPatch> getResidentialInstituteCode(){
+    public Optional<AmendmentPatch> getResidentialInstituteCode() {
         return getExtension(AmendmentExtension.ResidentialInstituteCode.class);
     }
 }
