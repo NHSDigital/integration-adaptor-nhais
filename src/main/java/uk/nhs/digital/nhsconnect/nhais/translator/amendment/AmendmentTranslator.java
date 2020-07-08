@@ -1,8 +1,9 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentTranslator extends AmendmentToEdifactTranslator {
     @Override
-    protected List<Segment> mapAllPatches(JsonPatches patches) {
+    protected List<Segment> mapAllPatches(JsonPatches patches) throws FhirValidationException {
         return Arrays.asList(
             new BeginningOfMessage(),
             new NameAndAddress(patches.getAmendmentBody().getHealthcarePartyCode(), NameAndAddress.QualifierAndCode.FHS),

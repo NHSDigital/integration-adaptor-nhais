@@ -17,6 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentNameToEdifactTranslator;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -120,11 +121,9 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
                 reset(jsonPatches);
                 when(patchSupplier.get()).thenReturn(Optional.of(new AmendmentPatch()
                     .setValue(AmendmentValue.from("some_value"))
-                    .setOp(operation)
-                ));
+                    .setOp(operation)));
                 when(jsonPatches.getAllForenamesPath()).thenReturn(Optional.of(new AmendmentPatch()
-                    .setOp(operation)
-                ));
+                    .setOp(operation)));
 
                 softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
                     .isInstanceOf(FhirValidationException.class)
@@ -141,9 +140,8 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
             .forEach(patchSupplier -> {
                 reset(jsonPatches);
                 when(patchSupplier.get()).thenReturn(Optional.of(new AmendmentPatch()
-                    .setPath("/some/json/path/")
                     .setOp(AmendmentPatchOperation.REMOVE)
-                ));
+                    .setPath("/some/json/path/")));
 
                 softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
                     .isInstanceOf(FhirValidationException.class)

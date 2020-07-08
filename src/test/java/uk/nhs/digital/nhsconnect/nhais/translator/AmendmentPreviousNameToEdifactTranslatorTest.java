@@ -16,6 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentPreviousNameToEdifactTranslator;
 
 import java.util.Optional;
 
@@ -77,7 +78,8 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath("/previous_surname/")
-            .setValue(AmendmentValue.from(StringUtils.EMPTY))));
+            .setValue(AmendmentValue.from(StringUtils.EMPTY))
+            ));
 
         assertThatThrownBy(() -> translator.translate(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
