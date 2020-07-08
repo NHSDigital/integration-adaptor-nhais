@@ -31,8 +31,7 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
     }
 
     private List<Segment> mapAllPatches(JsonPatches patches) {
-        Optional<PersonAddress> personAddress = mapPersonAddress(patches);
-
+        var personAddress = mapPersonAddress(patches);
         return personAddress
             .<List<Segment>>map(Collections::singletonList)
             .orElse(Collections.emptyList());
@@ -80,10 +79,7 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
     }
 
     private String getPatchValue(AmendmentPatch patch) {
-        if (patch.getOp() == AmendmentPatchOperation.REMOVE) {
-            return Strings.EMPTY;
-        }
-        return patch.getValue().get();
+        return patch.getOp() == AmendmentPatchOperation.REMOVE ? Strings.EMPTY : patch.getValue().get();
     }
 
     private void validatePatches(JsonPatches patches) {
