@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -59,10 +60,9 @@ public class PersonPreviousName extends Segment {
     public String getValue() {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
-
-        if (containsName()) {
-            IntStream.range(0, 3).forEach(x -> values.add(StringUtils.EMPTY));
-        }
+        values.addAll(IntStream.range(0, 3)
+            .mapToObj(x -> StringUtils.EMPTY)
+            .collect(Collectors.toList()));
 
         Optional.ofNullable(this.previousFamilyName)
             .filter(StringUtils::isNotBlank)
@@ -70,11 +70,6 @@ public class PersonPreviousName extends Segment {
             .ifPresent(values::add);
 
         return String.join(PLUS_SEPARATOR, values);
-    }
-
-    private boolean containsName() {
-        return Stream.of(this.previousFamilyName)
-            .anyMatch(StringUtils::isNotBlank);
     }
 
     @Override

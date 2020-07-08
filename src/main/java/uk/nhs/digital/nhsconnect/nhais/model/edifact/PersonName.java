@@ -90,11 +90,6 @@ public class PersonName extends Segment {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
 
-//        String namesDelimiter = containsName() ? "++" : "";
-//        Optional.ofNullable(this.nhsNumber)
-//            .map(value -> value + ":" + this.patientIdentificationType.getCode() + namesDelimiter)
-//            .ifPresentOrElse(values::add, () -> values.add(namesDelimiter));
-
         values.add(Optional.ofNullable(this.nhsNumber)
             .map(value -> value + ":" + this.patientIdentificationType.getCode())
             .orElse(StringUtils.EMPTY));
@@ -120,11 +115,6 @@ public class PersonName extends Segment {
         values = removeEmptyLeadingFields(values, StringUtils::isNotBlank);
 
         return String.join(PLUS_SEPARATOR, values);
-    }
-
-    private boolean containsName() {
-        return Stream.of(this.familyName, this.forename, this.title, this.middleName, this.thirdForename)
-            .anyMatch(Objects::nonNull);
     }
 
     @Override
