@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,28 +7,21 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator {
+public class AmendmentAddressMapper extends AmendmentToEdifactMapper{
 
     @Override
-    public List<Segment> translate(AmendmentBody amendmentBody) throws FhirValidationException {
-        var patches = amendmentBody.getJsonPatches();
-        validatePatches(patches);
-        return mapAllPatches(patches);
-    }
-
-    private List<Segment> mapAllPatches(JsonPatches patches) {
+    protected List<Segment> mapAllPatches(JsonPatches patches) {
         var personAddress = mapPersonAddress(patches);
         return personAddress
             .<List<Segment>>map(Collections::singletonList)
@@ -84,7 +77,7 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
         }
     }
 
-    private void validatePatches(JsonPatches patches) {
+    protected void validatePatches(JsonPatches patches) {
         checkNoPostTownPatchForRemoveOperation(patches);
         if (!isAllFiveAddressLinesNotEmpty(patches) && !isAllFiveAddressLinesEmpty(patches)) {
             throw new AmendmentValidationException("All five lines of address needs to be update");

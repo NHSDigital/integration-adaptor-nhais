@@ -11,16 +11,11 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentToEdifactTranslator;
-import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentAddressTranslator;
-import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentTranslator;
 
 import java.util.List;
 
 @Component
 public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatchTranslationItems> {
-
-    @Autowired
-    private AmendmentAddressTranslator amendmentAddressTranslator;
 
     private final AmendmentToEdifactTranslator amendmentTranslator;
 
@@ -41,8 +36,6 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
         translationItems.setSender(amendmentBody.getGpTradingPartnerCode());
         translationItems.setRecipient(getRecipientTradingPartnerCode(amendmentBody.getHealthcarePartyCode()));
         translationItems.setTransactionType(ReferenceTransactionType.Outbound.AMENDMENT);
-        List<Segment> addressAmendment = amendmentAddressTranslator.translate(amendmentBody);
-        translationItems.setSegments(addressAmendment);
         return convert(translationItems);
     }
 
