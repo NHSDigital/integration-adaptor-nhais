@@ -1,12 +1,22 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Value
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class AmendmentPatch {
 
-    AmendmentPatchOperation op;
-    String path;
-    AmendmentValue value;
+    private AmendmentPatchOperation op;
+    private String path;
+    private AmendmentValue value;
 
 }

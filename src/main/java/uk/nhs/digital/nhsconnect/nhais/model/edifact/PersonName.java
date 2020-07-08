@@ -1,19 +1,20 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
@@ -21,6 +22,8 @@ import java.util.stream.Stream;
 
 @Getter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+@ToString
 public class PersonName extends Segment {
 
     public static final String KEY = "PNA";
@@ -85,37 +88,31 @@ public class PersonName extends Segment {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
 
-        String namesDelimiter = containsName() ? "++" : "";
-        Optional.ofNullable(this.nhsNumber)
-            .map(value -> value + ":" + this.patientIdentificationType.getCode() + namesDelimiter)
-            .ifPresentOrElse(values::add, () -> values.add(namesDelimiter));
-
-        Optional.ofNullable(this.familyName)
+        values.add(Optional.ofNullable(this.nhsNumber)
+            .map(value -> value + ":" + this.patientIdentificationType.getCode())
+            .orElse(StringUtils.EMPTY));
+        values.addAll(IntStream.range(0, 2)
+            .mapToObj(x -> StringUtils.EMPTY)
+            .collect(Collectors.toList()));
+        values.add(Optional.ofNullable(this.familyName)
             .map(value -> "SU:" + value)
-            .ifPresent(values::add);
-        Optional.ofNullable(this.forename)
+            .orElse(StringUtils.EMPTY));
+        values.add(Optional.ofNullable(this.forename)
             .map(value -> "FO:" + value)
-            .ifPresent(values::add);
-        Optional.ofNullable(this.title)
+            .orElse(StringUtils.EMPTY));
+        values.add(Optional.ofNullable(this.title)
             .map(value -> "TI:" + value)
-            .ifPresent(values::add);
-        Optional.ofNullable(this.middleName)
+            .orElse(StringUtils.EMPTY));
+        values.add(Optional.ofNullable(this.middleName)
             .map(value -> "MI:" + value)
-            .ifPresent(values::add);
-        Optional.ofNullable(this.thirdForename)
+            .orElse(StringUtils.EMPTY));
+        values.add(Optional.ofNullable(this.thirdForename)
             .map(value -> "FS:" + value)
-            .ifPresent(values::add);
+            .orElse(StringUtils.EMPTY));
+
+        values = removeEmptyTrailingFields(values, StringUtils::isNotBlank);
 
         return String.join(PLUS_SEPARATOR, values);
-    }
-
-    public Optional<NhsIdentifier> getNhsNumber() {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
-    }
-
-    private boolean containsName() {
-        return Stream.of(this.familyName, this.forename, this.title, this.middleName, this.thirdForename)
-            .anyMatch(Objects::nonNull);
     }
 
     @Override

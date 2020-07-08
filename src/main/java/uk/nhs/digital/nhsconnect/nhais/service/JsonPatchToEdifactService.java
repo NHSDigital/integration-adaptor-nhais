@@ -10,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentToEdifactTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentAddressTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentTranslator;
 
@@ -21,9 +22,17 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
     @Autowired
     private AmendmentAddressTranslator amendmentAddressTranslator;
 
+    private final AmendmentToEdifactTranslator amendmentTranslator;
+
     @Autowired
-    public JsonPatchToEdifactService(SequenceService sequenceService, TimestampService timestampService, OutboundStateRepository outboundStateRepository) {
+    public JsonPatchToEdifactService(
+        SequenceService sequenceService,
+        TimestampService timestampService,
+        OutboundStateRepository outboundStateRepository,
+        AmendmentToEdifactTranslator amendmentTranslator) {
+
         super(sequenceService, timestampService, outboundStateRepository);
+        this.amendmentTranslator = amendmentTranslator;
     }
 
     public OutboundMeshMessage convertToEdifact(AmendmentBody amendmentBody) throws FhirValidationException, EdifactValidationException {
@@ -39,7 +48,6 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
 
     @Override
     protected List<Segment> createMessageSegments(JsonPatchTranslationItems translationItems) {
-        return new AmendmentTranslator().translate(translationItems.getAmendmentBody());
+        return amendmentTranslator.translate(translationItems.getAmendmentBody());
     }
-
 }
