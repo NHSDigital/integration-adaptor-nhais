@@ -14,8 +14,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -79,10 +77,15 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
     }
 
     private String getPatchValue(AmendmentPatch patch) {
-        return patch.getOp() == AmendmentPatchOperation.REMOVE ? Strings.EMPTY : patch.getValue().get();
+        if (patch != null && !patch.getValue().get().isEmpty() && !patch.getValue().get().isBlank()) {
+            return patch.getOp() == AmendmentPatchOperation.REMOVE ? "%" : patch.getValue().get();
+        } else {
+            throw new AmendmentValidationException("Patch cannot be null nor empty nor blank");
+        }
     }
 
     private void validatePatches(JsonPatches patches) {
+        checkNoPostTownPatchForRemoveOperation(patches);
         if (!isAllFiveAddressLinesNotEmpty(patches) && !isAllFiveAddressLinesEmpty(patches)) {
             throw new AmendmentValidationException("All five lines of address needs to be update");
         }
@@ -102,5 +105,11 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
                 patches.getLocality().isEmpty() &&
                 patches.getPostTown().isEmpty() &&
                 patches.getCounty().isEmpty();
+    }
+
+    private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
+        if (patches.getPostTown().isPresent() && patches.getPostTown().get().getOp() == AmendmentPatchOperation.REMOVE) {
+            throw new AmendmentValidationException("Post town ('address/0/line/3') cannot be removed");
+        }
     }
 }

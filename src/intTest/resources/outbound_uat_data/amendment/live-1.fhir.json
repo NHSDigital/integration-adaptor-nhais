@@ -29,6 +29,11 @@
       "op": "replace",
       "path": "/address/0/line/4",
       "value": "KENT"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/postalCode",
+      "value": "ZZ7 1ZZ"
     }
   ]
 }
