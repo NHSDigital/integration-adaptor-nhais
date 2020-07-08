@@ -68,7 +68,6 @@ paths:
 
         | GP Links Data Item      | Deduction |
         |-------------------------|-----------|
-        | Transaction Type        | REQUIRED  |
         | GP Code                 | REQUIRED  |
         | GP Trading Partner Code | REQUIRED  |
         | Destinaton HA Cipher    | REQUIRED  |
@@ -81,7 +80,6 @@ paths:
 
         | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                      |
         |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|--------------------------------------------|
-        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method              |
         | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                            |
         | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                            |
         | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
@@ -147,7 +145,6 @@ paths:
 
         | GP Links Data Item      | Removal  |
         |-------------------------|----------|
-        | Transaction Type        | REQUIRED |
         | GP Code                 | REQUIRED |
         | GP Trading Partner Code | REQUIRED |
         | Destinaton HA Cipher    | REQUIRED |
@@ -158,7 +155,6 @@ paths:
 
         | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
         |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
-        | Transaction Type        | n/a           | n/a                                      | n/a                      | n/a                                | Determined by REST API method |
         | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                               |
         | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                               |
         | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
@@ -378,7 +374,6 @@ paths:
 
         | GP Links Data Item                        | Amendment  | Erasable |
         |-------------------------------------------|------------|----------|
-        | Transaction Type                          | REQUIRED   | n/a      |
         | Existing GP Code                          | REQUIRED   | n/a      |
         | GP Trading Partner Code                   | REQUIRED   | n/a      |
         | Destination HA Cipher                     | REQUIRED   | n/a      |
@@ -414,10 +409,9 @@ paths:
 
         | Data Item                             | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
         |---------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
-        | Transaction Type                      | n/a                  | n/a                                      | n/a                                        | Determined by REST API method                                       |
         | Existing GP Code                      | gpCode               |                                          |                                            |                                                                     |
         | GP Trading Partner Code               | gpTradingPartnerCode |                                          |                                            |                                                                     |
-        | Destination HA Cipher                 | destinationHaCipher  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
+        | Destination HA Cipher                 | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
         | NHS Number                            | nhsNumber            |                                          |                                            |                                                                     |
         | New Surname                           |                      | /name/0/family                           |                                            |                                                                     |
         | New Previous Surname                  |                      | /name/1/family                           |                                            |                                                                     |
