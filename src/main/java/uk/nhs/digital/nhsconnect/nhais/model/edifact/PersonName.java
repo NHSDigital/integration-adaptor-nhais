@@ -12,11 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
@@ -112,7 +110,7 @@ public class PersonName extends Segment {
             .map(value -> "FS:" + value)
             .orElse(StringUtils.EMPTY));
 
-        values = removeEmptyLeadingFields(values, StringUtils::isNotBlank);
+        values = removeEmptyTrailingFields(values, StringUtils::isNotBlank);
 
         return String.join(PLUS_SEPARATOR, values);
     }

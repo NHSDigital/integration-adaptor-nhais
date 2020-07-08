@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Example PNA+PER++++SU:PATTERSON'
@@ -69,7 +68,7 @@ public class PersonPreviousName extends Segment {
             .map(value -> "SU:" + value)
             .ifPresent(values::add);
 
-        values = removeEmptyLeadingFields(values, StringUtils::isNotBlank);
+        values = removeEmptyTrailingFields(values, StringUtils::isNotBlank);
 
         return String.join(PLUS_SEPARATOR, values);
     }

@@ -1,61 +1,46 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
 
-import org.apache.commons.lang3.StringUtils;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-public abstract class AmendmentToEdifactTranslator {
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class AmendmentToEdifactTranslator {
 
-    private static final String REMOVE_INDICATOR = "%";
+    private final AmendmentNameToEdifactMapper amendmentNameToEdifactTranslator;
+    private final AmendmentPreviousNameToEdifactMapper amendmentPreviousNameToEdifactTranslator;
 
-    protected static boolean amendmentPatchRequiringValue(AmendmentPatch amendmentPatch) {
-        return amendmentPatch.getOp() == AmendmentPatchOperation.ADD
-            || amendmentPatch.getOp() == AmendmentPatchOperation.REPLACE;
-    }
+    public List<Segment> translate(AmendmentBody amendmentBody) {
+        var segments = new ArrayList<Segment>();
+        segments.add(new BeginningOfMessage());
+        segments.add(new NameAndAddress(amendmentBody.getHealthcarePartyCode(), NameAndAddress.QualifierAndCode.FHS));
+        segments.add(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        segments.add(new ReferenceTransactionType(ReferenceTransactionType.Outbound.AMENDMENT));
+        segments.add(new SegmentGroup(1));
+        segments.add(new ReferenceTransactionNumber());
+        segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
+        segments.add(new SegmentGroup(2));
+        segments.addAll(amendmentNameToEdifactTranslator.mapAllPatches(amendmentBody.getJsonPatches()));
 
-    public List<Segment> translate(AmendmentBody amendmentBody) throws FhirValidationException {
-        var patches = amendmentBody.getJsonPatches();
-        validatePatches(patches);
-        return mapAllPatches(patches);
-    }
-
-    protected void validatePatches(JsonPatches patches) throws FhirValidationException {
-    }
-
-    protected abstract List<Segment> mapAllPatches(JsonPatches patches);
-
-    protected String getValue(AmendmentPatch patch) {
-        if (patch.getOp() == AmendmentPatchOperation.REMOVE) {
-            return REMOVE_INDICATOR;
+        var previousNameSegments = amendmentPreviousNameToEdifactTranslator.mapAllPatches(amendmentBody.getJsonPatches());
+        if (!previousNameSegments.isEmpty()) {
+            segments.add(new SegmentGroup(2));
+            segments.addAll(previousNameSegments);
         }
-        return patch.getValue().get();
-    }
 
-    protected void validateNonEmptyValues(List<Optional<AmendmentPatch>> amendmentPatches) {
-        var invalidAmendmentPatches = new ArrayList<AmendmentPatch>();
-        amendmentPatches.stream()
-            .flatMap(Optional::stream)
-            .filter(AmendmentNameToEdifactTranslator::amendmentPatchRequiringValue)
-            .forEach(amendmentPatch -> {
-                if (StringUtils.isBlank(amendmentPatch.getValue().get())) {
-                    invalidAmendmentPatches.add(amendmentPatch);
-                }
-            });
-
-        if (!invalidAmendmentPatches.isEmpty()) {
-            var pathsWithInvalidValues = invalidAmendmentPatches.stream()
-                .map(AmendmentPatch::getPath)
-                .collect(Collectors.toList());
-            throw new FhirValidationException("Invalid values for: " + pathsWithInvalidValues);
-        }
+        return segments;
     }
 }

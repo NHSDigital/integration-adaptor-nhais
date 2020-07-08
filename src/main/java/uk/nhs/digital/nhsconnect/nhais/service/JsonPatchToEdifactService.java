@@ -9,21 +9,21 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentFhirToEdifactTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentToEdifactTranslator;
 
 import java.util.List;
 
 @Component
 public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatchTranslationItems> {
 
-    private final AmendmentFhirToEdifactTranslator amendmentTranslator;
+    private final AmendmentToEdifactTranslator amendmentTranslator;
 
     @Autowired
     public JsonPatchToEdifactService(
         SequenceService sequenceService,
         TimestampService timestampService,
         OutboundStateRepository outboundStateRepository,
-        AmendmentFhirToEdifactTranslator amendmentTranslator) {
+        AmendmentToEdifactTranslator amendmentTranslator) {
 
         super(sequenceService, timestampService, outboundStateRepository);
         this.amendmentTranslator = amendmentTranslator;

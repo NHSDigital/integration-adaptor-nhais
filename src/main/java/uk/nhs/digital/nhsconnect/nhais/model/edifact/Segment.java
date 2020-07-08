@@ -10,10 +10,9 @@ import java.util.function.Predicate;
 public abstract class Segment {
     protected static final String PLUS_SEPARATOR = "+";
     protected final static String COLON_SEPARATOR = ":";
-    protected final static String COMMA_SEPARATOR = ",";
     private static final String TERMINATOR = "'";
 
-    protected static <T> List<T> removeEmptyLeadingFields(List<T> list, Predicate<T> predicate) {
+    protected static <T> List<T> removeEmptyTrailingFields(List<T> list, Predicate<T> predicate) {
         var result = new ArrayList<T>();
         Collections.reverse(list);
         boolean foundFirstValid = false;

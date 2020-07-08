@@ -16,7 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentPreviousNameToEdifactTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
 
     private static final String PREVIOUS_SURNAME = "Snow";
 
-    private final AmendmentPreviousNameToEdifactTranslator translator = new AmendmentPreviousNameToEdifactTranslator();
+    private final AmendmentPreviousNameToEdifactMapper translator = new AmendmentPreviousNameToEdifactMapper();
 
     @Mock
     private AmendmentBody amendmentBody;
@@ -51,7 +51,7 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(PREVIOUS_SURNAME))));
 
-        var segments = translator.translate(amendmentBody);
+        var segments = translator.map(amendmentBody);
 
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonPreviousName.builder()
@@ -64,7 +64,7 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        var segments = translator.translate(amendmentBody);
+        var segments = translator.map(amendmentBody);
 
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonPreviousName.builder()
@@ -81,7 +81,7 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
             ));
 
-        assertThatThrownBy(() -> translator.translate(amendmentBody))
+        assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
             .hasMessage("Invalid values for: [/previous_surname/]");
     }

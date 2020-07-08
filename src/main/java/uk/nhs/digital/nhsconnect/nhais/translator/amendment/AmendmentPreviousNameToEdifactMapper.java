@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AmendmentPreviousNameToEdifactTranslator extends AmendmentToEdifactTranslator {
+public class AmendmentPreviousNameToEdifactMapper extends AmendmentToEdifactMapper {
 
     @Override
     protected List<Segment> mapAllPatches(JsonPatches patches) {

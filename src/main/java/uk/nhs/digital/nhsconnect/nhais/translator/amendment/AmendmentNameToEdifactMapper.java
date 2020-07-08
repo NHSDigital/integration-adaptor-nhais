@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AmendmentNameToEdifactTranslator extends AmendmentToEdifactTranslator {
+public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
     protected List<Segment> mapAllPatches(JsonPatches patches) {
         var title = patches.getTitle()
@@ -84,7 +84,7 @@ public class AmendmentNameToEdifactTranslator extends AmendmentToEdifactTranslat
             patches.getSecondForename(),
             patches.getOtherForenames())
             .flatMap(Optional::stream)
-            .anyMatch(AmendmentNameToEdifactTranslator::amendmentPatchRequiringValue);
+            .anyMatch(AmendmentNameToEdifactMapper::amendmentPatchRequiringValue);
 
         if (anyNameChange && patches.getAllForenamesPath().isPresent()) {
             throw new FhirValidationException("Illegal to modify forenames and remove all at the same time");

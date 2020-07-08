@@ -17,7 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentNameToEdifactTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentNameToEdifactMapper;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -39,7 +39,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
     private static final String OTHER_FORENAME = "Jacob";
     private static final String TITLE = "Mr";
 
-    private final AmendmentNameToEdifactTranslator translator = new AmendmentNameToEdifactTranslator();
+    private final AmendmentNameToEdifactMapper translator = new AmendmentNameToEdifactMapper();
 
     @Mock
     private AmendmentBody amendmentBody;
@@ -70,7 +70,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(TITLE))));
 
-        var segments = translator.translate(amendmentBody);
+        var segments = translator.map(amendmentBody);
 
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonName.builder()
@@ -91,7 +91,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        var segments = translator.translate(amendmentBody);
+        var segments = translator.map(amendmentBody);
 
         assertThat(segments).usingFieldByFieldElementComparator()
             .containsExactly(PersonName.builder()
@@ -107,7 +107,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        assertThatThrownBy(() -> translator.translate(amendmentBody))
+        assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
             .hasMessage("Removing surnames is illegal");
     }
@@ -127,7 +127,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
                 when(jsonPatches.getAllForenamesPath()).thenReturn(Optional.of(new AmendmentPatch()
                     .setOp(operation)));
 
-                softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
+                softly.assertThatThrownBy(() -> translator.map(amendmentBody))
                     .isInstanceOf(FhirValidationException.class)
                     .hasMessage("Illegal to modify forenames and remove all at the same time");
             });
@@ -145,7 +145,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
                     .setOp(AmendmentPatchOperation.REMOVE)
                     .setPath("/some/json/path/")));
 
-                softly.assertThatThrownBy(() -> translator.translate(amendmentBody))
+                softly.assertThatThrownBy(() -> translator.map(amendmentBody))
                     .isInstanceOf(FhirValidationException.class)
                     .hasMessage("Removing /some/json/path/ is illegal. Use /name/0/given to remove all forenames instead");
             });
@@ -175,7 +175,7 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
             .setPath("/other_forename/")
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
 
-        assertThatThrownBy(() -> translator.translate(amendmentBody))
+        assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
             .hasMessage("Invalid values for: [/title/, /surname/, /first_forename/, /second_forename/, /other_forename/]");
     }
