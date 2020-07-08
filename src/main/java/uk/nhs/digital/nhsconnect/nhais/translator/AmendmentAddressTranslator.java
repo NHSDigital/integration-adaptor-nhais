@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.ParameterValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -84,7 +84,7 @@ public class AmendmentAddressTranslator implements AmendmentToEdifactTranslator 
 
     private void validatePatches(JsonPatches patches) {
         if (!isAllFiveAddressLinesNotEmpty(patches) && !isAllFiveAddressLinesEmpty(patches)) {
-            throw new ParameterValidationException("All five lines of address needs to be update");
+            throw new AmendmentValidationException("All five lines of address needs to be update");
         }
     }
 

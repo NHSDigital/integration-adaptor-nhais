@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -9,12 +10,16 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentAddressTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.AmendmentTranslator;
 
 import java.util.List;
 
 @Component
 public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatchTranslationItems> {
+
+    @Autowired
+    private AmendmentAddressTranslator amendmentAddressTranslator;
 
     @Autowired
     public JsonPatchToEdifactService(SequenceService sequenceService, TimestampService timestampService, OutboundStateRepository outboundStateRepository) {
@@ -27,7 +32,8 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
         translationItems.setSender(amendmentBody.getGpTradingPartnerCode());
         translationItems.setRecipient(getRecipientTradingPartnerCode(amendmentBody.getHealthcarePartyCode()));
         translationItems.setTransactionType(ReferenceTransactionType.Outbound.AMENDMENT);
-
+        List<Segment> addressAmendment = amendmentAddressTranslator.translate(amendmentBody);
+        translationItems.setSegments(addressAmendment);
         return convert(translationItems);
     }
 
