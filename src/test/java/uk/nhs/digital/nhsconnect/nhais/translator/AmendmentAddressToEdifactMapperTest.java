@@ -287,4 +287,22 @@ public class AmendmentAddressToEdifactMapperTest {
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
 
+    @Test
+    void whenRemoveForPostTown_thenThrowsFhirValidationException() {
+        AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
+        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
+        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
+        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
+        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
+        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
+
+        assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isExactlyInstanceOf(FhirValidationException.class)
+            .hasMessage("Post town ('address/0/line/3') cannot be removed");
+    }
 }
