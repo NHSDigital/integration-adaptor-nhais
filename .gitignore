@@ -19,6 +19,5 @@ nhais-env*.yaml
 .vscode/
 bin/
 /out/
-/test-scripts/export-env-vars.sh
 
 fake_mesh_dir

@@ -13,7 +13,7 @@ services:
       - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
-      - NHAIS_MESH_MAILBOX_ID=fake_mailboxId
+      - NHAIS_MESH_MAILBOX_ID=gp_mailbox
       - NHAIS_MESH_MAILBOX_PASSWORD=password
       - NHAIS_MESH_SHARED_KEY=SharedKey
       - NHAIS_MESH_HOST=https://fake-mesh:8829/messageexchange/
@@ -99,8 +99,8 @@ services:
           +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
           3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
           -----END RSA PRIVATE KEY-----
-      - NHAIS_MESH_RECIPIENT_CODES=XX11=fake_mailboxId
-          TES5=fake_mailboxId
+      - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=nhais_mailbox
+          TES5=nhais_mailbox
       - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
       - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
       - NHAIS_SCHEDULER_ENABLED=true
