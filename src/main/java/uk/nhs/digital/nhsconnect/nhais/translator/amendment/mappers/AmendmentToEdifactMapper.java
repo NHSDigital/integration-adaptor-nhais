@@ -38,6 +38,7 @@ public abstract class AmendmentToEdifactMapper {
         var invalidAmendmentPaths = amendmentPatches.stream()
             .flatMap(Optional::stream)
             .filter(AmendmentToEdifactMapper::amendmentPatchRequiringValue)
+            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getValue().get()))
             .map(AmendmentPatch::getPath)
             .collect(Collectors.toList());

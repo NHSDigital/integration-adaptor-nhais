@@ -21,7 +21,6 @@ import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPre
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

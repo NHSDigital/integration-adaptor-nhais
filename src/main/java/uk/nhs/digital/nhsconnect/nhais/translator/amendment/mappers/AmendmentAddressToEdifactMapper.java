@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -69,6 +70,13 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
     protected void validatePatches(JsonPatches patches) {
         checkIfThereAreAllFiveAddressLinesPatches(patches);
+        validateNonEmptyValues(List.of(
+            patches.getHouseName(),
+            patches.getNumberOrRoadName(),
+            patches.getLocality(),
+            patches.getPostTown(),
+            patches.getCounty(),
+            patches.getPostalCode()));
         checkNoPostTownPatchForRemoveOperation(patches);
         checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
     }
