@@ -11,14 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - MESH API Integration
-- Partial outbound (GP->HA) Deduction transaction
+- Partial outbound (GP->HA) Deduction and Removal transactions
     - Only a "stub" transaction - not all fields translated to EDIFACT
-- Partial outbound (GP->HA) Removal transaction
-    - Only a "stub" transaction - not all fields translated to EDIFACT
+    - Implemented:
+        - GP Trading Partner Code
+        - GP Code
+        - Destination HA Cipher
 - Partial outbound (GP->HA) Amendment transaction
     - Non-patch parameters
     - Patches for patient name fields
-- Partial outbound (GP->HA) Acceptance transaction
+- Additional outbound (GP->HA) Acceptance transaction fields
     - Added support for patient name and postcode fields
 - Support for inbound interchanges containing multiple messages and transactions
 - Documentation for most (Amendment excluded) inbound transactions
