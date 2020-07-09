@@ -14,12 +14,14 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -39,7 +41,7 @@ public class AmendmentToEdifactTranslator {
         segments.add(new ReferenceTransactionNumber());
         segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
         segments.add(new SegmentGroup(2));
-        segments.addAll(amendmentAddressToEdifactMapper.mapAllPatches(amendmentBody.getJsonPatches()));
+        amendmentAddressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
         segments.add(amendmentNameToEdifactMapper
             .map(amendmentBody)
             .orElseThrow(() -> new PatchValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));

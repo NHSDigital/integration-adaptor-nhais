@@ -19,7 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentAddressToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
 
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -56,7 +56,6 @@ public class AmendmentAddressToEdifactMapperTest {
         reset(amendmentBody, jsonPatches);
 
         lenient().when(amendmentBody.getNhsNumber()).thenReturn(NHS_NUMBER);
-        lenient().when(jsonPatches.getAmendmentBody()).thenReturn(amendmentBody);
         when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
     }
 
@@ -74,10 +73,10 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        List<Segment> segments = translator.map(amendmentBody);
+        Optional<Segment> segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonAddress.builder()
+        assertThat(segments).isNotEmpty().get()
+            .isEqualTo(PersonAddress.builder()
                 .addressLine1(HOUSE_NAME)
                 .addressLine2(ROAD_NAME)
                 .addressLine3(LOCALITY)
@@ -100,10 +99,10 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
 
-        List<Segment> segments = translator.map(amendmentBody);
+        Optional<Segment> segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonAddress.builder()
+        assertThat(segments).isNotEmpty().get()
+            .isEqualTo(PersonAddress.builder()
                 .addressLine1(REMOVE_INDICATOR)
                 .addressLine2(REMOVE_INDICATOR)
                 .addressLine3(REMOVE_INDICATOR)

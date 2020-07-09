@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
@@ -20,39 +22,29 @@ import org.springframework.stereotype.Component;
 public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
 
     @Override
-    protected List<Segment> mapAllPatches(JsonPatches patches) {
-        var personAddress = mapPersonAddress(patches);
-        return personAddress
-            .<List<Segment>>map(Collections::singletonList)
-            .orElse(Collections.emptyList());
-    }
-
-    private Optional<PersonAddress> mapPersonAddress(JsonPatches patches) {
-
-        if (!shouldCreateSegment(patches)) {
-            return Optional.empty();
-        }
+    Segment mapPatches(AmendmentBody amendmentBody) {
+        var patches = amendmentBody.getJsonPatches();
 
         var houseName = patches.getHouseName()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var numberOrRoadName = patches.getNumberOrRoadName()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var locality = patches.getLocality()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var postalTown = patches.getPostTown()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var county = patches.getCounty()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var postalCode = patches.getPostalCode()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
 
-        var personAddress = PersonAddress.builder()
+        return PersonAddress.builder()
             .addressLine1(houseName)
             .addressLine2(numberOrRoadName)
             .addressLine3(locality)
@@ -60,11 +52,11 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
             .addressLine5(county)
             .postalCode(postalCode)
             .build();
-
-        return Optional.of(personAddress);
     }
 
-    private boolean shouldCreateSegment(JsonPatches patches) {
+    @Override
+    boolean shouldCreateSegment(AmendmentBody amendmentBody) {
+        var patches = amendmentBody.getJsonPatches();
         return Stream.of(
             patches.getHouseName(),
             patches.getNumberOrRoadName(),
