@@ -25,6 +25,14 @@
       "valueString": "1968-03-05"
     },
     {
+      "name": "freeText",
+      "valueString": "GP NOTES GO HERE"
+    },
+    {
+      "name": "previousHaCipher",
+      "valueString": "LNS"
+    },
+    {
       "name": "patient",
       "resource": {
         "managingOrganization": {
@@ -54,11 +62,15 @@
             "family": "HOWES",
             "given": [
               "ALISON",
-              "J"
+              "J",
+              "L"
             ],
             "prefix": [
               "MRS"
             ]
+          },
+          {
+            "family": "PREVIOUS"
           }
         ],
         "gender": "female",
@@ -66,19 +78,40 @@
         "address": [
           {
             "line": [
-              "",
+              "HOUSE NAME",
               "13 FOX CRESCENT",
-              "",
+              "LOCALITY",
               "BROMLEY",
               "KENT"
             ],
             "postalCode": "BR1  7TQ"
+          },
+          {
+            "line": [
+              "PREVIOUS HOUSE",
+              "12 PREVIOUS LANE",
+              "PREVIOUS",
+              "HORSFORTH",
+              "LEEDS"
+            ]
           }
         ],
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
             "valueString": "LANCASHIRE"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+            "valueBoolean": true
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+            "valueString": "RT"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
+            "valueString": "DR BLACK"
           }
         ],
         "resourceType": "Patient"
