@@ -13,6 +13,11 @@
       "path": "/address/0/line/1"
     },
     {
+      "op": "add",
+      "path": "/address/0/line/3",
+      "value": "BROOMLEY"
+    },
+    {
       "op": "remove",
       "path": "/address/0/line/2"
     },

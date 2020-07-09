@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
@@ -80,9 +78,8 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
     protected void validatePatches(JsonPatches patches) {
         validatePostalCodePatchIfExists(patches);
-        if (checkIfThereAreAddressLinesPatches(patches)) {
+        if (checkIfThereAreAllFiveAddressLinesPatches(patches)) {
             checkNoPostTownPatchForRemoveOperation(patches);
-            checkAllFiveAddressLinesPresentForNonRemovalOperation(patches);
         }
     }
 
@@ -92,40 +89,20 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         }
     }
 
-    private boolean checkIfThereAreAddressLinesPatches(JsonPatches patches) {
+    private boolean checkIfThereAreAllFiveAddressLinesPatches(JsonPatches patches) {
         return Stream.of(
             patches.getHouseName(),
             patches.getNumberOrRoadName(),
             patches.getLocality(),
             patches.getPostTown(),
             patches.getCounty())
-            .anyMatch(Optional::isPresent);
+            .allMatch(Optional::isPresent);
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
         if (patches.getPostTown().isPresent() && patches.getPostTown().get().getOp() == AmendmentPatchOperation.REMOVE) {
             throw new FhirValidationException("Post town ('address/0/line/3') cannot be removed");
         }
-    }
-
-    private void checkAllFiveAddressLinesPresentForNonRemovalOperation(JsonPatches patches) {
-        var amendmentPatches = new ArrayList<Optional<AmendmentPatch>>();
-        amendmentPatches.add(patches.getHouseName());
-        amendmentPatches.add(patches.getNumberOrRoadName());
-        amendmentPatches.add(patches.getLocality());
-        amendmentPatches.add(patches.getCounty());
-
-        if(!checkIfOnlyRemovalOperations(amendmentPatches)) {
-            amendmentPatches.add(patches.getPostalCode());
-            validateNonEmptyValues(amendmentPatches);
-        }
-    }
-
-    private boolean checkIfOnlyRemovalOperations(List<Optional<AmendmentPatch>> amendmentPatches) {
-        return amendmentPatches.stream()
-            .map(Optional::get)
-            .map(AmendmentPatch::getOp)
-            .allMatch(a -> a.equals(AmendmentPatchOperation.REMOVE));
     }
 
 }
