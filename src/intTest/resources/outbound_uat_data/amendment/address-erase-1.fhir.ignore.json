@@ -1,25 +1,26 @@
 {
-  "nhsNumber": "9999999999",
+  "nhsNumber": "SEQ12",
   "gpCode": "2750922,295",
   "gpTradingPartnerCode": "TES5",
   "healthcarePartyCode": "XX1",
   "patches": [
     {
-      "op": "remove",
-      "path": "/address/0/line/0"
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "HOUSE NAME"
     },
     {
       "op": "remove",
       "path": "/address/0/line/1"
     },
     {
-      "op": "add",
-      "path": "/address/0/line/3",
-      "value": "BROOMLEY"
-    },
-    {
       "op": "remove",
       "path": "/address/0/line/2"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/3",
+      "value": "BROMLEY"
     },
     {
       "op": "remove",
