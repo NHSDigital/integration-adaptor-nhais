@@ -95,9 +95,9 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(null)));
         when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
+            .setOp(operation).setValue(null)));
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
+            .setOp(operation).setValue(null)));
 
         Optional<Segment> segments = translator.map(amendmentBody);
 
@@ -106,8 +106,8 @@ public class AmendmentAddressToEdifactMapperTest {
                 .addressLine1(HOUSE_NAME)
                 .addressLine2(ROAD_NAME)
                 .addressLine3(Strings.EMPTY)
-                .addressLine4(POST_TOWN)
-                .addressLine5(COUNTY)
+                .addressLine4(Strings.EMPTY)
+                .addressLine5(Strings.EMPTY)
                 .build());
     }
 
@@ -147,14 +147,14 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
         when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE
-                + "Locality: " + LOCALITY + ", Post Town: " + Strings.EMPTY + ", County: " + Strings.EMPTY);
+                + "Locality: " + LOCALITY + ", Post Town: null, County: null");
     }
 
     @Test
@@ -165,16 +165,16 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
         when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
         when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE +
-                "Locality: " + Strings.EMPTY + ", Post Town: " + POST_TOWN + ", County: " + Strings.EMPTY);
+                "Locality: null, Post Town: " + POST_TOWN + ", County: null");
     }
 
     @Test
@@ -185,16 +185,16 @@ public class AmendmentAddressToEdifactMapperTest {
         when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
         when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
         when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(Strings.EMPTY))));
+            .setOp(operation).setValue(null)));
         when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE +
-                "Locality: " + Strings.EMPTY + ", Post Town: " + Strings.EMPTY + ", County: " + COUNTY);
+                "Locality: null, Post Town: null, County: " + COUNTY);
     }
 
     @Test
@@ -287,21 +287,4 @@ public class AmendmentAddressToEdifactMapperTest {
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
 
-    @Test
-    void whenAllFiveAddressLinesAreEmptyStrings_thenThrowsFhirValidationException() {
-        AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(""))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(""))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(""))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(""))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(""))));
-
-        assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isExactlyInstanceOf(FhirValidationException.class);
-    }
 }

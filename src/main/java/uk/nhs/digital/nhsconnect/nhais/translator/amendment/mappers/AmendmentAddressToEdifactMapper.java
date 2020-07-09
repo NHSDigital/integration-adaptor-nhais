@@ -1,7 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
-import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -12,9 +10,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -72,7 +70,6 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     protected void validatePatches(JsonPatches patches) {
         checkIfThereAreAllFiveAddressLinesPatches(patches);
         checkNoPostTownPatchForRemoveOperation(patches);
-        checkHouseNameAndNumberOrRoadNameAreNotBlank(patches);
         checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
     }
 
@@ -101,38 +98,25 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         var countyString = countyAmendmentPatch == null ? "null" : countyAmendmentPatch.get();
         var postTownString = postTownAmendmentPatch == null ? "null" : postTownAmendmentPatch.get();
 
-        if(allStringsAreBlank(localityString, countyString, postTownString)) {
-            return;
-        }
-
-        if (anyIsBlank(localityString, countyString, postTownString)) {
+        if(!allValuesAreNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)
+            && !allValuesAreNotNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)) {
             throw new FhirValidationException("If at least one of the Address - Locality, Address - Post Town and Address County " +
                 "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: " +
                 "Locality: " + localityString + ", Post Town: " + postTownString + ", County: " + countyString);
         }
     }
 
-    private boolean allStringsAreBlank(String localityString, String countyString, String postTownString) {
-        return localityString.isBlank() && countyString.isBlank() && postTownString.isBlank();
+    private boolean allValuesAreNull(AmendmentValue locality, AmendmentValue county, AmendmentValue postTown) {
+        return locality == null && county == null && postTown == null;
     }
 
-    private boolean anyIsBlank(String localityString, String countyString, String postTownString) {
-        return localityString.isBlank() || countyString.isBlank() || postTownString.isBlank();
+    private boolean allValuesAreNotNull(AmendmentValue locality, AmendmentValue county, AmendmentValue postTown) {
+        return locality != null && county != null && postTown != null;
     }
 
     private boolean hasLocalityOrCountyRemovalOperation(JsonPatches patches) {
         return patches.getLocality().get().isRemoval()
         || patches.getCounty().get().isRemoval();
-    }
-
-    private void checkHouseNameAndNumberOrRoadNameAreNotBlank(JsonPatches patches) {
-        var houseNameValue = patches.getHouseName().get().getValue();
-        var numberOrRoadNameValue = patches.getHouseName().get().getValue();
-        if ((houseNameValue != null && houseNameValue.get().isBlank())
-            || (numberOrRoadNameValue != null && numberOrRoadNameValue.get().isBlank())
-        ) {
-            throw new FhirValidationException("House name and number or road name values cannot be blank");
-        }
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
