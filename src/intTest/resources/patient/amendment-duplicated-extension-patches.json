@@ -1,0 +1,37 @@
+{
+  "nhsNumber": "9999999999",
+  "gpCode": "8880232,G82697",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "AT LEAST ONE PATCH REQUIRED"
+    },
+    {
+      "op": "replace",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+        "valueBoolean": true
+      }
+    },
+    {
+      "op": "add",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+        "valueString": "AA"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+        "valueString": "BB"
+      }
+    }
+  ]
+}
