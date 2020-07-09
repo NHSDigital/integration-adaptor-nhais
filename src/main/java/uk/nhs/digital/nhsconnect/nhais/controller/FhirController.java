@@ -21,7 +21,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
 
-import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -41,7 +41,7 @@ public class FhirController {
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, transactionType);
         outboundQueueService.publish(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(meshMessage.getOperationId()));
+        headers.put(HttpHeaders.OPERATION_ID, List.of(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
     }
 

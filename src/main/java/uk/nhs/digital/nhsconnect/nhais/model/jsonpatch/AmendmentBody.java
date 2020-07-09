@@ -27,4 +27,3 @@ public class AmendmentBody {
         return new JsonPatches(this, patches);
     }
 }
-

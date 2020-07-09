@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -10,14 +9,14 @@ import java.util.Optional;
 public class JsonPatches {
 
     public static final String ALL_FORENAMES_PATH = "/name/0/given";
-    private static final String TITLE_PATH = "/name/0/prefix/0";
-    private static final String SURNAME_PATH = "/name/0/family";
-    private static final String PREVIOUS_SURNAME_PATH = "/name/1/family";
-    private static final String FIRST_FORENAME_PATH = "/name/0/given/0";
-    private static final String SECOND_FORENAME_PATH = "/name/0/given/1";
-    private static final String OTHER_FORENAMES_PATH = "/name/0/given/2";
-    private static final String SEX_PATH = "/gender";
-    private static final String BIRTH_DATE_PATH = "/birthDate";
+    public static final String TITLE_PATH = "/name/0/prefix/0";
+    public static final String SURNAME_PATH = "/name/0/family";
+    public static final String PREVIOUS_SURNAME_PATH = "/name/1/family";
+    public static final String FIRST_FORENAME_PATH = "/name/0/given/0";
+    public static final String SECOND_FORENAME_PATH = "/name/0/given/1";
+    public static final String OTHER_FORENAMES_PATH = "/name/0/given/2";
+    public static final String SEX_PATH = "/gender";
+    public static final String BIRTH_DATE_PATH = "/birthDate";
     private static final String HOUSE_NAME_PATH = "/address/0/line/0";
     private static final String NUMBER_OR_ROAD_NAME_PATH = "/address/0/line/1";
     private static final String LOCALITY = "/address/0/line/2";
@@ -25,8 +24,6 @@ public class JsonPatches {
     private static final String COUNTY_PATH = "/address/0/line/4";
     private static final String POSTAL_CODE_PATH = "/address/0/postalCode";
 
-    @Getter
-    private final AmendmentBody amendmentBody;
     private final List<AmendmentPatch> patches;
 
     public Optional<AmendmentPatch> getTitle() {

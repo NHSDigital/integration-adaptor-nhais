@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +13,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Example PNA+PER++++SU:PATTERSON'
@@ -30,6 +29,7 @@ public class PersonPreviousName extends Segment {
     public static final String QUALIFIER = "PER";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
+    @NonNull
     private final String previousFamilyName;
 
     public static PersonPreviousName fromString(String edifactString) {
@@ -59,9 +59,10 @@ public class PersonPreviousName extends Segment {
     public String getValue() {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
-        values.addAll(IntStream.range(0, 3)
-            .mapToObj(x -> StringUtils.EMPTY)
-            .collect(Collectors.toList()));
+
+        values.add(StringUtils.EMPTY);
+        values.add(StringUtils.EMPTY);
+        values.add(StringUtils.EMPTY);
 
         Optional.ofNullable(this.previousFamilyName)
             .filter(StringUtils::isNotBlank)
@@ -75,7 +76,9 @@ public class PersonPreviousName extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        //NOP
+        if (StringUtils.isBlank(this.previousFamilyName)) {
+            throw new EdifactValidationException("previousFamilyName is mandatory");
+        }
     }
 
     @Override

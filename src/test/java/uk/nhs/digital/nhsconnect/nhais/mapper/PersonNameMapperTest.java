@@ -1,21 +1,19 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Collections;
-import java.util.List;
-
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientName;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.Test;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonNameMapperTest {
 
@@ -29,7 +27,7 @@ class PersonNameMapperTest {
             .familyName(FAMILY_NAME)
             .build();
 
-        patient.setName(Collections.singletonList(patientName));
+        patient.setName(List.of(patientName));
         patient.setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
 
         Parameters parameters = new Parameters()
@@ -59,7 +57,7 @@ class PersonNameMapperTest {
             .title("title")
             .build();
 
-        patient.setName(Collections.singletonList(patientName));
+        patient.setName(List.of(patientName));
         patient.setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
 
         Parameters parameters = new Parameters()
@@ -101,7 +99,7 @@ class PersonNameMapperTest {
         HumanName humanName = new HumanName();
         humanName.setFamily(FAMILY_NAME);
 
-        patient.setName(Collections.singletonList(humanName));
+        patient.setName(List.of(humanName));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
