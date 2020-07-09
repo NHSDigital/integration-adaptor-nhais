@@ -259,6 +259,4 @@ public class AmendmentAddressToEdifactMapperTest {
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
-
-
 }

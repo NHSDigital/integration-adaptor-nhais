@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
