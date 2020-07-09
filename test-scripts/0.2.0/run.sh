@@ -4,7 +4,7 @@ LIGHT_GREEN='\033[1;32m'
 NC='\033[0m' 
 echo -e "${LIGHT_GREEN}Exporting environment variables${NC}" 
 
-source ../export-env-vars.sh
+source export-env-vars.sh
 
 echo -e "${LIGHT_GREEN}Stopping running containers${NC}" 
 docker-compose -f docker-compose.yml down
