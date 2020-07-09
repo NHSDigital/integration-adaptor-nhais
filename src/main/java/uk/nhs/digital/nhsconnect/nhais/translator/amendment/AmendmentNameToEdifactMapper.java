@@ -25,16 +25,16 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
         var surname = patches.getSurname()
             .map(this::getValue)
             .orElse(null);
-        var firstName = patches.getFirstForename()
+        var firstForename = patches.getFirstForename()
             .or(() -> patches
                 .getAllForenamesPath()
                 .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE))
             .map(this::getValue)
             .orElse(null);
-        var secondName = patches.getSecondForename()
+        var secondForename = patches.getSecondForename()
             .map(this::getValue)
             .orElse(null);
-        var otherName = patches.getOtherForenames()
+        var otherForenames = patches.getOtherForenames()
             .map(this::getValue)
             .orElse(null);
 
@@ -43,9 +43,9 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .title(title)
             .familyName(surname)
-            .forename(firstName)
-            .middleName(secondName)
-            .thirdForename(otherName)
+            .forename(firstForename)
+            .middleName(secondForename)
+            .thirdForename(otherForenames)
             .build();
         return Optional.of(personName);
     }

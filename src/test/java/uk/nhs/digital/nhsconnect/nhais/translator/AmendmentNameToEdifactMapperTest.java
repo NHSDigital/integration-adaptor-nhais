@@ -33,10 +33,10 @@ import static org.mockito.Mockito.when;
 class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String NHS_NUMBER = "1234";
-    private static final String FAMILY_NAME = "Smith";
+    private static final String SURNAME = "Smith";
     private static final String FIRST_FORENAME = "John";
     private static final String SECOND_FORENAME = "Adam";
-    private static final String OTHER_FORENAME = "Jacob";
+    private static final String OTHER_FORENAMES = "Jacob";
     private static final String TITLE = "Mr";
 
     private final AmendmentNameToEdifactMapper translator = new AmendmentNameToEdifactMapper();
@@ -60,13 +60,13 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     @MethodSource(value = "getAddOrReplaceEnums")
     void whenAddingOrReplacingAllFields_expectAllFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(FAMILY_NAME))));
+            .setOp(operation).setValue(AmendmentValue.from(SURNAME))));
         when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(FIRST_FORENAME))));
         when(jsonPatches.getSecondForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(SECOND_FORENAME))));
         when(jsonPatches.getOtherForenames()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(OTHER_FORENAME))));
+            .setOp(operation).setValue(AmendmentValue.from(OTHER_FORENAMES))));
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(TITLE))));
 
@@ -76,10 +76,10 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
                 .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-                .familyName(FAMILY_NAME)
+                .familyName(SURNAME)
                 .forename(FIRST_FORENAME)
                 .middleName(SECOND_FORENAME)
-                .thirdForename(OTHER_FORENAME)
+                .thirdForename(OTHER_FORENAMES)
                 .title(TITLE)
                 .build());
     }
