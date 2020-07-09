@@ -17,6 +17,22 @@
     {
       "op": "remove",
       "path": "/address/0/line/2"
+    },
+    {
+      "op": "replace",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+        "valueBoolean": true
+      }
+    },
+    {
+      "op": "add",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+        "valueString": "AA"
+      }
     }
   ]
 }

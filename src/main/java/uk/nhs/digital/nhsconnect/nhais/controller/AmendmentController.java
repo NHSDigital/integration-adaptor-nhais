@@ -68,10 +68,15 @@ public class AmendmentController {
         }
 
         var amendmentPaths = amendmentBody.getPatches().stream()
-            .map(AmendmentPatch::getPath)
-            .collect(Collectors.toSet());
+                .filter(AmendmentPatch::isNotExtension)
+                .map(AmendmentPatch::getPath)
+                .collect(Collectors.toSet());
 
-        if (amendmentBody.getPatches().size() != amendmentPaths.size()) {
+        var patchesWithoutExtensions = amendmentBody.getPatches().stream()
+                .filter(AmendmentPatch::isNotExtension)
+                .collect(Collectors.toSet());
+
+        if (patchesWithoutExtensions.size() != amendmentPaths.size()) {
             throw new AmendmentValidationException("Request contains path that is used multiple times. Each patch path must only be used once within the amendment request");
         }
     }

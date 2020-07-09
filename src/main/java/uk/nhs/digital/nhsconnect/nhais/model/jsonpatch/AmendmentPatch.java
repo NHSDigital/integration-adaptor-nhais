@@ -27,4 +27,8 @@ public class AmendmentPatch {
         }
         return value.get();
     }
+
+    public boolean isNotExtension() {
+        return !"/extension/0".equalsIgnoreCase(path);
+    }
 }
