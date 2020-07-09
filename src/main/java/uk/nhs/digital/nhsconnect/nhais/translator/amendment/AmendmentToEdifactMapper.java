@@ -44,7 +44,7 @@ public abstract class AmendmentToEdifactMapper {
         var invalidAmendmentPatches = new ArrayList<AmendmentPatch>();
         amendmentPatches.stream()
             .flatMap(Optional::stream)
-            .filter(AmendmentNameToEdifactMapper::amendmentPatchRequiringValue)
+            .filter(AmendmentToEdifactMapper::amendmentPatchRequiringValue)
             .forEach(amendmentPatch -> {
                 if (StringUtils.isBlank(amendmentPatch.getValue().get())) {
                     invalidAmendmentPatches.add(amendmentPatch);

@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -36,6 +35,7 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
         translationItems.setSender(amendmentBody.getGpTradingPartnerCode());
         translationItems.setRecipient(getRecipientTradingPartnerCode(amendmentBody.getHealthcarePartyCode()));
         translationItems.setTransactionType(ReferenceTransactionType.Outbound.AMENDMENT);
+
         return convert(translationItems);
     }
 

@@ -22,6 +22,7 @@ public class AmendmentToEdifactTranslator {
 
     private final AmendmentNameToEdifactMapper amendmentNameToEdifactTranslator;
     private final AmendmentPreviousNameToEdifactMapper amendmentPreviousNameToEdifactTranslator;
+    private final AmendmentAddressToEdifactMapper amendmentAddressToEdifactMapper;
 
     public List<Segment> translate(AmendmentBody amendmentBody) {
         var segments = new ArrayList<Segment>();
@@ -34,7 +35,7 @@ public class AmendmentToEdifactTranslator {
         segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
         segments.add(new SegmentGroup(2));
         segments.addAll(amendmentNameToEdifactTranslator.mapAllPatches(amendmentBody.getJsonPatches()));
-
+        segments.addAll(amendmentAddressToEdifactMapper.mapAllPatches(amendmentBody.getJsonPatches()));
         var previousNameSegments = amendmentPreviousNameToEdifactTranslator.mapAllPatches(amendmentBody.getJsonPatches());
         if (!previousNameSegments.isEmpty()) {
             segments.add(new SegmentGroup(2));
