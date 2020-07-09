@@ -42,13 +42,7 @@ public class MeshService {
         }
         if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
             LOGGER.info("Mesh messages scan started");
-            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
-            if(inboxMessageIds.isEmpty()){
-                LOGGER.info("No new MESH messages found");
-                return;
-            } else {
-                LOGGER.info("Found {} MESH messages in inbox", inboxMessageIds.size());
-            }
+            List<String> inboxMessageIds = downloadMessageIds();
             for (String messageId : inboxMessageIds) {
                 try {
                     InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
@@ -56,11 +50,22 @@ public class MeshService {
                     meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
                 } catch (Exception ex) {
                     LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
+                    //ignore exception and try to download next message
                 }
             }
             LOGGER.info("Mesh mailbox scanning finished");
         } else {
             LOGGER.info("Can't scan MESH mailbox - scan delay time hasn't passed yet or another instance did the scan");
         }
+    }
+
+    private List<String> downloadMessageIds() {
+        List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+        if(inboxMessageIds.isEmpty()){
+            LOGGER.info("No new MESH messages found");
+        } else {
+            LOGGER.info("Found {} MESH message(s) in inbox", inboxMessageIds.size());
+        }
+        return inboxMessageIds;
     }
 }

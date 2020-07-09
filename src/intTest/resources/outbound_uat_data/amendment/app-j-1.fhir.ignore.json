@@ -33,7 +33,7 @@
     {
       "op": "replace",
       "path": "/address/0/line/2",
-      "value": ""
+      "value": null
     },
     {
       "op": "replace",

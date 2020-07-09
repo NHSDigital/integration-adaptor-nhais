@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.acceptance;
 
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Parameters;
@@ -19,6 +19,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
 
 import java.util.List;
 import java.util.stream.Collectors;

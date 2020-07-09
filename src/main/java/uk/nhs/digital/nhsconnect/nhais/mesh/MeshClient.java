@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,21 +27,25 @@ import java.util.List;
 public class MeshClient {
 
     private final MeshConfig meshConfig;
-
     private final MeshRequests meshRequests;
+    private final MeshCypherDecoder meshCypherDecoder;
 
     @SneakyThrows
-    public MeshMessageId sendEdifactMessage(String messageContent, String recipient) {
+    public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
+        String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
+        LOGGER.debug("Sending EDIFACT message - recipient: {} MESH mailbox: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox);
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            var request = meshRequests.sendMessage(recipient);
-            request.setEntity(new StringEntity(messageContent));
+            var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
+            request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
             try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
                     throw new MeshApiConnectionException("Couldn't send MESH message.",
                         HttpStatus.ACCEPTED,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
-                return parseInto(MeshMessageId.class, response);
+                MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response);
+                LOGGER.debug("Successfully sent MESH message to mailbox {}. Message id: {}", recipientMailbox, meshMessageId.getMessageID());
+                return meshMessageId;
             }
         }
     }
@@ -80,6 +85,11 @@ public class MeshClient {
     public List<String> getInboxMessageIds() {
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             try (CloseableHttpResponse response = client.execute(meshRequests.getMessageIds())) {
+                if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+                    throw new MeshApiConnectionException("Couldn't receive MESH message list",
+                            HttpStatus.OK,
+                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                }
                 return Arrays.asList(parseInto(MeshMessages.class, response).getMessageIDs());
             }
         }

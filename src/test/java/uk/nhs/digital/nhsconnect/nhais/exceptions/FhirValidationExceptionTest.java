@@ -14,6 +14,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,7 @@ public class FhirValidationExceptionTest {
     public void testValidationResult_SingleMessage() {
         SingleValidationMessage message = new SingleValidationMessage();
         message.setMessage("the message");
-        when(validationResult.getMessages()).thenReturn(Collections.singletonList(message));
+        when(validationResult.getMessages()).thenReturn(List.of(message));
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation: the message", exception.getMessage());
         assertEquals(operationOutcome, exception.getOperationOutcome());

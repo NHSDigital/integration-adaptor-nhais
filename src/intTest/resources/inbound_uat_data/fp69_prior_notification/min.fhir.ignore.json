@@ -1,0 +1,63 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    },
+    {
+      "name": "fp69ReasonCode",
+      "valueString": "8"
+    },
+    {
+      "name": "fp69ExpiryDate",
+      "valueString": "1992-07-25"
+    }
+    {
+      "name": "patient",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "TE26"
+          }
+        ],
+        "name": [
+          {
+            "family": "STEVENS",
+            "given": [
+              "CHARLES"
+            ]
+          }
+        ],
+        "birthDate": "1940-05-23",
+        "address": [
+          {
+            "line": [
+              null,
+              null,
+              null,
+              "ORPINGTON",
+              null
+            ]
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
+            }
+          }
+        ],
+        "managingOrganization": {
+          "identifier": {
+            "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+            "value": "XX1"
+          }
+        }
+      }
+    }
+  ]
+}
