@@ -99,6 +99,7 @@ public class AmendmentController {
 
     private void validateNonEmptyValues(List<AmendmentPatch> amendmentPatches) {
         List<String> invalidAmendmentPaths = amendmentPatches.stream()
+            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getFormattedSimpleValue()))
             .map(AmendmentPatch::getPath)
             .collect(Collectors.toList());
