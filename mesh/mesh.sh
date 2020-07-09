@@ -3,6 +3,7 @@
 #source env.sh #custom configuration (i.e. OpentTest)
 source env.sh
 
+MAILBOX_ID="$2"
 TO_MAILBOX=${TO_MAILBOX:-${MAILBOX_ID}}
 TOKEN=''
 HOST="${HOST:-msg.opentest.hscic.gov.uk}"
@@ -76,11 +77,11 @@ then
   inbox
 elif [ "$1" = "send" ]
 then
-  send "$2"
+  send "$3"
 elif [ "$1" = "download" ]
 then
-  download "$2"
+  download "$3"
 elif [ "$1" = "ack" ]
 then
-  ack "$2"
+  ack "$3"
 fi

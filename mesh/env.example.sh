@@ -1,9 +1,6 @@
 # To use any of the optional configuration options uncomment that line. If you no longer want to use an optional
 # configuration option then comment that line. Don't use empty string '' or you'll likely to break things
 
-# Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail
-export MAILBOX_ID=''
-
 # The password for MAILBOX_ID can be found in your OpenTest welcome e-mail
 export MAILBOX_PASSWORD=''
 
