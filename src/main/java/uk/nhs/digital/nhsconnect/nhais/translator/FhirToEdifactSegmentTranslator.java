@@ -8,6 +8,10 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceBirthTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceFirstTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceImmigrantTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceTransferinTranslator;
 
 import java.util.List;
 

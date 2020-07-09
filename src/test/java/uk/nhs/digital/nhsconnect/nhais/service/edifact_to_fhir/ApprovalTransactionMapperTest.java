@@ -32,8 +32,7 @@ class ApprovalTransactionMapperTest {
     @Test
     void testMap(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
-
-        when(personName.getNhsNumber()).thenReturn(Optional.of(new NhsIdentifier(NHS_NUMBER)));
+        when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
 
         var parameters = new Parameters()
             .addParameter(new PatientParameter(new Patient()));

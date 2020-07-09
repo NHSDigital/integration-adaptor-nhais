@@ -1,20 +1,29 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
-@Value
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class AmendmentBody {
 
-    String nhsNumber;
-    String gpCode;
-    String gpTradingPartnerCode;
-    String healthcarePartyCode;
-    List<AmendmentPatch> patches;
+    private String nhsNumber;
+    private String gpCode;
+    private String gpTradingPartnerCode;
+    private String healthcarePartyCode;
+    private List<AmendmentPatch> patches;
 
     public JsonPatches getJsonPatches() {
         return new JsonPatches(patches);
     }
 }
-
