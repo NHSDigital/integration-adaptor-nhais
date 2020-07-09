@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -79,6 +80,32 @@ public class AmendmentAddressToEdifactMapperTest {
                 .addressLine1(HOUSE_NAME)
                 .addressLine2(ROAD_NAME)
                 .addressLine3(LOCALITY)
+                .addressLine4(POST_TOWN)
+                .addressLine5(COUNTY)
+                .build());
+    }
+
+    @Test
+    void whenAddressLineIsnull_expectNullToBeMapperAsEmptyEdifactString() {
+        AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
+        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
+        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
+        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(null)));
+        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
+        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
+
+        Optional<Segment> segments = translator.map(amendmentBody);
+
+        assertThat(segments).isNotEmpty().get()
+            .isEqualTo(PersonAddress.builder()
+                .addressLine1(HOUSE_NAME)
+                .addressLine2(ROAD_NAME)
+                .addressLine3(Strings.EMPTY)
                 .addressLine4(POST_TOWN)
                 .addressLine5(COUNTY)
                 .build());
@@ -258,5 +285,23 @@ public class AmendmentAddressToEdifactMapperTest {
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
+    }
+
+    @Test
+    void whenAllFiveAddressLinesAreEmptyStrings_thenThrowsFhirValidationException() {
+        AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
+        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(""))));
+        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(""))));
+        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(""))));
+        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(""))));
+        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from(""))));
+
+        assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isExactlyInstanceOf(FhirValidationException.class);
     }
 }

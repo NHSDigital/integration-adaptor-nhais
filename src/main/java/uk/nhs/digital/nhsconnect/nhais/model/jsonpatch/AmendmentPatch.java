@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.logging.log4j.util.Strings;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,5 +28,19 @@ public class AmendmentPatch {
             return REMOVE_INDICATOR;
         }
         return value.get();
+    }
+
+    public String getNullableFormattedSimpleValue() {
+        if (op == AmendmentPatchOperation.REMOVE) {
+            return REMOVE_INDICATOR;
+        }
+        if (value == null) {
+            return Strings.EMPTY;
+        }
+        return value.get();
+    }
+
+    public boolean isRemoval() {
+        return op == AmendmentPatchOperation.REMOVE;
     }
 }

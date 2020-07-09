@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -13,6 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,22 +27,22 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         var patches = amendmentBody.getJsonPatches();
 
         var houseName = patches.getHouseName()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
         var numberOrRoadName = patches.getNumberOrRoadName()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
         var locality = patches.getLocality()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
         var postalTown = patches.getPostTown()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
         var county = patches.getCounty()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
         var postalCode = patches.getPostalCode()
-            .map(AmendmentPatch::getFormattedSimpleValue)
+            .map(AmendmentPatch::getNullableFormattedSimpleValue)
             .orElse(null);
 
         return PersonAddress.builder()
@@ -68,16 +70,10 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
 
     @Override
     protected void validatePatches(JsonPatches patches) {
-        validatePostalCodePatchIfExists(patches);
         checkIfThereAreAllFiveAddressLinesPatches(patches);
         checkNoPostTownPatchForRemoveOperation(patches);
+        checkHouseNameAndNumberOrRoadNameAreNotBlank(patches);
         checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
-    }
-
-    private void validatePostalCodePatchIfExists(JsonPatches patches) {
-        if (patches.getPostalCode().isPresent()) {
-            validateNonEmptyValues(Collections.singletonList(patches.getPostalCode()));
-        }
     }
 
     private void checkIfThereAreAllFiveAddressLinesPatches(JsonPatches patches) {
@@ -96,32 +92,47 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         if(hasLocalityOrCountyRemovalOperation(patches)) {
             return;
         }
-        var localityString = patches.getLocality().get().getValue().get();
-        var countyString = patches.getCounty().get().getValue().get();
-        var postTownString = patches.getPostTown().get().getValue().get();
-        if (!allStringsAreEmptyOrBlank(localityString, countyString, postTownString)
-            && !allStringsAreNotEmptyNorBlank(localityString, countyString, postTownString)) {
+
+        var localityAmendmentPatch = patches.getLocality().get().getValue();
+        var countyAmendmentPatch = patches.getCounty().get().getValue();
+        var postTownAmendmentPatch = patches.getPostTown().get().getValue();
+
+        var localityString = localityAmendmentPatch == null ? "null" : localityAmendmentPatch.get();
+        var countyString = countyAmendmentPatch == null ? "null" : countyAmendmentPatch.get();
+        var postTownString = postTownAmendmentPatch == null ? "null" : postTownAmendmentPatch.get();
+
+        if(allStringsAreBlank(localityString, countyString, postTownString)) {
+            return;
+        }
+
+        if (anyIsBlank(localityString, countyString, postTownString)) {
             throw new FhirValidationException("If at least one of the Address - Locality, Address - Post Town and Address County " +
                 "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: " +
                 "Locality: " + localityString + ", Post Town: " + postTownString + ", County: " + countyString);
         }
     }
 
+    private boolean allStringsAreBlank(String localityString, String countyString, String postTownString) {
+        return localityString.isBlank() && countyString.isBlank() && postTownString.isBlank();
+    }
+
+    private boolean anyIsBlank(String localityString, String countyString, String postTownString) {
+        return localityString.isBlank() || countyString.isBlank() || postTownString.isBlank();
+    }
+
     private boolean hasLocalityOrCountyRemovalOperation(JsonPatches patches) {
-        return patches.getLocality().get().getOp() == AmendmentPatchOperation.REMOVE
-        || patches.getCounty().get().getOp() == AmendmentPatchOperation.REMOVE;
+        return patches.getLocality().get().isRemoval()
+        || patches.getCounty().get().isRemoval();
     }
 
-    private boolean allStringsAreEmptyOrBlank(String localityString, String countyString, String postTownString) {
-        return (localityString.isEmpty() || localityString.isBlank())
-            && (countyString.isEmpty() || countyString.isBlank())
-            && (postTownString.isEmpty() || postTownString.isBlank());
-    }
-
-    private boolean allStringsAreNotEmptyNorBlank(String localityString, String countyString, String postTownString) {
-        return !localityString.isEmpty() && !localityString.isBlank()
-            && !countyString.isEmpty() && !countyString.isBlank()
-            && !postTownString.isEmpty() && !postTownString.isBlank();
+    private void checkHouseNameAndNumberOrRoadNameAreNotBlank(JsonPatches patches) {
+        var houseNameValue = patches.getHouseName().get().getValue();
+        var numberOrRoadNameValue = patches.getHouseName().get().getValue();
+        if ((houseNameValue != null && houseNameValue.get().isBlank())
+            || (numberOrRoadNameValue != null && numberOrRoadNameValue.get().isBlank())
+        ) {
+            throw new FhirValidationException("House name and number or road name values cannot be blank");
+        }
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {

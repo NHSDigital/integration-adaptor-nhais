@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
@@ -91,6 +92,19 @@ public class AmendmentController {
         }
         if (CollectionUtils.isEmpty(amendmentBody.getPatches())) {
             throw new AmendmentValidationException("Request body has to contain at least one patch operation");
+        }
+
+        validateNonEmptyValues(amendmentBody.getPatches());
+    }
+
+    private void validateNonEmptyValues(List<AmendmentPatch> amendmentPatches) {
+        List<String> invalidAmendmentPaths = amendmentPatches.stream()
+            .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getFormattedSimpleValue()))
+            .map(AmendmentPatch::getPath)
+            .collect(Collectors.toList());
+
+        if (invalidAmendmentPaths.size() > 0) {
+            throw new PatchValidationException("Missing/empty values for: " + invalidAmendmentPaths);
         }
     }
 
