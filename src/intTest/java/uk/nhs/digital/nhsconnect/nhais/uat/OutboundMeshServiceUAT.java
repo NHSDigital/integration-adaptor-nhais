@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +55,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         var transactionType = category.split("/")[0];
 
         // send EDIFACT to API
-        sendToApi(testData.getFhir(), transactionType);
+        sendToApi(testData.getJson(), transactionType);
 
         // fetch EDIFACT message from MESH
         await().atMost(10, TimeUnit.SECONDS)
@@ -68,9 +69,15 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         assertMessageBody(meshClient.getEdifactMessage(messageIds.get(0)), testData.getEdifact());
     }
 
-    private void sendToApi(String fhirInput, String transactionType) throws Exception {
-        mockMvc.perform(post("/fhir/Patient/$nhais." + transactionType).contentType("application/json").content(fhirInput))
-            .andExpect(status().isAccepted());
+    private void sendToApi(String jsonInput, String transactionType) throws Exception {
+        if (transactionType.equals("amendment")) {
+            //have to use 9999999999 NHS number in all tests
+            mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(jsonInput))
+                    .andExpect(status().isAccepted());
+        } else {
+            mockMvc.perform(post("/fhir/Patient/$nhais." + transactionType).contentType("application/json").content(jsonInput))
+                    .andExpect(status().isAccepted());
+        }
     }
 
     private void assertMessageBody(InboundMeshMessage meshMessage, String expectedEdifact) {
