@@ -17,8 +17,9 @@
       "path": "/name/0/prefix/0"
     },
     {
-      "op": "remove",
-      "path": "/address/0/line/0"
+      "op": "replace",
+      "path": "/address/0/line/0",
+      "value": "HOUSE NAME"
     },
     {
       "op": "remove",
