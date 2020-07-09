@@ -41,10 +41,10 @@ public class AmendmentToEdifactTranslator {
         segments.add(new ReferenceTransactionNumber());
         segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
         segments.add(new SegmentGroup(2));
-        amendmentAddressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
         segments.add(amendmentNameToEdifactMapper
             .map(amendmentBody)
             .orElseThrow(() -> new PatchValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));
+        amendmentAddressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
         segments.addAll(amendmentPreviousNameToEdifactMapper
             .map(amendmentBody)
             .map(previousNameSegments -> List.of(

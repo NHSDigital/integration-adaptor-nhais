@@ -8,7 +8,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;

@@ -21,8 +21,8 @@ public abstract class AmendmentToEdifactMapper {
 
     public Optional<Segment> map(AmendmentBody amendmentBody) throws PatchValidationException {
         var patches = amendmentBody.getJsonPatches();
-        validatePatches(patches);
         if (shouldCreateSegment(amendmentBody)) {
+            validatePatches(patches);
             return Optional.of(mapPatches(amendmentBody));
         }
         return Optional.empty();

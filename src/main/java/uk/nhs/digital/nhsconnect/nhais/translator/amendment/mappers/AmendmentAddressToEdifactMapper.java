@@ -71,8 +71,8 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     protected void validatePatches(JsonPatches patches) {
         validatePostalCodePatchIfExists(patches);
         checkIfThereAreAllFiveAddressLinesPatches(patches);
-        checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
         checkNoPostTownPatchForRemoveOperation(patches);
+        checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
     }
 
     private void validatePostalCodePatchIfExists(JsonPatches patches) {
@@ -94,6 +94,9 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(JsonPatches patches) {
+        if(hasLocalityOrCountyRemovalOperation(patches)) {
+            return;
+        }
         var localityString = patches.getLocality().get().getValue().get();
         var countyString = patches.getCounty().get().getValue().get();
         var postTownString = patches.getPostTown().get().getValue().get();
@@ -103,6 +106,11 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
                 "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: " +
                 "Locality: " + localityString + ", Post Town: " + postTownString + ", County: " + countyString);
         }
+    }
+
+    private boolean hasLocalityOrCountyRemovalOperation(JsonPatches patches) {
+        return patches.getLocality().get().getOp() == AmendmentPatchOperation.REMOVE
+        || patches.getCounty().get().getOp() == AmendmentPatchOperation.REMOVE;
     }
 
     private boolean allStringsAreEmptyOrBlank(String localityString, String countyString, String postTownString) {
