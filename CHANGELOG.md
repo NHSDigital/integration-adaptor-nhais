@@ -6,10 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-07-09
+
+### Added
+
+- MESH API Integration
+- Partial outbound (GP->HA) Deduction transaction
+    - Only a "stub" transaction - not all fields translated to EDIFACT
+- Partial outbound (GP->HA) Removal transaction
+    - Only a "stub" transaction - not all fields translated to EDIFACT
+- Partial outbound (GP->HA) Amendment transaction
+    - Non-patch parameters
+    - Patches for patient name fields
+- Partial outbound (GP->HA) Acceptance transaction
+    - Added support for patient name and postcode fields
+- Support for inbound interchanges containing multiple messages and transactions
+- Documentation for most (Amendment excluded) inbound transactions
+
+### Fixed
+- NIAD-383: Inbound interchanges using control characters (' + : ?) in data fields are now handled correctly.
+
+    
 ## [0.1.0] - 2020-06-22
 
 ### Added
-- Outbound (GP-HA) Acceptance transaction
+- Outbound (GP->HA) Acceptance transaction
     - All four acceptance types (type 5 excluded)
     - Mandatory fields only
 - Inbound (HA->GP) Approval transaction
