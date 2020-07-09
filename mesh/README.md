@@ -13,6 +13,9 @@ accordingly)
 
 ## Usage
 
+For all commands `[mailbox_id]` is the id of the mailbox used for the request. The `MAILBOX_PASSWORD` environment
+variable must be correct for the given id.
+
 ### Authenticate
 
 MESH API docs says to do this first but our experience seems that its not needed.
@@ -23,31 +26,31 @@ MESH API docs says to do this first but our experience seems that its not needed
 
 Performs the "Check inbox" operation. The JSON response is printed to the console.
 
-    ./mesh.sh inbox
+    ./mesh.sh inbox [mailbox_id]
     
 ### Send a message
 
 Send a message with message content provided on the command line
 
-    ./mesh.sh send "my message content"
+    ./mesh.sh send [mailbox_id] "my message content"
     
 Send a message with message content provided by a file
 
-    ./mesh.sh send "@../src/intTest/resources/inbound_uat_data/approval/app-j-with-nhs-number.edifact.dat"
+    ./mesh.sh send [mailbox_id] "@../src/intTest/resources/inbound_uat_data/approval/app-j-with-nhs-number.edifact.dat"
     
 ### Download a message
 
 Download a message. Message content is printed to the console. The message id `20200603145356720373_0D25C7` 
 is used in this example. Get the message id from the response of the `inbox` or `send` commands.
 
-    ./mesh.sh download 20200603145356720373_0D25C7
+    ./mesh.sh download [mailbox_id] 20200603145356720373_0D25C7
 
 ### Acknowledge a message
 
 Acknowledge a message to remove it from your inbox. The message id `20200603145356720373_0D25C7` 
 is used in this example. Get the message id from the response of the `inbox` or `send` commands.
 
-    ./mesh.sh ack 20200603145356720373_0D25C7
+    ./mesh.sh ack [mailbox_id] 20200603145356720373_0D25C7
 
 ## Using with Fake MESH
 

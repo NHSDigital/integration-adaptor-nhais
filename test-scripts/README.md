@@ -11,9 +11,9 @@ via MESH.
 
 # How to use this image
 ## Pre-requisites
-To get running make sure you have an OpenTest environment setup.
 
-Note: OpenTest not required for release 0.1.0
+To get running make sure you have an OpenTest environment setup. A "fake-mesh" container is provided for local testing
+without OpenTest.
 
 ## Clone the repository
 ```bash
@@ -25,14 +25,29 @@ $ git clone https://github.com/nhsconnect/integration-adaptor-nhais.git
 $ cd integration-adaptor-nhais/test-scripts
 ```
 
-## Setup your OpenTest details
-Set up your OpenTest details using export-env-vars.sh.example as a template:
-```bash
-$ cp export-env-vars.sh.example export-env-vars.sh
-```
-Populate the variables in this file with the details provided when you signed up for OpenTest.
+Each release has its own folder. Use the scripts for the specific release being tested.
 
-Note: OpenTest not required for release 0.1.0
+```bash
+$ cd 0.2.0
+```
+
+## Configure the application
+
+Configure the application using a `...example.sh` file as a template:
+
+```bash
+$ cp export-env-vars.fake-mesh.example.sh export-env-vars.sh
+```
+
+which will work with the fake-mesh container provided
+
+**or**
+
+```bash
+$ cp export-env-vars.opentest.example.sh export-env-vars.sh
+```
+
+and populate the variables in this file with the details provided when you signed up for OpenTest.
 
 ## Start it up
 ```bash
