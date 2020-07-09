@@ -30,7 +30,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
-class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBase {
+class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String NHS_NUMBER = "1234";
     private static final String FAMILY_NAME = "Smith";
@@ -72,8 +72,8 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
 
         var segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonName.builder()
+        assertThat(segments).isNotEmpty().get()
+            .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
                 .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .familyName(FAMILY_NAME)
@@ -93,8 +93,8 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
 
         var segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonName.builder()
+        assertThat(segments).isNotEmpty().get()
+            .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
                 .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .forename(REMOVE_INDICATOR)
@@ -135,20 +135,29 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
 
     @Test
     void whenRemovingAnyForename_expectException(SoftAssertions softly) {
-        Stream.<Supplier<Optional<AmendmentPatch>>>of(
-            jsonPatches::getFirstForename,
-            jsonPatches::getSecondForename,
-            jsonPatches::getOtherForenames)
-            .forEach(patchSupplier -> {
-                reset(jsonPatches);
-                when(patchSupplier.get()).thenReturn(Optional.of(new AmendmentPatch()
-                    .setOp(AmendmentPatchOperation.REMOVE)
-                    .setPath("/some/json/path/")));
+        reset(jsonPatches);
+        when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(AmendmentPatchOperation.REMOVE)
+            .setPath(JsonPatches.FIRST_FORENAME_PATH)));
+        softly.assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isInstanceOf(FhirValidationException.class)
+            .hasMessage("Removing /name/0/given/0 is illegal. Use /name/0/given to remove all forenames instead");
 
-                softly.assertThatThrownBy(() -> translator.map(amendmentBody))
-                    .isInstanceOf(FhirValidationException.class)
-                    .hasMessage("Removing /some/json/path/ is illegal. Use /name/0/given to remove all forenames instead");
-            });
+        reset(jsonPatches);
+        when(jsonPatches.getSecondForename()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(AmendmentPatchOperation.REMOVE)
+            .setPath(JsonPatches.SECOND_FORENAME_PATH)));
+        softly.assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isInstanceOf(FhirValidationException.class)
+            .hasMessage("Removing /name/0/given/1 is illegal. Use /name/0/given to remove all forenames instead");
+
+        reset(jsonPatches);
+        when(jsonPatches.getOtherForenames()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(AmendmentPatchOperation.REMOVE)
+            .setPath(JsonPatches.OTHER_FORENAMES_PATH)));
+        softly.assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isInstanceOf(FhirValidationException.class)
+            .hasMessage("Removing /name/0/given/2 is illegal. Use /name/0/given to remove all forenames instead");
     }
 
     @ParameterizedTest
@@ -156,27 +165,27 @@ class AmendmentNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBas
     void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/title/")
+            .setPath(JsonPatches.TITLE_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/surname/")
+            .setPath(JsonPatches.SURNAME_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
         when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/first_forename/")
+            .setPath(JsonPatches.FIRST_FORENAME_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
         when(jsonPatches.getSecondForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/second_forename/")
+            .setPath(JsonPatches.SECOND_FORENAME_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
         when(jsonPatches.getOtherForenames()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/other_forename/")
+            .setPath(JsonPatches.OTHER_FORENAMES_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
-            .hasMessage("Invalid values for: [/title/, /surname/, /first_forename/, /second_forename/, /other_forename/]");
+            .hasMessage("Invalid values for: [/name/0/prefix/0, /name/0/family, /name/0/given/0, /name/0/given/1, /name/0/given/2]");
     }
 }

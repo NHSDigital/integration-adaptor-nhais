@@ -7,23 +7,23 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentPreviousNameToEdifactMapper extends AmendmentToEdifactMapper {
 
     @Override
-    protected List<Segment> mapAllPatches(JsonPatches patches) {
+    protected Optional<Segment> mapPatches(JsonPatches patches) {
         if (shouldCreatePersonPreviousNameSegment(patches)) {
             var personPreviousName = PersonPreviousName.builder()
                 .previousFamilyName(patches.getPreviousSurname().map(this::getValue).orElse(null))
                 .build();
 
-            return Collections.singletonList(personPreviousName);
+            return Optional.of(personPreviousName);
         }
-        return Collections.emptyList();
+        return Optional.empty();
     }
 
     private boolean shouldCreatePersonPreviousNameSegment(JsonPatches patches) {

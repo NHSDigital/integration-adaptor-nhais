@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 @Getter
 @Builder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class PersonName extends Segment {
 

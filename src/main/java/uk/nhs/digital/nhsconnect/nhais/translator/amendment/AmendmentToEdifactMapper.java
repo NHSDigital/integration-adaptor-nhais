@@ -22,16 +22,16 @@ public abstract class AmendmentToEdifactMapper {
             || amendmentPatch.getOp() == AmendmentPatchOperation.REPLACE;
     }
 
-    public List<Segment> map(AmendmentBody amendmentBody) throws FhirValidationException {
+    public Optional<Segment> map(AmendmentBody amendmentBody) throws FhirValidationException {
         var patches = amendmentBody.getJsonPatches();
         validatePatches(patches);
-        return mapAllPatches(patches);
+        return mapPatches(patches);
     }
 
     protected void validatePatches(JsonPatches patches) throws FhirValidationException {
     }
 
-    protected abstract List<Segment> mapAllPatches(JsonPatches patches);
+    protected abstract Optional<Segment> mapPatches(JsonPatches patches);
 
     protected String getValue(AmendmentPatch patch) {
         if (patch.getOp() == AmendmentPatchOperation.REMOVE) {
@@ -44,7 +44,7 @@ public abstract class AmendmentToEdifactMapper {
         var invalidAmendmentPatches = new ArrayList<AmendmentPatch>();
         amendmentPatches.stream()
             .flatMap(Optional::stream)
-            .filter(AmendmentNameToEdifactMapper::amendmentPatchRequiringValue)
+            .filter(AmendmentToEdifactMapper::amendmentPatchRequiringValue)
             .forEach(amendmentPatch -> {
                 if (StringUtils.isBlank(amendmentPatch.getValue().get())) {
                     invalidAmendmentPatches.add(amendmentPatch);

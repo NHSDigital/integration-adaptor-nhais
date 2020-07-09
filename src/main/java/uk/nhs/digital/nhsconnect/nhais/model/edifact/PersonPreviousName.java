@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,7 @@ public class PersonPreviousName extends Segment {
     public static final String QUALIFIER = "PER";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
+    @NonNull
     private final String previousFamilyName;
 
     public static PersonPreviousName fromString(String edifactString) {
@@ -75,7 +77,9 @@ public class PersonPreviousName extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        //NOP
+        if (StringUtils.isBlank(this.previousFamilyName)) {
+            throw new EdifactValidationException("previousFamilyName is mandatory");
+        }
     }
 
     @Override

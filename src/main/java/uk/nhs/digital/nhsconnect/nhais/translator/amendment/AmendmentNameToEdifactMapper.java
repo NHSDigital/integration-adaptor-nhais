@@ -10,7 +10,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
-    protected List<Segment> mapAllPatches(JsonPatches patches) {
+    protected Optional<Segment> mapPatches(JsonPatches patches) {
         var title = patches.getTitle()
             .map(this::getValue)
             .orElse(null);
@@ -48,7 +47,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .middleName(secondName)
             .thirdForename(otherName)
             .build();
-        return Collections.singletonList(personName);
+        return Optional.of(personName);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             patches.getSecondForename(),
             patches.getOtherForenames())
             .flatMap(Optional::stream)
-            .anyMatch(AmendmentNameToEdifactMapper::amendmentPatchRequiringValue);
+            .anyMatch(AmendmentToEdifactMapper::amendmentPatchRequiringValue);
 
         if (anyNameChange && patches.getAllForenamesPath().isPresent()) {
             throw new FhirValidationException("Illegal to modify forenames and remove all at the same time");

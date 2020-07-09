@@ -26,7 +26,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
-class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifactTestBase {
+class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String PREVIOUS_SURNAME = "Snow";
 
@@ -53,8 +53,8 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
 
         var segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonPreviousName.builder()
+        assertThat(segments).isPresent().get()
+            .isEqualTo(PersonPreviousName.builder()
                 .previousFamilyName(PREVIOUS_SURNAME)
                 .build());
     }
@@ -66,8 +66,8 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
 
         var segments = translator.map(amendmentBody);
 
-        assertThat(segments).usingFieldByFieldElementComparator()
-            .containsExactly(PersonPreviousName.builder()
+        assertThat(segments).isPresent().get()
+            .isEqualTo(PersonPreviousName.builder()
                 .previousFamilyName(REMOVE_INDICATOR)
                 .build());
     }
@@ -79,7 +79,7 @@ class AmendmentPreviousNameToEdifactTranslatorTest extends AmendmentFhirToEdifac
             .setOp(operation)
             .setPath("/previous_surname/")
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
-            ));
+        ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(FhirValidationException.class)
