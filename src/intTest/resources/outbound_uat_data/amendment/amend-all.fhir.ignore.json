@@ -1,5 +1,5 @@
 {
-  "nhsNumber": "SEQ12",
+  "nhsNumber": "1234567890",
   "gpCode": "2750922,295",
   "gpTradingPartnerCode": "TES5",
   "healthcarePartyCode": "XX1",
@@ -7,18 +7,43 @@
   "patches": [
     {
       "op": "replace",
+      "path": "/name/0/family",
+      "value": "ROBINSON-PATTERSON"
+    },
+    {
+      "op": "add",
+      "path": "/name/1/family",
+      "value": "PATTERSON"
+    },
+    {
+      "op": "replace",
+      "path": "/name/0/given/0",
+      "value": "SALLY"
+    },
+    {
+      "op": "add",
+      "path": "/name/0/given/1",
+      "value": "JANE"
+    },
+    {
+      "op": "replace",
+      "path": "/name/0/given/2",
+      "value": "MARY KIMBERLY"
+    },
+    {
+      "op": "add",
       "path": "/name/0/prefix/0",
       "value": "MRS"
     },
     {
       "op": "replace",
-      "path": "/name/0/family",
-      "value": "PATTERSON"
+      "path": "/gender",
+      "value": "unknown"
     },
     {
-      "op": "replace",
-      "path": "/name/1/family",
-      "value": "SMYTHE"
+      "op": "add",
+      "path": "/birthDate",
+      "value": "1980-05-23"
     },
     {
       "op": "replace",
@@ -26,17 +51,17 @@
       "value": "HOLLY COTTAGE"
     },
     {
-      "op": "replace",
+      "op": "add",
       "path": "/address/0/line/1",
       "value": "12 LONG LANE"
     },
     {
       "op": "replace",
       "path": "/address/0/line/2",
-      "value": null
+      "value": "LITTLE HAMLET"
     },
     {
-      "op": "replace",
+      "op": "add",
       "path": "/address/0/line/3",
       "value": "BROMLEY"
     },
@@ -46,7 +71,7 @@
       "value": "KENT"
     },
     {
-      "op": "replace",
+      "op": "add",
       "path": "/address/0/postalCode",
       "value": "BR5  4ER"
     },
@@ -59,7 +84,7 @@
       }
     },
     {
-      "op": "replace",
+      "op": "add",
       "path": "/extension/0",
       "value": {
         "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
