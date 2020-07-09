@@ -15,8 +15,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AmendmentPatch {
 
+    private static final String REMOVE_INDICATOR = "%";
+
     private AmendmentPatchOperation op;
     private String path;
     private AmendmentValue value;
 
+    public String getFormattedSimpleValue() {
+        if (op == AmendmentPatchOperation.REMOVE) {
+            return REMOVE_INDICATOR;
+        }
+        return value.get();
+    }
 }

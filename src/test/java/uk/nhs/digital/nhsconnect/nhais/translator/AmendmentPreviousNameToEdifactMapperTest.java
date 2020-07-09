@@ -9,14 +9,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentPreviousNameToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.Optional;
 
@@ -82,7 +82,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
         ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Invalid values for: [/previous_surname/]");
     }
 }

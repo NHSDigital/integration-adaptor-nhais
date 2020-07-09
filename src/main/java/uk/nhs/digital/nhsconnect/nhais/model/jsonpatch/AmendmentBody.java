@@ -24,7 +24,6 @@ public class AmendmentBody {
     private List<AmendmentPatch> patches;
 
     public JsonPatches getJsonPatches() {
-        return new JsonPatches(this, patches);
+        return new JsonPatches(patches);
     }
 }
-

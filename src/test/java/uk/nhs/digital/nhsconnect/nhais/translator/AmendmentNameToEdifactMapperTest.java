@@ -10,14 +10,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentNameToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -52,7 +52,6 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
         reset(amendmentBody, jsonPatches);
 
         lenient().when(amendmentBody.getNhsNumber()).thenReturn(NHS_NUMBER);
-        lenient().when(jsonPatches.getAmendmentBody()).thenReturn(amendmentBody);
         when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
     }
 
@@ -108,7 +107,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .setOp(AmendmentPatchOperation.REMOVE)));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing surnames is illegal");
     }
 
@@ -128,7 +127,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
                     .setOp(operation)));
 
                 softly.assertThatThrownBy(() -> translator.map(amendmentBody))
-                    .isInstanceOf(FhirValidationException.class)
+                    .isInstanceOf(PatchValidationException.class)
                     .hasMessage("Illegal to modify forenames and remove all at the same time");
             });
     }
@@ -140,7 +139,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .setOp(AmendmentPatchOperation.REMOVE)
             .setPath(JsonPatches.FIRST_FORENAME_PATH)));
         softly.assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing /name/0/given/0 is illegal. Use /name/0/given to remove all forenames instead");
 
         reset(jsonPatches);
@@ -148,7 +147,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .setOp(AmendmentPatchOperation.REMOVE)
             .setPath(JsonPatches.SECOND_FORENAME_PATH)));
         softly.assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing /name/0/given/1 is illegal. Use /name/0/given to remove all forenames instead");
 
         reset(jsonPatches);
@@ -156,7 +155,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .setOp(AmendmentPatchOperation.REMOVE)
             .setPath(JsonPatches.OTHER_FORENAMES_PATH)));
         softly.assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing /name/0/given/2 is illegal. Use /name/0/given to remove all forenames instead");
     }
 
@@ -185,7 +184,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .setValue(AmendmentValue.from(StringUtils.EMPTY))));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(FhirValidationException.class)
+            .isInstanceOf(PatchValidationException.class)
             .hasMessage("Invalid values for: [/name/0/prefix/0, /name/0/family, /name/0/given/0, /name/0/given/1, /name/0/given/2]");
     }
 }

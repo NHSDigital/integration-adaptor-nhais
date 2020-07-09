@@ -3,7 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
@@ -14,6 +14,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,10 +39,10 @@ public class AmendmentToEdifactTranslator {
         segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
         segments.add(new SegmentGroup(2));
         segments.add(amendmentNameToEdifactMapper
-            .mapPatches(amendmentBody.getJsonPatches())
-            .orElseThrow(() -> new FhirValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));
+            .map(amendmentBody)
+            .orElseThrow(() -> new PatchValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));
         segments.addAll(amendmentPreviousNameToEdifactMapper
-            .mapPatches(amendmentBody.getJsonPatches())
+            .map(amendmentBody)
             .map(previousNameSegments -> List.of(
                 new SegmentGroup(2),
                 previousNameSegments))

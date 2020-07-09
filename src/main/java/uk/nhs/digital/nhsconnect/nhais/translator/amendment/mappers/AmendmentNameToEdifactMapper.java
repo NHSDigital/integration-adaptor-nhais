@@ -1,11 +1,12 @@
-package uk.nhs.digital.nhsconnect.nhais.translator.amendment;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -18,28 +19,30 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
-    protected Optional<Segment> mapPatches(JsonPatches patches) {
+    Segment mapPatches(AmendmentBody amendmentBody) {
+        var patches = amendmentBody.getJsonPatches();
+
         var title = patches.getTitle()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var surname = patches.getSurname()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var firstForename = patches.getFirstForename()
             .or(() -> patches
                 .getAllForenamesPath()
                 .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE))
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var secondForename = patches.getSecondForename()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var otherForenames = patches.getOtherForenames()
-            .map(this::getValue)
+            .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
 
-        var personName = PersonName.builder()
-            .nhsNumber(patches.getAmendmentBody().getNhsNumber())
+        return PersonName.builder()
+            .nhsNumber(amendmentBody.getNhsNumber())
             .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .title(title)
             .familyName(surname)
@@ -47,13 +50,15 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .middleName(secondForename)
             .thirdForename(otherForenames)
             .build();
-        return Optional.of(personName);
     }
 
     @Override
-    protected void validatePatches(JsonPatches patches) {
-        super.validatePatches(patches);
+    boolean shouldCreateSegment(AmendmentBody amendmentBody) {
+        return true; // segment should always be created as it contains NHS
+    }
 
+    @Override
+    void validatePatches(JsonPatches patches) {
         validateNonEmptyValues(List.of(
             patches.getTitle(),
             patches.getSurname(),
@@ -74,7 +79,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .map(AmendmentPatch::getPath)
             .reduce((a, b) -> String.join(", ", a, b))
             .ifPresent(paths -> {
-                throw new FhirValidationException(String.format(
+                throw new PatchValidationException(String.format(
                     "Removing %s is illegal. Use %s to remove all forenames instead", paths, JsonPatches.ALL_FORENAMES_PATH));
             });
 
@@ -86,7 +91,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .anyMatch(AmendmentToEdifactMapper::amendmentPatchRequiringValue);
 
         if (anyNameChange && patches.getAllForenamesPath().isPresent()) {
-            throw new FhirValidationException("Illegal to modify forenames and remove all at the same time");
+            throw new PatchValidationException("Illegal to modify forenames and remove all at the same time");
         }
     }
 
@@ -94,7 +99,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
         if (patches.getSurname()
             .filter(amendmentPatch -> amendmentPatch.getOp() == AmendmentPatchOperation.REMOVE)
             .isPresent()) {
-            throw new FhirValidationException("Removing surnames is illegal");
+            throw new PatchValidationException("Removing surnames is illegal");
         }
     }
 }

@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
@@ -91,9 +89,8 @@ public class PersonName extends Segment {
         values.add(Optional.ofNullable(this.nhsNumber)
             .map(value -> value + ":" + this.patientIdentificationType.getCode())
             .orElse(StringUtils.EMPTY));
-        values.addAll(IntStream.range(0, 2)
-            .mapToObj(x -> StringUtils.EMPTY)
-            .collect(Collectors.toList()));
+        values.add(StringUtils.EMPTY);
+        values.add(StringUtils.EMPTY);
         values.add(Optional.ofNullable(this.familyName)
             .map(value -> "SU:" + value)
             .orElse(StringUtils.EMPTY));

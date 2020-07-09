@@ -13,8 +13,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Example PNA+PER++++SU:PATTERSON'
@@ -61,9 +59,10 @@ public class PersonPreviousName extends Segment {
     public String getValue() {
         List<String> values = new ArrayList<>();
         values.add(QUALIFIER);
-        values.addAll(IntStream.range(0, 3)
-            .mapToObj(x -> StringUtils.EMPTY)
-            .collect(Collectors.toList()));
+
+        values.add(StringUtils.EMPTY);
+        values.add(StringUtils.EMPTY);
+        values.add(StringUtils.EMPTY);
 
         Optional.ofNullable(this.previousFamilyName)
             .filter(StringUtils::isNotBlank)

@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -24,8 +23,6 @@ public class JsonPatches {
     public static final String COUNTY_PATH = "/address/0/line/3";
     public static final String POSTAL_CODE_PATH = "/address/0/postalCode";
 
-    @Getter
-    private final AmendmentBody amendmentBody;
     private final List<AmendmentPatch> patches;
 
     public Optional<AmendmentPatch> getTitle() {
