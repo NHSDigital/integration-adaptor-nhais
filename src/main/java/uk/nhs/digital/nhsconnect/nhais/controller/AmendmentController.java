@@ -26,7 +26,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,16 +38,16 @@ public class AmendmentController {
     private final OutboundQueueService outboundQueueService;
     private final ObjectMapper objectMapper;
 
-    @PatchMapping(path= "/fhir/Patient/{nhsNumber}", consumes="application/json", produces="application/json")
+    @PatchMapping(path = "/fhir/Patient/{nhsNumber}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> amendment(@PathVariable(name= "nhsNumber") String nhsNumber, @RequestBody String body) {
+    public ResponseEntity<?> amendment(@PathVariable(name = "nhsNumber") String nhsNumber, @RequestBody String body) {
         AmendmentBody amendmentBody = parseRequest(body);
         LOGGER.info("Amendment request: {}", amendmentBody);
         validateRequest(nhsNumber, amendmentBody);
         OutboundMeshMessage meshMessage = jsonPatchToEdifactService.convertToEdifact(amendmentBody);
         outboundQueueService.publish(meshMessage);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put(HttpHeaders.OPERATION_ID, Collections.singletonList(meshMessage.getOperationId()));
+        headers.put(HttpHeaders.OPERATION_ID, List.of(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
     }
 
@@ -68,8 +68,8 @@ public class AmendmentController {
         }
 
         var amendmentPaths = amendmentBody.getPatches().stream()
-                .map(AmendmentPatch::getPath)
-                .collect(Collectors.toSet());
+            .map(AmendmentPatch::getPath)
+            .collect(Collectors.toSet());
 
         if (amendmentBody.getPatches().size() != amendmentPaths.size()) {
             throw new AmendmentValidationException("Request contains path that is used multiple times. Each patch path must only be used once within the amendment request");

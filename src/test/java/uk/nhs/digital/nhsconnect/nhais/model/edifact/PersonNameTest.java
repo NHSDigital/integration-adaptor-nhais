@@ -47,7 +47,7 @@ public class PersonNameTest {
 
     @Test
     public void When_BuildingEmptyName_Then_ReturnEmptySegment() {
-        var expectedValue = "PNA+PAT+'";
+        var expectedValue = "PNA+PAT'";
 
         var personName = PersonName.builder()
             .build();

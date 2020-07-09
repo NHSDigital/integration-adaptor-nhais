@@ -1,16 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.utils;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.Collections;
-import java.util.List;
-
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FhirElementsUtilsTest {
 
@@ -38,7 +37,7 @@ class FhirElementsUtilsTest {
         Identifier identifier = new Identifier();
         identifier.setValue("");
         reference.setIdentifier(identifier);
-        List<Reference> generalPractitioners = Collections.singletonList(new Reference());
+        List<Reference> generalPractitioners = List.of(new Reference());
         patient.setGeneralPractitioner(generalPractitioners);
         assertThatThrownBy(() -> FhirElementsUtils.checkGpCodePresence(patient))
             .isExactlyInstanceOf(FhirValidationException.class);
