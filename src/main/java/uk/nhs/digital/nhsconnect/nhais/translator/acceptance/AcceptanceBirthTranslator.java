@@ -23,6 +23,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,6 +78,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //NAD+PAT
             personAddressMapper)
             .map(mapper -> mapper.map(parameters))
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 }
