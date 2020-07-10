@@ -97,10 +97,10 @@ public abstract class MeshServiceBaseTest {
         return jmsTemplate.receive(DLQ_PREFIX + meshInboundQueueName);
     }
 
-    protected IBaseResource parseGpInboundQueueMessage(Message message) throws JMSException {
-        var body = parseTextMessage(message);
-        return new FhirParser().parse(body);
-    }
+//    protected IBaseResource parseGpInboundQueueMessage(Message message) throws JMSException {
+//        var body = parseTextMessage(message);
+//        return new FhirParser().parse(body);
+//    }
 
     protected String parseTextMessage(Message message) throws JMSException {
         if (message == null) {

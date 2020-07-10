@@ -44,7 +44,7 @@ public class EdifactToPatchService {
     }
 
     private String getHealthcarePartyCode(Transaction transaction) {
-        return transaction.getMessage().getInterchange().getInterchangeHeader().getSender();
+        return transaction.getMessage().getHealthAuthorityNameAndAddress().getIdentifier();
     }
 
     private String getGpTradingPartnerCode(Transaction transaction) {
@@ -52,7 +52,7 @@ public class EdifactToPatchService {
     }
 
     private String getGpCode(Transaction transaction) {
-        return transaction.getGpNameAndAddress().getCode();
+        return transaction.getGpNameAndAddress().getIdentifier();
     }
 
     private String getNhsNumber(Transaction transaction) {
