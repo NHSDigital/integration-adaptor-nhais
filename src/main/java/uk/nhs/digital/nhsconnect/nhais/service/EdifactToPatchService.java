@@ -38,6 +38,7 @@ public class EdifactToPatchService {
     }
 
     private List<AmendmentPatch> getPatches(Transaction transaction) {
+        //TODO: throw EdifactValidationException if this produces empty list but only after at least 1 amendment story is completed
         return patchTransactionMappers.stream()
             .map(patchTransactionMapper -> patchTransactionMapper.map(transaction))
             .collect(Collectors.toList());
