@@ -55,6 +55,9 @@ public class AmendmentControllerIntegrationTest {
     @Value("classpath:patient/amendment-invalid-json-structure.json")
     private Resource invalidJsonStructure;
 
+    @Value("classpath:patient/amendment-duplicated-extension-patches.json")
+    private Resource duplicateExtensionPatches;
+
     @Test
     void whenNotJson_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
@@ -117,6 +120,13 @@ public class AmendmentControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(invalidJsonStructure.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDuplicateExtensionPatches_thenReturns400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(duplicateExtensionPatches.getFile().toPath()));
+        mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 
 

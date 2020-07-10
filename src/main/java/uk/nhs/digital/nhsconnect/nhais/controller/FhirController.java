@@ -35,7 +35,7 @@ public class FhirController {
 
     @PostMapping(path = "/fhir/Patient/{transactionTypeParam}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> acceptance(@PathVariable String transactionTypeParam, @RequestBody String body) throws FhirValidationException {
+    public ResponseEntity<?> fromFhirToEdifact(@PathVariable String transactionTypeParam, @RequestBody String body) throws FhirValidationException {
         Parameters parameters = fhirParser.parseParameters(body);
         ReferenceTransactionType.Outbound transactionType = new TransactionTypeMapper().mapTransactionType(transactionTypeParam);
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, transactionType);
