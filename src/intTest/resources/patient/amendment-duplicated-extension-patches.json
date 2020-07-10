@@ -1,22 +1,13 @@
 {
-  "nhsNumber": "1234567890",
-  "gpCode": "2750922,295",
+  "nhsNumber": "9999999999",
+  "gpCode": "8880232,G82697",
   "gpTradingPartnerCode": "TES5",
   "healthcarePartyCode": "XX1",
   "patches": [
     {
-      "op": "add",
-      "path": "/address/0/line/0",
-      "value": "LINE 1"
-    },
-    {
       "op": "replace",
-      "path": "/address/0/line/1",
-      "value": "LINE 2"
-    },
-    {
-      "op": "remove",
-      "path": "/address/0/line/2"
+      "path": "/address/0/line/0",
+      "value": "AT LEAST ONE PATCH REQUIRED"
     },
     {
       "op": "replace",
@@ -32,6 +23,14 @@
       "value": {
         "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
         "valueString": "AA"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+        "valueString": "BB"
       }
     }
   ]

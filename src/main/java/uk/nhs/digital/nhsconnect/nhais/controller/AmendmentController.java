@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.JsonPatchToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.service.OutboundQueueService;
@@ -67,12 +68,37 @@ public class AmendmentController {
             throw new AmendmentValidationException("Request body has different NHS number than provided in request path");
         }
 
-        var amendmentPaths = amendmentBody.getPatches().stream()
-            .map(AmendmentPatch::getPath)
-            .collect(Collectors.toSet());
+        validateDuplicatedPaths(amendmentBody.getPatches());
+        validateDuplicatedExtensions(amendmentBody.getPatches());
+    }
 
-        if (amendmentBody.getPatches().size() != amendmentPaths.size()) {
+    private void validateDuplicatedPaths(List<AmendmentPatch> patches) {
+        var amendmentPaths = patches.stream()
+                .filter(AmendmentPatch::isNotExtension)
+                .map(AmendmentPatch::getPath)
+                .collect(Collectors.toSet());
+
+        var patchesWithoutExtensions = patches.stream()
+                .filter(AmendmentPatch::isNotExtension)
+                .collect(Collectors.toSet());
+
+        if (patchesWithoutExtensions.size() != amendmentPaths.size()) {
             throw new AmendmentValidationException("Request contains path that is used multiple times. Each patch path must only be used once within the amendment request");
+        }
+    }
+
+    private void validateDuplicatedExtensions(List<AmendmentPatch> patches) {
+        var extensionTypes = patches.stream()
+                .filter(AmendmentPatch::isExtension)
+                .map(AmendmentPatch::getValue)
+                .map(AmendmentValue::getClass)
+                .collect(Collectors.toSet());
+
+        var allExtensionPatches = patches.stream()
+                .filter(AmendmentPatch::isExtension)
+                .collect(Collectors.toList());
+        if (allExtensionPatches.size() != extensionTypes.size()) {
+            throw new AmendmentValidationException("Request contains extension that is used multiple times. Each extension patch must only be used once within the amendment request");
         }
     }
 
