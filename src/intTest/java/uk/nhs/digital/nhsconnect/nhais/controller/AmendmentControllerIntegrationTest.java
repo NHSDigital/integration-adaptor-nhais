@@ -49,11 +49,17 @@ public class AmendmentControllerIntegrationTest {
     @Value("classpath:patient/amendment-missing-patches.json")
     private Resource missingPatches;
 
+    @Value("classpath:patient/amendment-empty-patch-object.json")
+    private Resource emptyPatchObject;
+
     @Value("classpath:patient/amendment-missing-gp-trading-partner-code.json")
     private Resource missingGpTradingPartnerCode;
 
     @Value("classpath:patient/amendment-invalid-json-structure.json")
     private Resource invalidJsonStructure;
+
+    @Value("classpath:patient/amendment-duplicated-extension-patches.json")
+    private Resource duplicateExtensionPatches;
 
     @Test
     void whenNotJson_thenReturns400() throws Exception {
@@ -63,14 +69,14 @@ public class AmendmentControllerIntegrationTest {
     }
 
     @Test
-    void whenDuplicatedPatches_thenRerturns400() throws Exception {
+    void whenDuplicatedPatches_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(duplicatedPatches.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingHealthcarePartyCode_thenRerturns400() throws Exception {
+    void whenMissingHealthcarePartyCode_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingHealthcarePartyCode.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
@@ -80,6 +86,13 @@ public class AmendmentControllerIntegrationTest {
     @Test
     void whenEmptyPatches_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(emptyPatches.getFile().toPath()));
+        mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenEmptyPatchObject_thenReturns400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(emptyPatchObject.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
@@ -117,6 +130,13 @@ public class AmendmentControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(invalidJsonStructure.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDuplicateExtensionPatches_thenReturns400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(duplicateExtensionPatches.getFile().toPath()));
+        mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 
 

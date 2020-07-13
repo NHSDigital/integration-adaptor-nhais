@@ -136,4 +136,81 @@ BLANK - the value is not used by this transaction type
 
 ## Messages with JSONPatch Data Type
 
-Amendment transaction uses a JSONPatch data type instead of FHIR
+### Amendment
+
+#### Data Items for Amendment
+
+The inbound Amendment transaction uses a JSONPatch data type instead of FHIR. The format is very similar to outbound 
+amendments with two exceptions.
+
+* The NHAIS system may advise a new NHS number
+* Free text notes are never advised
+
+| GP Links Data Item                        | Amendment  | Erasable |
+|-------------------------------------------|------------|----------|
+| Existing GP Code                          | REQUIRED   | n/a      |
+| GP Trading Partner Code                   | REQUIRED   | n/a      |
+| Sending HA Cipher                         | REQUIRED   | n/a      |
+| Existing NHS Number                       | REQUIRED   | n/a      |
+| Amended NHS Number                        | OPTIONAL   | NO       |
+| New Surname                               | OPTIONAL   | NO       |
+| New Previous Surname                      | OPTIONAL   | YES      |
+| New First Forename                        | OPTIONAL   | YES (1)  |
+| New Second Forename                       | OPTIONAL   | YES (1)  |
+| New Other Forenames                       | OPTIONAL   | YES (1)  |
+| New Title                                 | OPTIONAL   | YES      |
+| New Sex                                   | OPTIONAL   | NO       |
+| New Date of Birth                         | OPTIONAL   | NO       |
+| New Address - House Name                  | OPTIONAL   | YES      |
+| New Address - Number/Road Name            | OPTIONAL   | YES      |
+| New Address - Locality                    | OPTIONAL   | YES      |
+| New Address - Post Town                   | OPTIONAL   | NO       |
+| New Address - County                      | OPTIONAL   | YES      |
+| New Address - Postcode                    | OPTIONAL   | YES      |
+| New Drugs Dispensed Marker                | OPTIONAL   | YES (2)  |
+| New RPP Mileage                           | DEPRECATED | n/a      |
+| New Blocked Route/Special District Marker | DEPRECATED | n/a      |
+| New Walking Units                         | DEPRECATED | n/a      |
+| New Residential Institute Code            | OPTIONAL   | YES (3)  |
+
+(1) Forenames cannot be erased individually. The entire group of forenames will be erased with a remove operation on
+the path `/name/0/given`.
+
+(2) The Drugs Dispensed Marker is considered "erased" when the adaptor provides a replace operation for the entire 
+extension with the "valueBoolean" value of false. The path will always be `/extension/0`.
+
+(3) The Residential Institute Code is considered "erased" the adaptor provides a replace operation for the entire 
+extension with "valueString" JSON value of null. The path will always be `/extension/0`.
+
+#### Data Item Mappings for Amendment
+
+| Data Item                             | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
+|---------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
+| Existing GP Code                      | gpCode               |                                          |                                            |                                                                     |
+| GP Trading Partner Code               | gpTradingPartnerCode |                                          |                                            |                                                                     |
+| Destination HA Cipher                 | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
+| NHS Number                            | nhsNumber            |                                          |                                            |                                                                     |
+| Amended NHS Number                    |                      | /identifier/0/value                      |                                            |                                                                     |
+| New Surname                           |                      | /name/0/family                           |                                            |                                                                     |
+| New Previous Surname                  |                      | /name/1/family                           |                                            |                                                                     |
+| New First Forename                    |                      | /name/0/given/0 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Second Forename                   |                      | /name/0/given/1 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Other Forenames                   |                      | /name/0/given/2 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Title                             |                      | /name/0/prefix/0                         |                                            |                                                                     |
+| New Sex                               |                      | /gender                                  | male/female/unknown/other                  |                                                                     |
+| New Date of Birth                     |                      | /birthDate                               | ISO 8601 Date                              |                                                                     |
+| New Address - House Name              |                      | /address/0/line/0                        | (2)                                        |                                                                     |
+| New Address - Number/Road Name        |                      | /address/0/line/1                        | (2)                                        |                                                                     |
+| New Address - Locality                |                      | /address/0/line/2                        | (2)                                        |                                                                     |
+| New Address - Post Town               |                      | /address/0/line/3                        |                                            |                                                                     |
+| New Address - County                  |                      | /address/0/line/4                        | (2)                                        |                                                                     |
+| New Address - Postcode                |                      | /address/0/postalCode                    |                                            |                                                                     |
+| Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                 |
+| RPP Mileage                           | N/A                  |                                          |                                            |                                                                     |
+| Blocked Route/Special District Marker | N/A                  |                                          |                                            |                                                                     |
+| Walking Units                         | N/A                  |                                          |                                            |                                                                     |
+| Residential Institute Code            |                      | /extension/0                             | (1)                                        | The value 'null' erases the Residential Institute Code              |
+
+(1) The value will be the entire extension object and the path will always be /extension/0. Use the value of "url" to match the extension.
+
+(2) Use JSON null for blank address lines. Either the "House Name" or the "Number/Road Name" MUST be present.
