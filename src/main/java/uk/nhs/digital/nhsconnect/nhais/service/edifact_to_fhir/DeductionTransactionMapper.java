@@ -6,7 +6,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 
 @Component
-public class DeductionTransactionMapper implements TransactionMapper {
+public class DeductionTransactionMapper implements FhirTransactionMapper {
     @Override
     public void map(Parameters parameters, Transaction transaction) {
         //TODO: to be implemented

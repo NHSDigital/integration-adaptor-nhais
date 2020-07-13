@@ -1,8 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
+import uk.nhs.digital.nhsconnect.nhais.utils.ObjectSerializer;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InboundGpSystemService {
 
-    private final FhirParser fhirParser;
+    private final ObjectSerializer serializer;
     private final JmsTemplate jmsTemplate;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
@@ -26,7 +27,7 @@ public class InboundGpSystemService {
 
     public void publishToSupplierQueue(DataToSend dataToSend) {
 
-        String jsonMessage = fhirParser.encodeToString(dataToSend.getParameters());
+        String jsonMessage = serializer.serialize(dataToSend.getContent());
         LOGGER.debug("Encoded FHIR to string: {}", jsonMessage);
         jmsTemplate.send(gpSystemInboundQueueName, session -> {
             var message = session.createTextMessage(jsonMessage);
@@ -37,11 +38,24 @@ public class InboundGpSystemService {
         LOGGER.debug("Published message to inbound gp system queue");
     }
 
-    @Builder
-    @Getter
     public static class DataToSend {
-        private final Parameters parameters;
-        private final String operationId;
-        private final ReferenceTransactionType.TransactionType transactionType;
+        @Getter
+        private Object content;
+        @Getter
+        @Setter
+        private String operationId;
+        @Getter
+        @Setter
+        private ReferenceTransactionType.TransactionType transactionType;
+
+        public DataToSend setContent(Parameters parameters) {
+            this.content = parameters;
+            return this;
+        }
+
+        public DataToSend setContent(AmendmentBody amendmentBody) {
+            this.content = amendmentBody;
+            return this;
+        }
     }
 }

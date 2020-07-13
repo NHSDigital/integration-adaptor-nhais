@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.utils.ObjectSerializer;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class InboundGpSystemServiceTest {
 
     @Mock
-    FhirParser fhirParser;
+    ObjectSerializer serializer;
 
     @Mock
     JmsTemplate jmsTemplate;
@@ -45,20 +45,26 @@ public class InboundGpSystemServiceTest {
         Parameters parameters = new Parameters();
         String operationId = "123";
         ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.Outbound.ACCEPTANCE;
-        String jsonEncodedFhir = "{\"resourceType\":\"Parameters\"}";
-        when(fhirParser.encodeToString(parameters)).thenReturn(jsonEncodedFhir);
 
-        inboundGpSystemService.publishToSupplierQueue(new InboundGpSystemService.DataToSend(parameters, operationId, transactionType));
+        var dataToSend = new InboundGpSystemService.DataToSend()
+            .setOperationId(operationId)
+            .setTransactionType(transactionType)
+            .setContent(parameters);
+
+        String serializedData = "some_serialized_data";
+        when(serializer.serialize(parameters)).thenReturn(serializedData);
+
+        inboundGpSystemService.publishToSupplierQueue(dataToSend);
 
         var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
 
         verify(jmsTemplate).send(eq(gpSystemInboundQueueName), messageCreatorArgumentCaptor.capture());
 
-        when(session.createTextMessage(jsonEncodedFhir)).thenReturn(textMessage);
+        when(session.createTextMessage(serializedData)).thenReturn(textMessage);
 
         messageCreatorArgumentCaptor.getValue().createMessage(session);
 
-        verify(session).createTextMessage(eq(jsonEncodedFhir));
+        verify(session).createTextMessage(eq(serializedData));
         verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
         verify(textMessage).setStringProperty(eq("TransactionType"), eq(transactionType.name().toLowerCase()));
     }

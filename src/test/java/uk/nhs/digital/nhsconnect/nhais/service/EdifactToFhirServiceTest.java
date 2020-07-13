@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.FhirTransactionMapper;
 
 import java.util.Map;
 
@@ -76,13 +76,13 @@ class EdifactToFhirServiceTest {
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
     @Mock
-    private TransactionMapper rejectionMapper;
+    private FhirTransactionMapper rejectionMapper;
     @Mock
-    private TransactionMapper acceptanceMapper;
+    private FhirTransactionMapper acceptanceMapper;
     @Mock
-    private TransactionMapper approvalMapper;
+    private FhirTransactionMapper approvalMapper;
 
-    private Map<ReferenceTransactionType.TransactionType, TransactionMapper> transactionMappers;
+    private Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 
     @BeforeEach
     void setUp() {

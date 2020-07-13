@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 @Configuration
 public class TransactionMapperConfig {
     @Bean
-    public Map<ReferenceTransactionType.TransactionType, TransactionMapper> getTransactionMappers(Set<TransactionMapper> transactionMappers) {
-        return transactionMappers.stream()
-            .collect(Collectors.toMap(TransactionMapper::getTransactionType, Function.identity()));
+    public Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> getTransactionMappers(Set<FhirTransactionMapper> fhirTransactionMappers) {
+        return fhirTransactionMappers.stream()
+            .collect(Collectors.toMap(FhirTransactionMapper::getTransactionType, Function.identity()));
     }
 }
