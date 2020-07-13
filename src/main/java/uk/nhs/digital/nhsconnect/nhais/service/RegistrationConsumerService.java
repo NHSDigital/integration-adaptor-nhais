@@ -37,7 +37,7 @@ public class RegistrationConsumerService {
     private final OutboundQueueService outboundQueueService;
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
-    private final EdifactToFhirService edifactToFhirService;
+    private final InboundEdifactTransactionHandler inboundEdifactTransactionService;
     private final MeshConfig meshConfig;
 
     public void handleRegistration(InboundMeshMessage meshMessage) {
@@ -110,17 +110,15 @@ public class RegistrationConsumerService {
         return transactions.stream()
             .map(transaction -> {
                 LOGGER.debug("Handling transaction: {}", transaction);
-                var outputParameters = edifactToFhirService.convertToFhir(transaction);
-                LOGGER.debug("Converted registration message into FHIR: {}", outputParameters);
+                var dataToSend = inboundEdifactTransactionService.translate(transaction);
+                LOGGER.debug("Converted registration message into {}", dataToSend.getContent());
                 var operationId = OperationId.buildOperationId(
                     transaction.getMessage().getInterchange().getInterchangeHeader().getRecipient(),
                     transaction.getReferenceTransactionNumber().getTransactionNumber());
                 LOGGER.debug("Generated operation id: {}", operationId);
-                return InboundGpSystemService.DataToSend.builder()
-                    .parameters(outputParameters)
-                    .operationId(operationId)
-                    .transactionType(transaction.getMessage().getReferenceTransactionType().getTransactionType())
-                    .build();
+                return dataToSend
+                    .setOperationId(operationId)
+                    .setTransactionType(transaction.getMessage().getReferenceTransactionType().getTransactionType());
             }).collect(Collectors.toList());
     }
 
