@@ -1,34 +1,33 @@
 {
   "nhsNumber": "9999999999",
-  "gpCode": "8880232,G82697",
-  "gpTradingPartnerCode": "CHC5",
-  "haCipher": "KC01",
-  "healthcarePartyCode": "KC",
+  "gpCode": "4826940,281",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
   "patches": [
     {
       "op": "replace",
       "path": "/address/0/line/0",
-      "value": "??"
+      "value": "FLAT 1A SPENCER HOUSE"
     },
     {
       "op": "replace",
       "path": "/address/0/line/1",
-      "value": "19 ZZZZZZZZ HOUSE"
+      "value": "CARD ROAD"
     },
     {
       "op": "replace",
       "path": "/address/0/line/2",
-      "value": "ZZZZZ DRIVE"
+      "value": null
     },
     {
       "op": "replace",
       "path": "/address/0/line/3",
-      "value": "ZZZZZZZZZZ"
+      "value": null
     },
     {
       "op": "replace",
       "path": "/address/0/line/4",
-      "value": "KENT"
+      "value": null
     }
   ]
 }

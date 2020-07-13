@@ -14,6 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
@@ -27,6 +28,7 @@ public class AmendmentToEdifactTranslator {
 
     private final AmendmentNameToEdifactMapper amendmentNameToEdifactMapper;
     private final AmendmentPreviousNameToEdifactMapper amendmentPreviousNameToEdifactMapper;
+    private final AmendmentAddressToEdifactMapper amendmentAddressToEdifactMapper;
 
     public List<Segment> translate(AmendmentBody amendmentBody) {
         var segments = new ArrayList<Segment>();
@@ -41,6 +43,7 @@ public class AmendmentToEdifactTranslator {
         segments.add(amendmentNameToEdifactMapper
             .map(amendmentBody)
             .orElseThrow(() -> new PatchValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));
+        amendmentAddressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
         segments.addAll(amendmentPreviousNameToEdifactMapper
             .map(amendmentBody)
             .map(previousNameSegments -> List.of(

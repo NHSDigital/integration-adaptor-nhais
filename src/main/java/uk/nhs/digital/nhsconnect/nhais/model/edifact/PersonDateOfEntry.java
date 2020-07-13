@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
@@ -10,6 +11,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonDateOfEntry extends Segment {

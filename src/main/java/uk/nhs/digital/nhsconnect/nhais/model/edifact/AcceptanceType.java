@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class AcceptanceType extends Segment {

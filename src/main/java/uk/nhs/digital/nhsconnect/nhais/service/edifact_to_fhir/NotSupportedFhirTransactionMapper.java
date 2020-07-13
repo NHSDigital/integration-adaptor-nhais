@@ -4,11 +4,11 @@ import org.hl7.fhir.r4.model.Parameters;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 
-public class NotSupportedTransactionMapper implements TransactionMapper {
+public class NotSupportedFhirTransactionMapper implements FhirTransactionMapper {
 
     private final ReferenceTransactionType.TransactionType transactionType;
 
-    public NotSupportedTransactionMapper(ReferenceTransactionType.TransactionType transactionType) {
+    public NotSupportedFhirTransactionMapper(ReferenceTransactionType.TransactionType transactionType) {
         this.transactionType = transactionType;
     }
 

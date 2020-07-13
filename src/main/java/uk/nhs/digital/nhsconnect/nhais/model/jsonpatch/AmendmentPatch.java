@@ -17,6 +17,7 @@ import lombok.ToString;
 public class AmendmentPatch {
 
     private static final String REMOVE_INDICATOR = "%";
+    private static final String EMPTY_STRING = "";
 
     @NonNull
     private AmendmentPatchOperation op;
@@ -31,11 +32,25 @@ public class AmendmentPatch {
         return value.get();
     }
 
+    public String getNullSafeFormattedSimpleValue() {
+        if (op == AmendmentPatchOperation.REMOVE) {
+            return REMOVE_INDICATOR;
+        }
+        if (value == null) {
+            return EMPTY_STRING;
+        }
+        return value.get();
+    }
+
     public boolean isExtension() {
         return "/extension/0".equalsIgnoreCase(path);
     }
 
     public boolean isNotExtension() {
         return !isExtension();
+    }
+
+    public boolean isRemoval() {
+        return op == AmendmentPatchOperation.REMOVE;
     }
 }

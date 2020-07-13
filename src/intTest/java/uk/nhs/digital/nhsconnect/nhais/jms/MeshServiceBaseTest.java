@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.awaitility.Durations;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.junit.Rule;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.Timeout;
@@ -18,7 +17,6 @@ import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.service.InboundQueueService;
@@ -95,11 +93,6 @@ public abstract class MeshServiceBaseTest {
     @SneakyThrows
     protected Message getDeadLetterInboundQueueMessage() {
         return jmsTemplate.receive(DLQ_PREFIX + meshInboundQueueName);
-    }
-
-    protected IBaseResource parseGpInboundQueueMessage(Message message) throws JMSException {
-        var body = parseTextMessage(message);
-        return new FhirParser().parse(body);
     }
 
     protected String parseTextMessage(Message message) throws JMSException {
