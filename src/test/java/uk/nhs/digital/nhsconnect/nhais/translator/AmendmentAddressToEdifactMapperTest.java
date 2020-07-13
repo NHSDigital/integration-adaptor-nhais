@@ -21,7 +21,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
 
-import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +37,7 @@ public class AmendmentAddressToEdifactMapperTest {
     private static final String LOCALITY = "ST PAULS CRAY";
     private static final String POST_TOWN = "ORPINGTON";
     private static final String COUNTY = "KENT";
+    private static final String EMPTY_STRING = "";
 
     private static final String LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE = "If at least one of the Address - Locality, Address - Post Town and Address County " +
         "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: ";
@@ -105,9 +105,9 @@ public class AmendmentAddressToEdifactMapperTest {
             .isEqualTo(PersonAddress.builder()
                 .addressLine1(HOUSE_NAME)
                 .addressLine2(ROAD_NAME)
-                .addressLine3(Strings.EMPTY)
-                .addressLine4(Strings.EMPTY)
-                .addressLine5(Strings.EMPTY)
+                .addressLine3(EMPTY_STRING)
+                .addressLine4(EMPTY_STRING)
+                .addressLine5(EMPTY_STRING)
                 .build());
     }
 
