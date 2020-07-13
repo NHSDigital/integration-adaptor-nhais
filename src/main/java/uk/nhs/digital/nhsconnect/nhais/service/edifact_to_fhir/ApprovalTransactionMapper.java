@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class ApprovalTransactionMapper implements TransactionMapper {
+public class ApprovalTransactionMapper implements FhirTransactionMapper {
     @Override
     public void map(Parameters parameters, Transaction transaction) {
         transaction.getPersonName()
