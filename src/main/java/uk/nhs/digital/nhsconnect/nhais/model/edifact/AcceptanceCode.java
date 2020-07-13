@@ -2,12 +2,14 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.apache.commons.lang3.EnumUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class AcceptanceCode extends Segment {
