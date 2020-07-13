@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -287,7 +288,7 @@ public class AmendmentAddressToEdifactMapperTest {
     }
 
     @Test
-    void whenRemoveForPostTown_thenThrowsFhirValidationException() {
+    void whenRemoveForPostTown_thenThrowsPatchValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -301,7 +302,7 @@ public class AmendmentAddressToEdifactMapperTest {
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isExactlyInstanceOf(FhirValidationException.class)
+            .isExactlyInstanceOf(PatchValidationException.class)
             .hasMessage("Post town ('address/0/line/3') cannot be removed");
     }
 }

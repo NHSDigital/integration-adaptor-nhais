@@ -30,7 +30,7 @@ public class AmendmentPatch {
         return value.get();
     }
 
-    public String getNullableFormattedSimpleValue() {
+    public String getNullSafeFormattedSimpleValue() {
         if (op == AmendmentPatchOperation.REMOVE) {
             return REMOVE_INDICATOR;
         }

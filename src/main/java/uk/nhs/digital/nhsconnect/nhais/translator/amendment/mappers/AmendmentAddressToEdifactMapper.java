@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -26,22 +27,22 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         var patches = amendmentBody.getJsonPatches();
 
         var houseName = patches.getHouseName()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
         var numberOrRoadName = patches.getNumberOrRoadName()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
         var locality = patches.getLocality()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
         var postalTown = patches.getPostTown()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
         var county = patches.getCounty()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
         var postalCode = patches.getPostalCode()
-            .map(AmendmentPatch::getNullableFormattedSimpleValue)
+            .map(AmendmentPatch::getNullSafeFormattedSimpleValue)
             .orElse(null);
 
         return PersonAddress.builder()
@@ -129,7 +130,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
         if (patches.getPostTown().isPresent() && patches.getPostTown().get().getOp() == AmendmentPatchOperation.REMOVE) {
-            throw new FhirValidationException("Post town ('address/0/line/3') cannot be removed");
+            throw new PatchValidationException("Post town ('address/0/line/3') cannot be removed");
         }
     }
 }
