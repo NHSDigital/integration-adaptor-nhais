@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.uat;
 
-import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,19 +69,17 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
         // fetch FHIR from "gp inbound queue"
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
+        assertThat(gpSystemInboundQueueMessage).isNotNull();
+
         // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
-        // assert output FHIR is correct
+        // assert output body is correct
         assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
     }
 
-    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedFhir) throws JMSException {
-        var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
-        assertThat(resource).isExactlyInstanceOf(Parameters.class);
-
-        String fhir = fhirParser.encodeToString(resource);
-
-        assertThat(fhir).isEqualTo(expectedFhir);
+    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedBody) throws JMSException {
+        var body = parseTextMessage(gpSystemInboundQueueMessage);
+        assertThat(body).isEqualTo(expectedBody);
     }
 
     private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {

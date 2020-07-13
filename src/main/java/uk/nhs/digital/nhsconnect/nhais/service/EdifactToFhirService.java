@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.FhirTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.GpTradingPartnerCode;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.NotSupportedTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.NotSupportedFhirTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.TransactionMapper;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EdifactToFhirService {
 
-    public final Map<ReferenceTransactionType.TransactionType, TransactionMapper> transactionMappers;
+    public final Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 
     public Parameters convertToFhir(Transaction transaction) {
         var parameters = new Parameters()
@@ -28,7 +28,7 @@ public class EdifactToFhirService {
 
         var transactionType = transaction.getMessage().getReferenceTransactionType().getTransactionType();
         transactionMappers
-            .getOrDefault(transactionType, new NotSupportedTransactionMapper(transactionType))
+            .getOrDefault(transactionType, new NotSupportedFhirTransactionMapper(transactionType))
             .map(parameters, transaction);
 
         return parameters;

@@ -1,8 +1,9 @@
 {
-  "id": "9999999999",
-  "gpCode": "4826940,281",
-  "gpCipher": "TES5",
-  "healthcarePartyCode": "XX1",
+  "nhsNumber": "9999999999",
+  "gpCode": "8880232,G82697",
+  "gpTradingPartnerCode": "CHC5",
+  "haCipher": "KC01",
+  "healthcarePartyCode": "KC",
   "patches": [
     {
       "op": "replace",
@@ -12,22 +13,27 @@
     {
       "op": "replace",
       "path": "/address/0/line/1",
-      "value": "136 HIGH STREET"
+      "value": "19 ZZZZZZZZ HOUSE"
     },
     {
       "op": "replace",
       "path": "/address/0/line/2",
-      "value": null
+      "value": "ZZZZZ DRIVE"
     },
     {
       "op": "replace",
       "path": "/address/0/line/3",
-      "value": "BROMLEY"
+      "value": "ZZZZZZZZZZ"
     },
     {
       "op": "replace",
       "path": "/address/0/line/4",
       "value": "KENT"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/postalCode",
+      "value": "ZZ7 1ZZ"
     }
   ]
 }

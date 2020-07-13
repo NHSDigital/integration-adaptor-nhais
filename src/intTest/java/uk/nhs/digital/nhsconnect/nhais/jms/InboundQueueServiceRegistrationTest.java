@@ -48,6 +48,8 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
     private Resource interchange;
     @Value("classpath:edifact/registration_recep.dat")
     private Resource recep;
+    @Value("classpath:edifact/registration.json")
+    private Resource fhir;
 
     @BeforeEach
     void setUp() {
@@ -90,17 +92,15 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
         //TODO: other assertions on recep message
     }
 
-    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException {
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException {
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("OperationId"))
             .isEqualTo(OPERATION_ID);
         softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("TransactionType"))
             .isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
-
-        var resource = parseGpInboundQueueMessage(gpSystemInboundQueueMessage);
-        softly.assertThat(resource).isExactlyInstanceOf(Parameters.class);
-        //TODO: other assertions on FHIR message
+        softly.assertThat(parseTextMessage(gpSystemInboundQueueMessage))
+            .isEqualTo(new String(Files.readAllBytes(fhir.getFile().toPath())));
     }
 
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {

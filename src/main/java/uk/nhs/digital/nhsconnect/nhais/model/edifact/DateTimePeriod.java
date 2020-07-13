@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Example DTM+137:199201141619:203'
  */
-@Getter @Setter @RequiredArgsConstructor @AllArgsConstructor @EqualsAndHashCode @ToString
+@Getter @Setter @RequiredArgsConstructor @AllArgsConstructor @EqualsAndHashCode(callSuper = false) @ToString
 public class DateTimePeriod extends Segment{
 
     public static final String KEY = "DTM";

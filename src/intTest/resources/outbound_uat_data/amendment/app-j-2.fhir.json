@@ -1,5 +1,5 @@
 {
-  "nhsNumber": "ABCDE1234",
+  "nhsNumber": "9999999999",
   "gpCode": "4826940,281",
   "gpTradingPartnerCode": "TES5",
   "healthcarePartyCode": "XX1",
@@ -7,12 +7,12 @@
     {
       "op": "replace",
       "path": "/address/0/line/0",
-      "value": "FLAT 1A SPENCER HOUSE"
+      "value": "FLAT 49"
     },
     {
       "op": "replace",
       "path": "/address/0/line/1",
-      "value": "CARD ROAD"
+      "value": "23 JACKSON SQUARE"
     },
     {
       "op": "replace",

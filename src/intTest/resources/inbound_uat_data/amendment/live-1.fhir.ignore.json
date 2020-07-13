@@ -1,8 +1,8 @@
 {
   "id": "9999999999",
-  "gpCode": "4826940,281",
-  "gpCipher": "TES5",
-  "healthcarePartyCode": "XX1",
+  "gpCode": "9990374,PLP594",
+  "gpCipher": "WHI5",
+  "healthcarePartyCode": "SO",
   "patches": [
     {
       "op": "replace",
@@ -12,22 +12,27 @@
     {
       "op": "replace",
       "path": "/address/0/line/1",
-      "value": "136 HIGH STREET"
-    },
-    {
-      "op": "replace",
-      "path": "/address/0/line/2",
       "value": null
     },
     {
       "op": "replace",
+      "path": "/address/0/line/2",
+      "value": "IBTHORPE"
+    },
+    {
+      "op": "replace",
       "path": "/address/0/line/3",
-      "value": "BROMLEY"
+      "value": null
     },
     {
       "op": "replace",
       "path": "/address/0/line/4",
-      "value": "KENT"
+      "value": null
+    },
+    {
+      "op": "replace",
+      "path": "/birthDate",
+      "value": "2020-04-16"
     }
   ]
 }

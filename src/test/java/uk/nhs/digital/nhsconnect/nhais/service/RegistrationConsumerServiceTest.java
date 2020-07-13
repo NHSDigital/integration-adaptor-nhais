@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service;
 
+import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,6 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
@@ -34,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -67,6 +70,10 @@ public class RegistrationConsumerServiceTest {
         .toInstant();
     private static final Instant MESSAGE_2_TRANSLATION_TIME = MESSAGE_1_TRANSLATION_TIME.plusSeconds(100);
 
+    private static final Parameters TRANSLATED_TRANSACTION_1 = mock(Parameters.class);
+    private static final AmendmentBody TRANSLATED_TRANSACTION_2 = mock(AmendmentBody.class);
+    private static final Parameters TRANSLATED_TRANSACTION_3 = mock(Parameters.class);
+
     private static final String RECEP_AS_EDIFACT = "some_recep_edifact";
 
     @Mock
@@ -85,7 +92,7 @@ public class RegistrationConsumerServiceTest {
     RecepProducerService recepProducerService;
 
     @Mock
-    EdifactToFhirService edifactToFhirService;
+    InboundEdifactTransactionHandler inboundEdifactTransactionHandler;
 
     @InjectMocks
     RegistrationConsumerService registrationConsumerService;
@@ -172,6 +179,13 @@ public class RegistrationConsumerServiceTest {
 
     @Test
     public void registrationMessage_publishedToSupplierQueue() {
+        when(inboundEdifactTransactionHandler.translate(transaction1))
+            .thenReturn(new InboundGpSystemService.DataToSend().setContent(TRANSLATED_TRANSACTION_1));
+        when(inboundEdifactTransactionHandler.translate(transaction2))
+            .thenReturn(new InboundGpSystemService.DataToSend().setContent(TRANSLATED_TRANSACTION_2));
+        when(inboundEdifactTransactionHandler.translate(transaction3))
+            .thenReturn(new InboundGpSystemService.DataToSend().setContent(TRANSLATED_TRANSACTION_3));
+
         mockInterchangeSegments();
         mockRecepSegments();
 
@@ -191,9 +205,9 @@ public class RegistrationConsumerServiceTest {
 
         var dataToSendValues = dataToSendArgumentCaptor.getAllValues();
         assertThat(dataToSendValues).hasSize(3);
-        assertPublishToGpQueue(dataToSendValues.get(0), TN_1_OPERATION_ID, MESSAGE_1_TRANSACTION_TYPE);
-        assertPublishToGpQueue(dataToSendValues.get(1), TN_2_OPERATION_ID, MESSAGE_1_TRANSACTION_TYPE);
-        assertPublishToGpQueue(dataToSendValues.get(2), TN_3_OPERATION_ID, MESSAGE_2_TRANSACTION_TYPE);
+        assertPublishToGpQueue(dataToSendValues.get(0), TN_1_OPERATION_ID, MESSAGE_1_TRANSACTION_TYPE, TRANSLATED_TRANSACTION_1);
+        assertPublishToGpQueue(dataToSendValues.get(1), TN_2_OPERATION_ID, MESSAGE_1_TRANSACTION_TYPE, TRANSLATED_TRANSACTION_2);
+        assertPublishToGpQueue(dataToSendValues.get(2), TN_3_OPERATION_ID, MESSAGE_2_TRANSACTION_TYPE, TRANSLATED_TRANSACTION_3);
 
         var inboundStateArgumentCaptor = ArgumentCaptor.forClass(InboundState.class);
         verify(inboundStateRepository, times(3)).save(inboundStateArgumentCaptor.capture());
@@ -229,10 +243,14 @@ public class RegistrationConsumerServiceTest {
     }
 
     private void assertPublishToGpQueue(
-        InboundGpSystemService.DataToSend dataToSend, String operationId, ReferenceTransactionType.TransactionType transactionType) {
+        InboundGpSystemService.DataToSend dataToSend,
+        String operationId,
+        ReferenceTransactionType.TransactionType transactionType,
+        Object content) {
 
         assertThat(dataToSend.getOperationId()).isEqualTo(operationId);
         assertThat(dataToSend.getTransactionType()).isEqualTo(transactionType);
+        assertThat(dataToSend.getContent()).isEqualTo(content);
     }
 
     private void assertInboundState(

@@ -9,7 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 @Component
-public class RejectionTransactionMapper implements TransactionMapper {
+public class RejectionTransactionMapper implements FhirTransactionMapper {
 
     @Override
     public void map(Parameters parameters, Transaction transaction) {
