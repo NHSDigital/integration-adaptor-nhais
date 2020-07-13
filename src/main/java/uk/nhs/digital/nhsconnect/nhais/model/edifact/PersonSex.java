@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Patient;
@@ -13,6 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonSex extends Segment {

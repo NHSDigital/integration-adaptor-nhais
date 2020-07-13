@@ -2,12 +2,14 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonOldAddress extends Segment {
