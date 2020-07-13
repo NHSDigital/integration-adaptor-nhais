@@ -8,8 +8,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.apache.logging.log4j.util.Strings;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 public class AmendmentPatch {
 
     private static final String REMOVE_INDICATOR = "%";
+    private static final String EMPTY_STRING = "";
 
     @NonNull
     private AmendmentPatchOperation op;
@@ -38,7 +37,7 @@ public class AmendmentPatch {
             return REMOVE_INDICATOR;
         }
         if (value == null) {
-            return Strings.EMPTY;
+            return EMPTY_STRING;
         }
         return value.get();
     }
