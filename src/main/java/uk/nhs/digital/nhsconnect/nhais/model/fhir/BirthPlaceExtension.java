@@ -6,15 +6,11 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.StringType;
 
 @DatatypeDef(name="Extension")
-public class BirthPlaceExtension extends Extension implements FhirExtension  {
+public class BirthPlaceExtension extends Extension {
     public static final String URL = "http://hl7.org/fhir/StructureDefinition/patient-birthPlace";
 
     public BirthPlaceExtension(String value) {
         super(URL, new StringType(value));
     }
 
-    @Override
-    public String getValueString() {
-        return super.getValue().primitiveValue();
-    }
 }

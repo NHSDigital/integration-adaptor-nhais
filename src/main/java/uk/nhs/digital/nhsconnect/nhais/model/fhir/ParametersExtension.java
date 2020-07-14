@@ -2,13 +2,16 @@ package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.Type;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -21,12 +24,15 @@ public class ParametersExtension {
         return new ParametersExtension(parameters).extractPatient();
     }
 
-    public static <T extends FhirExtension> Optional<T> extractExtension(Parameters parameters, Class<T> clazz) {
+    public static Optional<String> extractExtensionValue(Parameters parameters, String extensionUrl) {
         return extractPatient(parameters)
             .getExtension()
             .stream()
-            .filter(extension -> clazz.isAssignableFrom(extension.getClass()))
-            .map(clazz::cast)
+            .filter(extension -> extensionUrl.equalsIgnoreCase(extension.getUrl()))
+            .map(Extension::getValue)
+            .filter(Objects::nonNull)
+            .map(Type::primitiveValue)
+            .filter(Objects::nonNull)
             .findFirst();
     }
 

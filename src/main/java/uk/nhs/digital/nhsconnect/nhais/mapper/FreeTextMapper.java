@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import java.util.Optional;
-
 @Component
 public class FreeTextMapper implements OptionalFromFhirToEdifactMapper<FreeText> {
 
@@ -19,8 +17,7 @@ public class FreeTextMapper implements OptionalFromFhirToEdifactMapper<FreeText>
 
     @Override
     public boolean canMap(Parameters parameters) {
-        Optional<String> freeText = ParametersExtension.extractOptionalValue(parameters, FREE_TEXT_VALUE_NAME);
-        return freeText
+        return ParametersExtension.extractOptionalValue(parameters, FREE_TEXT_VALUE_NAME)
             .filter(StringUtils::isNotBlank)
             .isPresent();
     }

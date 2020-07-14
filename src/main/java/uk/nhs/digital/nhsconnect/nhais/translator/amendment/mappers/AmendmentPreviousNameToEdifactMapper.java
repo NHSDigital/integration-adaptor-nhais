@@ -20,7 +20,7 @@ public class AmendmentPreviousNameToEdifactMapper extends AmendmentToEdifactMapp
         var patches = amendmentBody.getJsonPatches();
 
         return PersonPreviousName.builder()
-            .previousFamilyName(patches.getPreviousSurname()
+            .familyName(patches.getPreviousSurname()
                 .map(AmendmentPatch::getFormattedSimpleValue)
                 .orElse(null))
             .build();

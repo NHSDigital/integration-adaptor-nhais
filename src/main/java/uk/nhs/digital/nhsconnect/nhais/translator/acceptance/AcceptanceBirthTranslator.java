@@ -17,7 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PreviousPersonNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPreviousNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.ResidentialInstituteNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
@@ -45,7 +45,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
     private final AcceptanceTypeMapper acceptanceTypeMapper;
     private final AcceptanceDateMapper acceptanceDateMapper;
     private final PersonNameMapper personNameMapper;
-    private final PreviousPersonNameMapper previousPersonNameMapper;
+    private final PersonPreviousNameMapper personPreviousNameMapper;
     private final PersonPlaceOfBirthMapper personPlaceOfBirthMapper;
     private final PersonSexMapper personSexMapper;
     private final PersonAddressMapper personAddressMapper;
@@ -91,7 +91,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //PNA+PAT
             personNameMapper,
             //PNA+PER
-            optional(previousPersonNameMapper, parameters),
+            optional(personPreviousNameMapper, parameters),
             //DTM+329
             personDateOfBirthMapper,
             //PDI

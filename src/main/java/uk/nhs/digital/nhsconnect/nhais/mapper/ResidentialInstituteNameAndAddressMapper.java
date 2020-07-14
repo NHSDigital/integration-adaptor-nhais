@@ -18,15 +18,13 @@ public class ResidentialInstituteNameAndAddressMapper implements OptionalFromFhi
     }
 
     private String getResidentialInstituteCode(Parameters parameters) {
-        return ParametersExtension.extractExtension(parameters, ResidentialInstituteExtension.class)
-            .map(ResidentialInstituteExtension::getValueString)
+        return ParametersExtension.extractExtensionValue(parameters, ResidentialInstituteExtension.URL)
             .orElseThrow(() -> new FhirValidationException("Value of residential institute code is missing"));
     }
 
     @Override
     public boolean canMap(Parameters parameters) {
-        return ParametersExtension.extractExtension(parameters, ResidentialInstituteExtension.class)
-            .map(ResidentialInstituteExtension::getValueString)
+        return ParametersExtension.extractExtensionValue(parameters, ResidentialInstituteExtension.URL)
             .filter(StringUtils::isNotBlank)
             .isPresent();
     }

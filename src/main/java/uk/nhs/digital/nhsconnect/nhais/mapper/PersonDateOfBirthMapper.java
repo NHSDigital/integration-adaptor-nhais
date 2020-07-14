@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 @Component
-public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDateOfBirth> {
+public class PersonDateOfBirthMapper implements OptionalFromFhirToEdifactMapper<PersonDateOfBirth> {
 
     public PersonDateOfBirth map(Parameters parameters) {
         return PersonDateOfBirth.builder()
@@ -26,5 +26,11 @@ public class PersonDateOfBirthMapper implements FromFhirToEdifactMapper<PersonDa
             .of(birthDateElement.getYear(), birthDateElement.getMonth() + 1, birthDateElement.getDay())
             .atStartOfDay(TimestampService.UKZone)
             .toInstant();
+    }
+
+    @Override
+    public boolean canMap(Parameters parameters) {
+        Patient patient = ParametersExtension.extractPatient(parameters);
+        return patient.getBirthDate() != null;
     }
 }

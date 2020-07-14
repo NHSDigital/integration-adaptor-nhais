@@ -18,15 +18,13 @@ public class PersonPlaceOfBirthMapper implements OptionalFromFhirToEdifactMapper
     }
 
     private String getPersonPlaceOfBirth(Parameters parameters) {
-        return ParametersExtension.extractExtension(parameters, BirthPlaceExtension.class)
-            .map(BirthPlaceExtension::getValueString)
+        return ParametersExtension.extractExtensionValue(parameters, BirthPlaceExtension.URL)
             .orElseThrow(() -> new FhirValidationException("Birthplace extension is missing value"));
     }
 
     @Override
     public boolean canMap(Parameters parameters) {
-        return ParametersExtension.extractExtension(parameters, BirthPlaceExtension.class)
-            .map(BirthPlaceExtension::getValueString)
+        return ParametersExtension.extractExtensionValue(parameters, BirthPlaceExtension.URL)
             .filter(StringUtils::isNotBlank)
             .isPresent();
     }

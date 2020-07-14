@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousPersonName;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientName;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class PreviousPersonNameMapperTest {
+class PersonPreviousNameMapperTest {
 
     public static final String NHS_NUMBER = "1234567890";
     public static final String FAMILY_NAME = "Smith";
@@ -38,10 +38,10 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
-        PreviousPersonName personName = previousPersonNameMapper.map(parameters);
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
+        PersonPreviousName personName = previousPersonNameMapper.map(parameters);
 
-        var expectedPersonName = PreviousPersonName
+        var expectedPersonName = PersonPreviousName
             .builder()
             .nhsNumber(NHS_NUMBER)
             .familyName(FAMILY_NAME_2)
@@ -76,10 +76,10 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
-        PreviousPersonName personName = previousPersonNameMapper.map(parameters);
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
+        PersonPreviousName personName = previousPersonNameMapper.map(parameters);
 
-        var expectedPersonName = PreviousPersonName
+        var expectedPersonName = PersonPreviousName
             .builder()
             .nhsNumber(NHS_NUMBER)
             .familyName(FAMILY_NAME_2)
@@ -98,7 +98,7 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
         assertThrows(FhirValidationException.class, () -> previousPersonNameMapper.map(parameters));
     }
 
@@ -110,10 +110,10 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
-        PreviousPersonName personName = previousPersonNameMapper.map(parameters);
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
+        PersonPreviousName personName = previousPersonNameMapper.map(parameters);
 
-        var expectedPersonName = PreviousPersonName.builder()
+        var expectedPersonName = PersonPreviousName.builder()
             .familyName(FAMILY_NAME_2)
             .build();
 
@@ -124,7 +124,7 @@ class PreviousPersonNameMapperTest {
     public void When_MappingWithoutPatient_Then_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
         assertThrows(FhirValidationException.class, () -> previousPersonNameMapper.map(parameters));
     }
 
@@ -136,7 +136,7 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
 
         assertThat(previousPersonNameMapper.canMap(parameters)).isFalse();
     }
@@ -149,7 +149,7 @@ class PreviousPersonNameMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var previousPersonNameMapper = new PreviousPersonNameMapper();
+        var previousPersonNameMapper = new PersonPreviousNameMapper();
 
         assertThat(previousPersonNameMapper.canMap(parameters)).isTrue();
     }

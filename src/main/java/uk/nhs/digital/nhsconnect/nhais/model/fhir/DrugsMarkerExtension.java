@@ -5,15 +5,11 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.StringType;
 
 @DatatypeDef(name="Extension")
-public class DrugsMarkerExtension extends Extension implements FhirExtension {
+public class DrugsMarkerExtension extends Extension {
     public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker";
 
     public DrugsMarkerExtension(String value) {
         super(URL, new StringType(value));
     }
 
-    @Override
-    public String getValueString() {
-        return super.getValue().primitiveValue();
-    }
 }
