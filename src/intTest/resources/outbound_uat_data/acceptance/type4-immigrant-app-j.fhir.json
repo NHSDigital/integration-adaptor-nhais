@@ -25,14 +25,6 @@
       "valueString": "1968-03-05"
     },
     {
-      "name": "freeText",
-      "valueString": "GP NOTES GO HERE"
-    },
-    {
-      "name": "previousHaCipher",
-      "valueString": "LNS"
-    },
-    {
       "name": "patient",
       "resource": {
         "managingOrganization": {
@@ -51,26 +43,16 @@
             }
           }
         ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "N/10/10"
-          }
-        ],
         "name": [
           {
             "family": "HOWES",
             "given": [
               "ALISON",
-              "J",
-              "L"
+              "J"
             ],
             "prefix": [
               "MRS"
             ]
-          },
-          {
-            "family": "PREVIOUS"
           }
         ],
         "gender": "female",
@@ -78,36 +60,19 @@
         "address": [
           {
             "line": [
-              "HOUSE NAME",
+              null,
               "13 FOX CRESCENT",
-              "LOCALITY",
+              null,
               "BROMLEY",
               "KENT"
             ],
             "postalCode": "BR1  7TQ"
-          },
-          {
-            "line": [
-              "PREVIOUS HOUSE",
-              "12 PREVIOUS LANE",
-              "PREVIOUS",
-              "HORSFORTH",
-              "LEEDS"
-            ]
           }
         ],
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
             "valueString": "LANCASHIRE"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
-            "valueBoolean": true
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
-            "valueString": "RT"
           }
         ],
         "resourceType": "Patient"
