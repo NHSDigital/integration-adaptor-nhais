@@ -16,8 +16,8 @@ import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPreviousNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.ResidentialInstituteNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optionalGroup;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -90,14 +91,17 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             emptyMapper(new SegmentGroup(2)),
             //PNA+PAT
             personNameMapper,
-            //PNA+PER
-            optional(personPreviousNameMapper, parameters),
             //DTM+329
             personDateOfBirthMapper,
             //PDI
             personSexMapper,
             //NAD+PAT
-            personAddressMapper)
+            personAddressMapper,
+            //S02
+            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
+            //PNA+PER
+            optional(personPreviousNameMapper, parameters)
+        )
             .map(mapper -> mapper.map(parameters))
             .filter(Objects::nonNull)
             .collect(Collectors.toList());

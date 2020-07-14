@@ -3,6 +3,10 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public interface FromFhirToEdifactMapper<T extends Segment> {
     static <T extends Segment> FromFhirToEdifactMapper<T> emptyMapper(T segment) {
         return parameters -> segment;
@@ -12,16 +16,29 @@ public interface FromFhirToEdifactMapper<T extends Segment> {
         if (mapper.canMap(parameters)) {
             return mapper;
         }
-        return new FromFhirToEdifactMapper.EmptyMapper();
+        return new SkipMapper();
+    }
+
+    static FromFhirToEdifactMapper<?> optionalGroup(Segment startSegment, Collection<OptionalFromFhirToEdifactMapper<?>> mappers, Parameters parameters) {
+        List<OptionalFromFhirToEdifactMapper<?>> mappableSegments = mappers
+            .stream()
+            .filter(mapper -> mapper.canMap(parameters))
+            .collect(Collectors.toList());
+
+        if (mappableSegments.isEmpty()) {
+            return new SkipMapper();
+        }
+        return emptyMapper(startSegment);
     }
 
     T map(Parameters parameters);
 
-    class EmptyMapper implements FromFhirToEdifactMapper<Segment> {
+    class SkipMapper implements FromFhirToEdifactMapper<Segment> {
 
         @Override
         public Segment map(Parameters parameters) {
             return null;
         }
+
     }
 }

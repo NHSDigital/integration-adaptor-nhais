@@ -4,7 +4,6 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientName;
@@ -43,12 +42,11 @@ class PersonPreviousNameMapperTest {
 
         var expectedPersonName = PersonPreviousName
             .builder()
-            .nhsNumber(NHS_NUMBER)
             .familyName(FAMILY_NAME_2)
-            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertThat(expectedPersonName.toEdifact()).isEqualTo(personName.toEdifact());
+        assertThat(expectedPersonName.toEdifact()).isEqualTo("PNA+PER++++SU:Kowalski'");
     }
 
     @Test
@@ -81,12 +79,11 @@ class PersonPreviousNameMapperTest {
 
         var expectedPersonName = PersonPreviousName
             .builder()
-            .nhsNumber(NHS_NUMBER)
             .familyName(FAMILY_NAME_2)
-            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertThat(expectedPersonName.toEdifact()).isEqualTo(personName.toEdifact());
+        assertThat(expectedPersonName.toEdifact()).isEqualTo("PNA+PER++++SU:Kowalski'");
     }
 
     @Test
