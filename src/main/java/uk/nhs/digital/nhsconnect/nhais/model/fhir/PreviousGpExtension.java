@@ -1,15 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import ca.uhn.fhir.model.api.annotation.DatatypeDef;
-
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.StringType;
 
 @DatatypeDef(name="Extension")
-public class BirthPlaceExtension extends Extension {
-    public static final String URL = "http://hl7.org/fhir/StructureDefinition/patient-birthPlace";
+public class PreviousGpExtension extends Extension {
+    public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP";
 
-    public BirthPlaceExtension(String value) {
+    public PreviousGpExtension(String value) {
         super(URL, new StringType(value));
     }
 

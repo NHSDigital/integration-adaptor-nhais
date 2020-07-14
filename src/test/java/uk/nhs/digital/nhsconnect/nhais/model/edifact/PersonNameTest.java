@@ -22,7 +22,7 @@ public class PersonNameTest {
 
         var personName = PersonName.builder()
             .nhsNumber("1234567890")
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .familyName("STEVENS")
             .forename("CHARLES")
             .title("MR")
@@ -39,7 +39,7 @@ public class PersonNameTest {
 
         var personName = PersonName.builder()
             .nhsNumber("T247")
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
@@ -59,7 +59,7 @@ public class PersonNameTest {
     public void testValidReferenceTransactionType() throws EdifactValidationException {
         PersonName nhsAndNames = PersonName.builder()
             .nhsNumber("RAT56")
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .familyName("KENNEDY")
             .forename("SARAH")
             .title("MISS")

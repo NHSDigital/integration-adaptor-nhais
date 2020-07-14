@@ -1,11 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import java.util.stream.Collectors;
-
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
@@ -13,6 +7,12 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+
+import java.util.stream.Collectors;
 
 @Component
 public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
@@ -25,7 +25,7 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
 
         return PersonName.builder()
             .nhsNumber(getNhsNumber(patient))
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION) //TODO: handle AMENDED_PATIENT_IDENTIFICATION
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION) //TODO: handle AMENDED_PATIENT_IDENTIFICATION
             .familyName(nameFirstRep.getFamily())
             .forename(nameFirstRep.getGiven().stream()
                 .findFirst()

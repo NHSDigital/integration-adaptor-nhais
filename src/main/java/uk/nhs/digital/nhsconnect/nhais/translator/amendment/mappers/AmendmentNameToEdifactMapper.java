@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -43,7 +44,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
 
         return PersonName.builder()
             .nhsNumber(amendmentBody.getNhsNumber())
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .title(title)
             .familyName(surname)
             .forename(firstForename)

@@ -1,6 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PreviousGpExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 
 public interface AmendmentValue {
 
@@ -13,13 +17,13 @@ public interface AmendmentValue {
     @JsonCreator
     static AmendmentValue from(AmendmentExtension input){
         switch (input.getUrl()) {
-            case AmendmentExtension.DrugsDispensedMarker.URL:
+            case DrugsMarkerExtension.URL:
                 return new AmendmentExtension.DrugsDispensedMarker(input);
-            case AmendmentExtension.ResidentialInstituteCode.URL:
+            case ResidentialInstituteExtension.URL:
                 return new AmendmentExtension.ResidentialInstituteCode(input);
-            case AmendmentExtension.Birthplace.URL:
+            case BirthPlaceExtension.URL:
                 return new AmendmentExtension.Birthplace(input);
-            case AmendmentExtension.PreviousGp.URL:
+            case PreviousGpExtension.URL:
                 return new AmendmentExtension.PreviousGp(input);
         }
         return new AmendmentSimpleValue(input.get());

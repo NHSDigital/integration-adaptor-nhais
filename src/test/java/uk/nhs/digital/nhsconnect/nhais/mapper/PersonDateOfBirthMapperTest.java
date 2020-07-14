@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,6 +23,7 @@ class PersonDateOfBirthMapperTest {
     private static final Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
         .atStartOfDay(ZoneId.systemDefault())
         .toInstant();
+    private final PersonDateOfBirthMapper personDateOfBirthMapper = new PersonDateOfBirthMapper();
 
     @Test
     void When_MappingDob_Then_ExpectCorrectResult() {
@@ -31,8 +33,7 @@ class PersonDateOfBirthMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        var personDobMapper = new PersonDateOfBirthMapper();
-        PersonDateOfBirth personDateOfBirth = personDobMapper.map(parameters);
+        PersonDateOfBirth personDateOfBirth = personDateOfBirthMapper.map(parameters);
 
         var expectedPersonDob = PersonDateOfBirth
             .builder()
@@ -47,7 +48,24 @@ class PersonDateOfBirthMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
-        var personDobMapper = new PersonDateOfBirthMapper();
-        assertThrows(NullPointerException.class, () -> personDobMapper.map(parameters));
+        assertThrows(NullPointerException.class, () -> personDateOfBirthMapper.map(parameters));
+    }
+
+    @Test
+    public void When_ParametersWithoutDob_Then_CantMap() {
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter());
+
+        assertThat(personDateOfBirthMapper.canMap(parameters)).isFalse();
+    }
+
+    @Test
+    public void When_ParametersWithDob_Then_CanMap() {
+        Patient patient = new Patient();
+        patient.setBirthDate(Date.from(FIXED_TIME_LOCAL));
+        Parameters parameters = new Parameters()
+            .addParameter(new PatientParameter(patient));
+
+        assertThat(personDateOfBirthMapper.canMap(parameters)).isTrue();
     }
 }

@@ -2,11 +2,12 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import org.springframework.util.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import org.springframework.util.StringUtils;
-
 @Builder
+@Getter
 @AllArgsConstructor
 public class PersonPlaceOfBirth extends Segment {
     public static final String KEY = "LOC";
