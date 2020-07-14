@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
@@ -74,7 +75,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
         assertThat(segments).isNotEmpty().get()
             .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
-                .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+                .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .familyName(SURNAME)
                 .forename(FIRST_FORENAME)
                 .middleName(SECOND_FORENAME)
@@ -95,7 +96,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
         assertThat(segments).isNotEmpty().get()
             .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
-                .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+                .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
                 .forename(REMOVE_INDICATOR)
                 .title(REMOVE_INDICATOR)
                 .build());

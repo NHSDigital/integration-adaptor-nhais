@@ -1,24 +1,62 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPlaceOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PersonPlaceOfBirthMapperTest {
 
-    @Test
-    void testMappingBirthPlaceFromFhirToEdifactSegment() {
-        Patient patient = new Patient();
-        patient.addExtension(new BirthPlaceExtension("birth place"));
-        Parameters parameters = new Parameters().addParameter(new PatientParameter(patient));
+    private final PersonPlaceOfBirthMapper personPlaceOfBirthMapper = new PersonPlaceOfBirthMapper();
 
-        PersonPlaceOfBirth placeOfBirth = new PersonPlaceOfBirthMapper().map(parameters);
-        assertThat(placeOfBirth.toEdifact()).isEqualTo("LOC+950+birth place'");
+    @Test
+    void when_ExtensionExistsAndValueIsSet_Then_CanMap() {
+        Patient patient = new Patient();
+        patient.addExtension(new BirthPlaceExtension("GLASGOW"));
+        PatientParameter patientParameter = new PatientParameter(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(patientParameter);
+
+        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isTrue();
+    }
+
+    @Test
+    void when_ExtensionExistsAndValueIsNotSet_Then_CantMap() {
+        Patient patient = new Patient();
+        patient.addExtension(new BirthPlaceExtension(""));
+        PatientParameter patientParameter = new PatientParameter(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(patientParameter);
+
+        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isFalse();
+    }
+
+    @Test
+    void when_ExtensionDoesntExist_Then_CantMap() {
+        PatientParameter patientParameter = new PatientParameter();
+        Parameters parameters = new Parameters()
+            .addParameter(patientParameter);
+
+        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isFalse();
+    }
+
+    @Test
+    void when_ExtensionExistsAndValueIsSet_Then_MappingSuccessful() {
+        Patient patient = new Patient();
+        patient.addExtension(new BirthPlaceExtension("GLASGOW"));
+        PatientParameter patientParameter = new PatientParameter(patient);
+        Parameters parameters = new Parameters()
+            .addParameter(patientParameter);
+
+        PersonPlaceOfBirth personPlaceOfBirth = personPlaceOfBirthMapper.map(parameters);
+
+        PersonPlaceOfBirth expected = new PersonPlaceOfBirth("GLASGOW");
+
+        assertThat(personPlaceOfBirth.toEdifact()).isEqualTo(expected.toEdifact());
+        assertThat(personPlaceOfBirth.toEdifact()).isEqualTo("LOC+950+GLASGOW'");
     }
 }

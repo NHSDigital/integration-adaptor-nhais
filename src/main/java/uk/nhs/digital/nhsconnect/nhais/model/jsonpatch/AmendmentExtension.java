@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PreviousGpExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 
 public class AmendmentExtension implements AmendmentValue{
     @Getter(AccessLevel.PACKAGE)
@@ -27,37 +31,29 @@ public class AmendmentExtension implements AmendmentValue{
 
     public static class DrugsDispensedMarker extends AmendmentExtension {
 
-        public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker";
-
         public DrugsDispensedMarker(AmendmentExtension amendmentExtension) {
-            super(URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
+            super(DrugsMarkerExtension.URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
         }
     }
 
     public static class Birthplace extends AmendmentExtension {
 
-        public static final String URL = "http://hl7.org/fhir/StructureDefinition/patient-birthPlace";
-
         public Birthplace(AmendmentExtension amendmentExtension) {
-            super(URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
+            super(BirthPlaceExtension.URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
         }
     }
 
     public static class ResidentialInstituteCode extends AmendmentExtension {
 
-        public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode";
-
         public ResidentialInstituteCode(AmendmentExtension amendmentExtension) {
-            super(URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
+            super(ResidentialInstituteExtension.URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
         }
     }
 
     public static class PreviousGp extends AmendmentExtension {
 
-        public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP";
-
         public PreviousGp(AmendmentExtension amendmentExtension) {
-            super(URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
+            super(PreviousGpExtension.URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
         }
     }
 }

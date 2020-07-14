@@ -5,6 +5,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientName;
@@ -40,7 +41,7 @@ class PersonNameMapperTest {
             .builder()
             .nhsNumber(NHS_NUMBER)
             .familyName(FAMILY_NAME)
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());
@@ -74,7 +75,7 @@ class PersonNameMapperTest {
             .middleName("middleName")
             .thirdForename("third Forename")
             .title("title")
-            .patientIdentificationType(PersonName.PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
+            .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
         assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());

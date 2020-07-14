@@ -1,17 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class ParametersExtension {
@@ -20,6 +19,15 @@ public class ParametersExtension {
 
     public static Patient extractPatient(Parameters parameters) {
         return new ParametersExtension(parameters).extractPatient();
+    }
+
+    public static <T extends FhirExtension> Optional<T> extractExtension(Parameters parameters, Class<T> clazz) {
+        return extractPatient(parameters)
+            .getExtension()
+            .stream()
+            .filter(extension -> clazz.isAssignableFrom(extension.getClass()))
+            .map(clazz::cast)
+            .findFirst();
     }
 
     public Patient extractPatient() {
@@ -49,10 +57,18 @@ public class ParametersExtension {
     }
 
     public String extractValue(String name) {
+        return extractOptionalValue(name)
+            .orElseThrow(() -> new FhirValidationException("Value " + name + " is missing in FHIR Parameters"));
+    }
+
+    public static Optional<String> extractOptionalValue(Parameters parameters, String name) {
+        return new ParametersExtension(parameters).extractOptionalValue(name);
+    }
+
+    public Optional<String> extractOptionalValue(String name) {
         return Optional.ofNullable(parameters.getParameter(name))
             .map(StringType.class::cast)
-            .map(StringType::getValueAsString)
-            .orElseThrow(() -> new FhirValidationException("Value " + name + " is missing in FHIR Parameters"));
+            .map(StringType::getValueAsString);
     }
 
     @SneakyThrows

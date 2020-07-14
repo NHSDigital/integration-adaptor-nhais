@@ -21,10 +21,10 @@ import java.util.Optional;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class PersonName extends Segment {
+public class PreviousPersonName extends Segment {
 
     public static final String KEY = "PNA";
-    public static final String QUALIFIER = "PAT";
+    public static final String QUALIFIER = "PER";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
     //all properties are optional
@@ -36,11 +36,11 @@ public class PersonName extends Segment {
     private final String middleName;
     private final String thirdForename;
 
-    public static PersonName fromString(String edifactString) {
-        if (!edifactString.startsWith(PersonName.KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + PersonName.class.getSimpleName() + " from " + edifactString);
+    public static PreviousPersonName fromString(String edifactString) {
+        if (!edifactString.startsWith(PreviousPersonName.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + PreviousPersonName.class.getSimpleName() + " from " + edifactString);
         }
-        return PersonName.builder()
+        return PreviousPersonName.builder()
             .nhsNumber(extractNhsNumber(edifactString))
             .patientIdentificationType(getPatientIdentificationType(edifactString))
             .familyName(extractNamePart("SU", edifactString))
