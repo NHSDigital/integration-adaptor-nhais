@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.SoftAssertions;
@@ -18,7 +18,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 
 import java.util.Optional;
 import java.util.function.Supplier;

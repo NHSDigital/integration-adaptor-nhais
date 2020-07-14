@@ -1,16 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
-import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
-
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
+import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonSexMapperTest {
 
@@ -26,7 +25,7 @@ class PersonSexMapperTest {
 
         var expectedPersonSex = PersonSex
             .builder()
-            .sexCode("2")
+            .gender(PersonSex.Gender.FEMALE)
             .build();
 
         assertEquals(expectedPersonSex, personSex);

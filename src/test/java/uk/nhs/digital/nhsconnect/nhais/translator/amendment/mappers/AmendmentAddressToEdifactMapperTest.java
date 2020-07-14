@@ -1,15 +1,11 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
-import static uk.nhs.digital.nhsconnect.nhais.translator.AmendmentFhirToEdifactTestBase.REMOVE_INDICATOR;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
@@ -19,16 +15,17 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
 
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
 
-@ExtendWith({ MockitoExtension.class, SoftAssertionsExtension.class })
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentFhirToEdifactTestBase.REMOVE_INDICATOR;
+
+@ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 public class AmendmentAddressToEdifactMapperTest {
 
     private static final String NHS_NUMBER = "1234";

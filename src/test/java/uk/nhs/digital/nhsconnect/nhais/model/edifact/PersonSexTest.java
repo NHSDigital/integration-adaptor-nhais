@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,28 +12,10 @@ public class PersonSexTest {
         var expectedValue = "PDI+1'";
 
         var personSex = PersonSex.builder()
-            .sexCode("1")
+            .gender(PersonSex.Gender.MALE)
             .build();
 
         assertEquals(expectedValue, personSex.toEdifact());
-    }
-
-    @Test
-    public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
-        var personSex = PersonSex.builder()
-            .sexCode("abc")
-            .build();
-
-        assertThrows(EdifactValidationException.class, personSex::toEdifact);
-    }
-
-    @Test
-    public void When_MappingToEdifactWithEmptySexCode_Then_EdifactValidationExceptionIsThrown() {
-        var personSex = PersonSex.builder()
-            .sexCode("")
-            .build();
-
-        assertThrows(EdifactValidationException.class, personSex::toEdifact);
     }
 
     @Test

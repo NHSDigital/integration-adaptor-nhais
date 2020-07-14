@@ -4,35 +4,22 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.hl7.fhir.r4.model.Enumerations;
-import org.hl7.fhir.r4.model.Patient;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
+import java.util.Arrays;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
 
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonSex extends Segment {
     private final static String KEY = "PDI";
-    private final static Map<Enumerations.AdministrativeGender, String> PATIENT_SEX_CODE = ImmutableMap.of(
-        Enumerations.AdministrativeGender.UNKNOWN, Gender.UNKNOWN.toString(),
-        Enumerations.AdministrativeGender.MALE, Gender.MALE.toString(),
-        Enumerations.AdministrativeGender.FEMALE, Gender.FEMALE.toString(),
-        Enumerations.AdministrativeGender.OTHER, Gender.OTHER.toString()
-    );
 
     //PDI+1'
-    private @NonNull String sexCode;
-
-    public static String getGenderCode(Patient patient) {
-        return Optional.ofNullable(PATIENT_SEX_CODE.get(patient.getGender()))
-            .orElseThrow(() -> new NoSuchElementException("sex code not found: " + patient.getGender().getDisplay()));
-    }
+    private @NonNull Gender gender;
 
     @Override
     public String getKey() {
@@ -41,7 +28,7 @@ public class PersonSex extends Segment {
 
     @Override
     public String getValue() {
-        return sexCode;
+        return gender.getCode();
     }
 
     @Override
@@ -50,25 +37,40 @@ public class PersonSex extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(sexCode) || sexCode.isBlank()) {
+        if (gender == null) {
             throw new EdifactValidationException(getKey() + ": Gender code is required");
-        }
-
-        if (!PATIENT_SEX_CODE.containsValue(sexCode)) {
-            throw new EdifactValidationException(getKey() + "Gender code not known: " + sexCode);
         }
     }
 
-    private enum Gender {
+    public enum Gender {
         UNKNOWN("0"),
         MALE("1"),
         FEMALE("2"),
         OTHER("9");
 
-        String code;
+        private final static Map<Enumerations.AdministrativeGender, Gender> FROM_FHIR_MAP = ImmutableMap.of(
+            Enumerations.AdministrativeGender.UNKNOWN, Gender.UNKNOWN,
+            Enumerations.AdministrativeGender.MALE, Gender.MALE,
+            Enumerations.AdministrativeGender.FEMALE, Gender.FEMALE,
+            Enumerations.AdministrativeGender.OTHER, Gender.OTHER
+        );
+
+        @Getter
+        private final String code;
 
         Gender(String code) {
             this.code = code;
+        }
+
+        public static Gender fromName(@NonNull String name) {
+            return Arrays.stream(Gender.values())
+                .filter(gender -> gender.name().toLowerCase().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No gender value for '" + name + "'"));
+        }
+
+        public static Gender fromFhir(Enumerations.AdministrativeGender fhirGender) {
+            return FROM_FHIR_MAP.get(fhirGender);
         }
 
         @Override

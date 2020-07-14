@@ -3,9 +3,9 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
@@ -29,7 +30,9 @@ import uk.nhs.digital.nhsconnect.nhais.utils.HttpHeaders;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @Slf4j
@@ -75,13 +78,13 @@ public class AmendmentController {
 
     private void validateDuplicatedPaths(List<AmendmentPatch> patches) {
         var amendmentPaths = patches.stream()
-                .filter(AmendmentPatch::isNotExtension)
-                .map(AmendmentPatch::getPath)
-                .collect(Collectors.toSet());
+            .filter(AmendmentPatch::isNotExtension)
+            .map(AmendmentPatch::getPath)
+            .collect(Collectors.toSet());
 
         var patchesWithoutExtensions = patches.stream()
-                .filter(AmendmentPatch::isNotExtension)
-                .collect(Collectors.toSet());
+            .filter(AmendmentPatch::isNotExtension)
+            .collect(Collectors.toSet());
 
         if (patchesWithoutExtensions.size() != amendmentPaths.size()) {
             throw new AmendmentValidationException("Request contains path that is used multiple times. Each patch path must only be used once within the amendment request");
@@ -90,14 +93,14 @@ public class AmendmentController {
 
     private void validateDuplicatedExtensions(List<AmendmentPatch> patches) {
         var extensionTypes = patches.stream()
-                .filter(AmendmentPatch::isExtension)
-                .map(AmendmentPatch::getValue)
-                .map(AmendmentValue::getClass)
-                .collect(Collectors.toSet());
+            .filter(AmendmentPatch::isExtension)
+            .map(AmendmentPatch::getValue)
+            .map(AmendmentValue::getClass)
+            .collect(Collectors.toSet());
 
         var allExtensionPatches = patches.stream()
-                .filter(AmendmentPatch::isExtension)
-                .collect(Collectors.toList());
+            .filter(AmendmentPatch::isExtension)
+            .collect(Collectors.toList());
         if (allExtensionPatches.size() != extensionTypes.size()) {
             throw new AmendmentValidationException("Request contains extension that is used multiple times. Each extension patch must only be used once within the amendment request");
         }
@@ -124,10 +127,24 @@ public class AmendmentController {
     }
 
     private void validateNonEmptyValues(List<AmendmentPatch> amendmentPatches) {
-        List<String> invalidAmendmentPaths = amendmentPatches.stream()
+        var simpleValuesInvalidPaths = amendmentPatches.stream()
             .filter(amendmentPatch -> amendmentPatch.getValue() != null)
+            .filter(amendmentPatch -> !(amendmentPatch.getValue() instanceof AmendmentExtension))
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getFormattedSimpleValue()))
-            .map(AmendmentPatch::getPath)
+            .map(AmendmentPatch::getPath);
+
+        var extensionValuesInvalidPaths = amendmentPatches.stream()
+            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
+            .filter(amendmentPatch -> amendmentPatch.getValue() instanceof AmendmentExtension)
+            .filter(amendmentPatch -> {
+                var amendmentExtension = (AmendmentExtension) amendmentPatch.getValue();
+                return StringUtils.isNoneBlank(amendmentExtension.getValueBoolean(), amendmentExtension.getValueString());
+            })
+            .map(AmendmentPatch::getPath);
+
+        List<String> invalidAmendmentPaths = Stream.of(
+            simpleValuesInvalidPaths, extensionValuesInvalidPaths)
+            .flatMap(Function.identity())
             .collect(Collectors.toList());
 
         if (invalidAmendmentPaths.size() > 0) {

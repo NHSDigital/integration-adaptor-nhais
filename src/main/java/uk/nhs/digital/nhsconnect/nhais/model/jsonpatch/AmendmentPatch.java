@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
@@ -16,8 +17,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AmendmentPatch {
 
-    private static final String REMOVE_INDICATOR = "%";
-    private static final String EMPTY_STRING = "";
+    public static final String REMOVE_INDICATOR = "%";
 
     @NonNull
     private AmendmentPatchOperation op;
@@ -37,7 +37,7 @@ public class AmendmentPatch {
             return REMOVE_INDICATOR;
         }
         if (value == null) {
-            return EMPTY_STRING;
+            return StringUtils.EMPTY;
         }
         return value.get();
     }

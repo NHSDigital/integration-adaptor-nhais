@@ -9,10 +9,12 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PreviousGpExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 
-public class AmendmentExtension implements AmendmentValue{
+public class AmendmentExtension implements AmendmentValue {
     @Getter(AccessLevel.PACKAGE)
     private final String url;
+    @Getter
     private final String valueString;
+    @Getter
     private final String valueBoolean;
 
     @JsonCreator

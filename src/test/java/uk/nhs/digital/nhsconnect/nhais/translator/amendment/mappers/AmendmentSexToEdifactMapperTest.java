@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -7,16 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.Optional;
 
@@ -26,11 +26,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
-class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
+class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
-    private static final String PREVIOUS_SURNAME = "Snow";
-
-    private final AmendmentPreviousNameToEdifactMapper translator = new AmendmentPreviousNameToEdifactMapper();
+    @InjectMocks
+    private AmendmentSexToEdifactMapper translator;
 
     @Mock
     private AmendmentBody amendmentBody;
@@ -47,42 +46,50 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingPreviousSurname_expectAllFieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation).setValue(AmendmentValue.from(PREVIOUS_SURNAME))));
+    void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
+        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from("female"))));
 
         var segments = translator.map(amendmentBody);
 
         assertThat(segments).isPresent().get()
-            .isEqualTo(PersonPreviousName.builder()
-                .familyName(PREVIOUS_SURNAME)
-                .build());
-    }
-
-    @Test
-    void whenRemovingPreviousSurname_expectAllFieldsAreMapped() {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(AmendmentPatchOperation.REMOVE)));
-
-        var segments = translator.map(amendmentBody);
-
-        assertThat(segments).isPresent().get()
-            .isEqualTo(PersonPreviousName.builder()
-                .familyName(REMOVE_INDICATOR)
+            .isEqualTo(PersonSex.builder()
+                .gender(PersonSex.Gender.FEMALE)
                 .build());
     }
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
+    void whenAddingOrReplacingWithIncorrectValue_expectException(AmendmentPatchOperation operation) {
+        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(operation).setValue(AmendmentValue.from("qwe"))));
+
+        assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("No gender value for 'qwe'");
+    }
+
+    @Test
+    void whenUsingRemoveOperation_expectException() {
+        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+            .setOp(AmendmentPatchOperation.REMOVE)));
+
+        assertThatThrownBy(() -> translator.map(amendmentBody))
+            .isInstanceOf(PatchValidationException.class)
+            .hasMessage("Illegal remove operation on /gender");
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "getAddOrReplaceEnums")
     void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
+        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/previous_surname/")
+            .setPath(JsonPatches.SEX_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
         ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Invalid values for: [/previous_surname/]");
+            .hasMessage("Invalid value for /gender");
     }
 }
