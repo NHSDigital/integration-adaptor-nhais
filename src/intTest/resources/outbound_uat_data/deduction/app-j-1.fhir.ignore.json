@@ -13,7 +13,7 @@
       "valueString": "DIED ON HOLIDAY IN MAJORCA"
     },
     {
-      "name": "reasonForDeduction",
+      "name": "deductionReasonCode",
       "valueString": "1"
     },
     {

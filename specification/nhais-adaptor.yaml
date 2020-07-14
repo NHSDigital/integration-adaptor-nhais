@@ -85,7 +85,7 @@ paths:
         | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
         | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
         | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
-        | Reason for Deduction    | Parameter     | reasonForDeduction                       | valueString              |                                    | See table below for deduction reason codes |
+        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | See table below for deduction reason codes |
         | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
 
         **Deduction Reason Codes**
@@ -331,7 +331,7 @@ paths:
                   summary: The request payload is invalid
                   value:
                     $ref: components/examples/responses/400-bad-request.json
-  '/fhir/Patient/{id}':
+  '/fhir/Patient/{nhsNumber}':
     parameters:
       - $ref: '#/components/parameters/Id'
     patch:
@@ -475,7 +475,7 @@ paths:
 components:
   parameters:
     Id:
-      name: id
+      name: nhsNumber
       in: path
       description: The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
       required: true
