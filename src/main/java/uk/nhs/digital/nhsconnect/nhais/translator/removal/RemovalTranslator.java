@@ -8,15 +8,10 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceCodeMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceDateMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceTypeMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.FreeTextMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PartyQualifierMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
@@ -36,6 +31,7 @@ public class RemovalTranslator implements FhirToEdifactTranslator {
     private final PartyQualifierMapper partyQualifierMapper;
     private final GpNameAndAddressMapper gpNameAndAddressMapper;
     private final PersonNameMapper personNameMapper;
+    private final FreeTextMapper freeTextMapper;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
@@ -55,7 +51,7 @@ public class RemovalTranslator implements FhirToEdifactTranslator {
             //NAD+GP
             gpNameAndAddressMapper,
             //FTX+RGI
-
+            freeTextMapper,
             //S02
             emptyMapper(new SegmentGroup(2)),
             //PNA+PAT
