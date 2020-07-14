@@ -17,12 +17,18 @@
       "valueString": "1992-01-15"
     },
     {
-      "name": "previousGPName",
+      "name": "previousGpName",
       "valueString": "DR BLACK"
     },
     {
       "name": "patient",
       "resource": {
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "N/10/10"
+          }
+        ],
         "managingOrganization": {
           "identifier": [
             {
@@ -57,22 +63,12 @@
           },
           {
             "line": [
-              null,
-              null,
-              null,
+              "LINE1",
+              "LINE2",
+              "LINE3",
               "HORSFORTH",
               "LEEDS"
             ]
-          }
-        ],
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "PETERBOROUGH"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
-            "valueString": "DR BLACK"
           }
         ],
         "resourceType": "Patient"

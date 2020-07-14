@@ -25,6 +25,10 @@
       "valueString": "LNS"
     },
     {
+      "name": "previousGpName",
+      "valueString": "DR BLACK"
+    },
+    {
       "name": "patient",
       "resource": {
         "managingOrganization": {
@@ -92,10 +96,6 @@
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
             "valueString": "PETERBOROUGH"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
-            "valueString": "DR BLACK"
           },
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
