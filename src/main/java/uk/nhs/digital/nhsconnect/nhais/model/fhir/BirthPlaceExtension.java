@@ -12,4 +12,5 @@ public class BirthPlaceExtension extends Extension {
     public BirthPlaceExtension(String value) {
         super(URL, new StringType(value));
     }
+
 }

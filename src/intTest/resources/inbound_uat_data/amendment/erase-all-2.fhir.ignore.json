@@ -1,0 +1,62 @@
+{
+  "nhsNumber": "1234567890",
+  "gpCode": "2750922,295",
+  "gpTradingPartnerCode": "TES5",
+  "healthcarePartyCode": "XX1",
+  "patches": [
+    {
+      "op": "remove",
+      "path": "/name/1/family"
+    },
+    {
+      "op": "remove",
+      "path": "/name/0/given"
+    },
+    {
+      "op": "remove",
+      "path": "/name/0/prefix/0"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/0"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/1",
+      "value": "ROAD NAME"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/2"
+    },
+    {
+      "op": "replace",
+      "path": "/address/0/line/3",
+      "value": "RUGELEY"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/line/4"
+    },
+    {
+      "op": "remove",
+      "path": "/address/0/postalCode"
+    },
+    {
+      "op": "replace",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+        "valueBoolean": false
+      }
+    },
+    {
+      "op": "add",
+      "path": "/extension/0",
+      "value": {
+        "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+        "valueString": null
+      }
+    }
+  ]
+}

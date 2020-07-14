@@ -1,29 +1,31 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.r4.model.Parameters;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPlaceOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.springframework.stereotype.Component;
-
 @Component
-public class PersonPlaceOfBirthMapper implements FromFhirToEdifactMapper<PersonPlaceOfBirth> {
+public class PersonPlaceOfBirthMapper implements OptionalFromFhirToEdifactMapper<PersonPlaceOfBirth> {
 
     public PersonPlaceOfBirth map(Parameters parameters) {
-        try {
-            return PersonPlaceOfBirth.builder()
-                .location(getPersonPlaceOfBirth(parameters))
-                .build();
-        } catch (RuntimeException ex) {
-            throw new FhirValidationException(ex);
-        }
+        return PersonPlaceOfBirth.builder()
+            .location(getPersonPlaceOfBirth(parameters))
+            .build();
     }
 
     private String getPersonPlaceOfBirth(Parameters parameters) {
-        Patient patient = ParametersExtension.extractPatient(parameters);
-        return patient.getExtensionByUrl(BirthPlaceExtension.URL).getValue().toString();
+        return ParametersExtension.extractExtensionValue(parameters, BirthPlaceExtension.URL)
+            .orElseThrow(() -> new FhirValidationException("Birthplace extension is missing value"));
+    }
+
+    @Override
+    public boolean canMap(Parameters parameters) {
+        return ParametersExtension.extractExtensionValue(parameters, BirthPlaceExtension.URL)
+            .filter(StringUtils::isNotBlank)
+            .isPresent();
     }
 }

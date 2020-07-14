@@ -55,7 +55,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonPreviousName.builder()
-                .previousFamilyName(PREVIOUS_SURNAME)
+                .familyName(PREVIOUS_SURNAME)
                 .build());
     }
 
@@ -68,7 +68,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonPreviousName.builder()
-                .previousFamilyName(REMOVE_INDICATOR)
+                .familyName(REMOVE_INDICATOR)
                 .build());
     }
 

@@ -1,0 +1,122 @@
+{
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    },
+    {
+      "name": "acceptanceCode",
+      "valueString": "A"
+    },
+    {
+      "name": "acceptanceType",
+      "valueString": "4"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "1992-01-15"
+    },
+    {
+      "name": "dateOfUkEntry",
+      "valueString": "1991-08-06"
+    },
+    {
+      "name": "dateOfUkExit",
+      "valueString": "1968-03-05"
+    },
+    {
+      "name": "freeText",
+      "valueString": "GP NOTES GO HERE"
+    },
+    {
+      "name": "previousHaCipher",
+      "valueString": "LNS"
+    },
+    {
+      "name": "patient",
+      "resource": {
+        "managingOrganization": {
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "XX1"
+            }
+          ]
+        },
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "2750922,295"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "N/10/10"
+          }
+        ],
+        "name": [
+          {
+            "family": "HOWES",
+            "given": [
+              "ALISON",
+              "J",
+              "L"
+            ],
+            "prefix": [
+              "MRS"
+            ]
+          },
+          {
+            "family": "PREVIOUS"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1965-12-12",
+        "address": [
+          {
+            "line": [
+              "HOUSE NAME",
+              "13 FOX CRESCENT",
+              "LOCALITY",
+              "BROMLEY",
+              "KENT"
+            ],
+            "postalCode": "BR1  7TQ"
+          },
+          {
+            "line": [
+              "PREVIOUS HOUSE",
+              "12 PREVIOUS LANE",
+              "PREVIOUS",
+              "HORSFORTH",
+              "LEEDS"
+            ]
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
+            "valueString": "LANCASHIRE"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+            "valueBoolean": true
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+            "valueString": "RT"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
+            "valueString": "DR BLACK"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    }
+  ],
+  "resourceType": "Parameters"
+}
