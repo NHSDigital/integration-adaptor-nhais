@@ -4,29 +4,24 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentFhirToEdifactTestBase.REMOVE_INDICATOR;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
-public class AmendmentAddressToEdifactMapperTest {
+public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String NHS_NUMBER = "1234";
     private static final String HOUSE_NAME = "FLAT 49";
@@ -42,18 +37,11 @@ public class AmendmentAddressToEdifactMapperTest {
 
     private final AmendmentAddressToEdifactMapper translator = new AmendmentAddressToEdifactMapper();
 
-    @Mock
-    private AmendmentBody amendmentBody;
-
-    @Mock
-    private JsonPatches jsonPatches;
-
     @BeforeEach
+    @Override
     void setUp() {
-        reset(amendmentBody, jsonPatches);
-
+        super.setUp();
         lenient().when(amendmentBody.getNhsNumber()).thenReturn(NHS_NUMBER);
-        when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
     }
 
     @Test

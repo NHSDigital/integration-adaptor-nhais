@@ -2,17 +2,14 @@ package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
@@ -22,7 +19,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
@@ -30,19 +26,6 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @InjectMocks
     private AmendmentSexToEdifactMapper translator;
-
-    @Mock
-    private AmendmentBody amendmentBody;
-
-    @Mock
-    private JsonPatches jsonPatches;
-
-    @BeforeEach
-    void setUp() {
-        reset(amendmentBody, jsonPatches);
-
-        when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
-    }
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
