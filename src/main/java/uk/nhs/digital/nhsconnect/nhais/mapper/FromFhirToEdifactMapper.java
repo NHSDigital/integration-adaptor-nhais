@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface FromFhirToEdifactMapper<T extends Segment> {
-    static <T extends Segment> FromFhirToEdifactMapper<T> emptyMapper(T segment) {
+    static <T extends Segment> FromFhirToEdifactMapper<T> mapSegment(T segment) {
         return parameters -> segment;
     }
 
@@ -28,7 +28,7 @@ public interface FromFhirToEdifactMapper<T extends Segment> {
         if (mappableSegments.isEmpty()) {
             return new SkipMapper();
         }
-        return emptyMapper(startSegment);
+        return mapSegment(startSegment);
     }
 
     T map(Parameters parameters);
