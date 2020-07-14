@@ -8,11 +8,17 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceCodeMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceDateMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceTypeMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.DrugsMarkerMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.FreeTextMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PartyQualifierMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPreviousNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.ResidentialInstituteNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
@@ -22,10 +28,13 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optionalGroup;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -37,51 +46,70 @@ public class AcceptanceFirstTranslator implements FhirToEdifactTranslator {
     private final AcceptanceTypeMapper acceptanceTypeMapper;
     private final AcceptanceDateMapper acceptanceDateMapper;
     private final PersonNameMapper personNameMapper;
+    private final PersonPlaceOfBirthMapper personPlaceOfBirthMapper;
+    private final PersonPreviousNameMapper personPreviousNameMapper;
     private final PersonSexMapper personSexMapper;
     private final PersonAddressMapper personAddressMapper;
+    private final PersonDateOfBirthMapper personDateOfBirthMapper;
+    private final DrugsMarkerMapper drugsMarkerMapper;
+    private final FreeTextMapper freeTextMapper;
+    private final ResidentialInstituteNameAndAddressMapper residentialInstituteNameAndAddressMapper;
+    private final OptionalInputValidator validator;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
-//        //TODO: enforce place of birth mandatory when NHS number is missing
-//        if(new PersonNameMapper().map(parameters).getNhsNumber().isEmpty()) {
-//            Optional.ofNullable(new PersonPlaceOfBirthMapper().map(parameters).getLocation())
-//                .orElseThrow(() -> new FhirValidationException("Location is mandatory when NHS number is missing"));
-//        }
+        boolean nhsNumberIsMissing = validator.nhsNumberIsMissing(parameters);
+        boolean placeOfBirthIsMissing = validator.placeOfBirthIsMissing(parameters);
+        if(nhsNumberIsMissing && placeOfBirthIsMissing) {
+            throw new FhirValidationException("Place of birth is mandatory when NHS number is missing");
+        }
 
-        List<Segment> segments = Stream.of(
+        return Stream.of(
             //BGM
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01
-            emptyMapper(new SegmentGroup(1)),
+            mapSegment(new SegmentGroup(1)),
             //RFF+TN
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new ReferenceTransactionNumber()),
             //NAD+GP
             gpNameAndAddressMapper,
+            //NAD+RIC
+            optional(residentialInstituteNameAndAddressMapper, parameters),
             //HEA+ACD
             acceptanceCodeMapper,
             //HEA+ATP
             acceptanceTypeMapper,
+            //HEA+DM
+            optional(drugsMarkerMapper, parameters),
             //DTM+956
             acceptanceDateMapper,
             //LOC+950
-//            new PersonPlaceOfBirthMapper(), //TODO: for now place of birth is ignored
+            optional(personPlaceOfBirthMapper, parameters),
+            //FTX+RGI
+            optional(freeTextMapper, parameters),
             //S02
-            emptyMapper(new SegmentGroup(2)),
-            // PNA+PAT
+            mapSegment(new SegmentGroup(2)),
+            //PNA+PAT
             personNameMapper,
-            //PNI
+            //DTM+329
+            optional(personDateOfBirthMapper, parameters),
+            //PDI
             personSexMapper,
             //NAD+PAT
-            personAddressMapper)
+            personAddressMapper,
+            //S02
+            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
+            //PNA+PER
+            optional(personPreviousNameMapper, parameters))
             .map(mapper -> mapper.map(parameters))
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
-
-        return segments;
     }
+
 }

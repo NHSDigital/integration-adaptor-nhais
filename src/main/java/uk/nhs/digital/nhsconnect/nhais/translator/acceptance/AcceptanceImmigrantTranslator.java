@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -47,17 +47,17 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         return Stream.of(
             //BGM+++507'
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             //NAD+FHS+XX1:954'
             partyQualifierMapper,
             //DTM+956:19920115:102' (acceptance date)
-            emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950:G1'
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01+1'
-            emptyMapper(new SegmentGroup(1)),
+            mapSegment(new SegmentGroup(1)),
             //RFF+TN:20'
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new ReferenceTransactionNumber()),
             //NAD+GP+2750922,295:900'
             gpNameAndAddressMapper,
             //HEA+ACD+A:ZZZ'
@@ -73,7 +73,7 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
             //LOC+950+LANCASHIRE' (optional)
             //birth place
             //S02+2'
-            emptyMapper(new SegmentGroup(2)),
+            mapSegment(new SegmentGroup(2)),
             //PNA+PAT++++SU:HOWES+FO:ALISON+TI:MRS+MI:J'
             personNameMapper,
             //PDI+2'

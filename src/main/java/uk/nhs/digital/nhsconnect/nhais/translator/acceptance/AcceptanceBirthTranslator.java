@@ -16,8 +16,8 @@ import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
-import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPreviousNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.ResidentialInstituteNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
@@ -32,8 +32,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optionalGroup;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -59,17 +60,17 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
 
         return Stream.of(
             //BGM
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01
-            emptyMapper(new SegmentGroup(1)),
+            mapSegment(new SegmentGroup(1)),
             //RFF+TN
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new ReferenceTransactionNumber()),
             //NAD+GP
             gpNameAndAddressMapper,
             //NAD+RIC
@@ -87,17 +88,20 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //FTX+RGI
             optional(freeTextMapper, parameters),
             //S02
-            emptyMapper(new SegmentGroup(2)),
+            mapSegment(new SegmentGroup(2)),
             //PNA+PAT
             personNameMapper,
-            //PNA+PER
-            optional(personPreviousNameMapper, parameters),
             //DTM+329
             personDateOfBirthMapper,
             //PDI
             personSexMapper,
             //NAD+PAT
-            personAddressMapper)
+            personAddressMapper,
+            //S02
+            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
+            //PNA+PER
+            optional(personPreviousNameMapper, parameters)
+        )
             .map(mapper -> mapper.map(parameters))
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
