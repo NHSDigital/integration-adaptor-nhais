@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optionalGroup;
 
@@ -60,17 +60,17 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
 
         return Stream.of(
             //BGM
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01
-            emptyMapper(new SegmentGroup(1)),
+            mapSegment(new SegmentGroup(1)),
             //RFF+TN
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new ReferenceTransactionNumber()),
             //NAD+GP
             gpNameAndAddressMapper,
             //NAD+RIC
@@ -88,7 +88,7 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
             //FTX+RGI
             optional(freeTextMapper, parameters),
             //S02
-            emptyMapper(new SegmentGroup(2)),
+            mapSegment(new SegmentGroup(2)),
             //PNA+PAT
             personNameMapper,
             //DTM+329
