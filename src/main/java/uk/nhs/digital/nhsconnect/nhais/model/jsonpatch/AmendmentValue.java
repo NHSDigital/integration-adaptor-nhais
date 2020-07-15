@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
@@ -26,7 +27,7 @@ public interface AmendmentValue {
             case BirthPlaceExtension.URL:
                 return new AmendmentStringExtension.Birthplace(valueString);
             default:
-                throw new IllegalArgumentException();
+                throw new PatchValidationException("Unknown extension type using url " + url);
         }
     }
 
