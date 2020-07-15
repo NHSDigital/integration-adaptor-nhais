@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,6 +23,7 @@ public class DeductionDate extends Segment{
     private static final String FORMAT_CODE = "102";
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
 
+    @NonNull
     private LocalDate date;
 
     @Override

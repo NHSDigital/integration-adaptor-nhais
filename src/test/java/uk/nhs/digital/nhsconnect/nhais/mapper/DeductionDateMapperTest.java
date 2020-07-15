@@ -10,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DeductionDateMapperTest {
@@ -26,7 +27,7 @@ class DeductionDateMapperTest {
 
         var expectedDeductionDate = new DeductionDate(LocalDate.parse("2020-06-05"));
 
-        assertEquals(expectedDeductionDate, deductionDate);
+        assertThat(deductionDate).isEqualTo(expectedDeductionDate);
     }
 
 }

@@ -8,6 +8,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DeductionReasonCode;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -27,7 +29,7 @@ class DeductionReasonCodeMapperTest {
             .code("20")
             .build();
 
-        assertEquals(expectedDeductionReasonCode, deductionReasonCode);
+        assertThat(deductionReasonCode).isEqualTo(expectedDeductionReasonCode);
     }
 
     @Test
@@ -35,6 +37,6 @@ class DeductionReasonCodeMapperTest {
         Parameters parameters = new Parameters();
 
         var mapper = new DeductionReasonCodeMapper();
-        assertThrows(FhirValidationException.class, () -> mapper.map(parameters));
+        assertThatThrownBy(() -> mapper.map(parameters)).isInstanceOf(FhirValidationException.class);
     }
 }

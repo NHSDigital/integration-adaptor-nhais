@@ -3,6 +3,8 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,7 +18,7 @@ public class DeductionReasonCodeTest {
             .code("11")
             .build();
 
-        assertEquals(expectedValue, deductionReasonCode.toEdifact());
+        assertThat(deductionReasonCode.toEdifact()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -25,11 +27,7 @@ public class DeductionReasonCodeTest {
             .code("")
             .build();
 
-        assertThrows(EdifactValidationException.class, deductionReasonCode::toEdifact);
+        assertThatThrownBy(deductionReasonCode::toEdifact).isInstanceOf(EdifactValidationException.class);
     }
 
-    @Test
-    public void When_BuildingWithoutType_Then_IsThrown() {
-        assertThrows(NullPointerException.class, () -> DeductionReasonCode.builder().build());
-    }
 }
