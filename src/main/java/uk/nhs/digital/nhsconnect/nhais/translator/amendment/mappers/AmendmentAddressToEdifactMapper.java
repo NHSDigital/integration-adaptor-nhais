@@ -1,10 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
@@ -15,8 +13,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -83,7 +82,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkIfThereAreAllFiveAddressLinesPatches(JsonPatches patches) {
-        if(!Stream.of(
+        if (!Stream.of(
             patches.getHouseName(),
             patches.getNumberOrRoadName(),
             patches.getLocality(),
@@ -95,7 +94,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(JsonPatches patches) {
-        if(hasLocalityOrCountyRemovalOperation(patches)) {
+        if (hasLocalityOrCountyRemovalOperation(patches)) {
             return;
         }
 
@@ -107,7 +106,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
         var countyString = countyAmendmentPatch == null ? "null" : countyAmendmentPatch.get();
         var postTownString = postTownAmendmentPatch == null ? "null" : postTownAmendmentPatch.get();
 
-        if(!allValuesAreNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)
+        if (!allValuesAreNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)
             && !allValuesAreNotNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)) {
             throw new FhirValidationException("If at least one of the Address - Locality, Address - Post Town and Address County " +
                 "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: " +
@@ -125,7 +124,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
 
     private boolean hasLocalityOrCountyRemovalOperation(JsonPatches patches) {
         return patches.getLocality().get().isRemoval()
-        || patches.getCounty().get().isRemoval();
+            || patches.getCounty().get().isRemoval();
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
