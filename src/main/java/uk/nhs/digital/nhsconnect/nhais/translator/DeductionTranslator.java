@@ -17,6 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.OptionalInputValidator;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +37,13 @@ public class DeductionTranslator implements FhirToEdifactTranslator {
     private final FreeTextMapper freeTextMapper;
     private final DeductionDateMapper deductionDateMapper;
     private final DeductionReasonCodeMapper deductionReasonCodeMapper;
+    private final OptionalInputValidator validator;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
+        if(validator.nhsNumberIsMissing(parameters)) {
+            throw new FhirValidationException("Patient resource property /identifier/0/value (NHS Number) is required");
+        }
         List<Segment> segments = Stream.of(
             //BGM
             mapSegment(new BeginningOfMessage()),
