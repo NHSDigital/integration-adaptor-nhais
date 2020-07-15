@@ -7,9 +7,7 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfExit;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +17,6 @@ class PersonDateOfExitMapperTest {
 
     private static final String DATE_STRING = "1991-11-06";
     private static final LocalDate LOCAL_DATE = LocalDate.parse(DATE_STRING);
-    private static final Instant FIXED_TIME = LOCAL_DATE.atStartOfDay(ZoneId.of("Europe/London")).toInstant();
 
     @Test
     void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
@@ -31,10 +28,7 @@ class PersonDateOfExitMapperTest {
         var PersonDateOfExitMapper = new PersonDateOfExitMapper();
         PersonDateOfExit personDateOfExit = PersonDateOfExitMapper.map(parameters);
 
-        var expectedPersonDateOfEntry = PersonDateOfExit
-            .builder()
-            .timestamp(FIXED_TIME)
-            .build();
+        var expectedPersonDateOfEntry = new PersonDateOfExit(LOCAL_DATE);
 
         assertThat(personDateOfExit.toEdifact()).isEqualTo(expectedPersonDateOfEntry.toEdifact());
     }

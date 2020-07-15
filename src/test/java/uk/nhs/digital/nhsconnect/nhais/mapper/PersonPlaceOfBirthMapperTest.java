@@ -4,10 +4,12 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPlaceOfBirth;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatientParameter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PersonPlaceOfBirthMapperTest {
 
@@ -25,14 +27,17 @@ class PersonPlaceOfBirthMapperTest {
     }
 
     @Test
-    void when_ExtensionExistsAndValueIsNotSet_Then_CantMap() {
+    void when_ExtensionExistsAndValueIsNotSet_Then_CanMap() {
         Patient patient = new Patient();
         patient.addExtension(new BirthPlaceExtension(""));
         PatientParameter patientParameter = new PatientParameter(patient);
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isFalse();
+        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isTrue();
+        PersonPlaceOfBirth personPlaceOfBirth = personPlaceOfBirthMapper.map(parameters);
+        assertThatThrownBy(() -> personPlaceOfBirth.preValidate())
+            .isExactlyInstanceOf(EdifactValidationException.class);
     }
 
     @Test

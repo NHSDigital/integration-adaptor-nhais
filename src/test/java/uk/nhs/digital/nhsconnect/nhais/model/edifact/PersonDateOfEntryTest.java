@@ -2,38 +2,24 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PersonDateOfEntryTest {
-    private static final Instant FIXED_TIME = ZonedDateTime.of(
-        1992,
-        1,
-        13,
-        23,
-        55,
-        0,
-        0,
-        ZoneId.of("Europe/London")).toInstant();
+    private static final LocalDate LOCAL_DATE = LocalDate.parse("1991-01-13");
 
 
     @Test
     public void When_MappingToEdifact_Then_ReturnCorrectString() {
-        var expectedValue = "DTM+957:19920113:102'";
-
-        var personDateOfEntry = PersonDateOfEntry.builder()
-            .timestamp(FIXED_TIME)
-            .build();
-
-        assertEquals(expectedValue, personDateOfEntry.toEdifact());
+        var personDateOfEntry = new PersonDateOfEntry(LOCAL_DATE);
+        assertThat(personDateOfEntry.toEdifact()).isEqualTo("DTM+957:19910113:102'");
     }
 
     @Test
     public void When_BuildingWithEmptyTimestamp_Then_NullPointerExceptionIsThrown() {
-        assertThrows(NullPointerException.class, () -> PersonDateOfEntry.builder().build());
+        assertThatThrownBy(() -> new PersonDateOfEntry(null))
+            .isExactlyInstanceOf(NullPointerException.class);
     }
 }

@@ -24,6 +24,14 @@ class FreeTextMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "");
 
+        assertThat(freeTextMapper.canMap(parameters)).isTrue();
+    }
+
+    @Test
+    void when_FreeTextValueExistsAndValueIsNull_Then_CanMap() {
+        Parameters parameters = new Parameters()
+            .addParameter(ParameterNames.FREE_TEXT, (String) null);
+
         assertThat(freeTextMapper.canMap(parameters)).isFalse();
     }
 

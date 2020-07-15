@@ -7,18 +7,15 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfEntryMapperTest {
     private static final String DATE_STRING = "1991-11-06";
     private static final LocalDate LOCAL_DATE = LocalDate.parse(DATE_STRING);
-    private static final Instant FIXED_TIME = LOCAL_DATE.atStartOfDay(ZoneId.of("Europe/London")).toInstant();
 
     @Test
     void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
@@ -30,13 +27,9 @@ class PersonDateOfEntryMapperTest {
         var personDateOfEntryMapper = new PersonDateOfEntryMapper();
         PersonDateOfEntry personDateOfEntry = personDateOfEntryMapper.map(parameters);
 
-        var expectedPersonDateOfEntry = PersonDateOfEntry
-            .builder()
-            .timestamp(FIXED_TIME)
-            .build();
+        var expectedPersonDateOfEntry = new PersonDateOfEntry(LOCAL_DATE);
 
-        assertEquals(expectedPersonDateOfEntry, personDateOfEntry);
-
+        assertThat(personDateOfEntry.toEdifact()).isEqualTo(expectedPersonDateOfEntry.toEdifact());
     }
 
     @Test

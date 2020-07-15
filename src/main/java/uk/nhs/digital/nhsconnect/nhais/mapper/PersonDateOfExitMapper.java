@@ -5,34 +5,22 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfExit;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Component
 public class PersonDateOfExitMapper implements OptionalFromFhirToEdifactMapper<PersonDateOfExit> {
     public PersonDateOfExit map(Parameters parameters) {
-        return PersonDateOfExit.builder()
-            .timestamp(getPersonEntryDate(parameters))
-            .build();
+        return new PersonDateOfExit(getPersonEntryDate(parameters));
     }
 
-    private Instant getPersonEntryDate(Parameters parameters) {
-        return parseInstant(
-            ParametersExtension.extractValue(parameters, ParameterNames.EXIT_DATE)
-        );
-    }
-
-    private Instant parseInstant(String value) {
-        LocalDate localDate = LocalDate.parse(value);
-        return localDate.atStartOfDay(TimestampService.UKZone).toInstant();
+    private LocalDate getPersonEntryDate(Parameters parameters) {
+        return LocalDate.parse(ParametersExtension.extractValue(parameters, ParameterNames.EXIT_DATE));
     }
 
     @Override
     public boolean canMap(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, ParameterNames.EXIT_DATE)
-            .map(this::parseInstant)
             .isPresent();
     }
 }

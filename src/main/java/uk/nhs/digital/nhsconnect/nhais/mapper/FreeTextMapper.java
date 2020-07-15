@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
@@ -18,8 +17,7 @@ public class FreeTextMapper implements OptionalFromFhirToEdifactMapper<FreeText>
     @Override
     public boolean canMap(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, FREE_TEXT_VALUE_NAME)
-            .filter(StringUtils::isNotBlank)
-            .isPresent();
+             .isPresent();
     }
 
 }

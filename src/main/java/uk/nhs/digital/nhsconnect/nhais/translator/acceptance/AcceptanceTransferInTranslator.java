@@ -113,12 +113,13 @@ public class AcceptanceTransferInTranslator implements FhirToEdifactTranslator {
             personSexMapper,
             //NAD+PAT
             personAddressMapper,
-            //S02
-            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper, personOldAddressMapper), parameters),
-            //PNA+PER
-            optional(personPreviousNameMapper, parameters),
             //NAD+PER
-            optional(personOldAddressMapper, parameters))
+            optional(personOldAddressMapper, parameters),
+            //S02
+            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
+            //PNA+PER
+            optional(personPreviousNameMapper, parameters)
+        )
             .map(mapper -> mapper.map(parameters))
             .filter(Objects::nonNull)
             .collect(Collectors.toList());

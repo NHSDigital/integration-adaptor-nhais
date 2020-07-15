@@ -1,29 +1,25 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
- * Example //DTM+958:19920113:102'
+ * Example DTM+958:19920113:102'
  */
-@EqualsAndHashCode(callSuper = false)
-@Builder
-@Data
+@RequiredArgsConstructor
 public class PersonDateOfExit extends Segment {
 
     private final static String KEY = "DTM";
     private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
     private final static String QUALIFIER = "958";
     private final static String DATE_FORMAT = "102";
-    private @NonNull Instant timestamp;
+    private final @NonNull LocalDate dateOfExit;
 
     @Override
     public String getKey() {
@@ -34,7 +30,7 @@ public class PersonDateOfExit extends Segment {
     public String getValue() {
         return QUALIFIER
             .concat(COLON_SEPARATOR)
-            .concat(DATE_TIME_FORMATTER.format(timestamp))
+            .concat(DATE_TIME_FORMATTER.format(dateOfExit))
             .concat(COLON_SEPARATOR)
             .concat(DATE_FORMAT);
     }
@@ -45,7 +41,7 @@ public class PersonDateOfExit extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(timestamp)) {
+        if (Objects.isNull(dateOfExit)) {
             throw new EdifactValidationException(getKey() + ": Date of exit is required");
         }
     }
