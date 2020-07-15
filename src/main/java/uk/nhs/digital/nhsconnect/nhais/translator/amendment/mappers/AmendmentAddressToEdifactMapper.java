@@ -10,7 +10,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.List;
@@ -78,7 +77,6 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
             patches.getCounty(),
             patches.getPostalCode()));
         checkNoPostTownPatchForRemoveOperation(patches);
-        checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(patches);
     }
 
     private void checkIfThereAreAllFiveAddressLinesPatches(JsonPatches patches) {
@@ -91,40 +89,6 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
             .allMatch(Optional::isPresent)) {
             throw new FhirValidationException("All five address lines must be provided for amendment");
         }
-    }
-
-    private void checkLocalityPostTownAndCountyAllEmptyBlankOrAllNotEmptyBlank(JsonPatches patches) {
-        if (hasLocalityOrCountyRemovalOperation(patches)) {
-            return;
-        }
-
-        var localityAmendmentPatch = patches.getLocality().get().getValue();
-        var countyAmendmentPatch = patches.getCounty().get().getValue();
-        var postTownAmendmentPatch = patches.getPostTown().get().getValue();
-
-        var localityString = localityAmendmentPatch == null ? "null" : localityAmendmentPatch.get();
-        var countyString = countyAmendmentPatch == null ? "null" : countyAmendmentPatch.get();
-        var postTownString = postTownAmendmentPatch == null ? "null" : postTownAmendmentPatch.get();
-
-        if (!allValuesAreNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)
-            && !allValuesAreNotNull(localityAmendmentPatch, countyAmendmentPatch, postTownAmendmentPatch)) {
-            throw new FhirValidationException("If at least one of the Address - Locality, Address - Post Town and Address County " +
-                "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: " +
-                "Locality: " + localityString + ", Post Town: " + postTownString + ", County: " + countyString);
-        }
-    }
-
-    private boolean allValuesAreNull(AmendmentValue locality, AmendmentValue county, AmendmentValue postTown) {
-        return locality == null && county == null && postTown == null;
-    }
-
-    private boolean allValuesAreNotNull(AmendmentValue locality, AmendmentValue county, AmendmentValue postTown) {
-        return locality != null && county != null && postTown != null;
-    }
-
-    private boolean hasLocalityOrCountyRemovalOperation(JsonPatches patches) {
-        return patches.getLocality().get().isRemoval()
-            || patches.getCounty().get().isRemoval();
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
