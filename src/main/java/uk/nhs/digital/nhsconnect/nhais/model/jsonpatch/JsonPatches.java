@@ -107,10 +107,6 @@ public class JsonPatches {
         return getExtension(AmendmentExtension.Birthplace.class);
     }
 
-    public Optional<AmendmentPatch> getPreviousGp() {
-        return getExtension(AmendmentExtension.PreviousGp.class);
-    }
-
     public Optional<AmendmentPatch> getResidentialInstituteCode() {
         return getExtension(AmendmentExtension.ResidentialInstituteCode.class);
     }

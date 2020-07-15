@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.PreviousGpExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 
 public class AmendmentExtension implements AmendmentValue{
@@ -50,10 +49,4 @@ public class AmendmentExtension implements AmendmentValue{
         }
     }
 
-    public static class PreviousGp extends AmendmentExtension {
-
-        public PreviousGp(AmendmentExtension amendmentExtension) {
-            super(PreviousGpExtension.URL, amendmentExtension.valueString, amendmentExtension.valueBoolean);
-        }
-    }
 }

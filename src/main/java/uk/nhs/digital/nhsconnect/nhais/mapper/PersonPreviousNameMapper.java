@@ -28,7 +28,7 @@ public class PersonPreviousNameMapper implements OptionalFromFhirToEdifactMapper
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         Patient patient = ParametersExtension.extractPatient(parameters);
         return patient.getName().size() > 1;
     }

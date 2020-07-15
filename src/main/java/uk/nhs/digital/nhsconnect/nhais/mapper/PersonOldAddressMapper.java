@@ -12,7 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import java.util.List;
 
 @Component
-public class PersonOldAddressMapper implements FromFhirToEdifactMapper<PersonOldAddress> {
+public class PersonOldAddressMapper implements OptionalFromFhirToEdifactMapper<PersonOldAddress> {
 
     public PersonOldAddress map(Parameters parameters) {
         Address address = getOldAddress(parameters);
@@ -40,5 +40,11 @@ public class PersonOldAddressMapper implements FromFhirToEdifactMapper<PersonOld
             return null;
         }
         return addressLines.get(index).toString();
+    }
+
+    @Override
+    public boolean inputDataExists(Parameters parameters) {
+        return ParametersExtension.extractPatient(parameters)
+            .getAddress().size() > 1;
     }
 }

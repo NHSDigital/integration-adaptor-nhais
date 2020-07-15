@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
@@ -23,9 +22,8 @@ public class ResidentialInstituteNameAndAddressMapper implements OptionalFromFhi
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractExtensionValue(parameters, ResidentialInstituteExtension.URL)
-            .filter(StringUtils::isNotBlank)
             .isPresent();
     }
 }
