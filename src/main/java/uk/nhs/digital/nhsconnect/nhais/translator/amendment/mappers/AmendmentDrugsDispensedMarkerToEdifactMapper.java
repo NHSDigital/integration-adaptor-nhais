@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
@@ -9,7 +8,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.DrugsMarker;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
@@ -39,19 +37,18 @@ public class AmendmentDrugsDispensedMarkerToEdifactMapper extends AmendmentToEdi
 
     @Override
     void validatePatches(JsonPatches patches) {
+        validateNonEmptyValues(List.of(patches.getDrugsDispensedMarker()));
+
         patches.getDrugsDispensedMarker()
-            .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE)
+            .filter(AmendmentPatch::isRemoval)
             .ifPresent(value -> {
                 throw new PatchValidationException("Removing Drugs Dispensed Marker should be done using extension with 'false' value");
             });
 
-        if (patches.getDrugsDispensedMarker().isPresent()) {
-            if (StringUtils.isBlank(patches.getDrugsDispensedMarker().get().getValue().get())) {
-                throw new PatchValidationException("Boolean value of Drugs Dispensed Marker must not be empty");
-            }
-            if (!ALLOWED_VALUES.contains(patches.getDrugsDispensedMarker().get().getValue().get())) {
+        patches.getDrugsDispensedMarker()
+            .filter(patch -> !ALLOWED_VALUES.contains(patch.getValue().get()))
+            .ifPresent(value -> {
                 throw new PatchValidationException("Drugs Dispensed Marker must be one of " + ALLOWED_VALUES);
-            }
-        }
+            });
     }
 }

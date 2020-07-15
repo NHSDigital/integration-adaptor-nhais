@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -17,6 +18,14 @@ public abstract class AmendmentToEdifactMapper {
     protected static boolean amendmentPatchRequiringValue(AmendmentPatch amendmentPatch) {
         return amendmentPatch.getOp() == AmendmentPatchOperation.ADD
             || amendmentPatch.getOp() == AmendmentPatchOperation.REPLACE;
+    }
+
+    private static String extractErrorPath(AmendmentPatch patch) {
+        var path = patch.getPath();
+        if (patch.isExtension()) {
+            path += "(" + ((AmendmentExtension) patch.getValue()).getUrl() + ")";
+        }
+        return path;
     }
 
     public Optional<Segment> map(AmendmentBody amendmentBody) throws PatchValidationException {
@@ -40,7 +49,7 @@ public abstract class AmendmentToEdifactMapper {
             .filter(AmendmentToEdifactMapper::amendmentPatchRequiringValue)
             .filter(amendmentPatch -> amendmentPatch.getValue() != null)
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getValue().get()))
-            .map(AmendmentPatch::getPath)
+            .map(AmendmentToEdifactMapper::extractErrorPath)
             .collect(Collectors.toList());
 
         if (!invalidAmendmentPaths.isEmpty()) {

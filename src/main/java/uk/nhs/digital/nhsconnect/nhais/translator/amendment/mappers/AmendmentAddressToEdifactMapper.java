@@ -9,7 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.List;
@@ -92,7 +91,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
-        if (patches.getPostTown().isPresent() && patches.getPostTown().get().getOp() == AmendmentPatchOperation.REMOVE) {
+        if (patches.getPostTown().isPresent() && patches.getPostTown().get().isRemoval()) {
             throw new PatchValidationException("Post town ('address/0/line/3') cannot be removed");
         }
     }

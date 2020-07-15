@@ -10,7 +10,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ResidentialInstituteNameAnd
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
@@ -38,7 +37,7 @@ public class AmendmentResidentialInstituteToEdifactMapper extends AmendmentToEdi
     @Override
     void validatePatches(JsonPatches patches) {
         patches.getResidentialInstituteCode()
-            .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE)
+            .filter(AmendmentPatch::isRemoval)
             .ifPresent(value -> {
                 throw new PatchValidationException("Removing Residential Institute Code should be done using extension with 'null' value");
             });

@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
@@ -9,9 +8,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,13 +36,12 @@ public class AmendmentSexToEdifactMapper extends AmendmentToEdifactMapper {
 
     @Override
     void validatePatches(JsonPatches patches) {
-        if (patches.getSex().isPresent()) {
-            if (patches.getSex().get().getOp() == AmendmentPatchOperation.REMOVE) {
+        validateNonEmptyValues(List.of(patches.getSex()));
+
+        patches.getSex()
+            .filter(AmendmentPatch::isRemoval)
+            .ifPresent(value -> {
                 throw new PatchValidationException("Illegal remove operation on " + JsonPatches.SEX_PATH);
-            }
-            if (StringUtils.isBlank(patches.getSex().get().getValue().get())) {
-                throw new PatchValidationException("Invalid value for " + JsonPatches.SEX_PATH);
-            }
-        }
+            });
     }
 }

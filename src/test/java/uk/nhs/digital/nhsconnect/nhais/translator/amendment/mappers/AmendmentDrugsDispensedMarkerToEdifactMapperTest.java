@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.DrugsMarker;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.Optional;
 
@@ -77,11 +78,12 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
+            .setPath(JsonPatches.EXTENSION_PATH)
             .setValue(new AmendmentExtension.DrugsDispensedMarker(new AmendmentExtension(null, null, null)))
         ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Boolean value of Drugs Dispensed Marker must not be empty");
+            .hasMessage("Invalid values for: [/extension/0(https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker)]");
     }
 }

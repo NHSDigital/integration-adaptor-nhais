@@ -129,13 +129,13 @@ public class AmendmentController {
     private void validateNonEmptyValues(List<AmendmentPatch> amendmentPatches) {
         var simpleValuesInvalidPaths = amendmentPatches.stream()
             .filter(amendmentPatch -> amendmentPatch.getValue() != null)
-            .filter(amendmentPatch -> !(amendmentPatch.getValue() instanceof AmendmentExtension))
+            .filter(AmendmentPatch::isNotExtension)
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getFormattedSimpleValue()))
             .map(AmendmentPatch::getPath);
 
         var extensionValuesInvalidPaths = amendmentPatches.stream()
             .filter(amendmentPatch -> amendmentPatch.getValue() != null)
-            .filter(amendmentPatch -> amendmentPatch.getValue() instanceof AmendmentExtension)
+            .filter(AmendmentPatch::isExtension)
             .filter(amendmentPatch -> {
                 var amendmentExtension = (AmendmentExtension) amendmentPatch.getValue();
                 return StringUtils.isNoneBlank(amendmentExtension.getValueBoolean(), amendmentExtension.getValueString());

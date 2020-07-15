@@ -72,6 +72,6 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Invalid value for /birthDate");
+            .hasMessage("Invalid values for: [/birthDate]");
     }
 }

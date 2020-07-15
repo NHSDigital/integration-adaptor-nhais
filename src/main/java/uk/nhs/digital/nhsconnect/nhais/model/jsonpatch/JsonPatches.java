@@ -17,6 +17,7 @@ public class JsonPatches {
     public static final String OTHER_FORENAMES_PATH = "/name/0/given/2";
     public static final String SEX_PATH = "/gender";
     public static final String BIRTH_DATE_PATH = "/birthDate";
+    public static final String EXTENSION_PATH = "/extension/0";
     private static final String HOUSE_NAME_PATH = "/address/0/line/0";
     private static final String NUMBER_OR_ROAD_NAME_PATH = "/address/0/line/1";
     private static final String LOCALITY = "/address/0/line/2";
@@ -66,7 +67,7 @@ public class JsonPatches {
         return filterSimpleValues(HOUSE_NAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getNumberOrRoadName(){
+    public Optional<AmendmentPatch> getNumberOrRoadName() {
         return filterSimpleValues(NUMBER_OR_ROAD_NAME_PATH);
     }
 

@@ -73,6 +73,6 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Invalid value for /gender");
+            .hasMessage("Invalid values for: [/gender]");
     }
 }

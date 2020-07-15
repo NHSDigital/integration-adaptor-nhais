@@ -2,19 +2,16 @@ package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PreviousGpExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 
+@Getter
 public class AmendmentExtension implements AmendmentValue {
-    @Getter(AccessLevel.PACKAGE)
     private final String url;
-    @Getter
     private final String valueString;
-    @Getter
     private final String valueBoolean;
 
     @JsonCreator
