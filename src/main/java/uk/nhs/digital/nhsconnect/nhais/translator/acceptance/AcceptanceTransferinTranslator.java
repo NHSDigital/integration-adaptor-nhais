@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -47,18 +47,18 @@ public class AcceptanceTransferinTranslator implements FhirToEdifactTranslator {
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         return Stream.of(
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             partyQualifierMapper,
-            emptyMapper(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
-            emptyMapper(new SegmentGroup(1)),
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
+            mapSegment(new SegmentGroup(1)),
+            mapSegment(new ReferenceTransactionNumber()),
             gpNameAndAddressMapper,
             previousGpNameMapper,
             acceptanceCodeMapper,
             acceptanceTypeMapper,
             acceptanceDateMapper,
-            emptyMapper(new SegmentGroup(2)),
+            mapSegment(new SegmentGroup(2)),
             personNameMapper,
             personSexMapper,
             personAddressMapper,
