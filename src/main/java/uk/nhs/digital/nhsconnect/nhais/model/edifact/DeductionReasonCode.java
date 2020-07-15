@@ -37,7 +37,7 @@ public class DeductionReasonCode extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (Objects.isNull(code) || code.isBlank()) {
+        if (code.isBlank()) {
             throw new EdifactValidationException(getKey() + ": Deduction Reason Code is required");
         }
     }
