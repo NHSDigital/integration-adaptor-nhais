@@ -1,21 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter @Setter @AllArgsConstructor @EqualsAndHashCode(callSuper = false) @ToString
+@RequiredArgsConstructor @EqualsAndHashCode(callSuper = false) @ToString
 public class DeductionDate extends Segment{
 
     public static final String KEY = "DTM";
@@ -24,7 +18,7 @@ public class DeductionDate extends Segment{
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyMMdd");
 
     @NonNull
-    private LocalDate date;
+    private final LocalDate date;
 
     @Override
     public String getKey() {
