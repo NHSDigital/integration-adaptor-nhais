@@ -4,6 +4,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfEntry;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,6 +28,6 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
 
     private Instant parseInstant(String value) {
         LocalDate localDate = LocalDate.parse(value);
-        return localDate.atStartOfDay(ZoneId.of("Europe/London")).toInstant();
+        return localDate.atStartOfDay(TimestampService.UKZone).toInstant();
     }
 }

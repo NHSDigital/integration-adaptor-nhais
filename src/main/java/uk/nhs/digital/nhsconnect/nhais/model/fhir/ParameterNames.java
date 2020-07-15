@@ -9,4 +9,6 @@ public final class ParameterNames {
     public static final String GP_TRADING_PARTNER_CODE = "gpTradingPartnerCode";
     public static final String PATIENT = "patient";
     public static final String PREVIOUS_GP_NAME = "previousGPName";
+    public static final String FP69_REASON_CODE = "fp69ReasonCode";
+    public static final String FP69_EXPIRY_DATE = "fp69ExpiryDate";
 }
