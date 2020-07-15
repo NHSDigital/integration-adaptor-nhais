@@ -25,8 +25,8 @@ class PersonDateOfExitMapperTest {
             .setName(ParameterNames.EXIT_DATE)
             .setValue(new StringType(DATE_STRING));
 
-        var PersonDateOfExitMapper = new PersonDateOfExitMapper();
-        PersonDateOfExit personDateOfExit = PersonDateOfExitMapper.map(parameters);
+        var personDateOfExitMapper = new PersonDateOfExitMapper();
+        PersonDateOfExit personDateOfExit = personDateOfExitMapper.map(parameters);
 
         var expectedPersonDateOfEntry = new PersonDateOfExit(LOCAL_DATE);
 
@@ -40,8 +40,8 @@ class PersonDateOfExitMapperTest {
             .setName(ParameterNames.EXIT_DATE)
             .setValue(new StringType(""));
 
-        var PersonDateOfExitMapper = new PersonDateOfExitMapper();
-        assertThatThrownBy(() -> PersonDateOfExitMapper.map(parameters))
+        var personDateOfExitMapper = new PersonDateOfExitMapper();
+        assertThatThrownBy(() -> personDateOfExitMapper.map(parameters))
             .isExactlyInstanceOf(DateTimeParseException.class);
     }
 

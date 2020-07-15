@@ -22,7 +22,7 @@ public class PersonPlaceOfBirthMapper implements OptionalFromFhirToEdifactMapper
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractExtensionValue(parameters, BirthPlaceExtension.URL)
             .isPresent();
     }

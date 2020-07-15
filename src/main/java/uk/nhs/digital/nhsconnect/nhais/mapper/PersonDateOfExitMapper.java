@@ -19,7 +19,7 @@ public class PersonDateOfExitMapper implements OptionalFromFhirToEdifactMapper<P
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, ParameterNames.EXIT_DATE)
             .isPresent();
     }

@@ -23,7 +23,7 @@ class PersonPlaceOfBirthMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isTrue();
+        assertThat(personPlaceOfBirthMapper.inputDataExists(parameters)).isTrue();
     }
 
     @Test
@@ -34,19 +34,19 @@ class PersonPlaceOfBirthMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isTrue();
+        assertThat(personPlaceOfBirthMapper.inputDataExists(parameters)).isTrue();
         PersonPlaceOfBirth personPlaceOfBirth = personPlaceOfBirthMapper.map(parameters);
         assertThatThrownBy(() -> personPlaceOfBirth.preValidate())
             .isExactlyInstanceOf(EdifactValidationException.class);
     }
 
     @Test
-    void when_ExtensionDoesntExist_Then_CantMap() {
+    void when_ExtensionDoesntExist_Then_CanNotMap() {
         PatientParameter patientParameter = new PatientParameter();
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(personPlaceOfBirthMapper.canMap(parameters)).isFalse();
+        assertThat(personPlaceOfBirthMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test

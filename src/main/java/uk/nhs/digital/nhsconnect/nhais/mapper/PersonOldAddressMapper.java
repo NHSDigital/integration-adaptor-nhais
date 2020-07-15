@@ -43,7 +43,7 @@ public class PersonOldAddressMapper implements OptionalFromFhirToEdifactMapper<P
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractPatient(parameters)
             .getAddress().size() > 1;
     }

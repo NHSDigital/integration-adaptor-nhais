@@ -15,7 +15,7 @@ public class FreeTextMapper implements OptionalFromFhirToEdifactMapper<FreeText>
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, FREE_TEXT_VALUE_NAME)
              .isPresent();
     }

@@ -16,7 +16,7 @@ class FreeTextMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "text");
 
-        assertThat(freeTextMapper.canMap(parameters)).isTrue();
+        assertThat(freeTextMapper.inputDataExists(parameters)).isTrue();
     }
 
     @Test
@@ -24,22 +24,22 @@ class FreeTextMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "");
 
-        assertThat(freeTextMapper.canMap(parameters)).isTrue();
+        assertThat(freeTextMapper.inputDataExists(parameters)).isTrue();
     }
 
     @Test
-    void when_FreeTextValueExistsAndValueIsNull_Then_CanMap() {
+    void when_FreeTextValueExistsAndValueIsNull_Then_CanNotMap() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, (String) null);
 
-        assertThat(freeTextMapper.canMap(parameters)).isFalse();
+        assertThat(freeTextMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
-    void when_FreeTextValueDoesntExist_Then_CantMap() {
+    void when_FreeTextValueDoesntExist_Then_CanNotMap() {
         Parameters parameters = new Parameters();
 
-        assertThat(freeTextMapper.canMap(parameters)).isFalse();
+        assertThat(freeTextMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test

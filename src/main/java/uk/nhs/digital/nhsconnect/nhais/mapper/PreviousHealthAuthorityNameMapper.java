@@ -16,7 +16,7 @@ public class PreviousHealthAuthorityNameMapper implements OptionalFromFhirToEdif
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, ParameterNames.PREVIOUS_HA_CIPHER)
             .isPresent();
     }

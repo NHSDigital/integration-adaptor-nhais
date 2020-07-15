@@ -20,7 +20,7 @@ public class PreviousGpNameMapper implements OptionalFromFhirToEdifactMapper<Pre
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         return ParametersExtension.extractOptionalValue(parameters, ParameterNames.PREVIOUS_GP_NAME)
             .isPresent();
     }
