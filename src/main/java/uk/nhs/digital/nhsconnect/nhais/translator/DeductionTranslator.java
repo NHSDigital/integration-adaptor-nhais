@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.emptyMapper;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
 
 @Component
@@ -41,17 +41,17 @@ public class DeductionTranslator implements FhirToEdifactTranslator {
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         List<Segment> segments = Stream.of(
             //BGM
-            emptyMapper(new BeginningOfMessage()),
+            mapSegment(new BeginningOfMessage()),
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            emptyMapper(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
             //RFF+950
-            emptyMapper(new ReferenceTransactionType(ReferenceTransactionType.Outbound.DEDUCTION)),
+            mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.DEDUCTION)),
             //S01
-            emptyMapper(new SegmentGroup(1)),
+            mapSegment(new SegmentGroup(1)),
             //RFF+TN
-            emptyMapper(new ReferenceTransactionNumber()),
+            mapSegment(new ReferenceTransactionNumber()),
             //NAD+GP
             gpNameAndAddressMapper,
             //GIS+
@@ -62,7 +62,7 @@ public class DeductionTranslator implements FhirToEdifactTranslator {
             optional(freeTextMapper, parameters),
             //HEA+ACD
             //S02
-            emptyMapper(new SegmentGroup(2)),
+            mapSegment(new SegmentGroup(2)),
             // PNA+PAT
             personNameMapper)
             .map(mapper -> mapper.map(parameters))
