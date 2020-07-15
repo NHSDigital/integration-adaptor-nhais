@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.AmendmentValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentStringExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.service.JsonPatchToEdifactService;
@@ -137,8 +137,10 @@ public class AmendmentController {
             .filter(amendmentPatch -> amendmentPatch.getValue() != null)
             .filter(AmendmentPatch::isExtension)
             .filter(amendmentPatch -> {
-                var amendmentExtension = (AmendmentExtension) amendmentPatch.getValue();
-                return StringUtils.isNoneBlank(amendmentExtension.getValueBoolean(), amendmentExtension.getValueString());
+                if (amendmentPatch.getValue() instanceof AmendmentStringExtension) {
+                    return StringUtils.EMPTY.equals(amendmentPatch.getValue().get());
+                }
+                return amendmentPatch.getValue().get() == null;
             })
             .map(AmendmentPatch::getPath);
 
