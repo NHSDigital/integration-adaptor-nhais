@@ -25,8 +25,8 @@ public class Transaction extends Section {
     private final Optional<FP69ReasonCode> fp69ReasonCode =
         extractOptionalSegment(FP69ReasonCode.KEY_QUALIFIER).map(FP69ReasonCode::fromString);
     @Getter(lazy = true)
-    private final FP69ExpiryDate fp69ExpiryDate =
-        FP69ExpiryDate.fromString(extractSegment(FP69ExpiryDate.KEY_QUALIFIER));
+    private final Optional<FP69ExpiryDate> fp69ExpiryDate =
+        extractOptionalSegment(FP69ExpiryDate.KEY_QUALIFIER).map(FP69ExpiryDate::fromString);
     @Getter(lazy = true)
     private final Optional<PersonDateOfBirth> personDateOfBirth =
         extractOptionalSegment(PersonDateOfBirth.KEY_QUALIFIER).map(PersonDateOfBirth::fromString);

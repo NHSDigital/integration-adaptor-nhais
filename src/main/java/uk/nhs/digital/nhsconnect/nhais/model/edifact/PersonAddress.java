@@ -2,13 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +26,36 @@ public class PersonAddress extends Segment {
     private String addressLine4;
     private String addressLine5;
     private String postalCode;
+
+    public static PersonAddress fromString(String edifactString) {
+        if (!edifactString.startsWith(PersonAddress.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + PersonAddress.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] addressParts = Split.byPlus(edifactString);
+        String[] addressLines = Split.byColon(addressParts[3]);
+
+        var builder = PersonAddress.builder();
+        if (addressLines.length > 0) {
+            builder.addressLine1(addressLines[0]);
+        }
+        if (addressLines.length > 1) {
+            builder.addressLine2(addressLines[1]);
+        }
+        if (addressLines.length > 2) {
+            builder.addressLine3(addressLines[2]);
+        }
+        if (addressLines.length > 3) {
+            builder.addressLine4(addressLines[3]);
+        }
+        if (addressLines.length > 4) {
+            builder.addressLine5(addressLines[4]);
+        }
+
+        if (addressParts.length > 8) {
+            builder.postalCode(addressParts[8]);
+        }
+        return builder.build();
+    }
 
     @Override
     public String getKey() {
@@ -67,33 +95,5 @@ public class PersonAddress extends Segment {
 
     private boolean isAddressLineValid(String addressLine) {
         return Objects.nonNull(addressLine) && !addressLine.isBlank();
-    }
-
-    public static PersonAddress fromString(String edifactString) {
-        if (!edifactString.startsWith(PersonAddress.KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + PersonAddress.class.getSimpleName() + " from " + edifactString);
-        }
-        String[] addressParts =
-            Split.byColon(
-                Split.byPlus(edifactString)[3]);
-
-        var builder = PersonAddress.builder();
-        if (addressParts.length > 0) {
-            builder.addressLine1(addressParts[0]);
-        }
-        if (addressParts.length > 1) {
-            builder.addressLine2(addressParts[1]);
-        }
-        if (addressParts.length > 2) {
-            builder.addressLine3(addressParts[2]);
-        }
-        if (addressParts.length > 3) {
-            builder.addressLine4(addressParts[3]);
-        }
-        if (addressParts.length > 4) {
-            builder.postalCode(addressParts[4]);
-        }
-
-        return builder.build();
     }
 }

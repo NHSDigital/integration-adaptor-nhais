@@ -23,11 +23,11 @@ public class PersonNameTest {
         var personName = PersonName.builder()
             .nhsNumber("1234567890")
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-            .familyName("STEVENS")
-            .forename("CHARLES")
+            .surname("STEVENS")
+            .firstForename("CHARLES")
             .title("MR")
-            .middleName("ANTHONY")
-            .thirdForename("JOHN")
+            .secondForename("ANTHONY")
+            .otherForenames("JOHN")
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
@@ -60,10 +60,10 @@ public class PersonNameTest {
         PersonName nhsAndNames = PersonName.builder()
             .nhsNumber("RAT56")
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-            .familyName("KENNEDY")
-            .forename("SARAH")
+            .surname("KENNEDY")
+            .firstForename("SARAH")
             .title("MISS")
-            .middleName("ANGELA")
+            .secondForename("ANGELA")
             .build();
 
         String edifact = nhsAndNames.toEdifact();

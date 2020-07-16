@@ -6,18 +6,6 @@
       "valueString": "TES5"
     },
     {
-      "name": "fp69ReasonCode",
-      "valueString": "8"
-    },
-    {
-      "name": "fp69ExpiryDate",
-      "valueString": "1992-07-25"
-    },
-    {
-      "name": "freeText",
-      "valueString": "PATIENT THOUGHT TO BE IN SCOTLAND"
-    },
-    {
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
@@ -65,6 +53,18 @@
           }
         }
       }
+    },
+    {
+      "name": "fp69ReasonCode",
+      "valueString": "8"
+    },
+    {
+      "name": "fp69ExpiryDate",
+      "valueString": "1992-07-25"
+    },
+    {
+      "name": "freeText",
+      "valueString": "PATIENT THOUGHT TO BE IN SCOTLAND"
     }
   ]
 }

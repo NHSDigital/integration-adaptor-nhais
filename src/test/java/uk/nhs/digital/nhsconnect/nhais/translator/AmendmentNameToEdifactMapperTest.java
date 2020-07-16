@@ -76,10 +76,10 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
                 .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-                .familyName(SURNAME)
-                .forename(FIRST_FORENAME)
-                .middleName(SECOND_FORENAME)
-                .thirdForename(OTHER_FORENAMES)
+                .surname(SURNAME)
+                .firstForename(FIRST_FORENAME)
+                .secondForename(SECOND_FORENAME)
+                .otherForenames(OTHER_FORENAMES)
                 .title(TITLE)
                 .build());
     }
@@ -97,7 +97,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
             .isEqualTo(PersonName.builder()
                 .nhsNumber(NHS_NUMBER)
                 .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-                .forename(REMOVE_INDICATOR)
+                .firstForename(REMOVE_INDICATOR)
                 .title(REMOVE_INDICATOR)
                 .build());
     }

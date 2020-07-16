@@ -2,13 +2,16 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ExpiryDate;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ReasonCode;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
@@ -17,140 +20,175 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.parse.NullableStringType;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment.removeEmptyTrailingFields;
-
 @Component
 public class FP69PriorNotificationTransactionMapper implements FhirTransactionMapper {
+
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     @Override
     public void map(Parameters parameters, Transaction transaction) {
-        mapReasonCode(parameters, transaction);
-        mapExpiryDate(parameters, transaction);
-
         var patient = ParametersExtension.extractPatient(parameters);
         mapNHSNumber(patient, transaction);
         mapName(patient, transaction);
-        mapBirthDate(patient, transaction);
+        mapDateOfBirth(patient, transaction);
         mapAddress(patient, transaction);
-    }
 
-    private void mapAddress(Patient patient, Transaction transaction) {
-        transaction.getPersonAddress()
-            .ifPresent(personAddress -> {
-                var anythingWasSet = new AtomicBoolean(false);
-                var address = new Address();
-
-                Optional.ofNullable(personAddress.getPostalCode())
-                    .filter(StringUtils::isNotBlank)
-                    .ifPresent(postalCode -> {
-                        anythingWasSet.set(true);
-                        address.setPostalCode(personAddress.getPostalCode());
-                    });
-
-                var addressLines = Stream.of(
-                    Optional.ofNullable(personAddress.getAddressLine1()),
-                    Optional.ofNullable(personAddress.getAddressLine2()),
-                    Optional.ofNullable(personAddress.getAddressLine3()),
-                    Optional.ofNullable(personAddress.getAddressLine4()))
-//                    .map(name -> name.orElse(StringUtils.EMPTY))
-                    .map(x -> new StringType(x.orElse(null)))
-                    .collect(Collectors.toList());
-                if (!addressLines.isEmpty()) {
-                    anythingWasSet.set(true);
-                    address.setLine(addressLines);
-                }
-
-                if (anythingWasSet.get()) {
-                    patient.setAddress(List.of(address));
-                }
-            });
-    }
-
-    private void mapBirthDate(Patient patient, Transaction transaction) {
-        //TODO: is this optional?
-        transaction.getPersonDateOfBirth()
-            .map(PersonDateOfBirth::getTimestamp)
-            .map(Date::from)
-            .ifPresent(patient::setBirthDate);
-    }
-
-    private void mapName(Patient patient, Transaction transaction) {
-        transaction.getPersonName()
-            .ifPresent(personName -> {
-                var anythingWasSet = new AtomicBoolean(false);
-                var humanName = new HumanName();
-
-                var names = Stream.of(
-                        Optional.ofNullable(personName.getForename()),
-                        Optional.ofNullable(personName.getMiddleName()),
-                        Optional.ofNullable(personName.getThirdForename()))
-                    .map(name -> name.orElse(StringUtils.EMPTY))
-                    .map(StringType::new)
-                    .collect(Collectors.toList());
-                names = removeEmptyTrailingFields(names, stringType -> StringUtils.isNotBlank(stringType.getValue()));
-                if (!names.isEmpty()) {
-                    anythingWasSet.set(true);
-                    humanName.setGiven(names);
-                }
-
-                Optional.ofNullable(personName.getTitle())
-                    .ifPresent(title -> {
-                        anythingWasSet.set(true);
-                        humanName.setPrefix(List.of(new StringType(title)));
-                    });
-
-                Optional.ofNullable(personName.getFamilyName())
-                    .ifPresent(family -> {
-                        anythingWasSet.set(true);
-                        humanName.setFamily(family);
-                    });
-
-                if (anythingWasSet.get()) {
-                    patient.setName(List.of(humanName));
-                }
-            });
-    }
-
-    private void mapNHSNumber(Patient patient, Transaction transaction) {
-        transaction.getPersonName()
-            .map(PersonName::getNhsNumber)
-            .flatMap(this::mapToNhsIdentifier)
-            .ifPresent(nhsIdentifier -> patient.setIdentifier(List.of(nhsIdentifier)));
-    }
-
-    private Optional<NhsIdentifier> mapToNhsIdentifier(String nhsNumber) {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
-    }
-
-    private void mapReasonCode(Parameters parameters, Transaction transaction) {
-        var reasonCode = transaction.getFp69ReasonCode()
-            .orElseThrow(() -> new EdifactValidationException(String.format(
-                "Segment %s must be present for %s inbound transaction",
-                FP69ReasonCode.KEY_QUALIFIER, getTransactionType().getCode())))
-            .getCode();
-
-        parameters.addParameter()
-            .setName(ParameterNames.FP69_REASON_CODE)
-            .setValue(new StringType(reasonCode.toString()));
-    }
-
-    private void mapExpiryDate(Parameters parameters, Transaction transaction) {
-        var timestamp = transaction.getFp69ExpiryDate().getTimestamp();
-
-        parameters.addParameter()
-            .setName(ParameterNames.FP69_EXPIRY_DATE)
-            .setValue(new DateType(Date.from(timestamp))); //TODO: format date
+        mapReasonCode(parameters, transaction);
+        mapExpiryDate(parameters, transaction);
+        mapFreeText(parameters, transaction);
     }
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
         return ReferenceTransactionType.Inbound.FP69_PRIOR_NOTIFICATION;
+    }
+
+    private void mapNHSNumber(Patient patient, Transaction transaction) {
+        transaction.getPersonName()
+            .map(PersonName::getNhsNumber)
+            .filter(StringUtils::isNotBlank)
+            .map(NhsIdentifier::new)
+            .map(Identifier.class::cast)
+            .map(List::of)
+            .ifPresentOrElse(
+                patient::setIdentifier,
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the PNA+PAT segment is required to provide the patient NHS number");
+                }
+            );
+    }
+
+    private void mapName(Patient patient, Transaction transaction) {
+        transaction.getPersonName()
+            .ifPresentOrElse(
+                personName -> {
+                    var humanName = patient.addName();
+                    mapSurname(personName, humanName);
+                    mapForenames(personName, humanName);
+                    mapTitle(personName, humanName);
+                },
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the PNA+PAT segment is required");
+                });
+    }
+
+    private void mapDateOfBirth(Patient patient, Transaction transaction) {
+        transaction.getPersonDateOfBirth()
+            .map(PersonDateOfBirth::getTimestamp)
+            .map(Date::from)
+            .ifPresentOrElse(
+                patient::setBirthDate,
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth");
+                });
+    }
+
+    private void mapAddress(Patient patient, Transaction transaction) {
+        transaction.getPersonAddress()
+            .ifPresent(personAddress -> {
+                var address = patient.addAddress();
+                mapPostalCode(personAddress, address);
+                mapAddressLines(personAddress, address);
+            });
+    }
+
+    private void mapReasonCode(Parameters parameters, Transaction transaction) {
+        transaction.getFp69ReasonCode()
+            .map(FP69ReasonCode::getCode)
+            .map(Object::toString)
+            .map(StringType::new)
+            .map(reasonCode -> new Parameters.ParametersParameterComponent()
+                .setName(ParameterNames.FP69_REASON_CODE)
+                .setValue(reasonCode))
+            .ifPresentOrElse(
+                parameters::addParameter,
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the HEA+FRN segment is required");
+                });
+    }
+
+    private void mapExpiryDate(Parameters parameters, Transaction transaction) {
+        transaction.getFp69ExpiryDate()
+            .map(FP69ExpiryDate::getTimestamp)
+            .map(Date::from)
+            .map(DATE_FORMAT::format)
+            .map(StringType::new)
+            .map(expiryDate -> new Parameters.ParametersParameterComponent()
+                .setName(ParameterNames.FP69_EXPIRY_DATE)
+                .setValue(expiryDate))
+            .ifPresentOrElse(
+                parameters::addParameter,
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the DTM+962 segment is required");
+                });
+    }
+
+    private void mapFreeText(Parameters parameters, Transaction transaction) {
+        transaction.getFreeText()
+            .map(FreeText::getTextLiteral)
+            .map(StringType::new)
+            .map(text -> new Parameters.ParametersParameterComponent()
+                .setName(ParameterNames.FREE_TEXT)
+                .setValue(text))
+            .ifPresent(parameters::addParameter);
+    }
+
+    private void mapAddressLines(PersonAddress personAddress, Address address) {
+        address.setLine(Stream.of(
+            Optional.ofNullable(personAddress.getAddressLine1()),
+            Optional.ofNullable(personAddress.getAddressLine2()),
+            Optional.ofNullable(personAddress.getAddressLine3()),
+            Optional.ofNullable(personAddress.getAddressLine4()),
+            Optional.ofNullable(personAddress.getAddressLine5()))
+            .map(line -> new NullableStringType(line.orElse(null)))
+            .map(StringType.class::cast)
+            .collect(Collectors.toList()));
+    }
+
+    private void mapPostalCode(PersonAddress personAddress, Address address) {
+        Optional.ofNullable(personAddress.getPostalCode())
+            .filter(StringUtils::isNotBlank)
+            .ifPresent(address::setPostalCode);
+    }
+
+    private void mapTitle(PersonName personName, HumanName humanName) {
+        Optional.ofNullable(personName.getTitle())
+            .map(StringType::new)
+            .map(List::of)
+            .ifPresent(humanName::setPrefix);
+    }
+
+    private void mapForenames(PersonName personName, HumanName humanName) {
+        Stream.of(
+            Optional.ofNullable(personName.getFirstForename()),
+            Optional.ofNullable(personName.getSecondForename()),
+            Optional.ofNullable(personName.getOtherForenames()))
+            .flatMap(Optional::stream)
+            .forEach(humanName::addGiven);
+    }
+
+    private void mapSurname(PersonName personName, HumanName humanName) {
+        Optional.ofNullable(personName.getSurname())
+            .ifPresentOrElse(
+                humanName::setFamily,
+                () -> {
+                    throw new EdifactValidationException(
+                        "For an FP69 prior notification (reference F9) the PNA+PAT segment is required to provide the patient surname");
+                });
     }
 }
