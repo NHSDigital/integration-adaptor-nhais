@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
 public class OptionalInputValidator {
 
     public boolean placeOfBirthIsMissing(Parameters parameters) {
-        return !new PersonPlaceOfBirthMapper().canMap(parameters);
+        return !new PersonPlaceOfBirthMapper().inputDataExists(parameters);
     }
 
     public boolean nhsNumberIsMissing(Parameters parameters) {

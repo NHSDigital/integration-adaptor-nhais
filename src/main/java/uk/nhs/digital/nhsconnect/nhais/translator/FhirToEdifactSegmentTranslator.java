@@ -11,7 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceBirthTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceFirstTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceImmigrantTranslator;
-import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceTransferinTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceTransferInTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.removal.RemovalTranslator;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class FhirToEdifactSegmentTranslator {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
     private final AcceptanceFirstTranslator acceptanceFirstTranslator;
-    private final AcceptanceTransferinTranslator acceptanceTransferinTranslator;
+    private final AcceptanceTransferInTranslator acceptanceTransferinTranslator;
     private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
     private final DeductionTranslator deductionTranslator;
     private final RemovalTranslator removalTranslator;

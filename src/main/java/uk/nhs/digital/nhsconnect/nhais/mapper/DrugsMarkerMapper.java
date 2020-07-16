@@ -23,7 +23,7 @@ public class DrugsMarkerMapper implements OptionalFromFhirToEdifactMapper<DrugsM
     }
 
     @Override
-    public boolean canMap(Parameters parameters) {
+    public boolean inputDataExists(Parameters parameters) {
         String markerValue = ParametersExtension.extractExtensionValue(parameters, DrugsMarkerExtension.URL)
             .orElse(NEGATIVE_VALUE);
         return isTrue(markerValue);

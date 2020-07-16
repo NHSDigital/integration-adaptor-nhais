@@ -10,19 +10,11 @@
     },
     {
       "name": "acceptanceType",
-      "valueString": "4"
+      "valueString": "3"
     },
     {
       "name": "acceptanceDate",
       "valueString": "1992-01-15"
-    },
-    {
-      "name": "dateOfUkEntry",
-      "valueString": "1991-08-06"
-    },
-    {
-      "name": "dateOfUkExit",
-      "valueString": "1968-03-05"
     },
     {
       "name": "freeText",
@@ -31,6 +23,10 @@
     {
       "name": "previousHaCipher",
       "valueString": "LNS"
+    },
+    {
+      "name": "previousGpName",
+      "valueString": "DR BLACK"
     },
     {
       "name": "patient",
@@ -47,8 +43,24 @@
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "2750922,295"
+              "value": "4826940,281"
             }
+          }
+        ],
+        "name": [
+          {
+            "family": "ASQUITH",
+            "given": [
+              "ROGER",
+              "ADAM",
+              "DANIEL"
+            ],
+            "prefix": [
+              "LORD"
+            ]
+          },
+          {
+            "family": "PREVIOUS"
           }
         ],
         "identifier": [
@@ -57,40 +69,24 @@
             "value": "N/10/10"
           }
         ],
-        "name": [
-          {
-            "family": "HOWES",
-            "given": [
-              "ALISON",
-              "J",
-              "L"
-            ],
-            "prefix": [
-              "MRS"
-            ]
-          },
-          {
-            "family": "PREVIOUS"
-          }
-        ],
-        "gender": "female",
-        "birthDate": "1965-12-12",
+        "gender": "male",
+        "birthDate": "1946-07-23",
         "address": [
           {
             "line": [
-              "HOUSE NAME",
-              "13 FOX CRESCENT",
-              "LOCALITY",
-              "BROMLEY",
+              "THE MANSION HOUSE",
+              "1 MANSION LANE",
+              "ST PAULS CRAY",
+              "ORPINGTON",
               "KENT"
             ],
-            "postalCode": "BR1  7TQ"
+            "postalCode": "BR12 7ET"
           },
           {
             "line": [
-              "PREVIOUS HOUSE",
-              "12 PREVIOUS LANE",
-              "PREVIOUS",
+              "THE HAUNTED HOUSE",
+              "12 SHADOWY LANE",
+              "HAUNTED GLADE",
               "HORSFORTH",
               "LEEDS"
             ]
@@ -99,7 +95,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "LANCASHIRE"
+            "valueString": "PETERBOROUGH"
           },
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
@@ -108,10 +104,6 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
             "valueString": "RT"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
-            "valueString": "DR BLACK"
           }
         ],
         "resourceType": "Patient"

@@ -5,6 +5,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 
 public interface OptionalFromFhirToEdifactMapper<T extends Segment> extends FromFhirToEdifactMapper<T>{
 
-    boolean canMap(Parameters parameters);
+    boolean inputDataExists(Parameters parameters);
 
 }

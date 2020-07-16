@@ -13,7 +13,7 @@ public interface FromFhirToEdifactMapper<T extends Segment> {
     }
 
     static FromFhirToEdifactMapper<?> optional(OptionalFromFhirToEdifactMapper<?> mapper, Parameters parameters) {
-        if (mapper.canMap(parameters)) {
+        if (mapper.inputDataExists(parameters)) {
             return mapper;
         }
         return new SkipMapper();
@@ -22,7 +22,7 @@ public interface FromFhirToEdifactMapper<T extends Segment> {
     static FromFhirToEdifactMapper<?> optionalGroup(Segment startSegment, Collection<OptionalFromFhirToEdifactMapper<?>> mappers, Parameters parameters) {
         List<OptionalFromFhirToEdifactMapper<?>> mappableSegments = mappers
             .stream()
-            .filter(mapper -> mapper.canMap(parameters))
+            .filter(mapper -> mapper.inputDataExists(parameters))
             .collect(Collectors.toList());
 
         if (mappableSegments.isEmpty()) {

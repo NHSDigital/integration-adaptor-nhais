@@ -8,13 +8,22 @@ import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceCodeMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceDateMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.AcceptanceTypeMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.DrugsMarkerMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.FreeTextMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PartyQualifierMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfEntryMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonDateOfExitMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonOldAddressMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPlaceOfBirthMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PersonPreviousNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PersonSexMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PreviousGpNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.PreviousHealthAuthorityNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.mapper.ResidentialInstituteNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
@@ -24,63 +33,104 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.mapSegment;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optional;
+import static uk.nhs.digital.nhsconnect.nhais.mapper.FromFhirToEdifactMapper.optionalGroup;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
+
     private final PartyQualifierMapper partyQualifierMapper;
-    private final AcceptanceDateMapper acceptanceDateMapper;
     private final GpNameAndAddressMapper gpNameAndAddressMapper;
+    private final PreviousGpNameMapper previousGpNameMapper;
     private final AcceptanceCodeMapper acceptanceCodeMapper;
     private final AcceptanceTypeMapper acceptanceTypeMapper;
-    private final PersonDateOfEntryMapper personDateOfEntryMapper;
+    private final AcceptanceDateMapper acceptanceDateMapper;
     private final PersonNameMapper personNameMapper;
-    private final PersonDateOfBirthMapper personDateOfBirthMapper;
+    private final PersonPlaceOfBirthMapper personPlaceOfBirthMapper;
+    private final PersonPreviousNameMapper personPreviousNameMapper;
     private final PersonSexMapper personSexMapper;
     private final PersonAddressMapper personAddressMapper;
+    private final PersonOldAddressMapper personOldAddressMapper;
+    private final PersonDateOfBirthMapper personDateOfBirthMapper;
+    private final DrugsMarkerMapper drugsMarkerMapper;
+    private final FreeTextMapper freeTextMapper;
+    private final ResidentialInstituteNameAndAddressMapper residentialInstituteNameAndAddressMapper;
+    private final PreviousHealthAuthorityNameMapper previousHealthAuthorityNameMapper;
+    private final PersonDateOfEntryMapper personDateOfEntryMapper;
+    private final PersonDateOfExitMapper personDateOfExitMapper;
+    private final OptionalInputValidator validator;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
+        boolean nhsNumberIsMissing = validator.nhsNumberIsMissing(parameters);
+        boolean placeOfBirthIsMissing = validator.placeOfBirthIsMissing(parameters);
+        if(nhsNumberIsMissing && placeOfBirthIsMissing) {
+            throw new FhirValidationException("Place of birth is mandatory when NHS number is missing");
+        }
+
         return Stream.of(
-            //BGM+++507'
+            //BGM
             mapSegment(new BeginningOfMessage()),
-            //NAD+FHS+XX1:954'
+            //NAD+FHS
             partyQualifierMapper,
-            //DTM+956:19920115:102' (acceptance date)
-            mapSegment(new DateTimePeriod(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
-            //RFF+950:G1'
+            //DTM+137
+            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            //RFF+950
             mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
-            //S01+1'
+            //S01
             mapSegment(new SegmentGroup(1)),
-            //RFF+TN:20'
+            //RFF+TN
             mapSegment(new ReferenceTransactionNumber()),
-            //NAD+GP+2750922,295:900'
+            //NAD+GP
             gpNameAndAddressMapper,
-            //HEA+ACD+A:ZZZ'
+            //NAD+RIC
+            optional(residentialInstituteNameAndAddressMapper, parameters),
+            //NAD+PGP
+            optional(previousGpNameMapper, parameters),
+            //NAD+PFH
+            optional(previousHealthAuthorityNameMapper, parameters),
+            //HEA+ACD
             acceptanceCodeMapper,
-            //HEA+ATP+4:ZZZ'
+            //HEA+ATP
             acceptanceTypeMapper,
-            //DTM+137:199201151723:203'
+            //HEA+DM
+            optional(drugsMarkerMapper, parameters),
+            //DTM+956
             acceptanceDateMapper,
-            //DTM+957:19910806:102'
+            //DTM+957
             personDateOfEntryMapper,
             //DTM+958:19680305:102' (optional)
-            //date of exit
-            //LOC+950+LANCASHIRE' (optional)
-            //birth place
-            //S02+2'
+            optional(personDateOfExitMapper, parameters),
+            //LOC+950
+            optional(personPlaceOfBirthMapper, parameters),
+            //FTX+RGI
+            optional(freeTextMapper, parameters),
+            //S02
             mapSegment(new SegmentGroup(2)),
-            //PNA+PAT++++SU:HOWES+FO:ALISON+TI:MRS+MI:J'
+            //PNA+PAT
             personNameMapper,
-            //PDI+2'
+            //DTM+329
+            optional(personDateOfBirthMapper, parameters),
+            //PDI
             personSexMapper,
-            //NAD+PAT++:13 FOX CRESCENT::BROMLEY:KENT+++++BR1  7TQ'
-            personAddressMapper)
+            //NAD+PAT
+            personAddressMapper,
+            //NAD+PER
+            optional(personOldAddressMapper, parameters),
+            //S02
+            optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
+            //PNA+PER
+            optional(personPreviousNameMapper, parameters)
+        )
             .map(mapper -> mapper.map(parameters))
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
+
 }
