@@ -23,8 +23,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.parse.NullableStringType;
 
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +32,7 @@ import java.util.stream.Stream;
 @Component
 public class FP69PriorNotificationTransactionMapper implements FhirTransactionMapper {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public void map(Parameters parameters, Transaction transaction) {
@@ -123,9 +122,8 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
 
     private void mapExpiryDate(Parameters parameters, Transaction transaction) {
         transaction.getFp69ExpiryDate()
-            .map(FP69ExpiryDate::getTimestamp)
-            .map(Date::from)
-            .map(DATE_FORMAT::format)
+            .map(FP69ExpiryDate::getExpiryDate)
+            .map(expiryDate -> expiryDate.format(DATE_FORMAT))
             .map(StringType::new)
             .map(expiryDate -> new Parameters.ParametersParameterComponent()
                 .setName(ParameterNames.FP69_EXPIRY_DATE)

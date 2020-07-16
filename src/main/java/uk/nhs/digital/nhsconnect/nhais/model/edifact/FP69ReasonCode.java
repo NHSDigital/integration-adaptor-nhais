@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -11,7 +10,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
  * Example HEA+FRN+8:ZZZ'
  */
 @EqualsAndHashCode(callSuper = false)
-@Builder
 @Data
 public class FP69ReasonCode extends Segment {
 
@@ -20,7 +18,7 @@ public class FP69ReasonCode extends Segment {
     public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private final static String ZZZ_SUFFIX = ":ZZZ";
 
-    private @NonNull Integer code;
+    private final @NonNull Integer code;
 
     public static FP69ReasonCode fromString(String edifactString) {
         if (!edifactString.startsWith(FP69ReasonCode.KEY_QUALIFIER)) {

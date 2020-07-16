@@ -21,6 +21,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,7 @@ class FP69PriorNotificationTransactionMapperTest {
     private static final String SURNAME = "SMITH";
     private static final Instant DATE_OF_BIRTH = Instant.ofEpochSecond(123213);
     private static final int REASON_CODE = 123;
-    private static final Instant EXPIRY_DATE = Instant.ofEpochSecond(4323423);
+    private static final LocalDate EXPIRY_DATE = LocalDate.of(1970, 2, 20);
     private static final String FIRST_FORENAME = "JOHN";
     private static final String TITLE = "MR";
     private static final String ADDRESS_LINE_1 = null;
@@ -125,9 +126,7 @@ class FP69PriorNotificationTransactionMapperTest {
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(PersonDateOfBirth.builder()
             .timestamp(DATE_OF_BIRTH)
             .build()));
-        when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(FP69ReasonCode.builder()
-            .code(REASON_CODE)
-            .build()));
+        when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(new FP69ReasonCode(REASON_CODE)));
         when(transaction.getFp69ExpiryDate()).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
@@ -209,12 +208,8 @@ class FP69PriorNotificationTransactionMapperTest {
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(PersonDateOfBirth.builder()
             .timestamp(DATE_OF_BIRTH)
             .build()));
-        when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(FP69ReasonCode.builder()
-            .code(REASON_CODE)
-            .build()));
-        when(transaction.getFp69ExpiryDate()).thenReturn(Optional.of(FP69ExpiryDate.builder()
-            .timestamp(EXPIRY_DATE)
-            .build()));
+        when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(new FP69ReasonCode(REASON_CODE)));
+        when(transaction.getFp69ExpiryDate()).thenReturn(Optional.of(new FP69ExpiryDate(EXPIRY_DATE)));
     }
 
     @Test

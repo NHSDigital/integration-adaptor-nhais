@@ -9,13 +9,13 @@ class FP69ReasonCodeTest {
 
     @Test
     void whenSettingNullCode_expectException() {
-        assertThatThrownBy(() -> FP69ReasonCode.builder().code(null).build())
+        assertThatThrownBy(() -> new FP69ReasonCode(null))
             .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void toEdifact() {
-        var fp69ReasonCode = FP69ReasonCode.builder().code(123).build();
+        var fp69ReasonCode = new FP69ReasonCode(123);
 
         assertThat(fp69ReasonCode.toEdifact())
             .isEqualTo("HEA+FRN+123:ZZZ'");
@@ -24,6 +24,6 @@ class FP69ReasonCodeTest {
     @Test
     void fromEdifact() {
         assertThat(FP69ReasonCode.fromString("HEA+FRN+8:ZZZ"))
-            .isEqualTo(FP69ReasonCode.builder().code(8).build());
+            .isEqualTo(new FP69ReasonCode(8));
     }
 }

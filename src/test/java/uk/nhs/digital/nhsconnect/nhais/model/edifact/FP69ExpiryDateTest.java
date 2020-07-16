@@ -2,7 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,13 +11,13 @@ class FP69ExpiryDateTest {
 
     @Test
     void whenSettingNullTimestamp_expectException() {
-        assertThatThrownBy(() -> FP69ExpiryDate.builder().timestamp(null).build())
+        assertThatThrownBy(() -> new FP69ExpiryDate(null))
             .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void toEdifact() {
-        var fp69ReasonCode = FP69ExpiryDate.builder().timestamp(Instant.ofEpochSecond(633052800)).build();
+        var fp69ReasonCode = new FP69ExpiryDate(LocalDate.of(1990, 1, 23));
 
         assertThat(fp69ReasonCode.toEdifact())
             .isEqualTo("DTM+962:19900123:102'");
@@ -26,6 +26,6 @@ class FP69ExpiryDateTest {
     @Test
     void fromEdifact() {
         assertThat(FP69ExpiryDate.fromString("DTM+962:19920225:102"))
-            .isEqualTo(FP69ExpiryDate.builder().timestamp(Instant.ofEpochSecond(698976000)).build());
+            .isEqualTo(new FP69ExpiryDate(LocalDate.of(1992, 2, 25)));
     }
 }
