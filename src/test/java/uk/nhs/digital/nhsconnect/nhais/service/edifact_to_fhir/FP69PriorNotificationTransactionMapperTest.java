@@ -20,7 +20,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -34,7 +33,7 @@ class FP69PriorNotificationTransactionMapperTest {
 
     private static final String NHS_NUMBER = "1234567890";
     private static final String SURNAME = "SMITH";
-    private static final Instant DATE_OF_BIRTH = Instant.ofEpochSecond(123213);
+    private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1970, 1, 2);
     private static final int REASON_CODE = 123;
     private static final LocalDate EXPIRY_DATE = LocalDate.of(1970, 2, 20);
     private static final String FIRST_FORENAME = "JOHN";
@@ -108,7 +107,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .surname(SURNAME)
             .build()));
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(PersonDateOfBirth.builder()
-            .timestamp(DATE_OF_BIRTH)
+            .dateOfBirth(DATE_OF_BIRTH)
             .build()));
         when(transaction.getFp69ReasonCode()).thenReturn(Optional.empty());
 
@@ -124,7 +123,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .surname(SURNAME)
             .build()));
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(PersonDateOfBirth.builder()
-            .timestamp(DATE_OF_BIRTH)
+            .dateOfBirth(DATE_OF_BIRTH)
             .build()));
         when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(new FP69ReasonCode(REASON_CODE)));
         when(transaction.getFp69ExpiryDate()).thenReturn(Optional.empty());
@@ -206,7 +205,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .surname(SURNAME)
             .build()));
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(PersonDateOfBirth.builder()
-            .timestamp(DATE_OF_BIRTH)
+            .dateOfBirth(DATE_OF_BIRTH)
             .build()));
         when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(new FP69ReasonCode(REASON_CODE)));
         when(transaction.getFp69ExpiryDate()).thenReturn(Optional.of(new FP69ExpiryDate(EXPIRY_DATE)));

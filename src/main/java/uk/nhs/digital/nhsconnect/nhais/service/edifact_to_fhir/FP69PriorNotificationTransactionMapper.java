@@ -85,8 +85,9 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
 
     private void mapDateOfBirth(Patient patient, Transaction transaction) {
         transaction.getPersonDateOfBirth()
-            .map(PersonDateOfBirth::getTimestamp)
-            .map(Date::from)
+            .map(PersonDateOfBirth::getDateOfBirth)
+            .map(expiryDate -> expiryDate.format(DATE_FORMAT))
+            .map(Date::valueOf)
             .ifPresentOrElse(
                 patient::setBirthDate,
                 () -> {
