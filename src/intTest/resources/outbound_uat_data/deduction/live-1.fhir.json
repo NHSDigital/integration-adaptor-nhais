@@ -2,7 +2,15 @@
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
-      "valueString": "TES5"
+      "valueString": "WIL5"
+    },
+    {
+      "name": "dateOfDeduction",
+      "valueString": "2020-05-25"
+    },
+    {
+      "name": "deductionReasonCode",
+      "valueString": "1"
     },
     {
       "name": "patient",
@@ -11,7 +19,7 @@
           "identifier": [
             {
               "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-              "value": "XX1"
+              "value": "KC"
             }
           ]
         },
@@ -19,8 +27,14 @@
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "4826940,281"
+              "value": "8880255,G82080"
             }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9999999999"
           }
         ],
         "resourceType": "Patient"
