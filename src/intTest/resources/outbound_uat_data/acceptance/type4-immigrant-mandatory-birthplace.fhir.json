@@ -21,10 +21,6 @@
       "valueString": "1991-08-06"
     },
     {
-      "name": "dateOfUkExit",
-      "valueString": "1968-03-05"
-    },
-    {
       "name": "patient",
       "resource": {
         "managingOrganization": {
@@ -45,28 +41,19 @@
         ],
         "name": [
           {
-            "family": "HOWES",
-            "given": [
-              "ALISON",
-              "J"
-            ],
-            "prefix": [
-              "MRS"
-            ]
+            "family": "HOWES"
           }
         ],
         "gender": "female",
-        "birthDate": "1965-12-12",
         "address": [
           {
             "line": [
-              "",
+              null,
               "13 FOX CRESCENT",
-              "",
+              null,
               "BROMLEY",
               "KENT"
-            ],
-            "postalCode": "BR1  7TQ"
+            ]
           }
         ],
         "extension": [

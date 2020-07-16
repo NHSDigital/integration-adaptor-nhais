@@ -11,8 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceBirthTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceFirstTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceImmigrantTranslator;
-import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceTransferinTranslator;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.AmendmentToEdifactTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.AcceptanceTransferInTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.removal.RemovalTranslator;
 
 import java.util.List;
@@ -26,10 +25,10 @@ public class FhirToEdifactSegmentTranslator {
 
     private final AcceptanceBirthTranslator acceptanceBirthTranslator;
     private final AcceptanceFirstTranslator acceptanceFirstTranslator;
-    private final AcceptanceTransferinTranslator acceptanceTransferinTranslator;
+    private final AcceptanceTransferInTranslator acceptanceTransferinTranslator;
     private final AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
+    private final DeductionTranslator deductionTranslator;
     private final RemovalTranslator removalTranslator;
-    private final StubTranslator stubTranslator;
 
     public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
         switch ((ReferenceTransactionType.Outbound) transactionType) {
@@ -37,12 +36,10 @@ public class FhirToEdifactSegmentTranslator {
                 return delegateAcceptance(parameters);
             case REMOVAL:
                 return removalTranslator.translate(parameters);
-            case AMENDMENT:
-                throw new FhirValidationException("Amendment operation is not allowed here, it should consist of json patches");
             case DEDUCTION:
-                //TODO the exception here should be thrown also for deduction, to be changed after adding deduction translator
+                return deductionTranslator.translate(parameters);
             default:
-                return stubTranslator.translate(parameters, transactionType);
+                throw new FhirValidationException("Unsupported FHIR transaction type: " + transactionType);
         }
     }
 

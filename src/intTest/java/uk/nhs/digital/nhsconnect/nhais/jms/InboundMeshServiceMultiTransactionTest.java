@@ -90,6 +90,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
     @AfterEach
     void tearDown() {
+        clearInboundQueue();
         clearMeshMailbox();
     }
 

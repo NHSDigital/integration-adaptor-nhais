@@ -40,7 +40,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class MeshServiceBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
-    protected static final int WAIT_FOR_IN_SECONDS = 5;
+    protected static final int WAIT_FOR_IN_SECONDS = 10;
     private static final int RECEIVE_TIMEOUT = 5000;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);
@@ -120,9 +120,20 @@ public abstract class MeshServiceBaseTest {
         return dataToReturn.get();
     }
 
+    protected void clearInboundQueue() {
+        await()
+            .atMost(10, SECONDS)
+            .pollInterval(500, MILLISECONDS)
+            .until(() -> {
+                if (getGpSystemInboundQueueMessage() == null) {
+                    return true;
+                }
+                return false;
+            });
+    }
     protected void clearMeshMailbox() {
         await().atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Durations.FIVE_SECONDS)
+            .pollInterval(Durations.ONE_SECOND)
             .until(this::acknowledgeAllMeshMessages);
     }
 
