@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
@@ -34,7 +34,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
     private TimestampService timestampService;
 
     @BeforeEach
@@ -73,10 +73,10 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         if (transactionType.equals("amendment")) {
             //have to use 9999999999 NHS number in all tests
             mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(jsonInput))
-                    .andExpect(status().isAccepted());
+                .andExpect(status().isAccepted());
         } else {
             mockMvc.perform(post("/fhir/Patient/$nhais." + transactionType).contentType("application/json").content(jsonInput))
-                    .andExpect(status().isAccepted());
+                .andExpect(status().isAccepted());
         }
     }
 

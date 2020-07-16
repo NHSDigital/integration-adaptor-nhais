@@ -17,6 +17,7 @@ public class JsonPatches {
     public static final String OTHER_FORENAMES_PATH = "/name/0/given/2";
     public static final String SEX_PATH = "/gender";
     public static final String BIRTH_DATE_PATH = "/birthDate";
+    public static final String EXTENSION_PATH = "/extension/0";
     private static final String HOUSE_NAME_PATH = "/address/0/line/0";
     private static final String NUMBER_OR_ROAD_NAME_PATH = "/address/0/line/1";
     private static final String LOCALITY = "/address/0/line/2";
@@ -66,7 +67,7 @@ public class JsonPatches {
         return filterSimpleValues(HOUSE_NAME_PATH);
     }
 
-    public Optional<AmendmentPatch> getNumberOrRoadName(){
+    public Optional<AmendmentPatch> getNumberOrRoadName() {
         return filterSimpleValues(NUMBER_OR_ROAD_NAME_PATH);
     }
 
@@ -92,22 +93,22 @@ public class JsonPatches {
             .findFirst();
     }
 
-    public <T extends AmendmentExtension> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
+    public <T extends AmendmentValue> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
         return patches.stream()
-            .filter(patch -> patch.getValue() instanceof AmendmentExtension)
+            .filter(AmendmentPatch::isExtension)
             .filter(patch -> clazz.isAssignableFrom(patch.getValue().getClass()))
             .findFirst();
     }
 
     public Optional<AmendmentPatch> getDrugsDispensedMarker() {
-        return getExtension(AmendmentExtension.DrugsDispensedMarker.class);
+        return getExtension(AmendmentBooleanExtension.DrugsDispensedMarker.class);
     }
 
     public Optional<AmendmentPatch> getBirthplace() {
-        return getExtension(AmendmentExtension.Birthplace.class);
+        return getExtension(AmendmentStringExtension.Birthplace.class);
     }
 
     public Optional<AmendmentPatch> getResidentialInstituteCode() {
-        return getExtension(AmendmentExtension.ResidentialInstituteCode.class);
+        return getExtension(AmendmentStringExtension.ResidentialInstituteCode.class);
     }
 }
