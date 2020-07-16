@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
  */
 @RequiredArgsConstructor
 @Getter
+@EqualsAndHashCode(callSuper = false)
 public class FreeText extends Segment {
     private static final String KEY = "FTX";
     private static final String QUALIFIER = "RGI";
