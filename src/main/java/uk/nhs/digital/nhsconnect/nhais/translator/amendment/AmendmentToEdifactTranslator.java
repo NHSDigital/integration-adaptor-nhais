@@ -15,8 +15,13 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentAddressToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentDateOfBirthToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentDrugsDispensedMarkerToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentFreeTextToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentResidentialInstituteToEdifactMapper;
+import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentSexToEdifactMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +31,14 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AmendmentToEdifactTranslator {
 
-    private final AmendmentNameToEdifactMapper amendmentNameToEdifactMapper;
-    private final AmendmentPreviousNameToEdifactMapper amendmentPreviousNameToEdifactMapper;
-    private final AmendmentAddressToEdifactMapper amendmentAddressToEdifactMapper;
+    private final AmendmentNameToEdifactMapper nameToEdifactMapper;
+    private final AmendmentPreviousNameToEdifactMapper previousNameToEdifactMapper;
+    private final AmendmentAddressToEdifactMapper addressToEdifactMapper;
+    private final AmendmentFreeTextToEdifactMapper freeTextToEdifactMapper;
+    private final AmendmentDateOfBirthToEdifactMapper dateOfBirthToEdifactMapper;
+    private final AmendmentSexToEdifactMapper sexToEdifactMapper;
+    private final AmendmentResidentialInstituteToEdifactMapper residentialInstituteToEdifactMapper;
+    private final AmendmentDrugsDispensedMarkerToEdifactMapper drugsDispensedMarkerToEdifactMapper;
 
     public List<Segment> translate(AmendmentBody amendmentBody) {
         var segments = new ArrayList<Segment>();
@@ -39,12 +49,17 @@ public class AmendmentToEdifactTranslator {
         segments.add(new SegmentGroup(1));
         segments.add(new ReferenceTransactionNumber());
         segments.add(new GpNameAndAddress(amendmentBody.getGpCode(), "900"));
+        residentialInstituteToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
+        drugsDispensedMarkerToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
+        freeTextToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
         segments.add(new SegmentGroup(2));
-        segments.add(amendmentNameToEdifactMapper
+        segments.add(nameToEdifactMapper
             .map(amendmentBody)
             .orElseThrow(() -> new PatchValidationException(PersonName.class.getSimpleName() + " segment is mandatory")));
-        amendmentAddressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
-        segments.addAll(amendmentPreviousNameToEdifactMapper
+        dateOfBirthToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
+        sexToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
+        addressToEdifactMapper.map(amendmentBody).ifPresent(segments::add);
+        segments.addAll(previousNameToEdifactMapper
             .map(amendmentBody)
             .map(previousNameSegments -> List.of(
                 new SegmentGroup(2),

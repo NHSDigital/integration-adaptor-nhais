@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.jsonpatch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,8 @@ public class AmendmentBody {
     private String gpCode;
     private String gpTradingPartnerCode;
     private String healthcarePartyCode;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String freeText;
     private List<AmendmentPatch> patches;
 
     @JsonIgnore

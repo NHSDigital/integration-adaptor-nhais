@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
@@ -7,6 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
  * Example HEA+DM+Y:ZZZ'
  */
 @RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class DrugsMarker extends Segment {
     private final static String KEY = "HEA";
     private final static String APT_PREFIX = "DM";
@@ -28,7 +30,7 @@ public class DrugsMarker extends Segment {
     }
 
     private String parseDrugMarker() {
-        if(drugsMarker) {
+        if (drugsMarker) {
             return "Y";
         }
         return "%";

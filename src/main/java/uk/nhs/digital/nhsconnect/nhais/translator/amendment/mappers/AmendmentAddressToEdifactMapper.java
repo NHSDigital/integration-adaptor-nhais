@@ -1,21 +1,19 @@
 package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -81,7 +79,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkIfThereAreAllFiveAddressLinesPatches(JsonPatches patches) {
-        if(!Stream.of(
+        if (!Stream.of(
             patches.getHouseName(),
             patches.getNumberOrRoadName(),
             patches.getLocality(),
@@ -93,7 +91,7 @@ public class AmendmentAddressToEdifactMapper extends AmendmentToEdifactMapper {
     }
 
     private void checkNoPostTownPatchForRemoveOperation(JsonPatches patches) {
-        if (patches.getPostTown().isPresent() && patches.getPostTown().get().getOp() == AmendmentPatchOperation.REMOVE) {
+        if (patches.getPostTown().isPresent() && patches.getPostTown().get().isRemoval()) {
             throw new PatchValidationException("Post town ('address/0/line/3') cannot be removed");
         }
     }

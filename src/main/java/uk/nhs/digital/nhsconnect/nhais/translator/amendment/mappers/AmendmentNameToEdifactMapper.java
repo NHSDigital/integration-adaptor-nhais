@@ -9,7 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
         var firstForename = patches.getFirstForename()
             .or(() -> patches
                 .getAllForenamesPath()
-                .filter(patch -> patch.getOp() == AmendmentPatchOperation.REMOVE))
+                .filter(AmendmentPatch::isRemoval))
             .map(AmendmentPatch::getFormattedSimpleValue)
             .orElse(null);
         var secondForename = patches.getSecondForename()
@@ -76,7 +75,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             patches.getSecondForename(),
             patches.getOtherForenames())
             .flatMap(Optional::stream)
-            .filter(amendmentPatch -> amendmentPatch.getOp() == AmendmentPatchOperation.REMOVE)
+            .filter(AmendmentPatch::isRemoval)
             .map(AmendmentPatch::getPath)
             .reduce((a, b) -> String.join(", ", a, b))
             .ifPresent(paths -> {
@@ -98,7 +97,7 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
 
     private void validateFamilyNameRemoval(JsonPatches patches) {
         if (patches.getSurname()
-            .filter(amendmentPatch -> amendmentPatch.getOp() == AmendmentPatchOperation.REMOVE)
+            .filter(AmendmentPatch::isRemoval)
             .isPresent()) {
             throw new PatchValidationException("Removing surnames is illegal");
         }

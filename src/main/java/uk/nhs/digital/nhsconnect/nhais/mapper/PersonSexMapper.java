@@ -13,15 +13,15 @@ public class PersonSexMapper implements FromFhirToEdifactMapper<PersonSex> {
     public PersonSex map(Parameters parameters) {
         try {
             return PersonSex.builder()
-                .sexCode(getPersonSex(parameters))
+                .gender(getPersonSex(parameters))
                 .build();
         } catch (RuntimeException ex) {
             throw new FhirValidationException(ex);
         }
     }
 
-    private String getPersonSex(Parameters parameters) {
+    private PersonSex.Gender getPersonSex(Parameters parameters) {
         Patient patient = ParametersExtension.extractPatient(parameters);
-        return PersonSex.getGenderCode(patient);
+        return PersonSex.Gender.fromFhir(patient.getGender());
     }
 }

@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,10 @@ public class TimestampService {
         return DateTimeFormatter.ISO_DATE_TIME
             .withZone(TimestampService.UKZone)
             .format(timestamp);
+    }
+
+    public Instant parseDate(String date) {
+        return LocalDate.parse(date).atStartOfDay().atZone(UKZone).toInstant();
     }
 
     public Instant parseFromISO(String timestamp) {

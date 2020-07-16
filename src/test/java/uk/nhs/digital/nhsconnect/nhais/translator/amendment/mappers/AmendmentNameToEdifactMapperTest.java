@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.SoftAssertions;
@@ -8,17 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PatientIdentificationType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentNameToEdifactMapper;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,18 +39,12 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private final AmendmentNameToEdifactMapper translator = new AmendmentNameToEdifactMapper();
 
-    @Mock
-    private AmendmentBody amendmentBody;
-
-    @Mock
-    private JsonPatches jsonPatches;
 
     @BeforeEach
+    @Override
     void setUp() {
-        reset(amendmentBody, jsonPatches);
-
+        super.setUp();
         lenient().when(amendmentBody.getNhsNumber()).thenReturn(NHS_NUMBER);
-        when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
     }
 
     @ParameterizedTest
