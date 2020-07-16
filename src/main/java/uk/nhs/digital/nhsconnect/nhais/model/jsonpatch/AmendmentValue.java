@@ -30,5 +30,4 @@ public interface AmendmentValue {
                 throw new PatchValidationException("Unknown extension type using url " + url);
         }
     }
-
 }

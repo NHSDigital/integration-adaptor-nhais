@@ -7,19 +7,22 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PersonDateOfEntryTest {
-    private static final LocalDate LOCAL_DATE = LocalDate.parse("1991-01-13");
+class PersonDateOfExitTest {
+
+    private static final LocalDate FIXED_TIME = LocalDate.of(1992, 01, 13);
 
 
     @Test
     public void When_MappingToEdifact_Then_ReturnCorrectString() {
-        var personDateOfEntry = new PersonDateOfEntry(LOCAL_DATE);
-        assertThat(personDateOfEntry.toEdifact()).isEqualTo("DTM+957:19910113:102'");
+        var personDateOfExit = new PersonDateOfExit(FIXED_TIME);
+
+        assertThat(personDateOfExit.toEdifact()).isEqualTo("DTM+958:19920113:102'");
     }
 
     @Test
     public void When_BuildingWithEmptyTimestamp_Then_NullPointerExceptionIsThrown() {
-        assertThatThrownBy(() -> new PersonDateOfEntry(null))
+        assertThatThrownBy(() -> new PersonDateOfExit(null))
             .isExactlyInstanceOf(NullPointerException.class);
     }
+
 }

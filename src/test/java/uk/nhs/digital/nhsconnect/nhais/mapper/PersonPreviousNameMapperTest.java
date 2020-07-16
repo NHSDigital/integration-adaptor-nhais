@@ -126,7 +126,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    void When_ThereIsOnlyOneName_Then_CantMap() {
+    void When_ThereIsOnlyOneName_Then_CanNotMap() {
         Patient patient = new Patient()
             .setName(List.of(patientName));
 
@@ -135,7 +135,7 @@ class PersonPreviousNameMapperTest {
 
         var previousPersonNameMapper = new PersonPreviousNameMapper();
 
-        assertThat(previousPersonNameMapper.canMap(parameters)).isFalse();
+        assertThat(previousPersonNameMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
@@ -148,6 +148,6 @@ class PersonPreviousNameMapperTest {
 
         var previousPersonNameMapper = new PersonPreviousNameMapper();
 
-        assertThat(previousPersonNameMapper.canMap(parameters)).isTrue();
+        assertThat(previousPersonNameMapper.inputDataExists(parameters)).isTrue();
     }
 }

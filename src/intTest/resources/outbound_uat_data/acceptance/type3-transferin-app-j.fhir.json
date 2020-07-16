@@ -17,12 +17,8 @@
       "valueString": "1992-01-15"
     },
     {
-      "name": "freeText",
-      "valueString": "GP NOTES GO HERE"
-    },
-    {
-      "name": "previousHaCipher",
-      "valueString": "LNS"
+      "name": "previousGpName",
+      "valueString": "DR BLACK"
     },
     {
       "name": "patient",
@@ -47,22 +43,11 @@
           {
             "family": "ASQUITH",
             "given": [
-              "ROGER",
-              "ADAM",
-              "DANIEL"
+              "ROGER"
             ],
             "prefix": [
               "LORD"
             ]
-          },
-          {
-            "family": "PREVIOUS"
-          }
-        ],
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "N/10/10"
           }
         ],
         "gender": "male",
@@ -71,7 +56,7 @@
           {
             "line": [
               "THE MANSION HOUSE",
-              "1 MANSION LANE",
+              null,
               "ST PAULS CRAY",
               "ORPINGTON",
               "KENT"
@@ -80,9 +65,9 @@
           },
           {
             "line": [
-              "THE HAUNTED HOUSE",
-              "12 SHADOWY LANE",
-              "HAUNTED GLADE",
+              null,
+              null,
+              null,
               "HORSFORTH",
               "LEEDS"
             ]
@@ -92,18 +77,6 @@
           {
             "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
             "valueString": "PETERBOROUGH"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-PreviousGP",
-            "valueString": "DR BLACK"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
-            "valueBoolean": true
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
-            "valueString": "RT"
           }
         ],
         "resourceType": "Patient"

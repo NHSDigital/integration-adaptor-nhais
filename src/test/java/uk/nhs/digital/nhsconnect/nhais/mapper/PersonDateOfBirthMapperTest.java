@@ -52,11 +52,11 @@ class PersonDateOfBirthMapperTest {
     }
 
     @Test
-    public void When_ParametersWithoutDob_Then_CantMap() {
+    public void When_ParametersWithoutDob_Then_CanNotMap() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
-        assertThat(personDateOfBirthMapper.canMap(parameters)).isFalse();
+        assertThat(personDateOfBirthMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
@@ -66,6 +66,6 @@ class PersonDateOfBirthMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
 
-        assertThat(personDateOfBirthMapper.canMap(parameters)).isTrue();
+        assertThat(personDateOfBirthMapper.inputDataExists(parameters)).isTrue();
     }
 }

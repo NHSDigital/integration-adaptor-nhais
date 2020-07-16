@@ -21,27 +21,27 @@ class DrugsMarkerMapperTest {
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(drugsMarkerMapper.canMap(parameters)).isTrue();
+        assertThat(drugsMarkerMapper.inputDataExists(parameters)).isTrue();
     }
 
     @Test
-    void when_DrugsMarkerExtensionExistsAndValueIsFalse_Then_CantMap() {
+    void when_DrugsMarkerExtensionExistsAndValueIsFalse_Then_CanNotMap() {
         Patient patient = new Patient();
         patient.addExtension(new DrugsMarkerExtension("false"));
         PatientParameter patientParameter = new PatientParameter(patient);
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(drugsMarkerMapper.canMap(parameters)).isFalse();
+        assertThat(drugsMarkerMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
-    void when_DrugsMarkerExtensionDoesntExist_Then_CantMap() {
+    void when_DrugsMarkerExtensionDoesntExist_Then_CanNotMap() {
         PatientParameter patientParameter = new PatientParameter();
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
 
-        assertThat(drugsMarkerMapper.canMap(parameters)).isFalse();
+        assertThat(drugsMarkerMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
