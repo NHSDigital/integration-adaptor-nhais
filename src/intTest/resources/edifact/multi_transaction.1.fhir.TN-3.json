@@ -9,6 +9,12 @@
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "RE1/12/13"
+          }
+        ],
         "generalPractitioner": [
           {
             "identifier": {
@@ -24,6 +30,18 @@
           }
         }
       }
+    },
+    {
+      "name": "deductionReasonCode",
+      "valueString": "2"
+    },
+    {
+      "name": "dateOfDeduction",
+      "valueString": "1992-01-25"
+    },
+    {
+      "name": "newHaCipher",
+      "valueString": "COV"
     }
   ]
 }
