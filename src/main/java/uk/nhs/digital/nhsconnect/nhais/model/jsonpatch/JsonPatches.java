@@ -93,26 +93,22 @@ public class JsonPatches {
             .findFirst();
     }
 
-    public <T extends AmendmentExtension> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
+    public <T extends AmendmentValue> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
         return patches.stream()
-            .filter(patch -> patch.getValue() instanceof AmendmentExtension)
+            .filter(AmendmentPatch::isExtension)
             .filter(patch -> clazz.isAssignableFrom(patch.getValue().getClass()))
             .findFirst();
     }
 
     public Optional<AmendmentPatch> getDrugsDispensedMarker() {
-        return getExtension(AmendmentExtension.DrugsDispensedMarker.class);
+        return getExtension(AmendmentBooleanExtension.DrugsDispensedMarker.class);
     }
 
     public Optional<AmendmentPatch> getBirthplace() {
-        return getExtension(AmendmentExtension.Birthplace.class);
-    }
-
-    public Optional<AmendmentPatch> getPreviousGp() {
-        return getExtension(AmendmentExtension.PreviousGp.class);
+        return getExtension(AmendmentStringExtension.Birthplace.class);
     }
 
     public Optional<AmendmentPatch> getResidentialInstituteCode() {
-        return getExtension(AmendmentExtension.ResidentialInstituteCode.class);
+        return getExtension(AmendmentStringExtension.ResidentialInstituteCode.class);
     }
 }

@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DrugsMarker;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBooleanExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -30,7 +30,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.DrugsDispensedMarker(new AmendmentExtension(null, null, "true")))));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("true"))));
 
         var segments = translator.map(amendmentBody);
 
@@ -43,7 +43,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenRemoving_expectFieldsAreRemoved(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.DrugsDispensedMarker(new AmendmentExtension(null, null, "false")))));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("false"))));
 
         var segments = translator.map(amendmentBody);
 
@@ -56,7 +56,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddingOrReplacingWithIncorrectValue_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.DrugsDispensedMarker(new AmendmentExtension(null, null, "qwe")))));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("qwe"))));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
@@ -79,8 +79,8 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.EXTENSION_PATH)
-            .setValue(new AmendmentExtension.DrugsDispensedMarker(new AmendmentExtension(null, null, null)))
-        ));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(null)))
+        );
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)

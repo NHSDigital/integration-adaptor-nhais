@@ -10,9 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ResidentialInstituteNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentStringExtension;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.ResidentialInstituteCode(new AmendmentExtension(null, "null", null)))));
+            .setValue(new AmendmentStringExtension.ResidentialInstituteCode("null"))));
 
         var segments = translator.map(amendmentBody);
 
@@ -43,7 +43,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     void whenRemoving_expectFieldsAreRemoved(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.ResidentialInstituteCode(new AmendmentExtension(null, null, null)))));
+            .setValue(new AmendmentStringExtension.ResidentialInstituteCode(null))));
 
         var segments = translator.map(amendmentBody);
 
@@ -66,7 +66,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentExtension.ResidentialInstituteCode(new AmendmentExtension(null, StringUtils.EMPTY, null)))
+            .setValue(new AmendmentStringExtension.ResidentialInstituteCode(StringUtils.EMPTY))
         ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
