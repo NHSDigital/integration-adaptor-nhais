@@ -47,4 +47,5 @@ public class DateTimePeriodTest {
         DateTimePeriod dateTimePeriod = new DateTimePeriod(LocalDate.parse("1992-01-15").atStartOfDay(ZoneOffset.UTC).toInstant(), DateTimePeriod.TypeAndFormat.ACCEPTANCE_DATE);
         assertThat(dateTimePeriod.toEdifact()).isEqualTo("DTM+956:19920115:102'");
     }
+
 }
