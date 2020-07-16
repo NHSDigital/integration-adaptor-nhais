@@ -28,14 +28,6 @@ class FreeTextMapperTest {
     }
 
     @Test
-    void when_FreeTextValueExistsAndValueIsBlank_Then_CanNotMap() {
-        Parameters parameters = new Parameters()
-            .addParameter(ParameterNames.FREE_TEXT, " ");
-
-        assertThat(freeTextMapper.inputDataExists(parameters)).isFalse();
-    }
-
-    @Test
     void when_FreeTextValueExistsAndValueIsNull_Then_CanNotMap() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, (String) null);

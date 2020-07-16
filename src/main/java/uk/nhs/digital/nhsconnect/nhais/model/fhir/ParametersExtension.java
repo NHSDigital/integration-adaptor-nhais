@@ -2,8 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-
-import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
@@ -76,8 +74,7 @@ public class ParametersExtension {
     public Optional<String> extractOptionalValue(String name) {
         return Optional.ofNullable(parameters.getParameter(name))
             .map(StringType.class::cast)
-            .map(StringType::getValueAsString)
-            .filter(s -> !StringUtils.isBlank(s));
+            .map(StringType::getValueAsString);
     }
 
     @SneakyThrows
