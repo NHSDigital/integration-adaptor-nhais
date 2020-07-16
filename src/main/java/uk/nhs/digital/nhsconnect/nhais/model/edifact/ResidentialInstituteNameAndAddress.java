@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -15,13 +16,14 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 @Setter
 @Builder
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class ResidentialInstituteNameAndAddress extends Segment {
 
     public static final String KEY = "NAD";
     public static final String QUALIFIER = "RIC";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
-    private @NonNull String identifier;
     private final String code = "956";
+    private @NonNull String identifier;
 
     @Override
     public String getKey() {

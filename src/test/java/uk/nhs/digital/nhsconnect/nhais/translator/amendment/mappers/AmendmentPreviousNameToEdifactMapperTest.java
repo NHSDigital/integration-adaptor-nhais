@@ -1,28 +1,23 @@
-package uk.nhs.digital.nhsconnect.nhais.translator;
+package uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.PatchValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
-import uk.nhs.digital.nhsconnect.nhais.translator.amendment.mappers.AmendmentPreviousNameToEdifactMapper;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
@@ -31,19 +26,6 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
     private static final String PREVIOUS_SURNAME = "Snow";
 
     private final AmendmentPreviousNameToEdifactMapper translator = new AmendmentPreviousNameToEdifactMapper();
-
-    @Mock
-    private AmendmentBody amendmentBody;
-
-    @Mock
-    private JsonPatches jsonPatches;
-
-    @BeforeEach
-    void setUp() {
-        reset(amendmentBody, jsonPatches);
-
-        when(amendmentBody.getJsonPatches()).thenReturn(jsonPatches);
-    }
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
@@ -77,12 +59,12 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
     void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setPath("/previous_surname/")
+            .setPath(JsonPatches.PREVIOUS_SURNAME_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
         ));
 
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Invalid values for: [/previous_surname/]");
+            .hasMessage("Invalid values for: [/name/1/family]");
     }
 }
