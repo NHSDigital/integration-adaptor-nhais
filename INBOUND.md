@@ -90,7 +90,7 @@ BLANK - the value is not used by this transaction type
 | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
 | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
 | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    |       |
-| New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |       |
+| New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |Optional value|
 
 ### Deduction Request Rejection
 

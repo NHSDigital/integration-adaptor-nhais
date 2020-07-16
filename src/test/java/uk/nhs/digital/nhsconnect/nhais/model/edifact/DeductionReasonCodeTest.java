@@ -5,8 +5,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DeductionReasonCodeTest {
 
@@ -30,4 +28,16 @@ public class DeductionReasonCodeTest {
         assertThatThrownBy(deductionReasonCode::toEdifact).isInstanceOf(EdifactValidationException.class);
     }
 
+    @Test
+    void When_fromStringWithValidInput_Then_SegmentCreated() {
+        DeductionReasonCode deductionReasonCode = DeductionReasonCode.fromString("GIS+1:ZZZ");
+        DeductionReasonCode expectedDeductionReasonCode = new DeductionReasonCode("1");
+
+        assertThat(deductionReasonCode.getValue()).isEqualTo(expectedDeductionReasonCode.getValue());
+    }
+    @Test
+    void When_fromStringWithInvalidInput_Then_ExceptionThrown() {
+        assertThatThrownBy(() -> DeductionReasonCode.fromString("XXX+1:ZZZ"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
+    }
 }

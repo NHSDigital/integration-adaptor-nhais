@@ -4,7 +4,7 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousHealthAuthorityNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousHealthAuthorityName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +24,7 @@ class PreviousHealthAuthorityNameMapperTest {
         var previousHealthAuthorityNameMapper = new PreviousHealthAuthorityNameMapper();
         var previousHealthAuthorityName = previousHealthAuthorityNameMapper.map(parameters);
 
-        var expectedPreviousHealthAuthorityName = new PreviousHealthAuthorityNameAndAddress(IDENTIFIER);
+        var expectedPreviousHealthAuthorityName = new PreviousHealthAuthorityName(IDENTIFIER);
 
         assertThat(previousHealthAuthorityName.toEdifact()).isEqualTo(expectedPreviousHealthAuthorityName.toEdifact());
     }
