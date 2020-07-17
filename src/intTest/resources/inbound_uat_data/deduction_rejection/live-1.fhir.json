@@ -3,11 +3,7 @@
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
-      "valueString": "TES5"
-    },
-    {
-      "name": "freeText",
-      "valueString": "PATIENT KNOWN BY HA GENERAL MANAGER"
+      "valueString": "UNY5"
     },
     {
       "name": "patient",
@@ -16,24 +12,28 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "TT12/24"
+            "value": "3333333333"
           }
         ],
         "generalPractitioner": [
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "4826940,281"
+              "value": "9990335,PLP570"
             }
           }
         ],
         "managingOrganization": {
           "identifier": {
             "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-            "value": "XX1"
+            "value": "SO"
           }
         }
       }
+    },
+    {
+      "name": "freeText",
+      "valueString": "PATIENT WILL BE REMOVED IN 30 DAYS"
     }
   ]
 }

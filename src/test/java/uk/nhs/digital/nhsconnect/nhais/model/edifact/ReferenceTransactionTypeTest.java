@@ -37,6 +37,8 @@ public class ReferenceTransactionTypeTest {
             "DEF", ReferenceTransactionType.Inbound.DEDUCTION,
             "REF", ReferenceTransactionType.Inbound.REJECTION,
             "APF", ReferenceTransactionType.Inbound.APPROVAL,
+            "DRR", ReferenceTransactionType.Inbound.DEDUCTION_REJECTION,
+            "FFR", ReferenceTransactionType.Inbound.FP69_FLAG_REMOVAL,
             "ACG", ReferenceTransactionType.Outbound.ACCEPTANCE,
             "AMG", ReferenceTransactionType.Outbound.AMENDMENT,
             "REG", ReferenceTransactionType.Outbound.REMOVAL,
