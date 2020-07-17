@@ -31,4 +31,12 @@ class FreeTextTest {
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("FTX: Attribute textLiteral is required");
     }
+
+    @Test
+    public void testPreValidationBlankString() {
+        FreeText emptyFreeText = new FreeText(" ");
+        assertThatThrownBy(emptyFreeText::preValidate)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("FTX: Attribute textLiteral is required");
+    }
 }
