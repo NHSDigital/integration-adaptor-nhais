@@ -1,8 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact.message;
 
-public class ToEdifactParsingException extends RuntimeException {
+import uk.nhs.digital.nhsconnect.nhais.exceptions.BadRequestException;
+
+public class ToEdifactParsingException extends BadRequestException {
 
     public ToEdifactParsingException(String message) {
         super(message);
     }
+
 }

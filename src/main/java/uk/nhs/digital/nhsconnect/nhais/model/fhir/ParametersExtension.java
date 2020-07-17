@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
@@ -34,6 +35,12 @@ public class ParametersExtension {
             .map(Type::primitiveValue)
             .filter(Objects::nonNull)
             .findFirst();
+    }
+
+    public static String notBlankValue(Parameters parameters, String parameterName) {
+        return extractOptionalValue(parameters, parameterName)
+            .filter(StringUtils::isNotBlank)
+            .orElseThrow(() -> new FhirValidationException("Value " + parameterName + " is blank or missing in FHIR Parameters"));
     }
 
     public Patient extractPatient() {
