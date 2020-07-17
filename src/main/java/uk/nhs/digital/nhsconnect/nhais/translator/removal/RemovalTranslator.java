@@ -15,7 +15,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.OptionalInputValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,9 +33,13 @@ public class RemovalTranslator implements FhirToEdifactTranslator {
     private final GpNameAndAddressMapper gpNameAndAddressMapper;
     private final PersonNameMapper personNameMapper;
     private final FreeTextMapper freeTextMapper;
+    private final OptionalInputValidator validator;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
+        if (validator.nhsNumberIsMissing(parameters)) {
+            throw new FhirValidationException("Patient resource property " + JsonPatches.NHS_NUMBER_PATH + " (NHS Number) is required");
+        }
         return Stream.of(
             //BGM
             mapSegment(new BeginningOfMessage()),
