@@ -15,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import uk.nhs.digital.nhsconnect.nhais.translator.FhirToEdifactTranslator;
 import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.OptionalInputValidator;
 
@@ -37,7 +38,7 @@ public class RemovalTranslator implements FhirToEdifactTranslator {
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         if(validator.nhsNumberIsMissing(parameters)) {
-            throw new FhirValidationException("Patient resource property /identifier/0/value (NHS Number) is required");
+            throw new FhirValidationException("Patient resource property " + JsonPatches.NHS_NUMBER_PATH + "(NHS Number) is required");
         }
         return Stream.of(
             //BGM
