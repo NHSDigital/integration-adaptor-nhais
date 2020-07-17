@@ -17,7 +17,7 @@ public class ApprovalTransactionMapper implements FhirTransactionMapper {
     public void map(Parameters parameters, Transaction transaction) {
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
-            .flatMap(FhirTransactionMapper::mapToNhsIdentifier)
+            .map(NhsIdentifier::new)
             .ifPresent(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)));
     }
 

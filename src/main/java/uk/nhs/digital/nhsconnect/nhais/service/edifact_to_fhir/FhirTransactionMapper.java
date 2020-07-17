@@ -12,7 +12,4 @@ public interface FhirTransactionMapper {
 
     ReferenceTransactionType.TransactionType getTransactionType();
 
-    static Optional<NhsIdentifier> mapToNhsIdentifier(String nhsNumber) {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
-    }
 }
