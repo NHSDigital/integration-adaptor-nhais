@@ -1,8 +1,9 @@
 package uk.nhs.digital.nhsconnect.nhais.mapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceCode;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DeductionReasonCode;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
@@ -17,7 +18,8 @@ public class DeductionReasonCodeMapper implements FromFhirToEdifactMapper<Deduct
     }
 
     private String getDeductionReasonCode(Parameters parameters) {
-        ParametersExtension parametersExt = new ParametersExtension(parameters);
-        return parametersExt.extractValue(ParameterNames.DEDUCTION_REASON_CODE);
+        return ParametersExtension.extractOptionalValue(parameters, ParameterNames.DEDUCTION_REASON_CODE)
+            .filter(StringUtils::isNotBlank)
+            .orElseThrow(() -> new FhirValidationException("Parameter " + ParameterNames.DEDUCTION_REASON_CODE + " is required"));
     }
 }
