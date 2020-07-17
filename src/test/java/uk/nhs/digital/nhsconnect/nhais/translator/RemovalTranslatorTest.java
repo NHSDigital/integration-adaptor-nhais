@@ -76,7 +76,7 @@ public class RemovalTranslatorTest {
 
         assertThatThrownBy(() -> removalTranslator.translate(parameters))
             .isInstanceOf(FhirValidationException.class)
-            .hasMessage("Patient resource property identifier/0/value(NHS Number) is required");
+            .hasMessage("Patient resource property /identifier/0/value (NHS Number) is required");
     }
 
     @Test

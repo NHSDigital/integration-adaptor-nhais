@@ -24,7 +24,7 @@ public class JsonPatches {
     public static final String POST_TOWN_PATH = "/address/0/line/3";
     public static final String COUNTY_PATH = "/address/0/line/4";
     public static final String POSTAL_CODE_PATH = "/address/0/postalCode";
-    public static final String NHS_NUMBER_PATH = "identifier/0/value";
+    public static final String NHS_NUMBER_PATH = "/identifier/0/value";
 
     private final List<AmendmentPatch> patches;
 
