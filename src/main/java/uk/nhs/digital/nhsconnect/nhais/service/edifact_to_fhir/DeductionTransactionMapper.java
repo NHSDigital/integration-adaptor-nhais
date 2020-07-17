@@ -15,7 +15,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class DeductionTransactionMapper implements FhirTransactionMapper {
@@ -26,7 +25,7 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
     public void map(Parameters parameters, Transaction transaction) {
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
-            .flatMap(this::mapToNhsIdentifier)
+            .map(NhsIdentifier::new)
             .ifPresentOrElse(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)),
                 () -> {throw new EdifactValidationException("Missing mandatory patient NHS number");});
 
@@ -43,10 +42,6 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
         transaction.getNewHealthAuthorityName()
             .map(NewHealthAuthorityName::getHaName)
             .ifPresent(haName -> parameters.addParameter(ParameterNames.NEW_HA_CIPHER, haName));
-    }
-
-    private Optional<NhsIdentifier> mapToNhsIdentifier(String nhsNumber) {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
     }
 
     @Override

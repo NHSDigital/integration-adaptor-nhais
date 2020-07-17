@@ -9,7 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ApprovalTransactionMapper implements FhirTransactionMapper {
@@ -17,7 +16,7 @@ public class ApprovalTransactionMapper implements FhirTransactionMapper {
     public void map(Parameters parameters, Transaction transaction) {
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
-            .flatMap(this::mapToNhsIdentifier)
+            .map(NhsIdentifier::new)
             .ifPresent(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)));
     }
 
@@ -26,7 +25,4 @@ public class ApprovalTransactionMapper implements FhirTransactionMapper {
         return ReferenceTransactionType.Inbound.APPROVAL;
     }
 
-    private Optional<NhsIdentifier> mapToNhsIdentifier(String nhsNumber) {
-        return Optional.ofNullable(nhsNumber).map(NhsIdentifier::new);
-    }
 }
