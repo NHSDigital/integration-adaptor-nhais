@@ -1,23 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
-import java.nio.file.Files;
-
 import lombok.extern.slf4j.Slf4j;
-import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
-
 import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.StringType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +12,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
+
+import java.nio.file.Files;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({ SpringExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
@@ -75,12 +67,8 @@ public class RemovalIntegrationTest {
     @Value("classpath:controllerTestsResources/removalNullNhsNumber.fhir.json")
     private Resource removalWithNullNhsNumber;
 
-
     @Autowired
     private FhirParser fhirParser;
-
-    private Parameters parameters;
-    private ParametersExtension parametersExtension;
 
     @Test
     void whenBlankNhsNumber_thenRespond400() throws Exception {
@@ -88,8 +76,8 @@ public class RemovalIntegrationTest {
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
     }
 
 
@@ -99,8 +87,8 @@ public class RemovalIntegrationTest {
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
     }
 
 
@@ -110,28 +98,28 @@ public class RemovalIntegrationTest {
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
     }
 
     @Test
     void whenNullNhsNumber_thenRespond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNullNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
-            .andExpect(status().isInternalServerError())
+            .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
     }
 
     @Test
     void whenBlankFreeText_thenRespond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithBlankFreeText.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
-            .andExpect(status().isInternalServerError())
+            .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value freeText is missing in FHIR Parameters");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("FTX: Attribute freeTextValue is blank or missing");
     }
 
     @Test
@@ -168,10 +156,10 @@ public class RemovalIntegrationTest {
     void whenBlankGpTradingPartnerCode_thenRespond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithBlankGpTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
-            .andExpect(status().isInternalServerError())
+            .andExpect(status().isBadRequest())
             .andReturn();
-//        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-//        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is missing in FHIR Parameters");
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 
@@ -192,7 +180,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
     @Test
@@ -202,7 +190,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 

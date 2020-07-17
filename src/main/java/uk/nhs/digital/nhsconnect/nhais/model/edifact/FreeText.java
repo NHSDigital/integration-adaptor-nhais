@@ -18,7 +18,7 @@ public class FreeText extends Segment {
     private static final String QUALIFIER = "RGI";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
-    private final String textLiteral;
+    private final String freeTextValue;
 
     public static FreeText fromString(String edifactString) {
         if (!edifactString.startsWith(FreeText.KEY_QUALIFIER)) {
@@ -41,7 +41,7 @@ public class FreeText extends Segment {
             QUALIFIER,
             StringUtils.EMPTY,
             StringUtils.EMPTY,
-            textLiteral);
+            freeTextValue);
     }
 
     @Override
@@ -51,8 +51,8 @@ public class FreeText extends Segment {
 
     @Override
     public void preValidate() throws EdifactValidationException {
-        if (StringUtils.isBlank(textLiteral)) {
-            throw new EdifactValidationException(getKey() + ": Attribute textLiteral is required");
+        if (StringUtils.isBlank(freeTextValue)) {
+            throw new EdifactValidationException(getKey() + ": Attribute freeTextValue is blank or missing");
         }
     }
 }

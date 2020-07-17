@@ -19,7 +19,7 @@ class FreeTextTest {
     void testFromString() {
         var edifact = "FTX+RGI+++WRONG HA - TRY SURREY'";
         var parsedFreeText = FreeText.fromString("FTX+RGI+++WRONG HA - TRY SURREY");
-        assertThat(parsedFreeText.getTextLiteral()).isEqualTo("WRONG HA - TRY SURREY");
+        assertThat(parsedFreeText.getFreeTextValue()).isEqualTo("WRONG HA - TRY SURREY");
         assertThat(parsedFreeText.toEdifact()).isEqualTo(edifact);
         assertThatThrownBy(() -> FreeText.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
     }

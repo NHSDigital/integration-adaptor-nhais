@@ -50,8 +50,8 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
     private String getNhsNumber(Patient patient) {
         return patient.getIdentifier().stream()
             .filter(identifier -> identifier.getSystem().equals(NhsIdentifier.SYSTEM))
-            .map(Identifier::getValue)
             .findFirst()
+            .map(Identifier::getValue)
             .orElse(null);
     }
 
