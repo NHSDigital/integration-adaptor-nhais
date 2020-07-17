@@ -1,10 +1,15 @@
 package uk.nhs.digital.nhsconnect.nhais.translator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mapper.FreeTextMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.mapper.PartyQualifierMapper;
@@ -19,6 +24,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.translator.acceptance.OptionalInputValidator;
 import uk.nhs.digital.nhsconnect.nhais.translator.removal.RemovalTranslator;
 
 import org.hl7.fhir.r4.model.Parameters;
@@ -28,7 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 public class RemovalTranslatorTest {
 
     @Mock
@@ -61,8 +67,21 @@ public class RemovalTranslatorTest {
     @Mock
     private FreeText freeText;
 
+    @Mock
+    private OptionalInputValidator validator;
+
     @Test
-    void whenFhirRemovalIsTranslated_thenAllRequiredSegmentsArePresentAndAreOfCorrectType() {
+    void whenNhsNumberIsMissing_thenExceptionIsThrown() {
+        when(validator.nhsNumberIsMissing(any())).thenReturn(true);
+
+        assertThatThrownBy(() -> removalTranslator.translate(parameters))
+            .isInstanceOf(FhirValidationException.class)
+            .hasMessage("Patient resource property /identifier/0/value (NHS Number) is required");
+    }
+
+    @Test
+    void whenFhirRemovalIsTranslated_thenAllRequiredSegmentsArePresentAndAreOfCorrectType(SoftAssertions softly) {
+        when(validator.nhsNumberIsMissing(any())).thenReturn(false);
         when(partyQualifierMapper.map(parameters)).thenReturn(partyQualifier);
         when(gpNameAndAddressMapper.map(parameters)).thenReturn(gpNameAndAddress);
         when(personNameMapper.map(parameters)).thenReturn(personName);
@@ -70,17 +89,17 @@ public class RemovalTranslatorTest {
 
         List<Segment> segments = removalTranslator.translate(parameters);
 
-        assertThat(segments.size()).isEqualTo(10);
+        softly.assertThat(segments.size()).isEqualTo(10);
 
-        assertThat(segments.get(0)).isExactlyInstanceOf(BeginningOfMessage.class);
-        assertThat(segments.get(1)).isEqualTo(partyQualifier);
-        assertThat(segments.get(2)).isExactlyInstanceOf(DateTimePeriod.class);
-        assertThat(segments.get(3)).isExactlyInstanceOf(ReferenceTransactionType.class);
-        assertThat(segments.get(4)).isExactlyInstanceOf(SegmentGroup.class);
-        assertThat(segments.get(5)).isExactlyInstanceOf(ReferenceTransactionNumber.class);
-        assertThat(segments.get(6)).isEqualTo(gpNameAndAddress);
-        assertThat(segments.get(7)).isEqualTo(freeText);
-        assertThat(segments.get(8)).isExactlyInstanceOf(SegmentGroup.class);
-        assertThat(segments.get(9)).isEqualTo(personName);
+        softly.assertThat(segments.get(0)).isExactlyInstanceOf(BeginningOfMessage.class);
+        softly.assertThat(segments.get(1)).isEqualTo(partyQualifier);
+        softly.assertThat(segments.get(2)).isExactlyInstanceOf(DateTimePeriod.class);
+        softly.assertThat(segments.get(3)).isExactlyInstanceOf(ReferenceTransactionType.class);
+        softly.assertThat(segments.get(4)).isExactlyInstanceOf(SegmentGroup.class);
+        softly.assertThat(segments.get(5)).isExactlyInstanceOf(ReferenceTransactionNumber.class);
+        softly.assertThat(segments.get(6)).isEqualTo(gpNameAndAddress);
+        softly.assertThat(segments.get(7)).isEqualTo(freeText);
+        softly.assertThat(segments.get(8)).isExactlyInstanceOf(SegmentGroup.class);
+        softly.assertThat(segments.get(9)).isEqualTo(personName);
     }
 }
