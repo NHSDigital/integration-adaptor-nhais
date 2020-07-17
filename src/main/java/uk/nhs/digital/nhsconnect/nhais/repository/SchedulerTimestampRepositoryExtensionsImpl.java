@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.repository;
 
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Slf4j
 public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTimestampRepositoryExtensions {
 
-    private static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
+    protected static final String MESH_TIMESTAMP_COLLECTION_NAME = "schedulerTimestamp";
     private static final String SCHEDULER_TYPE = "schedulerType";
     private static final String TIMESTAMP_FIELD_NAME = "updateTimestamp";
 
@@ -34,21 +35,26 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
         var update = Update.update(TIMESTAMP_FIELD_NAME, timestamp)
             .set(SCHEDULER_TYPE, schedulerType);
 
-        if (collectionIsNotEmpty()) {
+        if (documentAlreadyExists(schedulerType)) {
             UpdateResult result = mongoOperations.updateFirst(query, update, MESH_TIMESTAMP_COLLECTION_NAME);
 
             return updateSuccessful(result);
         } else {
             LOGGER.info("{} collection does not exist or it is empty. Document with timestamp will be created", MESH_TIMESTAMP_COLLECTION_NAME);
             SchedulerTimestamp schedulerTimestamp = new SchedulerTimestamp(schedulerType, timestampService.getCurrentTimestamp());
-            mongoOperations.save(schedulerTimestamp, MESH_TIMESTAMP_COLLECTION_NAME);
+            try {
+                mongoOperations.save(schedulerTimestamp, MESH_TIMESTAMP_COLLECTION_NAME);
+            } catch (MongoWriteException e) {
+                LOGGER.warn("Unable to create new document for scheduler type " + schedulerType + ". Most likely another instance already created the document.", e);
+            }
             return false;
         }
 
     }
 
-    private boolean collectionIsNotEmpty() {
-        return mongoOperations.getCollection(MESH_TIMESTAMP_COLLECTION_NAME).countDocuments() != 0;
+    private boolean documentAlreadyExists(String schedulerType) {
+        var query = query(where(SCHEDULER_TYPE).is(schedulerType));
+        return mongoOperations.count(query, MESH_TIMESTAMP_COLLECTION_NAME) == 1;
     }
 
     private boolean updateSuccessful(UpdateResult result) {
