@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Enumerations;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
@@ -16,7 +18,7 @@ import java.util.Map;
 @Builder
 @Data
 public class PersonSex extends Segment {
-    private final static String KEY = "PDI";
+    public final static String KEY = "PDI";
 
     //PDI+1'
     private @NonNull Gender gender;
@@ -40,6 +42,16 @@ public class PersonSex extends Segment {
         if (gender == null) {
             throw new EdifactValidationException(getKey() + ": Gender code is required");
         }
+    }
+
+    public static PersonSex fromString(String edifactString) {
+        if (!edifactString.startsWith(PersonSex.KEY)) {
+            throw new IllegalArgumentException("Can't create " + PersonSex.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] components = StringUtils.split(edifactString,PLUS_SEPARATOR);
+        return PersonSex.builder()
+            .gender(Gender.fromCode(components[1]))
+            .build();
     }
 
     public enum Gender {
@@ -69,8 +81,19 @@ public class PersonSex extends Segment {
                 .orElseThrow(() -> new IllegalArgumentException("No gender value for '" + name + "'"));
         }
 
+        public static Gender fromCode(@NonNull String code) {
+            return Arrays.stream(Gender.values())
+                .filter(gender -> gender.code.equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No gender name for '" + code + "'"));
+        }
+
         public static Gender fromFhir(Enumerations.AdministrativeGender fhirGender) {
             return FROM_FHIR_MAP.get(fhirGender);
+        }
+
+        public String getName() {
+            return this.name();
         }
 
         @Override

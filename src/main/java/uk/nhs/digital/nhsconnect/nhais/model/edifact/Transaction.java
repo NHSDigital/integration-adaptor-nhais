@@ -21,6 +21,18 @@ public class Transaction extends Section {
     @Getter(lazy = true)
     private final Optional<FreeText> freeText =
         extractOptionalSegment(FreeText.KEY_QUALIFIER).map(FreeText::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonPreviousName> personPreviousName =
+        extractOptionalSegment(PersonPreviousName.KEY_QUALIFIER).map(PersonPreviousName::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonSex> gender =
+        extractOptionalSegment(PersonSex.KEY).map(PersonSex::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonDateOfBirth> birthDate =
+        extractOptionalSegment(PersonDateOfBirth.KEY_QUALIFIER).map(PersonDateOfBirth::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonAddress> personAddress =
+        extractOptionalSegment(PersonAddress.KEY_QUALIFIER).map(PersonAddress::fromString);
 
     @Getter
     @Setter

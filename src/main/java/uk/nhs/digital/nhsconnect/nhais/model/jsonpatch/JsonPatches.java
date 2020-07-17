@@ -18,12 +18,13 @@ public class JsonPatches {
     public static final String SEX_PATH = "/gender";
     public static final String BIRTH_DATE_PATH = "/birthDate";
     public static final String EXTENSION_PATH = "/extension/0";
-    private static final String HOUSE_NAME_PATH = "/address/0/line/0";
-    private static final String NUMBER_OR_ROAD_NAME_PATH = "/address/0/line/1";
-    private static final String LOCALITY = "/address/0/line/2";
-    private static final String POST_TOWN_PATH = "/address/0/line/3";
-    private static final String COUNTY_PATH = "/address/0/line/4";
-    private static final String POSTAL_CODE_PATH = "/address/0/postalCode";
+    public static final String HOUSE_NAME_PATH = "/address/0/line/0";
+    public static final String NUMBER_OR_ROAD_NAME_PATH = "/address/0/line/1";
+    public static final String LOCALITY = "/address/0/line/2";
+    public static final String POST_TOWN_PATH = "/address/0/line/3";
+    public static final String COUNTY_PATH = "/address/0/line/4";
+    public static final String POSTAL_CODE_PATH = "/address/0/postalCode";
+    public static final String NHS_NUMBER_PATH = "/identifier/0/value";
 
     private final List<AmendmentPatch> patches;
 

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.EqualsAndHashCode;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,12 +19,46 @@ public class PersonAddress extends Segment {
     private final static String NAME_AND_ADDRESS = "NAD";
     private final static String PAT_CODE = "PAT";
     private final static int POSTAL_CODE_OFFSET = 5;
+    public final static String KEY_QUALIFIER = NAME_AND_ADDRESS + PLUS_SEPARATOR + PAT_CODE;
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
     private String addressLine4;
     private String addressLine5;
     private String postalCode;
+
+    public static PersonAddress fromString(String edifactString) {
+        if (!edifactString.startsWith(PersonAddress.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + PersonAddress.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] addressComponents = Split.byPlus(edifactString);
+        String[] addressLinesParts =
+            Split.byColon(addressComponents[3]);
+
+        var builder = PersonAddress.builder();
+        if (addressLinesParts.length > 0) {
+            builder.addressLine1(addressLinesParts[0]);
+        }
+        if (addressLinesParts.length > 1) {
+            builder.addressLine2(addressLinesParts[1]);
+        }
+        if (addressLinesParts.length > 2) {
+            builder.addressLine3(addressLinesParts[2]);
+        }
+        if (addressLinesParts.length > 3) {
+            builder.addressLine4(addressLinesParts[3]);
+        }
+        if (addressLinesParts.length > 4) {
+            builder.addressLine5(addressLinesParts[4]);
+        }
+
+        if (addressComponents.length > 8) {
+            builder.postalCode(addressComponents[8]);
+        }
+
+        return builder.build();
+    }
+
 
     @Override
     public String getKey() {
