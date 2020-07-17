@@ -45,7 +45,7 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
     }
 
     private String getSenderTradingPartnerCode(Parameters parameters) throws FhirValidationException {
-        return ParametersExtension.extractValue(parameters, ParameterNames.GP_TRADING_PARTNER_CODE);
+        return ParametersExtension.notBlankValue(parameters, ParameterNames.GP_TRADING_PARTNER_CODE);
     }
 
     private String getHaCipher(Patient patient) throws FhirValidationException {

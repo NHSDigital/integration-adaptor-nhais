@@ -139,7 +139,7 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
 
     private void mapFreeText(Parameters parameters, Transaction transaction) {
         transaction.getFreeText()
-            .map(FreeText::getTextLiteral)
+            .map(FreeText::getFreeTextValue)
             .map(StringType::new)
             .map(text -> new Parameters.ParametersParameterComponent()
                 .setName(ParameterNames.FREE_TEXT)

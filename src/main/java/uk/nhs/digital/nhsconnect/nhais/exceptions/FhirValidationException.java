@@ -1,38 +1,25 @@
 package uk.nhs.digital.nhsconnect.nhais.exceptions;
 
 import ca.uhn.fhir.validation.ValidationResult;
-import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.r4.model.OperationOutcome;
-import org.springframework.http.HttpStatus;
-import uk.nhs.digital.nhsconnect.nhais.utils.OperationOutcomeUtils;
 
-public class FhirValidationException extends NhaisBaseException implements OperationOutcomeError {
-
-    private final IBaseOperationOutcome operationOutcome;
+public class FhirValidationException extends BadRequestException {
 
     public FhirValidationException(ValidationResult validationResult) {
         super(createMessage(validationResult));
-        operationOutcome = validationResult.toOperationOutcome();
     }
 
     public FhirValidationException(String message) {
         super(message);
-        operationOutcome = OperationOutcomeUtils.createFromMessage(message, OperationOutcome.IssueType.STRUCTURE);
     }
 
     public FhirValidationException(Throwable cause) {
-        super(cause.getMessage(), cause);
-        this.operationOutcome = OperationOutcomeUtils.createFromMessage(cause.getMessage(), OperationOutcome.IssueType.STRUCTURE);
+        super(cause);
     }
 
     @Override
-    public IBaseOperationOutcome getOperationOutcome() {
-        return this.operationOutcome;
-    }
-
-    @Override
-    public HttpStatus getStatusCode() {
-        return HttpStatus.BAD_REQUEST;
+    public OperationOutcome.IssueType getIssueType() {
+        return OperationOutcome.IssueType.STRUCTURE;
     }
 
     private static String createMessage(ValidationResult validationResult) {

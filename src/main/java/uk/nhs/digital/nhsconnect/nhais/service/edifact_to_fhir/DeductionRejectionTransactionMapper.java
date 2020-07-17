@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class DeductionRejectionTransactionMapper implements FhirTransactionMapper {
@@ -30,7 +29,7 @@ public class DeductionRejectionTransactionMapper implements FhirTransactionMappe
             .orElseThrow(() -> new EdifactValidationException("HA Notes (Free Text) are mandatory for inbound deduction request rejection"));
         parameters.addParameter()
             .setName(ParameterNames.FREE_TEXT)
-            .setValue(new StringType(freeText.getTextLiteral()));
+            .setValue(new StringType(freeText.getFreeTextValue()));
     }
 
     @Override

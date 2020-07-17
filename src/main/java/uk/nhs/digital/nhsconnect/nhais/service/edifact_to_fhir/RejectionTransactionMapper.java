@@ -20,7 +20,7 @@ public class RejectionTransactionMapper implements FhirTransactionMapper {
         var textLiteral = transaction
             .getFreeText()
             .orElseThrow(() -> new EdifactValidationException("FreeText is mandatory for inbound rejection"))
-            .getTextLiteral();
+            .getFreeTextValue();
 
         parameters.addParameter()
             .setName(ParameterNames.FREE_TEXT)

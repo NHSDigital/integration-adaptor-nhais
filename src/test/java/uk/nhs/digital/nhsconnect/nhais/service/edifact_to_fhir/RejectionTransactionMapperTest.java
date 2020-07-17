@@ -33,7 +33,7 @@ class RejectionTransactionMapperTest {
     void testMap(SoftAssertions softly) {
         when(transaction.getFreeText()).thenReturn(Optional.of(freeText));
 
-        when(freeText.getTextLiteral()).thenReturn(TEXT_LITERAL);
+        when(freeText.getFreeTextValue()).thenReturn(TEXT_LITERAL);
 
         var parameters = new Parameters();
         new RejectionTransactionMapper().map(parameters, transaction);
