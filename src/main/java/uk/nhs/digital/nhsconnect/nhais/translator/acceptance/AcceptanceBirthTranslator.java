@@ -54,9 +54,13 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
     private final DrugsMarkerMapper drugsMarkerMapper;
     private final FreeTextMapper freeTextMapper;
     private final ResidentialInstituteNameAndAddressMapper residentialInstituteNameAndAddressMapper;
+    private final OptionalInputValidator validator;
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
+        if (validator.nhsNumberIsMissing(parameters)) {
+            throw new FhirValidationException("NHS number of patient is missing");
+        }
 
         return Stream.of(
             //BGM
