@@ -6,32 +6,20 @@
       "valueString": "TES5"
     },
     {
-      "name": "deductionReasonCode",
-      "valueString": "2"
-    },
-    {
-      "name": "dateOfDeduction",
-      "valueString": "1992-01-25"
-    },
-    {
-      "name": "newHaCipher",
-      "valueString": "COV"
-    },
-    {
       "name": "patient",
       "resource": {
         "resourceType": "Patient",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "RE1/12/13"
+            "value": "TE26"
           }
         ],
         "generalPractitioner": [
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "4826940,281"
+              "value": "2750922,295"
             }
           }
         ],
@@ -42,6 +30,14 @@
           }
         }
       }
+    },
+    {
+      "name": "deductionReasonCode",
+      "valueString": "1"
+    },
+    {
+      "name": "dateOfDeduction",
+      "valueString": "1992-01-25"
     }
   ]
 }

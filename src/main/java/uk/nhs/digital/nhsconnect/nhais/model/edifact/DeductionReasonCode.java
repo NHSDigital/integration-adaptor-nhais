@@ -1,25 +1,34 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.EnumUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
-import java.util.Objects;
-
+/**
+ * Example GIS+1:ZZZ'
+ */
 @EqualsAndHashCode(callSuper = false)
 @Builder
-@RequiredArgsConstructor
+@Getter
+@AllArgsConstructor
 public class DeductionReasonCode extends Segment {
-    /*
-        GIS+1:ZZZ'
-     */
-    private final static String KEY = "GIS";
+
+    public final static String KEY = "GIS";
     private final static String ZZZ_SUFFIX = ":ZZZ";
     private final @NonNull String code;
+
+    public static DeductionReasonCode fromString(String edifactString) {
+        if (!edifactString.startsWith(DeductionReasonCode.KEY)) {
+            throw new IllegalArgumentException("Can't create " + DeductionReasonCode.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] keySplit = Split.byPlus(edifactString);
+        String code = Split.byColon(keySplit[1])[0];
+        return new DeductionReasonCode(code);
+    }
 
     @Override
     public String getKey() {

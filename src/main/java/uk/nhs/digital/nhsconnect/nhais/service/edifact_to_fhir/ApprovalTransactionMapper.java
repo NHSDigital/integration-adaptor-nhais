@@ -9,7 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ApprovalTransactionMapper implements FhirTransactionMapper {
