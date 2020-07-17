@@ -29,7 +29,7 @@ class FreeTextTest {
         FreeText emptyFreeText = new FreeText(StringUtils.EMPTY);
         assertThatThrownBy(emptyFreeText::preValidate)
             .isInstanceOf(EdifactValidationException.class)
-            .hasMessage("FTX: Attribute textLiteral is required");
+            .hasMessage("FTX: Attribute freeTextValue is blank or missing");
     }
 
     @Test
@@ -37,6 +37,6 @@ class FreeTextTest {
         FreeText emptyFreeText = new FreeText(" ");
         assertThatThrownBy(emptyFreeText::preValidate)
             .isInstanceOf(EdifactValidationException.class)
-            .hasMessage("FTX: Attribute textLiteral is required");
+            .hasMessage("FTX: Attribute freeTextValue is blank or missing");
     }
 }

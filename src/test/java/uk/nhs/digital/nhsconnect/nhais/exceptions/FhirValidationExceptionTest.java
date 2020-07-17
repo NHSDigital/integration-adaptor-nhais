@@ -39,7 +39,6 @@ public class FhirValidationExceptionTest {
         when(validationResult.getMessages()).thenReturn(Collections.emptyList());
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation", exception.getMessage());
-        assertEquals(operationOutcome, exception.getOperationOutcome());
     }
 
     @Test
@@ -49,7 +48,6 @@ public class FhirValidationExceptionTest {
         when(validationResult.getMessages()).thenReturn(List.of(message));
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation: the message", exception.getMessage());
-        assertEquals(operationOutcome, exception.getOperationOutcome());
     }
 
     @Test
@@ -59,7 +57,6 @@ public class FhirValidationExceptionTest {
         when(validationResult.getMessages()).thenReturn(Arrays.asList(message, message, message));
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation: the message (and 2 more error messages truncated)", exception.getMessage());
-        assertEquals(operationOutcome, exception.getOperationOutcome());
     }
 
     @Test
