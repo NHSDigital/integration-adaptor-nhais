@@ -11,11 +11,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * example: NAD+PAT++HOLLY COTTAGE:12 LONG LANE:LITTLE HAMLET:BROMLEY:KENT+++++BR5  4ER'
+ */
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonAddress extends Segment {
-    // NAD+PAT++:::ORPINGTON:'
     private final static String KEY = "NAD";
     private final static String QUALIFIER = "PAT";
     public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;

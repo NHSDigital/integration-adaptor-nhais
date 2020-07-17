@@ -12,7 +12,7 @@ public abstract class Segment {
     protected final static String COLON_SEPARATOR = ":";
     private static final String TERMINATOR = "'";
 
-    public static <T> List<T> removeEmptyTrailingFields(List<T> list, Predicate<T> predicate) {
+    protected static <T> List<T> removeEmptyTrailingFields(List<T> list, Predicate<T> predicate) {
         var result = new ArrayList<T>();
         Collections.reverse(list);
         boolean foundFirstValid = false;
