@@ -45,10 +45,10 @@ public class AmendmentNameToEdifactMapper extends AmendmentToEdifactMapper {
             .nhsNumber(amendmentBody.getNhsNumber())
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .title(title)
-            .familyName(surname)
-            .forename(firstForename)
-            .middleName(secondForename)
-            .thirdForename(otherForenames)
+            .surname(surname)
+            .firstForename(firstForename)
+            .secondForename(secondForename)
+            .otherForenames(otherForenames)
             .build();
     }
 

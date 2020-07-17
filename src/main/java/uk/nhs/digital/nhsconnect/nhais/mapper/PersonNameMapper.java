@@ -26,18 +26,18 @@ public class PersonNameMapper implements FromFhirToEdifactMapper<PersonName> {
         return PersonName.builder()
             .nhsNumber(getNhsNumber(patient))
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION) //TODO: handle AMENDED_PATIENT_IDENTIFICATION
-            .familyName(nameFirstRep.getFamily())
-            .forename(nameFirstRep.getGiven().stream()
+            .surname(nameFirstRep.getFamily())
+            .firstForename(nameFirstRep.getGiven().stream()
                 .findFirst()
                 .map(StringType::toString)
                 .orElse(null))
             .title(StringUtils.stripToNull(nameFirstRep.getPrefixAsSingleString()))
-            .middleName(nameFirstRep.getGiven().stream()
+            .secondForename(nameFirstRep.getGiven().stream()
                 .skip(1)
                 .findFirst()
                 .map(StringType::toString)
                 .orElse(null))
-            .thirdForename(StringUtils.stripToNull(
+            .otherForenames(StringUtils.stripToNull(
                 nameFirstRep.getGiven().stream()
                     .skip(2)
                     .map(StringType::toString)
