@@ -40,7 +40,7 @@ class PersonNameMapperTest {
         var expectedPersonName = PersonName
             .builder()
             .nhsNumber(NHS_NUMBER)
-            .familyName(FAMILY_NAME)
+            .surname(FAMILY_NAME)
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
 
@@ -70,10 +70,10 @@ class PersonNameMapperTest {
         var expectedPersonName = PersonName
             .builder()
             .nhsNumber(NHS_NUMBER)
-            .familyName(FAMILY_NAME)
-            .forename("Forename")
-            .middleName("middleName")
-            .thirdForename("third Forename")
+            .surname(FAMILY_NAME)
+            .firstForename("Forename")
+            .secondForename("middleName")
+            .otherForenames("third Forename")
             .title("title")
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
             .build();
@@ -109,7 +109,7 @@ class PersonNameMapperTest {
         PersonName personName = personNameMapper.map(parameters);
 
         var expectedPersonName = PersonName.builder()
-            .familyName(FAMILY_NAME)
+            .surname(FAMILY_NAME)
             .build();
 
         assertEquals(expectedPersonName.toEdifact(), personName.toEdifact());

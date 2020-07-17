@@ -3,8 +3,8 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PersonAddressTest {
 
@@ -20,7 +20,7 @@ public class PersonAddressTest {
             .addressLine5("KENT")
             .build();
 
-        assertEquals(expectedValue, personAddress.toEdifact());
+        assertThat(personAddress.toEdifact()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class PersonAddressTest {
             .postalCode("HR3  5BW")
             .build();
 
-        assertEquals(expectedValue, personAddress.toEdifact());
+        assertThat(personAddress.toEdifact()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class PersonAddressTest {
             .addressLine5("KENT")
             .build();
 
-        assertEquals(expectedValue, personAddress.toEdifact());
+        assertThat(personAddress.toEdifact()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -58,7 +58,8 @@ public class PersonAddressTest {
             .addressLine3("test value")
             .build();
 
-        assertThrows(EdifactValidationException.class, personAddress::toEdifact);
+        assertThatThrownBy(personAddress::toEdifact)
+            .isInstanceOf(EdifactValidationException.class);
     }
 
     @Test
@@ -68,6 +69,27 @@ public class PersonAddressTest {
             .addressLine2("   ")
             .build();
 
-        assertThrows(EdifactValidationException.class, personAddress::toEdifact);
+        assertThatThrownBy(personAddress::toEdifact)
+            .isInstanceOf(EdifactValidationException.class);
+    }
+
+    @Test
+    public void fromString() {
+        assertThat(PersonAddress.fromString("NAD+PAT++MOORSIDE FARM:OLD LANE:ST PAULS CRAY:ORPINGTON:KENT"))
+            .isEqualTo(PersonAddress.builder()
+                .addressLine1("MOORSIDE FARM")
+                .addressLine2("OLD LANE")
+                .addressLine3("ST PAULS CRAY")
+                .addressLine4("ORPINGTON")
+                .addressLine5("KENT")
+                .build());
+
+        assertThat(PersonAddress.fromString("NAD+PAT++FARM:LANE:ST PAUL+++++ABC 123"))
+            .isEqualTo(PersonAddress.builder()
+                .addressLine1("FARM")
+                .addressLine2("LANE")
+                .addressLine3("ST PAUL")
+                .postalCode("ABC 123")
+                .build());
     }
 }

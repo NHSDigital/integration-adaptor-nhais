@@ -17,7 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     private static final String DATE_OF_BIRTH = "1990-01-02";
-    private static final Instant DATE_OF_BIRTH_TIMESTAMP = Instant.ofEpochMilli(1234);
+    private static final LocalDate DATE_OF_BIRTH_TIMESTAMP = LocalDate.of(1990, 1, 2);
 
     @InjectMocks
     private AmendmentDateOfBirthToEdifactMapper translator;
@@ -41,13 +41,12 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
     void whenAddingOrReplacingDateOfBirth_expectFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(DATE_OF_BIRTH))));
-        when(timestampService.parseDate(DATE_OF_BIRTH)).thenReturn(DATE_OF_BIRTH_TIMESTAMP);
 
         var segments = translator.map(amendmentBody);
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonDateOfBirth.builder()
-                .timestamp(DATE_OF_BIRTH_TIMESTAMP)
+                .dateOfBirth(DATE_OF_BIRTH_TIMESTAMP)
                 .build());
     }
 

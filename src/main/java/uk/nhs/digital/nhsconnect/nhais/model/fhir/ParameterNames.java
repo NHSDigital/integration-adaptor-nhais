@@ -14,4 +14,6 @@ public final class ParameterNames {
     public static final String NEW_HA_CIPHER = "newHaCipher";
     public static final String DATE_OF_DEDUCTION = "dateOfDeduction";
     public static final String DEDUCTION_REASON_CODE = "deductionReasonCode";
+    public static final String FP69_REASON_CODE = "fp69ReasonCode";
+    public static final String FP69_EXPIRY_DATE = "fp69ExpiryDate";
 }

@@ -29,11 +29,11 @@ public class PersonName extends Segment {
     //all properties are optional
     private final String nhsNumber;
     private final PatientIdentificationType patientIdentificationType;
-    private final String familyName;
-    private final String forename;
+    private final String surname;
+    private final String firstForename;
     private final String title;
-    private final String middleName;
-    private final String thirdForename;
+    private final String secondForename;
+    private final String otherForenames;
 
     public static PersonName fromString(String edifactString) {
         if (!edifactString.startsWith(PersonName.KEY_QUALIFIER)) {
@@ -42,11 +42,11 @@ public class PersonName extends Segment {
         return PersonName.builder()
             .nhsNumber(extractNhsNumber(edifactString))
             .patientIdentificationType(getPatientIdentificationType(edifactString))
-            .familyName(extractNamePart("SU", edifactString))
-            .forename(extractNamePart("FO", edifactString))
+            .surname(extractNamePart("SU", edifactString))
+            .firstForename(extractNamePart("FO", edifactString))
             .title(extractNamePart("TI", edifactString))
-            .middleName(extractNamePart("MI", edifactString))
-            .thirdForename(extractNamePart("FS", edifactString))
+            .secondForename(extractNamePart("MI", edifactString))
+            .otherForenames(extractNamePart("FS", edifactString))
             .build();
     }
 
@@ -89,19 +89,19 @@ public class PersonName extends Segment {
             .orElse(StringUtils.EMPTY));
         values.add(StringUtils.EMPTY);
         values.add(StringUtils.EMPTY);
-        values.add(Optional.ofNullable(this.familyName)
+        values.add(Optional.ofNullable(this.surname)
             .map(value -> "SU:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.forename)
+        values.add(Optional.ofNullable(this.firstForename)
             .map(value -> "FO:" + value)
             .orElse(StringUtils.EMPTY));
         values.add(Optional.ofNullable(this.title)
             .map(value -> "TI:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.middleName)
+        values.add(Optional.ofNullable(this.secondForename)
             .map(value -> "MI:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.thirdForename)
+        values.add(Optional.ofNullable(this.otherForenames)
             .map(value -> "FS:" + value)
             .orElse(StringUtils.EMPTY));
 

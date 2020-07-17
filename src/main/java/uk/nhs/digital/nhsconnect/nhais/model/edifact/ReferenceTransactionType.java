@@ -61,6 +61,7 @@ public class ReferenceTransactionType extends Segment {
         DEDUCTION("F2", "DEF"),
         REJECTION("F3", "REF"),
         APPROVAL("F4", "APF"),
+        FP69_PRIOR_NOTIFICATION("F9", "FPN"),
         FP69_FLAG_REMOVAL("F10", "FFR"),
         DEDUCTION_REJECTION("F11", "DRR");
 
