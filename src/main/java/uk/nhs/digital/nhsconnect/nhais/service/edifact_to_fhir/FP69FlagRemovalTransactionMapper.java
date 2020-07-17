@@ -5,24 +5,27 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
-public class ApprovalTransactionMapper implements FhirTransactionMapper {
+public class FP69FlagRemovalTransactionMapper implements FhirTransactionMapper {
+
     @Override
     public void map(Parameters parameters, Transaction transaction) {
-        transaction.getPersonName()
+        var nhsIdentifier = transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
-            .ifPresent(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)));
+            .orElseThrow(() -> new EdifactValidationException("NHS Number is mandatory for inbound deduction request rejection"));
+        ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier));
     }
 
     @Override
     public ReferenceTransactionType.TransactionType getTransactionType() {
-        return ReferenceTransactionType.Inbound.APPROVAL;
+        return ReferenceTransactionType.Inbound.FP69_FLAG_REMOVAL;
     }
-
 }

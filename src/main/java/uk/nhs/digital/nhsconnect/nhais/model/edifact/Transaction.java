@@ -22,6 +22,15 @@ public class Transaction extends Section {
     private final Optional<FreeText> freeText =
         extractOptionalSegment(FreeText.KEY_QUALIFIER).map(FreeText::fromString);
     @Getter(lazy = true)
+    private final Optional<DeductionReasonCode> deductionReasonCode =
+        extractOptionalSegment(DeductionReasonCode.KEY).map(DeductionReasonCode::fromString);
+    @Getter(lazy = true)
+    private final Optional<DeductionDate> deductionDate =
+        extractOptionalSegment(DeductionDate.KEY_QUALIFIER).map(DeductionDate::fromString);
+    @Getter(lazy = true)
+    private final Optional<NewHealthAuthorityName> newHealthAuthorityName =
+        extractOptionalSegment(NewHealthAuthorityName.KEY_QUALIFIER).map(NewHealthAuthorityName::fromString);
+    @Getter(lazy = true)
     private final Optional<FP69ReasonCode> fp69ReasonCode =
         extractOptionalSegment(FP69ReasonCode.KEY_QUALIFIER).map(FP69ReasonCode::fromString);
     @Getter(lazy = true)

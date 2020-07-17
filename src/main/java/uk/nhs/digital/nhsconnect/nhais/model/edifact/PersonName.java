@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+ * Example PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
  */
-
 @Getter
 @Builder
 @EqualsAndHashCode(callSuper = false)
@@ -53,7 +52,7 @@ public class PersonName extends Segment {
 
     private static String extractNhsNumber(String edifactString) {
         String[] components = Split.byPlus(edifactString);
-        if (components.length > 2 && StringUtils.isNotEmpty(components[2])) {
+        if (components.length > 2 && StringUtils.isNotBlank(components[2])) {
             return Split.byColon(components[2])[0];
         }
         return null;
@@ -61,7 +60,7 @@ public class PersonName extends Segment {
 
     private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
         String[] components = Split.byPlus(edifactString);
-        if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
+        if (StringUtils.isNotBlank(extractNhsNumber(edifactString)) && components.length > 1) {
             return PatientIdentificationType.fromCode(Split.byColon(components[2])[1]);
         }
         return null;

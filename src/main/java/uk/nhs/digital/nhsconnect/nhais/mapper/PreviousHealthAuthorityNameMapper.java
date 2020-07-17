@@ -2,15 +2,15 @@ package uk.nhs.digital.nhsconnect.nhais.mapper;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousHealthAuthorityNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PreviousHealthAuthorityName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 @Component
-public class PreviousHealthAuthorityNameMapper implements OptionalFromFhirToEdifactMapper<PreviousHealthAuthorityNameAndAddress> {
+public class PreviousHealthAuthorityNameMapper implements OptionalFromFhirToEdifactMapper<PreviousHealthAuthorityName> {
 
-    public PreviousHealthAuthorityNameAndAddress map(Parameters parameters) {
-        return new PreviousHealthAuthorityNameAndAddress(
+    public PreviousHealthAuthorityName map(Parameters parameters) {
+        return new PreviousHealthAuthorityName(
             ParametersExtension.extractValue(parameters, ParameterNames.PREVIOUS_HA_CIPHER)
         );
     }

@@ -11,7 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
  * Example NAD+FHS+XX1:954'
  */
 @Getter @Setter @RequiredArgsConstructor
-public class PreviousHealthAuthorityNameAndAddress extends Segment{
+public class PreviousHealthAuthorityName extends Segment {
 
     public static final String KEY = "NAD";
     public static final String QUALIFIER = "PFH";
