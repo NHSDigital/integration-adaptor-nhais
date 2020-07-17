@@ -14,7 +14,7 @@ public class SurnamePatchTransactionMapper implements PatchTransactionMapper {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var surname = personName.get().getFamilyName();
-            return createAmmendmentPatch(surname, JsonPatches.SURNAME_PATH);
+            return createAmendmentPatch(surname, JsonPatches.SURNAME_PATH);
         } else {
             return null;
         }

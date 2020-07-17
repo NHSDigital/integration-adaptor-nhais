@@ -23,7 +23,7 @@ public abstract class AmendmentToEdifactMapper {
     private static String extractErrorPath(AmendmentPatch patch) {
         var path = patch.getPath();
         if (patch.isExtension()) {
-            path += "(" + ((AmendmentExtension) patch.getValue()).getUrl() + ")";
+            path += "(" + ((AmendmentExtension) patch.getAmendmentValue()).getUrl() + ")";
         }
         return path;
     }
@@ -47,8 +47,8 @@ public abstract class AmendmentToEdifactMapper {
         var invalidAmendmentPaths = amendmentPatches.stream()
             .flatMap(Optional::stream)
             .filter(AmendmentToEdifactMapper::amendmentPatchRequiringValue)
-            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
-            .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getValue().get()))
+            .filter(amendmentPatch -> amendmentPatch.getAmendmentValue() != null)
+            .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getAmendmentValue().get()))
             .map(AmendmentToEdifactMapper::extractErrorPath)
             .collect(Collectors.toList());
 

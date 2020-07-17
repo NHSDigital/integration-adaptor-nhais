@@ -14,7 +14,7 @@ public class AddressPostCodePatchTransactionMapper implements PatchTransactionMa
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var postalCode = personAddress.get().getPostalCode();
-            return createAmmendmentPatch(postalCode, JsonPatches.POSTAL_CODE_PATH);
+            return createAmendmentPatch(postalCode, JsonPatches.POSTAL_CODE_PATH);
         } else {
             return null;
         }

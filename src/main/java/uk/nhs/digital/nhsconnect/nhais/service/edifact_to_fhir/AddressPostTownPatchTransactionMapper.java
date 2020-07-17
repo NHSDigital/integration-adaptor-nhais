@@ -17,7 +17,7 @@ public class AddressPostTownPatchTransactionMapper implements PatchTransactionMa
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var addressLine = personAddress.get().getAddressLine4();
-            return createAmmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.POST_TOWN_PATH);
+            return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.POST_TOWN_PATH);
         } else {
             return null;
         }

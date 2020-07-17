@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchRemoval;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 
 public interface PatchTransactionMapper {
@@ -10,7 +11,7 @@ public interface PatchTransactionMapper {
 
     String REMOVE_INDICATOR = "%";
 
-    default AmendmentPatch createAmmendmentPatch(String element, String path) {
+    default AmendmentPatch createAmendmentPatch(String element, String path) {
         AmendmentPatch amendmentPatch = new AmendmentPatch();
         if (element == null) {
             return null;
@@ -20,8 +21,10 @@ public interface PatchTransactionMapper {
             amendmentPatch.setPath(path);
             amendmentPatch.setValue(null);
         } else if (element.equals(REMOVE_INDICATOR)) {
-            amendmentPatch.setOp(AmendmentPatchOperation.REMOVE);
-            amendmentPatch.setPath(path);
+            AmendmentPatchRemoval amendmentRemoval = new AmendmentPatchRemoval();
+            amendmentRemoval.setOp(AmendmentPatchOperation.REMOVE);
+            amendmentRemoval.setPath(path);
+            return amendmentRemoval;
         } else {
             amendmentPatch.setOp(AmendmentPatchOperation.REPLACE);
             amendmentPatch.setPath(path);

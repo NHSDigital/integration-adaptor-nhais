@@ -14,7 +14,7 @@ public class TitlePatchTransactionMapper implements PatchTransactionMapper {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var title = personName.get().getTitle();
-            return createAmmendmentPatch(title, JsonPatches.TITLE_PATH);
+            return createAmendmentPatch(title, JsonPatches.TITLE_PATH);
         } else {
             return null;
         }

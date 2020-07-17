@@ -14,7 +14,7 @@ public class BirthDatePatchTransactionMapper implements PatchTransactionMapper{
         var birthDate = transaction.getBirthDate();
         if (birthDate.isPresent()) {
             var timestamp = birthDate.get().getTimestamp();
-            return createAmmendmentPatch(timestamp.toString(), JsonPatches.BIRTH_DATE_PATH);
+            return createAmendmentPatch(timestamp.toString(), JsonPatches.BIRTH_DATE_PATH);
         } else {
             return null;
         }

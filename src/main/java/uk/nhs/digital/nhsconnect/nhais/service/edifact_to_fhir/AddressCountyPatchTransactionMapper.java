@@ -17,7 +17,7 @@ public class AddressCountyPatchTransactionMapper implements PatchTransactionMapp
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var addressLine = personAddress.get().getAddressLine5();
-            return createAmmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.COUNTY_PATH);
+            return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.COUNTY_PATH);
         } else {
             return null;
         }

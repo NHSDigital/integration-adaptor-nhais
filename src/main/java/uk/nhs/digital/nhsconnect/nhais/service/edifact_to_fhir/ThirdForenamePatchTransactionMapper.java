@@ -14,7 +14,7 @@ public class ThirdForenamePatchTransactionMapper implements PatchTransactionMapp
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var thirdForename = personName.get().getThirdForename();
-            return createAmmendmentPatch(thirdForename, JsonPatches.OTHER_FORENAMES_PATH);
+            return createAmendmentPatch(thirdForename, JsonPatches.OTHER_FORENAMES_PATH);
         } else {
             return null;
         }

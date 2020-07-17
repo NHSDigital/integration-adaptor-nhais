@@ -94,7 +94,7 @@ public class AmendmentController {
     private void validateDuplicatedExtensions(List<AmendmentPatch> patches) {
         var extensionTypes = patches.stream()
             .filter(AmendmentPatch::isExtension)
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(AmendmentValue::getClass)
             .collect(Collectors.toSet());
 
@@ -128,19 +128,19 @@ public class AmendmentController {
 
     private void validateNonEmptyValues(List<AmendmentPatch> amendmentPatches) {
         var simpleValuesInvalidPaths = amendmentPatches.stream()
-            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
+            .filter(amendmentPatch -> amendmentPatch.getAmendmentValue() != null)
             .filter(AmendmentPatch::isNotExtension)
             .filter(amendmentPatch -> StringUtils.isBlank(amendmentPatch.getFormattedSimpleValue()))
             .map(AmendmentPatch::getPath);
 
         var extensionValuesInvalidPaths = amendmentPatches.stream()
-            .filter(amendmentPatch -> amendmentPatch.getValue() != null)
+            .filter(amendmentPatch -> amendmentPatch.getAmendmentValue() != null)
             .filter(AmendmentPatch::isExtension)
             .filter(amendmentPatch -> {
-                if (amendmentPatch.getValue() instanceof AmendmentStringExtension) {
-                    return StringUtils.EMPTY.equals(amendmentPatch.getValue().get());
+                if (amendmentPatch.getAmendmentValue() instanceof AmendmentStringExtension) {
+                    return StringUtils.EMPTY.equals(amendmentPatch.getAmendmentValue().get());
                 }
-                return amendmentPatch.getValue().get() == null;
+                return amendmentPatch.getAmendmentValue().get() == null;
             })
             .map(AmendmentPatch::getPath);
 

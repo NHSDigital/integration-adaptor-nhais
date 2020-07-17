@@ -17,7 +17,7 @@ public class AddressLocalityPatchTransactionMapper implements PatchTransactionMa
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var addressLine = personAddress.get().getAddressLine3();
-            return createAmmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.LOCALITY);
+            return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.LOCALITY);
         } else {
             return null;
         }

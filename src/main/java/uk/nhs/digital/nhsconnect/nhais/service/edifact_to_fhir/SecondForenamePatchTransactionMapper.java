@@ -14,7 +14,7 @@ public class SecondForenamePatchTransactionMapper implements PatchTransactionMap
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var middleName = personName.get().getMiddleName();
-            return createAmmendmentPatch(middleName, JsonPatches.SECOND_FORENAME_PATH);
+            return createAmendmentPatch(middleName, JsonPatches.SECOND_FORENAME_PATH);
         } else {
             return null;
         }

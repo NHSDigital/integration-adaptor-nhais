@@ -19,7 +19,7 @@ public class AmendmentSexToEdifactMapper extends AmendmentToEdifactMapper {
     @Override
     Segment mapPatches(AmendmentBody amendmentBody) {
         var sexCode = amendmentBody.getJsonPatches().getSex()
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(AmendmentValue::get)
             .map(PersonSex.Gender::fromName)
             .orElseThrow(() -> new PatchValidationException("Missing " + JsonPatches.SEX_PATH));

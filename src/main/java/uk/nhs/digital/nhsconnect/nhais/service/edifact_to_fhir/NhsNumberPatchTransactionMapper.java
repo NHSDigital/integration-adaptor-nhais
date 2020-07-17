@@ -7,14 +7,14 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreviousNamePatchTransactionMapper implements PatchTransactionMapper {
+public class NhsNumberPatchTransactionMapper implements PatchTransactionMapper {
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
         var previousName = transaction.getPersonPreviousName();
         if (previousName.isPresent()) {
             var amendedNhsNumber = previousName.get().getNhsNumber();
-            return createAmmendmentPatch(amendedNhsNumber, JsonPatches.NHS_NUMBER_PATH);
+            return createAmendmentPatch(amendedNhsNumber, JsonPatches.NHS_NUMBER_PATH);
         } else {
             return null;
         }

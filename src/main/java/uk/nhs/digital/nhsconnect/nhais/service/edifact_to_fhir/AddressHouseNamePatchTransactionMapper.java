@@ -14,7 +14,7 @@ public class AddressHouseNamePatchTransactionMapper implements PatchTransactionM
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var addressLine = personAddress.get().getAddressLine1();
-            return createAmmendmentPatch(addressLine, JsonPatches.HOUSE_NAME_PATH);
+            return createAmendmentPatch(addressLine, JsonPatches.HOUSE_NAME_PATH);
         } else {
             return null;
         }

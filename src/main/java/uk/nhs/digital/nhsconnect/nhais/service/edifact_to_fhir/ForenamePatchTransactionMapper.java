@@ -14,7 +14,7 @@ public class ForenamePatchTransactionMapper implements PatchTransactionMapper {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var forename = personName.get().getForename();
-            return createAmmendmentPatch(forename, JsonPatches.FIRST_FORENAME_PATH);
+            return createAmendmentPatch(forename, JsonPatches.FIRST_FORENAME_PATH);
         } else {
             return null;
         }

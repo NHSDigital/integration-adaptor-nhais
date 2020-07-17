@@ -14,7 +14,7 @@ public class GenderPatchTransactionMapper implements PatchTransactionMapper{
         var gender = transaction.getGender();
         if (gender.isPresent()) {
             var genderName = gender.get().getGender().getName().toLowerCase();
-            return createAmmendmentPatch(genderName, JsonPatches.SEX_PATH);
+            return createAmendmentPatch(genderName, JsonPatches.SEX_PATH);
         } else {
             return null;
         }

@@ -17,7 +17,7 @@ public class AddressNumberOrRoadNamePatchTransactionMapper implements PatchTrans
         var personAddress = transaction.getPersonAddress();
         if (personAddress.isPresent()) {
             var addressLine = personAddress.get().getAddressLine2();
-            return createAmmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.NUMBER_OR_ROAD_NAME_PATH);
+            return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.NUMBER_OR_ROAD_NAME_PATH);
         } else {
             return null;
         }

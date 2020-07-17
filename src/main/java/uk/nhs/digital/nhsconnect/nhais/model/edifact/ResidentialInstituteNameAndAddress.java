@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
 /**
  * Example NAD+GP+2750922,295:900'
@@ -45,5 +46,14 @@ public class ResidentialInstituteNameAndAddress extends Segment {
         if (StringUtils.isEmpty(identifier)) {
             throw new EdifactValidationException(getKey() + ": Attribute identifier is required");
         }
+    }
+
+    public static ResidentialInstituteNameAndAddress fromString(String edifactString) {
+        if (!edifactString.startsWith(ResidentialInstituteNameAndAddress.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException("Can't create " + ResidentialInstituteNameAndAddress.class.getSimpleName() + " from " + edifactString);
+        }
+        String[] components = Split.byPlus(edifactString);
+        String code = Split.byColon(components[2])[0];
+        return ResidentialInstituteNameAndAddress.builder().identifier(code).build();
     }
 }
