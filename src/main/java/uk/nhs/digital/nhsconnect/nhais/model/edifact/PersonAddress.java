@@ -2,9 +2,8 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 
@@ -12,14 +11,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * example: NAD+PAT++HOLLY COTTAGE:12 LONG LANE:LITTLE HAMLET:BROMLEY:KENT+++++BR5  4ER'
+ */
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
 public class PersonAddress extends Segment {
-    private final static String NAME_AND_ADDRESS = "NAD";
-    private final static String PAT_CODE = "PAT";
+    private final static String KEY = "NAD";
+    private final static String QUALIFIER = "PAT";
+    public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private final static int POSTAL_CODE_OFFSET = 5;
-    public final static String KEY_QUALIFIER = NAME_AND_ADDRESS + PLUS_SEPARATOR + PAT_CODE;
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -62,7 +64,7 @@ public class PersonAddress extends Segment {
 
     @Override
     public String getKey() {
-        return NAME_AND_ADDRESS;
+        return KEY;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class PersonAddress extends Segment {
             .map(StringUtils::defaultString)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
-        String value = PAT_CODE
+        String value = QUALIFIER
             .concat(PLUS_SEPARATOR)
             .concat(PLUS_SEPARATOR)
             .concat(address);

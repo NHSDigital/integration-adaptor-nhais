@@ -3,19 +3,7 @@
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
-      "valueString": "TES5"
-    },
-    {
-      "name": "deductionReasonCode",
-      "valueString": "2"
-    },
-    {
-      "name": "dateOfDeduction",
-      "valueString": "1992-01-25"
-    },
-    {
-      "name": "newHaCipher",
-      "valueString": "COV"
+      "valueString": "UNY5"
     },
     {
       "name": "patient",
@@ -24,21 +12,21 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "RE1/12/13"
+            "value": "4444444444"
           }
         ],
         "generalPractitioner": [
           {
             "identifier": {
               "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-              "value": "4826940,281"
+              "value": "9990335,PLP570"
             }
           }
         ],
         "managingOrganization": {
           "identifier": {
             "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-            "value": "XX1"
+            "value": "SO"
           }
         }
       }

@@ -16,10 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfBirthMapperTest {
-    private static final Instant FIXED_TIME =
-        LocalDate.of(1991, 11, 6)
-            .atStartOfDay(ZoneId.of("Europe/London"))
-            .toInstant();
+    private static final LocalDate FIXED_TIME = LocalDate.of(1991, 11, 6);
     private static final Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
         .atStartOfDay(ZoneId.systemDefault())
         .toInstant();
@@ -37,7 +34,7 @@ class PersonDateOfBirthMapperTest {
 
         var expectedPersonDob = PersonDateOfBirth
             .builder()
-            .timestamp(FIXED_TIME)
+            .dateOfBirth(FIXED_TIME)
             .build();
 
         assertEquals(expectedPersonDob, personDateOfBirth);

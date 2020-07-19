@@ -14,6 +14,7 @@ public class PersonNameTest {
     private final static String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
     private final static String NHS_ONLY = "PNA+PAT+RAT56:OPI";
     private final static String NHS_ONLY_VALUE = "PAT+RAT56:OPI";
+    private final static String BLANK_NHS_VALUE = "PNA+PAT+   +++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
 
 
     @Test
@@ -23,11 +24,11 @@ public class PersonNameTest {
         var personName = PersonName.builder()
             .nhsNumber("1234567890")
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-            .familyName("STEVENS")
-            .forename("CHARLES")
+            .surname("STEVENS")
+            .firstForename("CHARLES")
             .title("MR")
-            .middleName("ANTHONY")
-            .thirdForename("JOHN")
+            .secondForename("ANTHONY")
+            .otherForenames("JOHN")
             .build();
 
         assertEquals(expectedValue, personName.toEdifact());
@@ -60,10 +61,10 @@ public class PersonNameTest {
         PersonName nhsAndNames = PersonName.builder()
             .nhsNumber("RAT56")
             .patientIdentificationType(PatientIdentificationType.OFFICIAL_PATIENT_IDENTIFICATION)
-            .familyName("KENNEDY")
-            .forename("SARAH")
+            .surname("KENNEDY")
+            .firstForename("SARAH")
             .title("MISS")
-            .middleName("ANGELA")
+            .secondForename("ANGELA")
             .build();
 
         String edifact = nhsAndNames.toEdifact();
@@ -77,5 +78,10 @@ public class PersonNameTest {
         assertThat(PersonName.fromString(NHS_AND_NAMES).getValue()).isEqualTo(NHS_AND_NAMES_VALUE);
         assertThat(PersonName.fromString(NAMES_ONLY).getValue()).isEqualTo(NAMES_ONLY_VALUE);
         assertThatThrownBy(() -> PersonName.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void when_BlankNhsNumber_Then_ReturnNull() {
+        assertThat(PersonName.fromString(BLANK_NHS_VALUE).getNhsNumber()).isNull();
     }
 }

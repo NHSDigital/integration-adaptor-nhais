@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Example PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+ * Example PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
  */
-
 @Getter
 @Builder
 @EqualsAndHashCode(callSuper = false)
@@ -30,11 +29,11 @@ public class PersonName extends Segment {
     //all properties are optional
     private final String nhsNumber;
     private final PatientIdentificationType patientIdentificationType;
-    private final String familyName;
-    private final String forename;
+    private final String surname;
+    private final String firstForename;
     private final String title;
-    private final String middleName;
-    private final String thirdForename;
+    private final String secondForename;
+    private final String otherForenames;
 
     public static PersonName fromString(String edifactString) {
         if (!edifactString.startsWith(PersonName.KEY_QUALIFIER)) {
@@ -43,17 +42,17 @@ public class PersonName extends Segment {
         return PersonName.builder()
             .nhsNumber(extractNhsNumber(edifactString))
             .patientIdentificationType(getPatientIdentificationType(edifactString))
-            .familyName(extractNamePart("SU", edifactString))
-            .forename(extractNamePart("FO", edifactString))
+            .surname(extractNamePart("SU", edifactString))
+            .firstForename(extractNamePart("FO", edifactString))
             .title(extractNamePart("TI", edifactString))
-            .middleName(extractNamePart("MI", edifactString))
-            .thirdForename(extractNamePart("FS", edifactString))
+            .secondForename(extractNamePart("MI", edifactString))
+            .otherForenames(extractNamePart("FS", edifactString))
             .build();
     }
 
     private static String extractNhsNumber(String edifactString) {
         String[] components = Split.byPlus(edifactString);
-        if (components.length > 2 && StringUtils.isNotEmpty(components[2])) {
+        if (components.length > 2 && StringUtils.isNotBlank(components[2])) {
             return Split.byColon(components[2])[0];
         }
         return null;
@@ -61,7 +60,7 @@ public class PersonName extends Segment {
 
     private static PatientIdentificationType getPatientIdentificationType(String edifactString) {
         String[] components = Split.byPlus(edifactString);
-        if (StringUtils.isNotEmpty(extractNhsNumber(edifactString)) && components.length > 1) {
+        if (StringUtils.isNotBlank(extractNhsNumber(edifactString)) && components.length > 1) {
             return PatientIdentificationType.fromCode(Split.byColon(components[2])[1]);
         }
         return null;
@@ -90,19 +89,19 @@ public class PersonName extends Segment {
             .orElse(StringUtils.EMPTY));
         values.add(StringUtils.EMPTY);
         values.add(StringUtils.EMPTY);
-        values.add(Optional.ofNullable(this.familyName)
+        values.add(Optional.ofNullable(this.surname)
             .map(value -> "SU:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.forename)
+        values.add(Optional.ofNullable(this.firstForename)
             .map(value -> "FO:" + value)
             .orElse(StringUtils.EMPTY));
         values.add(Optional.ofNullable(this.title)
             .map(value -> "TI:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.middleName)
+        values.add(Optional.ofNullable(this.secondForename)
             .map(value -> "MI:" + value)
             .orElse(StringUtils.EMPTY));
-        values.add(Optional.ofNullable(this.thirdForename)
+        values.add(Optional.ofNullable(this.otherForenames)
             .map(value -> "FS:" + value)
             .orElse(StringUtils.EMPTY));
 

@@ -19,7 +19,7 @@ class FreeTextTest {
     void testFromString() {
         var edifact = "FTX+RGI+++WRONG HA - TRY SURREY'";
         var parsedFreeText = FreeText.fromString("FTX+RGI+++WRONG HA - TRY SURREY");
-        assertThat(parsedFreeText.getTextLiteral()).isEqualTo("WRONG HA - TRY SURREY");
+        assertThat(parsedFreeText.getFreeTextValue()).isEqualTo("WRONG HA - TRY SURREY");
         assertThat(parsedFreeText.toEdifact()).isEqualTo(edifact);
         assertThatThrownBy(() -> FreeText.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
     }
@@ -29,6 +29,14 @@ class FreeTextTest {
         FreeText emptyFreeText = new FreeText(StringUtils.EMPTY);
         assertThatThrownBy(emptyFreeText::preValidate)
             .isInstanceOf(EdifactValidationException.class)
-            .hasMessage("FTX: Attribute textLiteral is required");
+            .hasMessage("FTX: Attribute freeTextValue is blank or missing");
+    }
+
+    @Test
+    public void testPreValidationBlankString() {
+        FreeText emptyFreeText = new FreeText(" ");
+        assertThatThrownBy(emptyFreeText::preValidate)
+            .isInstanceOf(EdifactValidationException.class)
+            .hasMessage("FTX: Attribute freeTextValue is blank or missing");
     }
 }

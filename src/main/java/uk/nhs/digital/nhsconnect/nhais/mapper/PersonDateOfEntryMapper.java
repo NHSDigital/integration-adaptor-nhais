@@ -20,5 +20,4 @@ public class PersonDateOfEntryMapper implements FromFhirToEdifactMapper<PersonDa
             ParametersExtension.extractValue(parameters, ENTRY_DATE)
         );
     }
-
 }

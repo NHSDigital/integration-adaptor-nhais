@@ -88,6 +88,10 @@ public class JsonPatches {
         return filterSimpleValues(POSTAL_CODE_PATH);
     }
 
+    public Optional<AmendmentPatch> getNhsNumber() {
+        return filterSimpleValues(NHS_NUMBER_PATH);
+    }
+
     private Optional<AmendmentPatch> filterSimpleValues(String path) {
         return patches.stream()
             .filter(patch -> path.equalsIgnoreCase(patch.getPath()))

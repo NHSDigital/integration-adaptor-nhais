@@ -24,6 +24,27 @@ public class Transaction extends Section {
     private final Optional<FreeText> freeText =
         extractOptionalSegment(FreeText.KEY_QUALIFIER).map(FreeText::fromString);
     @Getter(lazy = true)
+    private final Optional<DeductionReasonCode> deductionReasonCode =
+        extractOptionalSegment(DeductionReasonCode.KEY).map(DeductionReasonCode::fromString);
+    @Getter(lazy = true)
+    private final Optional<DeductionDate> deductionDate =
+        extractOptionalSegment(DeductionDate.KEY_QUALIFIER).map(DeductionDate::fromString);
+    @Getter(lazy = true)
+    private final Optional<NewHealthAuthorityName> newHealthAuthorityName =
+        extractOptionalSegment(NewHealthAuthorityName.KEY_QUALIFIER).map(NewHealthAuthorityName::fromString);
+    @Getter(lazy = true)
+    private final Optional<FP69ReasonCode> fp69ReasonCode =
+        extractOptionalSegment(FP69ReasonCode.KEY_QUALIFIER).map(FP69ReasonCode::fromString);
+    @Getter(lazy = true)
+    private final Optional<FP69ExpiryDate> fp69ExpiryDate =
+        extractOptionalSegment(FP69ExpiryDate.KEY_QUALIFIER).map(FP69ExpiryDate::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonDateOfBirth> personDateOfBirth =
+        extractOptionalSegment(PersonDateOfBirth.KEY_QUALIFIER).map(PersonDateOfBirth::fromString);
+    @Getter(lazy = true)
+    private final Optional<PersonAddress> personAddress =
+        extractOptionalSegment(PersonAddress.KEY_QUALIFIER).map(PersonAddress::fromString);
+    @Getter(lazy = true)
     private final Optional<PersonPreviousName> personPreviousName =
         extractOptionalSegment(PersonPreviousName.KEY_QUALIFIER).map(PersonPreviousName::fromString);
     @Getter(lazy = true)
