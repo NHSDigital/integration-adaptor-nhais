@@ -31,8 +31,10 @@ public class AmendmentPatch {
         if (path.equals("/extension/0") ) {
             return value;
         }
-        else {
+        else if (value != null) {
             return value.get();
+        } else {
+            return null;
         }
     }
 

@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatchTransactionM
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,6 +44,7 @@ public class EdifactToPatchService {
         return patchTransactionMappers.stream()
             .map(patchTransactionMapper -> patchTransactionMapper.map(transaction))
             .filter(Objects::nonNull)
+            .distinct()
             .collect(Collectors.toList());
     }
 
