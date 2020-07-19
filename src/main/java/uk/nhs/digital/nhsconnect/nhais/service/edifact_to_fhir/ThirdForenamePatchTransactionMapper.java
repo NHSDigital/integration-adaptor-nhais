@@ -13,7 +13,7 @@ public class ThirdForenamePatchTransactionMapper extends AbstractForenameTransac
     public AmendmentPatch map(Transaction transaction) {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
-            var thirdForename = personName.get().getThirdForename();
+            var thirdForename = personName.get().getOtherForenames();
             if (thirdForename != null && thirdForename.equals(REMOVE_INDICATOR)) {
                 return createRemoveForenameAmendmentPatch();
             }

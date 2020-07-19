@@ -54,9 +54,6 @@ public class Transaction extends Section {
     private final Optional<PersonDateOfBirth> birthDate =
         extractOptionalSegment(PersonDateOfBirth.KEY_QUALIFIER).map(PersonDateOfBirth::fromString);
     @Getter(lazy = true)
-    private final Optional<PersonAddress> personAddress =
-        extractOptionalSegment(PersonAddress.KEY_QUALIFIER).map(PersonAddress::fromString);
-    @Getter(lazy = true)
     private final Optional<DrugsMarker> drugsMarker =
         extractOptionalSegment(DrugsMarker.KEY_PREFIX).map(DrugsMarker::fromString);
     @Getter(lazy = true)

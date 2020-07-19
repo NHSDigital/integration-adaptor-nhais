@@ -13,7 +13,7 @@ public class SurnamePatchTransactionMapper implements PatchTransactionMapper {
     public AmendmentPatch map(Transaction transaction) {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
-            var surname = personName.get().getFamilyName();
+            var surname = personName.get().getSurname();
             return createAmendmentPatch(surname, JsonPatches.SURNAME_PATH);
         } else {
             return null;

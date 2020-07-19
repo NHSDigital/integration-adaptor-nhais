@@ -13,7 +13,7 @@ public class SecondForenamePatchTransactionMapper extends AbstractForenameTransa
     public AmendmentPatch map(Transaction transaction) {
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
-            var middleName = personName.get().getMiddleName();
+            var middleName = personName.get().getSecondForename();
             if (middleName != null && middleName.equals(REMOVE_INDICATOR)) {
                 return createRemoveForenameAmendmentPatch();
             }
