@@ -2,9 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
-import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,39 +35,88 @@ public class DeductionIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Value("classpath:outbound_uat_data/deduction/app-j-1.fhir.json")
-    private Resource deduction;
-
     @Autowired
     private FhirParser fhirParser;
 
-    private Parameters parameters;
-    private ParametersExtension parametersExtension;
+    @Value("classpath:controllerTestsResources/deductionBlankNhsNumber.fhir.json")
+    private Resource deductionWithBlankNhsNumber;
 
-    @BeforeEach
-    private void beforeEach() throws IOException  {
-        String requestBody = new String(Files.readAllBytes(deduction.getFile().toPath()));
-        parameters = fhirParser.parseParameters(requestBody);
-        parametersExtension = new ParametersExtension(parameters);
-    }
+    @Value("classpath:controllerTestsResources/deductionEmptyNhsNumber.fhir.json")
+    private Resource deductionWithEmptyNhsNumber;
+
+    @Value("classpath:controllerTestsResources/deductionNoNhsNumber.fhir.json")
+    private Resource deductionWithNoNhsNumber;
+
+    @Value("classpath:controllerTestsResources/deductionNullNhsNumber.fhir.json")
+    private Resource deductionWithNullNhsNumber;
+
+    @Value("classpath:controllerTestsResources/deductionBlankDateOfDeduction.fhir.json")
+    private Resource deductionWithBlankDateOfDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionEmptyDateOfDeduction.fhir.json")
+    private Resource deductionWithEmptyDateOfDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionNoDateOfDeduction.fhir.json")
+    private Resource deductionWithNoDateOfDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionNullDateOfDeduction.fhir.json")
+    private Resource deductionWithNullDateOfDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionBlankReasonForDeduction.fhir.json")
+    private Resource deductionWithBlankReasonForDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionEmptyReasonForDeduction.fhir.json")
+    private Resource deductionWithEmptyReasonForDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionNoReasonForDeduction.fhir.json")
+    private Resource deductionWithNoReasonForDeduction;
+
+    @Value("classpath:controllerTestsResources/deductionNullReasonForDeduction.fhir.json")
+    private Resource deductionWithNullReasonForDeduction;
 
     @Test
-    void whenNoNhsNumber_thenRespond400() throws Exception {
-        Patient patient = parametersExtension.extractPatient();
-        patient.getIdentifier().clear();
-        String requestBody = fhirParser.encodeToString(parameters);
+    void whenBlankNhsNumber_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithBlankNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
-
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
     }
 
     @Test
-    void whenNoDateOfDeduction_thenRespond400() throws Exception {
-        parameters.getParameter().removeIf(p -> p.getName().equals(ParameterNames.DATE_OF_DEDUCTION));
-        String requestBody = fhirParser.encodeToString(parameters);
+    void whenEmptyNhsNumber_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithEmptyNhsNumber.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+    }
+
+    @Test
+    void whenNoNhsNumber_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNoNhsNumber.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
+    }
+
+    @Test
+    void whenNullNhsNumber_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNullNhsNumber.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
+    }
+
+    @Test
+    void whenBlankDateOfDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithBlankDateOfDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
@@ -80,9 +125,38 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNoReasonForDeduction_thenRespond400() throws Exception {
-        parameters.getParameter().removeIf(p -> p.getName().equals(ParameterNames.DEDUCTION_REASON_CODE));
-        String requestBody = fhirParser.encodeToString(parameters);
+    void whenEmptyDateOfDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithEmptyDateOfDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+    }
+
+    @Test
+    void whenNoDateOfDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNoDateOfDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(ParameterNames.DATE_OF_DEDUCTION);
+    }
+
+    @Test
+    void whenNullDateOfDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNullDateOfDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(ParameterNames.DATE_OF_DEDUCTION);
+    }
+
+    @Test
+    void whenBlankReasonForDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithBlankReasonForDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
@@ -90,6 +164,34 @@ public class DeductionIntegrationTest {
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(ParameterNames.DEDUCTION_REASON_CODE);
     }
 
+    @Test
+    void whenEmptyReasonForDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithEmptyReasonForDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+    }
 
+    @Test
+    void whenNoReasonForDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNoReasonForDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(ParameterNames.DEDUCTION_REASON_CODE);
+    }
+
+    @Test
+    void whenNullReasonForDeduction_thenRespond400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(deductionWithNullReasonForDeduction.getFile().toPath()));
+        MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(ParameterNames.DEDUCTION_REASON_CODE);
+    }
 
 }
