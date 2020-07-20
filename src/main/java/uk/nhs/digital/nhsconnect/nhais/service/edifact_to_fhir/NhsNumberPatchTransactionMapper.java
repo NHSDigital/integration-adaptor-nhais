@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
@@ -14,7 +15,7 @@ public class NhsNumberPatchTransactionMapper implements PatchTransactionMapper {
         var previousName = transaction.getPersonPreviousName();
         if (previousName.isPresent()) {
             var amendedNhsNumber = previousName.get().getNhsNumber();
-            return createAmendmentPatch(amendedNhsNumber, JsonPatches.NHS_NUMBER_PATH);
+            return createAmendmentPatch(amendedNhsNumber, PatientJsonPaths.NHS_NUMBER_PATH);
         } else {
             return null;
         }
