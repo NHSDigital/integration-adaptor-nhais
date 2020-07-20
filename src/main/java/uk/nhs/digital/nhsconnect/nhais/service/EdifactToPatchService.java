@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatchTransactionM
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
