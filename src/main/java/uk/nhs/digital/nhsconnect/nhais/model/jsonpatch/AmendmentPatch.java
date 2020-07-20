@@ -28,7 +28,7 @@ public class AmendmentPatch {
     private AmendmentValue value;
 
     public Object getValue() {
-        if (path.equals("/extension/0") ) {
+        if (this.isExtension()) {
             return value;
         }
         else if (value != null) {
@@ -45,7 +45,7 @@ public class AmendmentPatch {
 
     @JsonIgnore
     public String getFormattedSimpleValue() {
-        if (op == AmendmentPatchOperation.REMOVE) {
+        if (isRemoval()) {
             return REMOVE_INDICATOR;
         }
         return value.get();
@@ -53,7 +53,7 @@ public class AmendmentPatch {
 
     @JsonIgnore
     public String getNullSafeFormattedSimpleValue() {
-        if (op == AmendmentPatchOperation.REMOVE) {
+        if (isRemoval()) {
             return REMOVE_INDICATOR;
         }
         if (value == null) {
@@ -64,7 +64,7 @@ public class AmendmentPatch {
 
     @JsonIgnore
     public boolean isExtension() {
-        return "/extension/0".equalsIgnoreCase(path);
+        return JsonPatches.EXTENSION_PATH.equalsIgnoreCase(path);
     }
 
     @JsonIgnore
