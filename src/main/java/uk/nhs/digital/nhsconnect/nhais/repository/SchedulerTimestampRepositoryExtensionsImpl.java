@@ -58,7 +58,7 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
         if (count > 1) {
             LOGGER.error("More than one document exists for schedulerType {}. This can cause unexpected scheduling behaviour.", schedulerType);
         }
-        return  count >= 1;
+        return count >= 1;
     }
 
     private boolean updateSuccessful(UpdateResult result) {
