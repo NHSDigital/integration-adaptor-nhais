@@ -10,7 +10,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class FP69FlagRemovalTransactionMapper implements FhirTransactionMapper {
@@ -20,7 +19,7 @@ public class FP69FlagRemovalTransactionMapper implements FhirTransactionMapper {
         var nhsIdentifier = transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
-            .orElseThrow(() -> new EdifactValidationException("NHS Number is mandatory for inbound deduction request rejection"));
+            .orElseThrow(() -> new EdifactValidationException("NHS Number is mandatory for inbound FP69 flag removal transaction"));
         ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier));
     }
 
