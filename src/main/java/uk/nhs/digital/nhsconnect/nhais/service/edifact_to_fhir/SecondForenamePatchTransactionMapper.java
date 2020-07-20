@@ -2,12 +2,13 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchRemoval;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class SecondForenamePatchTransactionMapper extends AbstractForenameTransactionMapper implements PatchTransactionMapper{
+public class SecondForenamePatchTransactionMapper implements PatchTransactionMapper{
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
@@ -15,7 +16,7 @@ public class SecondForenamePatchTransactionMapper extends AbstractForenameTransa
         if (personName.isPresent()) {
             var middleName = personName.get().getSecondForename();
             if (middleName != null && middleName.equals(REMOVE_INDICATOR)) {
-                return createRemoveForenameAmendmentPatch();
+                return new AmendmentPatchRemoval(JsonPatches.ALL_FORENAMES_PATH);
             }
             return createAmendmentPatch(middleName, JsonPatches.SECOND_FORENAME_PATH);
         } else {

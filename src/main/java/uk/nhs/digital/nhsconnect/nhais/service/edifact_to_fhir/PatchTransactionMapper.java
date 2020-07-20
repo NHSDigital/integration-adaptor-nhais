@@ -21,10 +21,7 @@ public interface PatchTransactionMapper {
             amendmentPatch.setPath(path);
             amendmentPatch.setValue(null);
         } else if (element.equals(REMOVE_INDICATOR)) {
-            AmendmentPatchRemoval amendmentRemoval = new AmendmentPatchRemoval();
-            amendmentRemoval.setOp(AmendmentPatchOperation.REMOVE);
-            amendmentRemoval.setPath(path);
-            return amendmentRemoval;
+            return new AmendmentPatchRemoval(path);
         } else {
             amendmentPatch.setOp(AmendmentPatchOperation.REPLACE);
             amendmentPatch.setPath(path);

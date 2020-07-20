@@ -1,13 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBooleanExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class DrugsMarkerExtensionPatchTransactionMapper implements PatchTransactionMapper {
