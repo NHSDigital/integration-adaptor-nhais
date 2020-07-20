@@ -34,7 +34,7 @@
     "path" : "/extension/0",
     "value" : {
       "url" : "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
-      "valueBoolean" : "true"
+      "valueBoolean" : true
     }
   }, {
     "op" : "remove",

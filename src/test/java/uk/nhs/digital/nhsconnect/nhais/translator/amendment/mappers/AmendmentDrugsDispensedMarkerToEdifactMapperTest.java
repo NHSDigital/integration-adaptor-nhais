@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.DrugsMarker;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBooleanExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("true"))));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(true))));
 
         var segments = translator.map(amendmentBody);
 
@@ -43,24 +42,12 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     void whenRemoving_expectFieldsAreRemoved(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
-            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("false"))));
+            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(false))));
 
         var segments = translator.map(amendmentBody);
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new DrugsMarker(false));
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingWithIncorrectValue_expectException(AmendmentPatchOperation operation) {
-        when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation)
-            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker("qwe"))));
-
-        assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Drugs Dispensed Marker must be one of [true, false]");
     }
 
     @Test
@@ -71,19 +58,5 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
         assertThatThrownBy(() -> translator.map(amendmentBody))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing Drugs Dispensed Marker should be done using extension with 'false' value");
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
-        when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
-            .setOp(operation)
-            .setPath(JsonPatches.EXTENSION_PATH)
-            .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(null)))
-        );
-
-        assertThatThrownBy(() -> translator.map(amendmentBody))
-            .isInstanceOf(PatchValidationException.class)
-            .hasMessage("Invalid values for: [/extension/0(https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker)]");
     }
 }

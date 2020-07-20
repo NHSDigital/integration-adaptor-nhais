@@ -17,7 +17,7 @@ public interface AmendmentValue {
     }
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     static AmendmentValue from(@JsonProperty(value = "url") String url,
-                               @JsonProperty(value = "valueBoolean") String valueBoolean,
+                               @JsonProperty(value = "valueBoolean") boolean valueBoolean,
                                @JsonProperty(value = "valueString") String valueString){
         switch (url) {
             case DrugsMarkerExtension.URL:

@@ -29,9 +29,9 @@ public class DrugsMarkerExtensionPatchTransactionMapper implements PatchTransact
 
         if (element) {
             return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
-                new AmendmentBooleanExtension(DrugsMarkerExtension.URL, "true"));
+                new AmendmentBooleanExtension(DrugsMarkerExtension.URL, true));
         }
         return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
-                new AmendmentBooleanExtension(DrugsMarkerExtension.URL, "false"));
+                new AmendmentBooleanExtension(DrugsMarkerExtension.URL, false));
     }
 }

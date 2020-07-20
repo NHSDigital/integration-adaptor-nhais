@@ -8,6 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentStringExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,13 @@ public class ResidentialInstituteCodePatchTransactionMapper implements PatchTran
     }
 
     private AmendmentPatch createAmendmentExtensionPatch(ResidentialInstituteNameAndAddress residentialInstitute) {
-        var path = "/extension/0";
-        var residentialInstituteCode = String.valueOf(residentialInstitute.getIdentifier());
+        var residentialInstituteCode = residentialInstitute.getIdentifier();
 
-        if (residentialInstituteCode == null || residentialInstituteCode.equals("null")) {
-            return new AmendmentPatch(AmendmentPatchOperation.REMOVE, path,
-                new AmendmentStringExtension(ResidentialInstituteExtension.URL, "null"));
+        if (residentialInstituteCode == null || residentialInstituteCode.equals("%")) {
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
+                new AmendmentStringExtension(ResidentialInstituteExtension.URL, null));
         } else {
-            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
                 new AmendmentStringExtension(ResidentialInstituteExtension.URL, residentialInstituteCode));
         }
     }
