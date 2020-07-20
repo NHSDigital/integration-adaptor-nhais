@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
 import uk.nhs.digital.nhsconnect.nhais.parse.FhirParser;
 
 import java.nio.file.Files;
@@ -77,7 +78,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
     }
 
 
@@ -99,7 +100,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("/identifier/0/value");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains(PatientJsonPaths.NHS_NUMBER_PATH);
     }
 
     @Test

@@ -1,0 +1,45 @@
+{
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "TES5"
+    },
+    {
+      "name": "freeText",
+      "valueString": "DIED ON HOLIDAY IN MAJORCA"
+    },
+    {
+      "name": "deductionReasonCode",
+      "valueString": "1"
+    },
+    {
+      "name": "patient",
+      "resource": {
+        "managingOrganization": {
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "XX1"
+            }
+          ]
+        },
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "4826940,281"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "N/10/10"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    }
+  ],
+  "resourceType": "Parameters"
+}
