@@ -45,7 +45,7 @@ public class EdifactToPatchService {
             .collect(Collectors.toList());
 
         if (amendmentPatches.isEmpty()) {
-            throw new EdifactValidationException("No patched has been produces.");
+            throw new EdifactValidationException("No patches has been produces.");
         }
 
         return amendmentPatches;

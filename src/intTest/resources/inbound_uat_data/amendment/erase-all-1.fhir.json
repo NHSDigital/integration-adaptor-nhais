@@ -24,7 +24,7 @@
     "path" : "/address/0/line/3",
     "value" : "RUGELEY"
   }, {
-    "op" : "remove",
+    "op" : "replace",
     "path" : "/extension/0",
     "value" : {
       "url" : "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
