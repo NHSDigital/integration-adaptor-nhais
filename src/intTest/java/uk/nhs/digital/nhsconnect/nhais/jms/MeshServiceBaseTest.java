@@ -133,7 +133,7 @@ public abstract class MeshServiceBaseTest {
     }
     protected void clearMeshMailbox() {
         await().atMost(10, TimeUnit.SECONDS)
-            .pollInterval(Durations.ONE_SECOND)
+            .pollInterval(Durations.FIVE_HUNDRED_MILLISECONDS)
             .until(this::acknowledgeAllMeshMessages);
     }
 

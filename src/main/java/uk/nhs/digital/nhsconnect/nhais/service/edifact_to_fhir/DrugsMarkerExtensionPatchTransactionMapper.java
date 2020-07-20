@@ -8,6 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 @Component
 public class DrugsMarkerExtensionPatchTransactionMapper implements PatchTransactionMapper {
@@ -21,17 +22,15 @@ public class DrugsMarkerExtensionPatchTransactionMapper implements PatchTransact
 
     private AmendmentPatch createDrugsMarkerPatch(DrugsMarker drugMarker) {
         var drugMarketBoolean = drugMarker.isDrugsMarker();
-        return createAmmendmentExtensionPatch(drugMarketBoolean);
+        return createAmendmentExtensionPatch(drugMarketBoolean);
     }
 
-    private AmendmentPatch createAmmendmentExtensionPatch(boolean element) {
-        var path = "/extension/0";
-
+    private AmendmentPatch createAmendmentExtensionPatch(boolean element) {
         if (element) {
-            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
                 new AmendmentBooleanExtension(DrugsMarkerExtension.URL, "true"));
         }
-        return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
+        return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
                 new AmendmentBooleanExtension(DrugsMarkerExtension.URL, "false"));
     }
 }

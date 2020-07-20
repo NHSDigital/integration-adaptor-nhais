@@ -16,7 +16,7 @@ public class FirstForenamePatchTransactionMapper implements PatchTransactionMapp
         var personName = transaction.getPersonName();
         if (personName.isPresent()) {
             var forename = personName.get().getFirstForename();
-            if (forename != null && forename.equals(REMOVE_INDICATOR)) {
+            if (forename != null && forename.equals(AmendmentPatch.REMOVE_INDICATOR)) {
                 return createRemoveForenameAmendmentPatch();
             }
             return createAmendmentPatch(forename, JsonPatches.FIRST_FORENAME_PATH);

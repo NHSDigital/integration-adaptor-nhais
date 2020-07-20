@@ -1,15 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ResidentialInstituteNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentStringExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
-
-import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 @Component
 public class ResidentialInstituteCodePatchTransactionMapper implements PatchTransactionMapper{
@@ -22,14 +20,13 @@ public class ResidentialInstituteCodePatchTransactionMapper implements PatchTran
     }
 
     private AmendmentPatch createAmendmentExtensionPatch(ResidentialInstituteNameAndAddress residentialInstitute) {
-        var path = "/extension/0";
-        var residentialInstituteCode = String.valueOf(residentialInstitute.getIdentifier());
+        var residentialInstituteCode = residentialInstitute.getIdentifier();
 
-        if (residentialInstituteCode == null || residentialInstituteCode.equals("null")) {
-            return new AmendmentPatch(AmendmentPatchOperation.REMOVE, path,
+        if (residentialInstituteCode == null) {
+            return new AmendmentPatch(AmendmentPatchOperation.REMOVE, JsonPatches.EXTENSION_PATH,
                 new AmendmentStringExtension(ResidentialInstituteExtension.URL, "null"));
         } else {
-            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
                 new AmendmentStringExtension(ResidentialInstituteExtension.URL, residentialInstituteCode));
         }
     }

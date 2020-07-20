@@ -9,17 +9,15 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 public interface PatchTransactionMapper {
     AmendmentPatch map(Transaction transaction);
 
-    String REMOVE_INDICATOR = "%";
-
-    default AmendmentPatch createAmendmentPatch(String element, String path) {
-        if (element == null) {
+    default AmendmentPatch createAmendmentPatch(String value, String path) {
+        if (value == null) {
             return null;
         }
-        if (element.isBlank()) {
+        if (value.isBlank()) {
             return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, null);
-        } else if (element.equals(REMOVE_INDICATOR)) {
+        } else if (value.equals(AmendmentPatch.REMOVE_INDICATOR)) {
             return new AmendmentPatchRemoval(path);
         }
-        return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, AmendmentValue.from(element));
+        return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, AmendmentValue.from(value));
     }
 }
