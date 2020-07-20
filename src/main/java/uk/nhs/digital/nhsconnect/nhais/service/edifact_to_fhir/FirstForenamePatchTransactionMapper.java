@@ -7,7 +7,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ForenamePatchTransactionMapper extends AbstractForenameTransactionMapper implements PatchTransactionMapper{
+public class FirstForenamePatchTransactionMapper extends AbstractForenameTransactionMapper implements PatchTransactionMapper{
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
