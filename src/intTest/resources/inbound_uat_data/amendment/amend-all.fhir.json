@@ -29,6 +29,10 @@
     "value" : "BROMLEY"
   }, {
     "op" : "replace",
+    "path" : "/identifier/0/value",
+    "value" : "9999999999"
+  }, {
+    "op" : "replace",
     "path" : "/birthDate",
     "value" : "1980-05-23"
   }, {
@@ -46,10 +50,6 @@
     "op" : "replace",
     "path" : "/gender",
     "value" : "unknown"
-  }, {
-    "op" : "replace",
-    "path" : "/identifier/0/value",
-    "value" : "9999999999"
   }, {
     "op" : "replace",
     "path" : "/name/1/family",

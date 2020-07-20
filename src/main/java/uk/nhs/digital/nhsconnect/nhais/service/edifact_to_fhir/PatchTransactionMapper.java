@@ -18,7 +18,7 @@ public interface PatchTransactionMapper {
         if (element.isBlank()) {
             return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, null);
         } else if (element.equals(REMOVE_INDICATOR)) {
-            return new AmendmentPatchRemoval(AmendmentPatchOperation.REMOVE, path, null);
+            return new AmendmentPatchRemoval(path);
         }
         return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, AmendmentValue.from(element));
     }
