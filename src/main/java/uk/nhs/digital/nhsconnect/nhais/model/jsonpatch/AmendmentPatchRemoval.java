@@ -20,6 +20,7 @@ public class AmendmentPatchRemoval extends AmendmentPatch {
     }
 
     @JsonIgnore
+    @Override
     public AmendmentValue getValue() {
         return null;
     }
