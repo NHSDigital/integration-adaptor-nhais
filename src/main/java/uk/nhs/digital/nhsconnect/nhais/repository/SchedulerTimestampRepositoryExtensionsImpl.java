@@ -54,7 +54,11 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
 
     private boolean documentAlreadyExists(String schedulerType) {
         var query = query(where(SCHEDULER_TYPE).is(schedulerType));
-        return mongoOperations.count(query, MESH_TIMESTAMP_COLLECTION_NAME) == 1;
+        var count = mongoOperations.count(query, MESH_TIMESTAMP_COLLECTION_NAME);
+        if (count > 1) {
+            LOGGER.error("More than one document exists for schedulerType {}. This can cause unexpected scheduling behaviour.", schedulerType);
+        }
+        return  count >= 1;
     }
 
     private boolean updateSuccessful(UpdateResult result) {
