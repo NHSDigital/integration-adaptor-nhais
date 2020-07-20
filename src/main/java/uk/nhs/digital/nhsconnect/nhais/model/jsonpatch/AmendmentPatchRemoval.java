@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AmendmentPatchRemoval extends AmendmentPatch {
 
     @NonNull
-    private AmendmentPatchOperation op;
+    private final AmendmentPatchOperation op = AmendmentPatchOperation.REMOVE;
     @NonNull
     private String path;
     @JsonIgnore

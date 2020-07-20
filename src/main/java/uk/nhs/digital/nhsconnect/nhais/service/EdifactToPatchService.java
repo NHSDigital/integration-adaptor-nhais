@@ -40,12 +40,16 @@ public class EdifactToPatchService {
     }
 
     private List<AmendmentPatch> getPatches(Transaction transaction) {
-        //TODO: throw EdifactValidationException if this produces empty list but only after at least 1 amendment story is completed
-        return patchTransactionMappers.stream()
+        var amendmentPatches = patchTransactionMappers.stream()
             .map(patchTransactionMapper -> patchTransactionMapper.map(transaction))
             .filter(Objects::nonNull)
-            .distinct()
             .collect(Collectors.toList());
+
+        if (amendmentPatches.isEmpty()) {
+            throw new EdifactValidationException("No patched has been produces.");
+        }
+
+        return amendmentPatches;
     }
 
     private String getHealthcarePartyCode(Transaction transaction) {

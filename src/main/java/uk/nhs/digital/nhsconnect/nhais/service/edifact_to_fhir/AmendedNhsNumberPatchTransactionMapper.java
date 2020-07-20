@@ -2,23 +2,24 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreviousSurnamePatchTransactionMapper implements PatchTransactionMapper {
+public class AmendedNhsNumberPatchTransactionMapper implements PatchTransactionMapper {
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
         return transaction.getPersonPreviousName()
-            .map(this::createPreviousSurnamePatch)
+            .map(this::createNhsNumberPatch)
             .orElse(null);
+
     }
 
-    private AmendmentPatch createPreviousSurnamePatch(PersonPreviousName personPreviousName) {
-        var previousSurname = personPreviousName.getFamilyName();
-        return createAmendmentPatch(previousSurname, JsonPatches.PREVIOUS_SURNAME_PATH);
+    private AmendmentPatch createNhsNumberPatch(PersonPreviousName personPreviousName) {
+        var amendedNhsNumber = personPreviousName.getNhsNumber();
+        return createAmendmentPatch(amendedNhsNumber, PatientJsonPaths.NHS_NUMBER_PATH);
     }
 }

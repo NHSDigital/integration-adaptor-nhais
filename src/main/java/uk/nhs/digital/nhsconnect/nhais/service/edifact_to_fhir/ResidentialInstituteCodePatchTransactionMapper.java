@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ResidentialInstituteNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ResidentialInstituteExtension;
@@ -15,29 +16,21 @@ public class ResidentialInstituteCodePatchTransactionMapper implements PatchTran
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
-        var residentialInstitute = transaction.getResidentialInstitution();
-        if (residentialInstitute.isPresent()) {
-            var residentialInstituteCode = String.valueOf(residentialInstitute.get().getIdentifier());
-            return createAmmendmentExtensionPatch(residentialInstituteCode);
-        } else {
-            return null;
-        }
+        return transaction.getResidentialInstitution()
+            .map(this::createAmendmentExtensionPatch)
+            .orElse(null);
     }
 
-    private AmendmentPatch createAmmendmentExtensionPatch(String element) {
+    private AmendmentPatch createAmendmentExtensionPatch(ResidentialInstituteNameAndAddress residentialInstitute) {
         var path = "/extension/0";
+        var residentialInstituteCode = String.valueOf(residentialInstitute.getIdentifier());
 
-        AmendmentPatch amendmentPatch = new AmendmentPatch();
-        if (element == null || element.equals("null")) {
-            amendmentPatch.setOp(AmendmentPatchOperation.REMOVE);
-            amendmentPatch.setPath(path);
-            amendmentPatch.setValue(new AmendmentStringExtension(ResidentialInstituteExtension.URL, "null"));
+        if (residentialInstituteCode == null || residentialInstituteCode.equals("null")) {
+            return new AmendmentPatch(AmendmentPatchOperation.REMOVE, path,
+                new AmendmentStringExtension(ResidentialInstituteExtension.URL, "null"));
         } else {
-            amendmentPatch.setOp(AmendmentPatchOperation.REPLACE);
-            amendmentPatch.setPath(path);
-            amendmentPatch.setValue(new AmendmentStringExtension(ResidentialInstituteExtension.URL, element));
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path,
+                new AmendmentStringExtension(ResidentialInstituteExtension.URL, residentialInstituteCode));
         }
-
-        return amendmentPatch;
     }
 }

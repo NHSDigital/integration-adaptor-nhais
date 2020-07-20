@@ -35,7 +35,7 @@ class DrugsMarkerExtensionPatchTransactionMapperTest {
     @Test
     void whenDrugsMarkerIsTrue_thenMapIntoTrue() {
         when(transaction.getDrugsMarker()).thenReturn(Optional.of(drugsMarker));
-        when(drugsMarker.getDrugsMarker()).thenReturn(true);
+        when(drugsMarker.isDrugsMarker()).thenReturn(true);
 
         AmendmentPatch amendmentPatch = drugsMarkerExtensionPatchTransactionMapper.map(transaction);
 
@@ -45,7 +45,7 @@ class DrugsMarkerExtensionPatchTransactionMapperTest {
     @Test
     void whenDrugsMarkerIsFalse_thenMapIntoFalse() {
         when(transaction.getDrugsMarker()).thenReturn(Optional.of(drugsMarker));
-        when(drugsMarker.getDrugsMarker()).thenReturn(false);
+        when(drugsMarker.isDrugsMarker()).thenReturn(false);
 
         AmendmentPatch amendmentPatch = drugsMarkerExtensionPatchTransactionMapper.map(transaction);
 

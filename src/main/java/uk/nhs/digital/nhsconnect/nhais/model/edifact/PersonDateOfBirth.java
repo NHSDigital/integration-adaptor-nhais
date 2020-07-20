@@ -9,7 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
 
 import java.time.LocalDate;
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 @EqualsAndHashCode(callSuper = false)

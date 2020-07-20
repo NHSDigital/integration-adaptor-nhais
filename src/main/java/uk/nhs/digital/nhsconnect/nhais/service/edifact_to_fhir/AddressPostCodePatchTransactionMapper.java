@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -11,12 +12,13 @@ public class AddressPostCodePatchTransactionMapper implements PatchTransactionMa
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
-        var personAddress = transaction.getPersonAddress();
-        if (personAddress.isPresent()) {
-            var postalCode = personAddress.get().getPostalCode();
-            return createAmendmentPatch(postalCode, JsonPatches.POSTAL_CODE_PATH);
-        } else {
-            return null;
-        }
+        return transaction.getPersonAddress()
+            .map(this::createPostCodePatch)
+            .orElse(null);
+    }
+
+    private AmendmentPatch createPostCodePatch(PersonAddress personAddress) {
+        var postalCode = personAddress.getPostalCode();
+        return createAmendmentPatch(postalCode, JsonPatches.POSTAL_CODE_PATH);
     }
 }

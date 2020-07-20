@@ -16,11 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class NhsNumberPatchTransactionMapperTest {
+class AmendedNhsNumberPatchTransactionMapperTest {
 
     private static final String NHS_NUMBER = "1234";
 
-    private static NhsNumberPatchTransactionMapper nhsNumberPatchTransactionMapper;
+    private static AmendedNhsNumberPatchTransactionMapper amendedNhsNumberPatchTransactionMapper;
 
     @Mock
     private Transaction transaction;
@@ -30,7 +30,7 @@ class NhsNumberPatchTransactionMapperTest {
 
     @BeforeAll
     public static void setUp() {
-        nhsNumberPatchTransactionMapper = new NhsNumberPatchTransactionMapper();
+        amendedNhsNumberPatchTransactionMapper = new AmendedNhsNumberPatchTransactionMapper();
     }
 
 
@@ -39,7 +39,7 @@ class NhsNumberPatchTransactionMapperTest {
         when(transaction.getPersonPreviousName()).thenReturn(Optional.of(personPreviousName));
         when(personPreviousName.getNhsNumber()).thenReturn(NHS_NUMBER);
 
-        AmendmentPatch amendmentPatch = nhsNumberPatchTransactionMapper.map(transaction);
+        AmendmentPatch amendmentPatch = amendedNhsNumberPatchTransactionMapper.map(transaction);
 
         assertThat(amendmentPatch.getAmendmentValue().get()).isEqualTo(NHS_NUMBER);
     }
@@ -48,7 +48,7 @@ class NhsNumberPatchTransactionMapperTest {
     void whenNhsNumberNotPresentNotPresent_thenReturnNull() {
         when(transaction.getPersonPreviousName()).thenReturn(Optional.empty());
 
-        AmendmentPatch amendmentPatch = nhsNumberPatchTransactionMapper.map(transaction);
+        AmendmentPatch amendmentPatch = amendedNhsNumberPatchTransactionMapper.map(transaction);
 
         assertThat(amendmentPatch).isNull();
     }

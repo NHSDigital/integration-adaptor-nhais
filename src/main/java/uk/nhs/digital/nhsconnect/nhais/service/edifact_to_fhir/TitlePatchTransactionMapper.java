@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -11,12 +12,13 @@ public class TitlePatchTransactionMapper implements PatchTransactionMapper {
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
-        var personName = transaction.getPersonName();
-        if (personName.isPresent()) {
-            var title = personName.get().getTitle();
-            return createAmendmentPatch(title, JsonPatches.TITLE_PATH);
-        } else {
-            return null;
-        }
+        return transaction.getPersonName()
+            .map(this::createTitlePatch)
+            .orElse(null);
+    }
+
+    private AmendmentPatch createTitlePatch(PersonName personName) {
+        var title = personName.getTitle();
+        return createAmendmentPatch(title, JsonPatches.TITLE_PATH);
     }
 }

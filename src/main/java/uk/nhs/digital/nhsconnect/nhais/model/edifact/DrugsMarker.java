@@ -17,11 +17,8 @@ public class DrugsMarker extends Segment {
     private final static String ZZZ_SUFFIX = ":ZZZ";
     public final static String KEY_PREFIX = KEY + PLUS_SEPARATOR + APT_PREFIX;
 
+    @Getter
     private final boolean drugsMarker;
-
-    public boolean getDrugsMarker() {
-        return  drugsMarker;
-    }
 
     @Override
     public String getKey() {

@@ -12,25 +12,14 @@ public interface PatchTransactionMapper {
     String REMOVE_INDICATOR = "%";
 
     default AmendmentPatch createAmendmentPatch(String element, String path) {
-        AmendmentPatch amendmentPatch = new AmendmentPatch();
         if (element == null) {
             return null;
         }
         if (element.isBlank()) {
-            amendmentPatch.setOp(AmendmentPatchOperation.REPLACE);
-            amendmentPatch.setPath(path);
-            amendmentPatch.setValue(null);
+            return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, null);
         } else if (element.equals(REMOVE_INDICATOR)) {
-            AmendmentPatchRemoval amendmentRemoval = new AmendmentPatchRemoval();
-            amendmentRemoval.setOp(AmendmentPatchOperation.REMOVE);
-            amendmentRemoval.setPath(path);
-            return amendmentRemoval;
-        } else {
-            amendmentPatch.setOp(AmendmentPatchOperation.REPLACE);
-            amendmentPatch.setPath(path);
-            amendmentPatch.setValue(AmendmentValue.from(element));
+            return new AmendmentPatchRemoval(AmendmentPatchOperation.REMOVE, path, null);
         }
-
-        return amendmentPatch;
+        return new AmendmentPatch(AmendmentPatchOperation.REPLACE, path, AmendmentValue.from(element));
     }
 }

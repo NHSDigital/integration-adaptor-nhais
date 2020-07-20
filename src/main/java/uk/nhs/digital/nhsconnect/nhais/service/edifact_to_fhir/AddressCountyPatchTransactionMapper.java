@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
 import java.util.Objects;
 
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.JsonPatches;
@@ -14,12 +15,13 @@ public class AddressCountyPatchTransactionMapper implements PatchTransactionMapp
 
     @Override
     public AmendmentPatch map(Transaction transaction) {
-        var personAddress = transaction.getPersonAddress();
-        if (personAddress.isPresent()) {
-            var addressLine = personAddress.get().getAddressLine5();
-            return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.COUNTY_PATH);
-        } else {
-            return null;
-        }
+        return transaction.getPersonAddress()
+            .map(this::createCountyPatch)
+            .orElse(null);
+    }
+
+    private AmendmentPatch createCountyPatch(PersonAddress personAddress) {
+        var addressLine = personAddress.getAddressLine5();
+        return createAmendmentPatch(Objects.requireNonNullElse(addressLine, StringUtils.EMPTY), JsonPatches.COUNTY_PATH);
     }
 }

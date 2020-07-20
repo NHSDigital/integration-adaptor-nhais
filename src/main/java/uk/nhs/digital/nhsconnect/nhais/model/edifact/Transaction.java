@@ -2,8 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentStringExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +48,6 @@ public class Transaction extends Section {
     @Getter(lazy = true)
     private final Optional<PersonSex> gender =
         extractOptionalSegment(PersonSex.KEY).map(PersonSex::fromString);
-    @Getter(lazy = true)
-    private final Optional<PersonDateOfBirth> birthDate =
-        extractOptionalSegment(PersonDateOfBirth.KEY_QUALIFIER).map(PersonDateOfBirth::fromString);
     @Getter(lazy = true)
     private final Optional<DrugsMarker> drugsMarker =
         extractOptionalSegment(DrugsMarker.KEY_PREFIX).map(DrugsMarker::fromString);

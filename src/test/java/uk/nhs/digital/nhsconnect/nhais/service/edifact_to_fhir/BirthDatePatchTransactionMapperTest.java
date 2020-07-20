@@ -38,7 +38,7 @@ class BirthDatePatchTransactionMapperTest {
 
     @Test
     void whenPersonDateOfBirth_thenMapIntoBirthDateAmendmentPatch() {
-        when(transaction.getBirthDate()).thenReturn(Optional.of(personDateOfBirth));
+        when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(personDateOfBirth));
         when(personDateOfBirth.getDateOfBirth()).thenReturn(BIRTH_DATE);
 
         AmendmentPatch amendmentPatch = birthDatePatchTransactionMapper.map(transaction);
@@ -48,17 +48,7 @@ class BirthDatePatchTransactionMapperTest {
 
     @Test
     void whenPersonAddressNotPresent_thenReturnNull() {
-        when(transaction.getBirthDate()).thenReturn(Optional.empty());
-
-        AmendmentPatch amendmentPatch = birthDatePatchTransactionMapper.map(transaction);
-
-        assertThat(amendmentPatch).isNull();
-    }
-
-    @Test
-    void whenNoPersonDateOfBirth_thenReturnValueIsNull() {
-        when(transaction.getBirthDate()).thenReturn(Optional.of(personDateOfBirth));
-        when(personDateOfBirth.getDateOfBirth()).thenReturn(null);
+        when(transaction.getPersonDateOfBirth()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = birthDatePatchTransactionMapper.map(transaction);
 
