@@ -5,6 +5,11 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The "path" property values of all Patient resource items that can be patched by an amendment transaction
+ *
+ * @see uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths for paths of items which cannot be patched
+ */
 @RequiredArgsConstructor
 public class JsonPatches {
 
@@ -24,7 +29,6 @@ public class JsonPatches {
     public static final String POST_TOWN_PATH = "/address/0/line/3";
     public static final String COUNTY_PATH = "/address/0/line/4";
     public static final String POSTAL_CODE_PATH = "/address/0/postalCode";
-    public static final String NHS_NUMBER_PATH = "/identifier/0/value";
 
     private final List<AmendmentPatch> patches;
 
@@ -86,10 +90,6 @@ public class JsonPatches {
 
     public Optional<AmendmentPatch> getPostalCode() {
         return filterSimpleValues(POSTAL_CODE_PATH);
-    }
-
-    public Optional<AmendmentPatch> getNhsNumber() {
-        return filterSimpleValues(NHS_NUMBER_PATH);
     }
 
     private Optional<AmendmentPatch> filterSimpleValues(String path) {
