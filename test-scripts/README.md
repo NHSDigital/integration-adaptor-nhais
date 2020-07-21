@@ -28,12 +28,12 @@ $ cd integration-adaptor-nhais/test-scripts
 Each release has its own folder. Use the scripts for the specific release being tested.
 
 ```bash
-$ cd 0.2.0
+$ cd 1.0.0
 ```
 
 ## Configure the application
 
-Configure the application using a `...example.sh` file as a template:
+Configure the application using a `.example.sh` file as a template:
 
 ```bash
 $ cp export-env-vars.fake-mesh.example.sh export-env-vars.sh
@@ -51,7 +51,7 @@ and populate the variables in this file with the details provided when you signe
 
 ## Start it up
 ```bash
-$ cd 0.1.0
+$ cd 1.0.0
 $ ./run.sh
 ```
 
