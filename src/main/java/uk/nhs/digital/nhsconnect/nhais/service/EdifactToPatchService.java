@@ -11,6 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatchTransactionMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,10 +39,16 @@ public class EdifactToPatchService {
     }
 
     private List<AmendmentPatch> getPatches(Transaction transaction) {
-        //TODO: throw EdifactValidationException if this produces empty list but only after at least 1 amendment story is completed
-        return patchTransactionMappers.stream()
+        var amendmentPatches = patchTransactionMappers.stream()
             .map(patchTransactionMapper -> patchTransactionMapper.map(transaction))
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
+
+        if (amendmentPatches.isEmpty()) {
+            throw new EdifactValidationException("No patches has been produces.");
+        }
+
+        return amendmentPatches;
     }
 
     private String getHealthcarePartyCode(Transaction transaction) {

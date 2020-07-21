@@ -21,7 +21,7 @@ public class AmendmentDateOfBirthToEdifactMapper extends AmendmentToEdifactMappe
     @Override
     Segment mapPatches(AmendmentBody amendmentBody) {
         var dateOfBirth = amendmentBody.getJsonPatches().getBirthDate()
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(AmendmentValue::get)
             .map(LocalDate::parse)
             .orElseThrow(() -> new PatchValidationException("Missing " + JsonPatches.BIRTH_DATE_PATH));

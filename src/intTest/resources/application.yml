@@ -125,6 +125,8 @@ nhais:
       TES5=fake_mailboxId
       YY21=fake_mailboxId
       KC01=fake_mailboxId
+      WHI5=fake_mailboxId
+      SO01=fake_mailboxId
       UNY5=fake_mailboxId}
     scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:1000}
     scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:1}

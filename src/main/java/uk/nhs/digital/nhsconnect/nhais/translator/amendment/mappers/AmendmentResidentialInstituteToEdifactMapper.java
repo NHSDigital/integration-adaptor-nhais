@@ -20,7 +20,7 @@ public class AmendmentResidentialInstituteToEdifactMapper extends AmendmentToEdi
     @Override
     Segment mapPatches(AmendmentBody amendmentBody) {
         var code = amendmentBody.getJsonPatches().getResidentialInstituteCode()
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(amendmentValue -> ObjectUtils.defaultIfNull(amendmentValue.get(), AmendmentPatch.REMOVE_INDICATOR))
             .orElseThrow(() -> new PatchValidationException("Missing Residential Institute Code value"));
 
@@ -43,7 +43,7 @@ public class AmendmentResidentialInstituteToEdifactMapper extends AmendmentToEdi
             });
 
         patches.getResidentialInstituteCode()
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(AmendmentValue::get)
             .filter(StringUtils.EMPTY::equals) // can't use StringUtils.isBlank nor isEmpty as null is a valid value here
             .ifPresent(value -> {
