@@ -10,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatchTransactionMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class EdifactToPatchService {
         var amendmentPatches = patchTransactionMappers.stream()
             .map(patchTransactionMapper -> patchTransactionMapper.map(transaction))
             .filter(Objects::nonNull)
+            .sorted(Comparator.comparing(AmendmentPatch::getPath))
             .collect(Collectors.toList());
 
         if (amendmentPatches.isEmpty()) {
