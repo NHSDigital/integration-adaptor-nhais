@@ -1,5 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir;
 
+import static uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch.REMOVE_INDICATOR;
+
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ResidentialInstituteNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -22,7 +24,7 @@ public class ResidentialInstituteCodePatchTransactionMapper implements PatchTran
     private AmendmentPatch createAmendmentExtensionPatch(ResidentialInstituteNameAndAddress residentialInstitute) {
         var residentialInstituteCode = residentialInstitute.getIdentifier();
 
-        if (residentialInstituteCode == null || residentialInstituteCode.equals("%")) {
+        if (residentialInstituteCode == null || residentialInstituteCode.equals(REMOVE_INDICATOR)) {
             return new AmendmentPatch(AmendmentPatchOperation.REPLACE, JsonPatches.EXTENSION_PATH,
                 new AmendmentStringExtension(ResidentialInstituteExtension.URL, null));
         } else {
