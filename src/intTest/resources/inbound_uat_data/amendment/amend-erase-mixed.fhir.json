@@ -5,26 +5,26 @@
   "healthcarePartyCode" : "XX1",
   "patches" : [ {
     "op" : "replace",
-    "path" : "/address/0/line/4",
-    "value" : "KENT"
-  }, {
-    "op" : "replace",
     "path" : "/address/0/line/0",
     "value" : "HOLLY COTTAGE"
+  }, {
+    "op" : "remove",
+    "path" : "/address/0/line/1"
   }, {
     "op" : "replace",
     "path" : "/address/0/line/2",
     "value" : "LITTLE HAMLET"
   }, {
-    "op" : "remove",
-    "path" : "/address/0/line/1"
-  }, {
-    "op" : "remove",
-    "path" : "/address/0/postalCode"
-  }, {
     "op" : "replace",
     "path" : "/address/0/line/3",
     "value" : "BROMLEY"
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/line/4",
+    "value" : "KENT"
+  }, {
+    "op" : "remove",
+    "path" : "/address/0/postalCode"
   }, {
     "op" : "replace",
     "path" : "/birthDate",
@@ -37,16 +37,6 @@
       "valueBoolean" : true
     }
   }, {
-    "op" : "remove",
-    "path" : "/name/0/given"
-  }, {
-    "op" : "replace",
-    "path" : "/gender",
-    "value" : "unknown"
-  }, {
-    "op" : "remove",
-    "path" : "/name/1/family"
-  }, {
     "op" : "replace",
     "path" : "/extension/0",
     "value" : {
@@ -55,11 +45,21 @@
     }
   }, {
     "op" : "replace",
+    "path" : "/gender",
+    "value" : "unknown"
+  }, {
+    "op" : "replace",
     "path" : "/name/0/family",
     "value" : "ROBINSON-PATTERSON"
+  }, {
+    "op" : "remove",
+    "path" : "/name/0/given"
   }, {
     "op" : "replace",
     "path" : "/name/0/prefix/0",
     "value" : "MRS"
+  }, {
+    "op" : "remove",
+    "path" : "/name/1/family"
   } ]
 }
