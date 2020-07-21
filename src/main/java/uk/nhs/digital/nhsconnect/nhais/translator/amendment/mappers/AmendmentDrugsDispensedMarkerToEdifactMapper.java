@@ -22,7 +22,7 @@ public class AmendmentDrugsDispensedMarkerToEdifactMapper extends AmendmentToEdi
     @Override
     Segment mapPatches(AmendmentBody amendmentBody) {
         var drugsMarkerValue = amendmentBody.getJsonPatches().getDrugsDispensedMarker()
-            .map(AmendmentPatch::getValue)
+            .map(AmendmentPatch::getAmendmentValue)
             .map(AmendmentValue::get)
             .map(Boolean::parseBoolean)
             .orElseThrow(() -> new PatchValidationException("Missing Drugs Dispensed Marker value"));
@@ -46,7 +46,7 @@ public class AmendmentDrugsDispensedMarkerToEdifactMapper extends AmendmentToEdi
             });
 
         patches.getDrugsDispensedMarker()
-            .filter(patch -> !ALLOWED_VALUES.contains(patch.getValue().get()))
+            .filter(patch -> !ALLOWED_VALUES.contains(patch.getAmendmentValue().get()))
             .ifPresent(value -> {
                 throw new PatchValidationException("Drugs Dispensed Marker must be one of " + ALLOWED_VALUES);
             });

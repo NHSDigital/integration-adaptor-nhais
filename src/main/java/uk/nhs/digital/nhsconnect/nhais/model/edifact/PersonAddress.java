@@ -33,31 +33,34 @@ public class PersonAddress extends Segment {
         if (!edifactString.startsWith(PersonAddress.KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + PersonAddress.class.getSimpleName() + " from " + edifactString);
         }
-        String[] addressParts = Split.byPlus(edifactString);
-        String[] addressLines = Split.byColon(addressParts[3]);
+        String[] addressComponents = Split.byPlus(edifactString);
+        String[] addressLinesParts =
+            Split.byColon(addressComponents[3]);
 
         var builder = PersonAddress.builder();
-        if (addressLines.length > 0) {
-            builder.addressLine1(addressLines[0]);
+        if (addressLinesParts.length > 0) {
+            builder.addressLine1(addressLinesParts[0]);
         }
-        if (addressLines.length > 1) {
-            builder.addressLine2(addressLines[1]);
+        if (addressLinesParts.length > 1) {
+            builder.addressLine2(addressLinesParts[1]);
         }
-        if (addressLines.length > 2) {
-            builder.addressLine3(addressLines[2]);
+        if (addressLinesParts.length > 2) {
+            builder.addressLine3(addressLinesParts[2]);
         }
-        if (addressLines.length > 3) {
-            builder.addressLine4(addressLines[3]);
+        if (addressLinesParts.length > 3) {
+            builder.addressLine4(addressLinesParts[3]);
         }
-        if (addressLines.length > 4) {
-            builder.addressLine5(addressLines[4]);
+        if (addressLinesParts.length > 4) {
+            builder.addressLine5(addressLinesParts[4]);
         }
 
-        if (addressParts.length > 8) {
-            builder.postalCode(addressParts[8]);
+        if (addressComponents.length > 8) {
+            builder.postalCode(addressComponents[8]);
         }
+
         return builder.build();
     }
+
 
     @Override
     public String getKey() {

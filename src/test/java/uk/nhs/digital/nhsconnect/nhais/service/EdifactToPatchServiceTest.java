@@ -13,12 +13,16 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatchOperation;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentValue;
 import uk.nhs.digital.nhsconnect.nhais.service.edifact_to_fhir.PatchTransactionMapper;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +52,10 @@ class EdifactToPatchServiceTest {
 
     @BeforeEach
     void setUp() {
+        amendmentPatch1.setPath("path1");
+        amendmentPatch2.setPath("path2");
+        amendmentPatch1.setOp(AmendmentPatchOperation.REMOVE);
+        amendmentPatch2.setOp(AmendmentPatchOperation.ADD);
         when(patchTransactionMapper1.map(transaction)).thenReturn(amendmentPatch1);
         when(patchTransactionMapper2.map(transaction)).thenReturn(amendmentPatch2);
 

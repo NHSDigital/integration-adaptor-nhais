@@ -101,7 +101,7 @@ public class JsonPatches {
     public <T extends AmendmentValue> Optional<AmendmentPatch> getExtension(Class<T> clazz) {
         return patches.stream()
             .filter(AmendmentPatch::isExtension)
-            .filter(patch -> clazz.isAssignableFrom(patch.getValue().getClass()))
+            .filter(patch -> clazz.isAssignableFrom(patch.getAmendmentValue().getClass()))
             .findFirst();
     }
 
