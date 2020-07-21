@@ -12,8 +12,8 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.uat.CustomArgumentsProvider;
-import uk.nhs.digital.nhsconnect.nhais.uat.TestData;
+import uk.nhs.digital.nhsconnect.nhais.uat.common.CustomArgumentsProvider;
+import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 import javax.jms.JMSException;

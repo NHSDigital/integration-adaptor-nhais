@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.mesh;
+package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import lombok.Getter;
 

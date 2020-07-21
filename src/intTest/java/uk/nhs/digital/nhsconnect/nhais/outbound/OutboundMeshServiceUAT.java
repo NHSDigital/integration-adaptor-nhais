@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.uat.CustomArgumentsProvider;
-import uk.nhs.digital.nhsconnect.nhais.uat.TestData;
+import uk.nhs.digital.nhsconnect.nhais.uat.common.CustomArgumentsProvider;
+import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.ZonedDateTime;

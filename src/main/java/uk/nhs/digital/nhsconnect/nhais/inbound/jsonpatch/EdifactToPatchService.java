@@ -3,12 +3,12 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.PatchTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.PatchTransactionMapper;
 
 import java.util.Comparator;
 import java.util.List;

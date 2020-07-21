@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.uat;
+package uk.nhs.digital.nhsconnect.nhais.uat.common;
 
 import lombok.Builder;
 import lombok.Getter;

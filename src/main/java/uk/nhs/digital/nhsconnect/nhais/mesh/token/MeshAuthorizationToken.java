@@ -2,7 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.mesh.token;
 
 import java.time.Instant;
 
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 /**

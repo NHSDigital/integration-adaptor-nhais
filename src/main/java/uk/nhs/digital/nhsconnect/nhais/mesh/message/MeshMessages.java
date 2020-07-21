@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.mesh;
+package uk.nhs.digital.nhsconnect.nhais.mesh.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

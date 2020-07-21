@@ -1,12 +1,8 @@
-package uk.nhs.digital.nhsconnect.nhais.mesh;
+package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
-import java.security.KeyStore;
-
-import javax.net.ssl.SSLContext;
-
+import com.heroku.sdk.EnvKeyStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
@@ -16,7 +12,8 @@ import org.apache.http.ssl.SSLContexts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.heroku.sdk.EnvKeyStore;
+import javax.net.ssl.SSLContext;
+import java.security.KeyStore;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
