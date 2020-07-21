@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatchTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.PatchTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;

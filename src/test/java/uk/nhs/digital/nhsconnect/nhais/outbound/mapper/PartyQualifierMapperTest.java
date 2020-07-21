@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;

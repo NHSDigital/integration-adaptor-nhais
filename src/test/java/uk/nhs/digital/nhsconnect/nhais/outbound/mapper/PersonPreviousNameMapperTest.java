@@ -7,7 +7,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPreviousName;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientName;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import java.util.List;
 

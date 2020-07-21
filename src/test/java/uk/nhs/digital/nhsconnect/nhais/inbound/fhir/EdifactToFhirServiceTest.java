@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.EdifactParser;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.FhirTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.FhirTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 

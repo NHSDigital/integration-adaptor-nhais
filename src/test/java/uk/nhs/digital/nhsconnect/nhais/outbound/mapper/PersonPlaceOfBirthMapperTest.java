@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonPlaceOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.BirthPlaceExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -7,7 +7,7 @@ import java.util.List;
 
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonOldAddress;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Parameters;

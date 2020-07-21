@@ -6,7 +6,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

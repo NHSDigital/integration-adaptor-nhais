@@ -8,7 +8,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatchTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.PatchTransactionMapper;
 
 import java.util.Comparator;
 import java.util.List;

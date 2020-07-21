@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DrugsMarker;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.DrugsMarkerExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

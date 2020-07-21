@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.FhirTransactionMapper;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.GpTradingPartnerCode;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.NotSupportedFhirTransactionMapper;
-import uk.nhs.digital.nhsconnect.nhais.inbound.mapper.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.FhirTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.NotSupportedFhirTransactionMapper;
 
 import java.util.Map;
 

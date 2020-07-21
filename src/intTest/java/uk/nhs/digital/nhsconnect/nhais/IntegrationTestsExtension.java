@@ -11,7 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.container.FakeMeshContainer;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbContainer;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.scheduler.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.mesh.scheduler.SchedulerTimestampRepository;
 import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceDao;
 
 import java.util.Collection;
