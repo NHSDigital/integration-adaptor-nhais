@@ -12,10 +12,10 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.io.IOException;
 import java.util.Arrays;

@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.util.List;
 

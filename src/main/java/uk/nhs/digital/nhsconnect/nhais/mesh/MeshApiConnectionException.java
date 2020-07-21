@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
 import org.springframework.http.HttpStatus;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.NhaisBaseException;
+import uk.nhs.digital.nhsconnect.nhais.rest.exception.NhaisBaseException;
 
 public class MeshApiConnectionException extends NhaisBaseException {
 

@@ -6,7 +6,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

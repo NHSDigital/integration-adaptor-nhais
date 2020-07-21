@@ -6,7 +6,7 @@ import org.apache.http.message.BasicHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.token.MeshAuthorizationToken;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.util.Arrays;
 import java.util.List;
