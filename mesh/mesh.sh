@@ -25,7 +25,7 @@ create_token() {
   nonce_count='001'
   timestamp=$(date +"%Y%m%d%H%M")
   hash_content="${MAILBOX_ID}:${nonce}:${nonce_count}:${MAILBOX_PASSWORD}:${timestamp}"
-  hash_value=$(echo -n "${hash_content}" | openssl dgst -sha256 -hmac "${SHARED_KEY}")
+  hash_value=$(echo -n "${hash_content}" | openssl dgst -sha256 -hmac "${SHARED_KEY}" | sed 's/^.* //')
   TOKEN="NHSMESH ${MAILBOX_ID}:${nonce}:${nonce_count}:${timestamp}:${hash_value}"
 }
 
@@ -36,6 +36,12 @@ authorization() {
 }
 
 inbox() {
+  echo ${OPENTEST_ENDPOINT_CERT}
+  echo ${OPENTEST_ENDPOINT_PRIVATE_KEY}
+  echo ${MAILBOX_ID}
+  echo ${HOST}
+  echo ${TOKEN}
+  echo https://${HOST}/messageexchange/${MAILBOX_ID}/inbox
   curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox" \
     --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H "Authorization: ${TOKEN}" \
     -H 'Mex-ClientVersion: 1.0' -H 'Mex-JavaVersion: 1.7.0_60' -H 'Mex-OSArchitecture: Windows 7' -H 'Mex-OSName: x86' -H 'Mex-OSVersion: 6.1'
