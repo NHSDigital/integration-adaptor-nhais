@@ -31,7 +31,7 @@ A "Missing Sequence Number Report" on the `outboundState` collection can detect 
 ## Missing RECEP for Outbound Transactions
 
 It must be assumed that any outbound transaction that has not been matched to an inbound RECEP has not been processed by
-NHAIS. For any such transaction that operator of the GP System must ask the NHAIS operator for the reason why the
+NHAIS. For any such transaction the operator of the GP System must ask the NHAIS operator for the reason why the
 message was not processed.
 
 A "Missing RECEP Report" can detect these faults.
