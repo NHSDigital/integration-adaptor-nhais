@@ -9,7 +9,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
 import java.util.Objects;

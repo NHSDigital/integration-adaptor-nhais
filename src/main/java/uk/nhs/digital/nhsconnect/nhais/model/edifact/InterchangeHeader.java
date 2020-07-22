@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;

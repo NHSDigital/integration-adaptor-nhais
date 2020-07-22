@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHeaders;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
