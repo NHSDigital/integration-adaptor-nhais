@@ -36,8 +36,6 @@ authorization() {
 }
 
 inbox() {
-echo "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox"
-echo ${TOKEN}
   curl ${CURL_FLAGS} -X GET "https://${HOST}/messageexchange/${MAILBOX_ID}/inbox" \
     --cert "${OPENTEST_ENDPOINT_CERT}" --key "${OPENTEST_ENDPOINT_PRIVATE_KEY}" -H "Authorization: ${TOKEN}" \
     -H 'Mex-ClientVersion: 1.0' -H 'Mex-JavaVersion: 1.7.0_60' -H 'Mex-OSArchitecture: Windows 7' -H 'Mex-OSName: x86' -H 'Mex-OSVersion: 6.1'
