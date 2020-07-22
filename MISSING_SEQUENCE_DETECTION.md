@@ -1,10 +1,9 @@
 # Missing interchange sequence detection
 
-In rare occasion of an in-code exception there is a chance, 
-that a sequence number will be generated and registered in NHAIS database as used
-but due to the error no message will be sent with that number.
-
-Such situation will produce gaps in sequence numbers sent to HA
+It is possible, however unlikely, that the adaptor may generate a sequence number before encountering an exception 
+and aborting the transaction. In such cases, the sequence number then becomes redundant and can cause 
+the sequencing to break with gaps being sent onto the HA and stored within the adaptors state database. 
+This could happen for both Outbound and Inbound transactions.
 
 This document describes how to produce a report on missing sequence numbers.
 
@@ -53,8 +52,8 @@ where
 
 - `<from_timestamp>` defines the "from date" of the report
 - `<to_timestamp>` defines the "to date" of the report
-- `<sender>` the GP that was sending the message
-- `<recipient>` the HA that the message was addressed to
+- `<sender>` trading partner code of the GP that sent the message
+- `<recipient>` trading partner code of the HA that the message was addressed to
 - `<db_field>` the field to generate report for (one of: `[transactionTimestamp, interchangeSequence, messageSequence]`)
 
 yields a single result document:
@@ -66,14 +65,14 @@ yields a single result document:
 
 ### Examples:
 
-1. Reporting missing interchange sequences from `2020-01-01` to `2020-01-31` for GP `Acme` to HA `Medicorp`
+1. Reporting missing interchange sequences from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
 
         db.getCollection('outboundState').aggregate(
             [
                 {$match : {
                     transactionTimestamp : { $gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z') },
-                    sender : "Acme",
-                    recipient : "Medicorp"
+                    sender : "TES5",
+                    recipient : "XX1"
                 }},
                 {$group : {_id : null, min : {$min : "$interchangeSequence"}, max : {$max : "$interchangeSequence"}}},
                 {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
@@ -91,14 +90,14 @@ results with:
         "missingIds" : [ 2, 4, 5, 6, 8 ]
     }
         
-2. Reporting missing message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `Meditech` to HA `Bestdoctor`
+2. Reporting missing message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `TES5` to HA `XX1`
 
         db.getCollection('outboundState').aggregate(
             [
                 {$match : {
                     transactionTimestamp : { $gt: ISODate('2020-03-15 15:59:15.000Z'), $lt: ISODate('2020-03-16 14:13:12.000Z') },
-                    sender : "Meditech",
-                    recipient : "Bestdoctor"
+                    sender : "TES5",
+                    recipient : "XX1"
                 }},
                 {$group : {_id : null, min : {$min : "$messageSequence"}, max : {$max : "$messageSequence"}}},
                 {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
