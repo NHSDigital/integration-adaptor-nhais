@@ -56,7 +56,7 @@ where
 - `<to_timestamp>` defines the "to date" of the report
 - `<sender>` trading partner code of the GP that sent the message
 - `<recipient>` trading partner code of the HA that the message was addressed to
-- `<db_field>` the field to generate report for (one of: `[transactionTimestamp, interchangeSequence, messageSequence]`)
+- `<db_field>` the field to generate report for (one of: `[translationTimestamp, interchangeSequence, messageSequence]`)
 
 yields a single result document:
 
@@ -67,7 +67,7 @@ yields a single result document:
 
 ### Examples:
 
-1. Reporting missing `outbound` interchange sequences from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
+1. Report missing `outbound` interchange sequences from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
 
         db.getCollection('outboundState').aggregate(
             [
@@ -92,7 +92,7 @@ results with:
         "missingIds" : [ 2, 4, 5, 6, 8 ]
     }
         
-2. Reporting missing `inbound` message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `TES5` to HA `XX1`
+2. Report missing `inbound` message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `TES5` to HA `XX1`
 
         db.getCollection('inboundState').aggregate(
             [
@@ -116,3 +116,55 @@ results with:
         "_id" : null,
         "missingIds" : [ 100, 134 ]
     }
+    
+# Missing recep confirmation
+
+For each interchange sent out to HA, there should be an inbound recep 
+message received eventually, containing confirmation of interchange reception.
+Following query allows building a report on missing receps:
+
+    db.getCollection('outboundState').find(
+        {   
+            $and: [
+                {sender: '<sender>'},
+                {recipient: '<recipient>'},
+                {translationTimestamp: {$gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>')}},
+                {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+            ]
+        }
+    )
+    
+where
+
+- `<sender>` trading partner code of the GP that sent the message (optional)
+- `<recipient>` trading partner code of the HA that the message was addressed to (optional)
+- `<from_timestamp>` defines the "from date" of the report
+- `<to_timestamp>` defines the "to date" of the report
+- `<sender>` trading partner code of the GP that sent the message
+- `<recipient>` trading partner code of the HA that the message was addressed to
+
+### Examples:
+
+1. Report on interchanges that have not received recep from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
+
+        db.getCollection('outboundState').find(
+            {   
+                $and: [
+                    {sender: 'TES5'},
+                    {recipient: 'XX1'},
+                    {translationTimestamp: {$gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z')}},
+                    {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+                ]
+            }
+        )
+        
+1. Report on interchanges that have not received recep from `2020-01-01` to `2020-01-31` for all GP and HA pairs
+
+        db.getCollection('outboundState').find(
+            {   
+                $and: [
+                    {translationTimestamp: {$gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z')}},
+                    {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+                ]
+            }
+        )
