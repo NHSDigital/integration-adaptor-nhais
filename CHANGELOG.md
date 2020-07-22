@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2020-07-21
+
+### Added
+
+- Outbound (GP->HA) Removal transaction - completed support for all fields
+- Outbound (GP->HA) Deduction transaction - completed support for all fields
+- Outbound (GP->HA) Acceptance transaction
+    - Completed support for all fields
+    - Either NHS Number or Birthplace are required for Acceptance types 2, 3, and 4
+- Outbound (GP->HA) Acceptance transaction - completed support for all fields
+- Inbound Amendment transaction
+- Inbound Deduction transaction
+- Inbound Deduction Request Rejection transaction
+- Inbound FP69 Prior Notification transaction
+- Inbound FP69 Flag Removal transaction
 
 ## [0.2.0] - 2020-07-09
 
