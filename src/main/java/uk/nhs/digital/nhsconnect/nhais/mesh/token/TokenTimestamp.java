@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 @RequiredArgsConstructor
 class TokenTimestamp {

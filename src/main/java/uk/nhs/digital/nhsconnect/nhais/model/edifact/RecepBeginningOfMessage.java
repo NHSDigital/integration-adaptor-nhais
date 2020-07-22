@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;

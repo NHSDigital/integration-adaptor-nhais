@@ -1,7 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.parse.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.inbound.EdifactParser;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 

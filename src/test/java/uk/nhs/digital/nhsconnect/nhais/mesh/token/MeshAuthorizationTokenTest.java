@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
