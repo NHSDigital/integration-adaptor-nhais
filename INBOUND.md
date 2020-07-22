@@ -14,15 +14,15 @@ All inbound (HA->GP) messages are published to this same queue. The message type
 
 ### Transaction Types
 
-| Transaction Type        | Status              | Data Type | Description                 |
-|-------------------------|---------------------|-----------|-----------------------------|
-| approval                | Implemented         | FHIR      | Approval                    |
-| rejection               | Implemented         | FHIR      | Rejection (Wrong HA)        |
-| deduction               | Not Yet Implemented | FHIR      | Deduction                   |
-| deduction_rejection     | Not Yet Implemented | FHIR      | Deduction Request Rejection |
-| fp69_prior_notification | Not Yet Implemented | FHIR      | FP69 Prior Notification     |
-| fp69_flag_removal       | Not Yet Implemented | FHIR      | FP69 Flag Removal           |
-| amendment               | Not Yet Implemented | JSONPatch | Amendment                   |
+| Transaction Type        | Status      | Data Type | Description                 |
+|-------------------------|-------------|-----------|-----------------------------|
+| approval                | Implemented | FHIR      | Approval                    |
+| rejection               | Implemented | FHIR      | Rejection (Wrong HA)        |
+| deduction               | Implemented | FHIR      | Deduction                   |
+| deduction_rejection     | Implemented | FHIR      | Deduction Request Rejection |
+| fp69_prior_notification | Implemented | FHIR      | FP69 Prior Notification     |
+| fp69_flag_removal       | Implemented | FHIR      | FP69 Flag Removal           |
+| amendment               | Implemented | JSONPatch | Amendment                   |
 
 ## Messages with FHIR Data Type
 

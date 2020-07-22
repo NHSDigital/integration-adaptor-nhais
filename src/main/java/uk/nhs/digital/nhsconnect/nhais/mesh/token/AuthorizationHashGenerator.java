@@ -6,7 +6,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import lombok.SneakyThrows;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 
 import org.apache.commons.codec.binary.Hex;
 

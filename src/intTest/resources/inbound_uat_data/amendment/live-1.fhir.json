@@ -1,0 +1,31 @@
+{
+  "nhsNumber" : "9999999999",
+  "gpCode" : "9990374,PLP594",
+  "gpTradingPartnerCode" : "WHI5",
+  "healthcarePartyCode" : "SO",
+  "patches" : [ {
+    "op" : "replace",
+    "path" : "/address/0/line/0",
+    "value" : "??"
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/line/1",
+    "value" : null
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/line/2",
+    "value" : "IBTHORPE"
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/line/3",
+    "value" : null
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/line/4",
+    "value" : null
+  }, {
+    "op" : "replace",
+    "path" : "/birthDate",
+    "value" : "2020-04-16"
+  } ]
+}

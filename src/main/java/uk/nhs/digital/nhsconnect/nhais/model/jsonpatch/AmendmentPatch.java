@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,15 +27,33 @@ public class AmendmentPatch {
     private String path;
     private AmendmentValue value;
 
+    public Object getValue() {
+        if (this.isExtension()) {
+            return value;
+        }
+        else if (value != null) {
+            return value.get();
+        } else {
+            return null;
+        }
+    }
+
+    @JsonIgnore
+    public AmendmentValue getAmendmentValue() {
+        return value;
+    }
+
+    @JsonIgnore
     public String getFormattedSimpleValue() {
-        if (op == AmendmentPatchOperation.REMOVE) {
+        if (isRemoval()) {
             return REMOVE_INDICATOR;
         }
         return value.get();
     }
 
+    @JsonIgnore
     public String getNullSafeFormattedSimpleValue() {
-        if (op == AmendmentPatchOperation.REMOVE) {
+        if (isRemoval()) {
             return REMOVE_INDICATOR;
         }
         if (value == null) {
@@ -42,14 +62,17 @@ public class AmendmentPatch {
         return value.get();
     }
 
+    @JsonIgnore
     public boolean isExtension() {
-        return "/extension/0".equalsIgnoreCase(path);
+        return JsonPatches.EXTENSION_PATH.equalsIgnoreCase(path);
     }
 
+    @JsonIgnore
     public boolean isNotExtension() {
         return !isExtension();
     }
 
+    @JsonIgnore
     public boolean isRemoval() {
         return op == AmendmentPatchOperation.REMOVE;
     }
