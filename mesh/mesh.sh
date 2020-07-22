@@ -25,7 +25,7 @@ create_token() {
   nonce_count='001'
   timestamp=$(date +"%Y%m%d%H%M")
   hash_content="${MAILBOX_ID}:${nonce}:${nonce_count}:${MAILBOX_PASSWORD}:${timestamp}"
-  hash_value=$(echo -n "${hash_content}" | openssl dgst -sha256 -hmac "${SHARED_KEY}")
+  hash_value=$(echo -n "${hash_content}" | openssl dgst -sha256 -hmac "${SHARED_KEY}" | sed 's/^.* //')
   TOKEN="NHSMESH ${MAILBOX_ID}:${nonce}:${nonce_count}:${timestamp}:${hash_value}"
 }
 
