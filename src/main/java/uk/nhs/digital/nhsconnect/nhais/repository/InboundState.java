@@ -17,8 +17,8 @@ import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(
-        name = "unique_message",
-        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
+        name = "unique_inbound_state",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionId': 1}",
         unique = true)
 })
 @Data
@@ -33,7 +33,7 @@ public class InboundState {
     private Long messageSequence;
     private String sender;
     private String recipient;
-    private Long transactionNumber;
+    private Long transactionId;
     private Instant translationTimestamp;
     private ReferenceTransactionType.Inbound transactionType;
 
@@ -54,7 +54,7 @@ public class InboundState {
             .setRecipient(recipient)
             .setInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setMessageSequence(messageHeader.getSequenceNumber())
-            .setTransactionNumber(transactionNumber)
+            .setTransactionId(transactionNumber)
             .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }

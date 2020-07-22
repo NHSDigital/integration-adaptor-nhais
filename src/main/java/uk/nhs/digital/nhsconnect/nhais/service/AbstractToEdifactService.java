@@ -2,7 +2,13 @@ package uk.nhs.digital.nhsconnect.nhais.service;
 
 import lombok.AllArgsConstructor;
 import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.mesh.OutboundMeshMessage;
@@ -77,16 +83,16 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
 
     protected void recordOutboundState(T translationItems) {
         var outboundState = new OutboundState()
-                .setWorkflowId(WorkflowId.REGISTRATION)
-                .setRecipient(translationItems.getRecipient())
-                .setSender(translationItems.getSender())
+            .setWorkflowId(WorkflowId.REGISTRATION)
+            .setRecipient(translationItems.getRecipient())
+            .setSender(translationItems.getSender())
 
-                .setInterchangeSequence(translationItems.getSendInterchangeSequence())
-                .setMessageSequence(translationItems.getSendMessageSequence())
-                .setTransactionId(translationItems.getTransactionNumber())
+            .setInterchangeSequence(translationItems.getSendInterchangeSequence())
+            .setMessageSequence(translationItems.getSendMessageSequence())
+            .setTransactionId(translationItems.getTransactionNumber())
 
-                .setTransactionType(translationItems.getTransactionType())
-                .setTransactionTimestamp(translationItems.getTranslationTimestamp())
+            .setTransactionType(translationItems.getTransactionType())
+            .setTranslationTimestamp(translationItems.getTranslationTimestamp())
                 .setOperationId(translationItems.getOperationId());
         outboundStateRepository.save(outboundState);
     }

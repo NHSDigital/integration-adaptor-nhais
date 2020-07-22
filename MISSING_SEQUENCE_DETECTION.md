@@ -9,7 +9,8 @@ This document describes how to produce a report on missing sequence numbers.
 
 ## Database
 
-NHAIS is using MongoDb as persistence store. 
+This adaptor uses a persistence store (supports any MongoDB compatible database) configurable 
+based on your own implementation/hosting preferences. 
 This database records metadata of all sent messages including key sequence numbers:
 
 - Interchange Sequence Number (SIS)
@@ -19,11 +20,11 @@ This database records metadata of all sent messages including key sequence numbe
 Database schema information (only relevant fields listed):
 
     collection: 
-        outboundState
+        outboundState / inboundState
     fields:
         sender
         recipient
-        transactionTimestamp
+        translationTimestamp
         interchangeSequence
         messageSequence
         transactionId
@@ -32,17 +33,17 @@ Database schema information (only relevant fields listed):
 
 To generate a report on missing sequence numbers use the following query:
 
-    db.getCollection('outboundState').aggregate(
+    db.getCollection('<state_table>').aggregate(
         [
             {$match : {
-                transactionTimestamp : { $gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>') },
+                translationTimestamp : { $gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>') },
                 sender : "some_sender",
                 recipient : "some_recipient"
             }},
             {$group : {_id : null, min : {$min : "$<db_field>"}, max : {$max : "$<db_field>"}}},
             {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
             {$unwind : '$allPossibleNumbers'},
-            {$lookup : {from : "outboundState", localField : "allPossibleNumbers", foreignField : "<db_field>", as : "entries"}},
+            {$lookup : {from : "<state_table>", localField : "allPossibleNumbers", foreignField : "<db_field>", as : "entries"}},
             {$match : {entries : { $size: 0 }}},
             {$group: { "_id": null, "missingNumbers": {"$push": "$allPossibleNumbers" }}}
         ]
@@ -50,6 +51,7 @@ To generate a report on missing sequence numbers use the following query:
     
 where
 
+- `<state_table>` state table to run report on (one of: `[inboundState, outboundState]`)
 - `<from_timestamp>` defines the "from date" of the report
 - `<to_timestamp>` defines the "to date" of the report
 - `<sender>` trading partner code of the GP that sent the message
@@ -65,12 +67,12 @@ yields a single result document:
 
 ### Examples:
 
-1. Reporting missing interchange sequences from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
+1. Reporting missing `outbound` interchange sequences from `2020-01-01` to `2020-01-31` for GP `TES5` to HA `XX1`
 
         db.getCollection('outboundState').aggregate(
             [
                 {$match : {
-                    transactionTimestamp : { $gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z') },
+                    translationTimestamp : { $gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z') },
                     sender : "TES5",
                     recipient : "XX1"
                 }},
@@ -90,19 +92,19 @@ results with:
         "missingIds" : [ 2, 4, 5, 6, 8 ]
     }
         
-2. Reporting missing message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `TES5` to HA `XX1`
+2. Reporting missing `inbound` message sequences from `2020-03-15 15:59:15` to `2020-03-16 14:13:12` for GP `TES5` to HA `XX1`
 
-        db.getCollection('outboundState').aggregate(
+        db.getCollection('inboundState').aggregate(
             [
                 {$match : {
-                    transactionTimestamp : { $gt: ISODate('2020-03-15 15:59:15.000Z'), $lt: ISODate('2020-03-16 14:13:12.000Z') },
+                    translationTimestamp : { $gt: ISODate('2020-03-15 15:59:15.000Z'), $lt: ISODate('2020-03-16 14:13:12.000Z') },
                     sender : "TES5",
                     recipient : "XX1"
                 }},
                 {$group : {_id : null, min : {$min : "$messageSequence"}, max : {$max : "$messageSequence"}}},
                 {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
                 {$unwind : '$allPossibleNumbers'},
-                {$lookup : {from : "outboundState", localField : "allPossibleNumbers", foreignField : "messageSequence", as : "entries"}},
+                {$lookup : {from : "inboundState", localField : "allPossibleNumbers", foreignField : "messageSequence", as : "entries"}},
                 {$match : {entries : { $size: 0 }}},
                 {$group: { "_id": null, "missingNumbers": {"$push": "$allPossibleNumbers" }}}
             ]

@@ -229,7 +229,7 @@ public class RegistrationConsumerServiceTest {
             .setRecipient(RECEP_RECIPIENT)
             .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
             .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
-            .setTransactionTimestamp(MESSAGE_1_TRANSLATION_TIME);
+            .setTranslationTimestamp(MESSAGE_1_TRANSLATION_TIME);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
@@ -261,7 +261,7 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedInboundState.getRecipient()).isEqualTo(RECIPIENT);
         assertThat(savedInboundState.getInterchangeSequence()).isEqualTo(SIS);
         assertThat(savedInboundState.getMessageSequence()).isEqualTo(sms);
-        assertThat(savedInboundState.getTransactionNumber()).isEqualTo(tn);
+        assertThat(savedInboundState.getTransactionId()).isEqualTo(tn);
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo(transactionType.getCode());
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(translationTyime);
     }

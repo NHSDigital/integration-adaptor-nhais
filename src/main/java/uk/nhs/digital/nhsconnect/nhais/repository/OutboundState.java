@@ -16,8 +16,8 @@ import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(
-        name = "unique_message",
-        def = "{'interchangeSequence' : 1, 'messageSequence': 1, 'sender': 1, 'recipient': 1}",
+        name = "unique_outbound_state",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionId': 1}",
         unique = true)
 })
 @Data
@@ -29,7 +29,7 @@ public class OutboundState {
     private WorkflowId workflowId;
     private String operationId;
     private Long transactionId;
-    private Instant transactionTimestamp;
+    private Instant translationTimestamp;
     private ReferenceTransactionType.Outbound transactionType;
     private Long interchangeSequence;
     private Long messageSequence;
@@ -49,6 +49,6 @@ public class OutboundState {
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
-            .setTransactionTimestamp(dateTimePeriod.getTimestamp());
+            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

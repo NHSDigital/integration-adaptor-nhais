@@ -41,7 +41,7 @@ public class InboundStateTest {
         .setRecipient(RECIPIENT)
         .setInterchangeSequence(INTERCHANGE_SEQUENCE)
         .setMessageSequence(MESSAGE_SEQUENCE)
-        .setTransactionNumber(TRANSACTION_NUMBER)
+        .setTransactionId(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 

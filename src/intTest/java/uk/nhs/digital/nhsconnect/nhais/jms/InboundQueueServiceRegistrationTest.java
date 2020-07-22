@@ -112,7 +112,7 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTransactionType(TRANSACTION_TYPE)
-            .setTransactionNumber(TN)
+            .setTransactionId(TN)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

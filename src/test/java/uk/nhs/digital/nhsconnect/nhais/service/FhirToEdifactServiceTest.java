@@ -105,7 +105,7 @@ public class FhirToEdifactServiceTest {
         expected.setMessageSequence(SMS);
         expected.setTransactionId(TN);
         expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
-        expected.setTransactionTimestamp(expectedTimestamp);
+        expected.setTranslationTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
     }

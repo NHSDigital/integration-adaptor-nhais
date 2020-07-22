@@ -209,7 +209,7 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTransactionType(expectedTransactionType)
-            .setTransactionNumber(expectedTN)
+            .setTransactionId(expectedTN)
             .setTranslationTimestamp(MESSAGE_TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }
