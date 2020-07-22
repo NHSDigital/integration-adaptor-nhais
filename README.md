@@ -410,6 +410,6 @@ There are two Mongo collections recording the state of GP Links transactions:
 - `outboundState` records every transaction sent by the adaptor (GP->HA)
 - `inboundState` records every transaction received by the adaptor (HA->GP)
 
-These collection should be monitored to identify any transactions that may be missing.
+These collections should be monitored to identify any transactions that may be missing.
 
 See [REPORTING.md](./REPORTING.md) for details about how to run these reports.
