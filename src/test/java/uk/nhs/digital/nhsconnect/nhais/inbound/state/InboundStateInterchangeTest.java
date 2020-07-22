@@ -3,7 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.state;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -12,7 +12,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -42,7 +41,7 @@ public class InboundStateInterchangeTest {
         .setRecipient(RECIPIENT)
         .setInterchangeSequence(INTERCHANGE_SEQUENCE)
         .setMessageSequence(MESSAGE_SEQUENCE)
-        .setTransactionId(TRANSACTION_NUMBER)
+        .setTransactionNumber(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 

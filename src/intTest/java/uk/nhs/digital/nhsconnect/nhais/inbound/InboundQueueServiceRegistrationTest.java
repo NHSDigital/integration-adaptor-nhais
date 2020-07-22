@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import javax.jms.JMSException;
 import java.io.IOException;
@@ -112,7 +112,7 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTransactionType(TRANSACTION_TYPE)
-            .setTransactionId(TN)
+            .setTransactionNumber(TN)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

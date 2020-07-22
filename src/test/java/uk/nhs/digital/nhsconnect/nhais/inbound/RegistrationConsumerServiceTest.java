@@ -259,7 +259,7 @@ public class RegistrationConsumerServiceTest {
         assertThat(savedInboundState.getRecipient()).isEqualTo(RECIPIENT);
         assertThat(savedInboundState.getInterchangeSequence()).isEqualTo(SIS);
         assertThat(savedInboundState.getMessageSequence()).isEqualTo(sms);
-        assertThat(savedInboundState.getTransactionId()).isEqualTo(tn);
+        assertThat(savedInboundState.getTransactionNumber()).isEqualTo(tn);
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo(transactionType.getCode());
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(translationTyime);
     }

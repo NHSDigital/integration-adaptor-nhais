@@ -7,10 +7,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.time.Instant;
@@ -18,7 +18,7 @@ import java.time.Instant;
 @CompoundIndexes({
     @CompoundIndex(
         name = "unique_inbound_state",
-        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionId': 1}",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
         unique = true)
 })
 @Data
@@ -33,7 +33,7 @@ public class InboundState {
     private Long messageSequence;
     private String sender;
     private String recipient;
-    private Long transactionId;
+    private Long transactionNumber;
     private Instant translationTimestamp;
     private ReferenceTransactionType.Inbound transactionType;
 
@@ -54,7 +54,7 @@ public class InboundState {
             .setRecipient(recipient)
             .setInterchangeSequence(interchangeHeader.getSequenceNumber())
             .setMessageSequence(messageHeader.getSequenceNumber())
-            .setTransactionId(transactionNumber)
+            .setTransactionNumber(transactionNumber)
             .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }

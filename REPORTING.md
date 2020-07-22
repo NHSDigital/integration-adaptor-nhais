@@ -27,7 +27,7 @@ Database schema information (only relevant fields listed):
         translationTimestamp
         interchangeSequence
         messageSequence
-        transactionId
+        transactionNumber
          
 ## Report
 
@@ -56,7 +56,7 @@ where
 - `<to_timestamp>` defines the "to date" of the report
 - `<sender>` trading partner code of the GP that sent the message
 - `<recipient>` trading partner code of the HA that the message was addressed to
-- `<db_field>` the field to generate report for (one of: `[translationTimestamp, interchangeSequence, messageSequence]`)
+- `<db_field>` the field to generate report for (one of: `[translationTimestamp, interchangeSequence, messageSequence, transactionNumber]`)
 
 yields a single result document:
 

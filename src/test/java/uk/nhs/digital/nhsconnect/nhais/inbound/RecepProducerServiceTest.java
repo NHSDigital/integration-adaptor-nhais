@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.RecepProducerService;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
@@ -55,15 +54,15 @@ class RecepProducerServiceTest {
     @Test
     public void whenProducingRecep_thenValidRecepIsCreated() throws IOException {
         when(timestampService.getCurrentTimestamp()).thenReturn(FIXED_TIME);
-        when(sequenceService.generateInterchangeId(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_INTERCHANGE_SEQUENCE);
-        when(sequenceService.generateMessageId(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_MESSAGE_SEQUENCE);
+        when(sequenceService.generateInterchangeSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_INTERCHANGE_SEQUENCE);
+        when(sequenceService.generateMessageSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_MESSAGE_SEQUENCE);
 
         var recep = recepProducerService.produceRecep(createInterchange());
 
         assertEquals(recep, readFile(RECEP_EXAMPLE_PATH));
 
-        verify(sequenceService).generateInterchangeId(REF_SENDER, REF_RECIPIENT);
-        verify(sequenceService).generateMessageId(REF_SENDER, REF_RECIPIENT);
+        verify(sequenceService).generateInterchangeSequence(REF_SENDER, REF_RECIPIENT);
+        verify(sequenceService).generateMessageSequence(REF_SENDER, REF_RECIPIENT);
 
         verifyNoMoreInteractions(sequenceService);
     }

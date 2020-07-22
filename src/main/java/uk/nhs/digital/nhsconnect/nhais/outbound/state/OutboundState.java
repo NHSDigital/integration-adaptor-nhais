@@ -7,17 +7,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(
         name = "unique_outbound_state",
-        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionId': 1}",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
         unique = true)
 })
 @Data
@@ -28,7 +28,7 @@ public class OutboundState {
     private String id;
     private WorkflowId workflowId;
     private String operationId;
-    private Long transactionId;
+    private Long transactionNumber;
     private Instant translationTimestamp;
     private ReferenceTransactionType.Outbound transactionType;
     private Long interchangeSequence;

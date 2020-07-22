@@ -18,7 +18,7 @@ parser.add_argument('--sis_count', type=int, help='the number of interchanges to
 parser.add_argument('--sms_init', type=int, help='the initial value of message sequence', required=True)
 parser.add_argument('--sms_count', type=int, help='the number of messages per each interchange to ingest',
                     required=True)
-parser.add_argument('--tn_init', type=int, help='the initial value of transaction id', required=True)
+parser.add_argument('--tn_init', type=int, help='the initial value of transaction number', required=True)
 parser.add_argument('--tn_count', type=int, help='the number of transactions per each message to ingest', required=True)
 
 parser.add_argument('--sender', type=str, help='the sender of the interchange', required=True)
@@ -53,7 +53,7 @@ collection = client['nhais'][state_type + 'State']
 class OutboundState:
     interchangeSequence: int
     messageSequence: int
-    transactionId: int
+    transactionNumber: int
     sender: str
     recipient: str
     translationTimestamp: datetime
@@ -68,7 +68,7 @@ class OutboundState:
 class InboundState:
     interchangeSequence: int
     messageSequence: int
-    transactionId: int
+    transactionNumber: int
     sender: str
     recipient: str
     translationTimestamp: datetime
@@ -90,14 +90,14 @@ def build_state_record(
     if state_record_type == 'inbound':
         operation_id = build_operation_id(recipient)
         return InboundState(
-            interchangeSequence=sis, messageSequence=sms, transactionId=tn, operationId=operation_id,
+            interchangeSequence=sis, messageSequence=sms, transactionNumber=tn, operationId=operation_id,
             workflowId="NHAIS_REG", sender=sender, recipient=recipient, translationTimestamp=translation_timestamp,
             transactionType=random.choice(inboundTransactionTypes))
         pass
     elif state_record_type == 'outbound':
         operation_id = build_operation_id(sender)
         return OutboundState(
-            interchangeSequence=sis, messageSequence=sms, transactionId=tn, operationId=operation_id,
+            interchangeSequence=sis, messageSequence=sms, transactionNumber=tn, operationId=operation_id,
             workflowId="NHAIS_REG", sender=sender, recipient=recipient, translationTimestamp=translation_timestamp,
             recepCode=random.choice(recepCodes), recepDateTime=datetime.now(),
             transactionType=random.choice(outboundTransactionTypes))
