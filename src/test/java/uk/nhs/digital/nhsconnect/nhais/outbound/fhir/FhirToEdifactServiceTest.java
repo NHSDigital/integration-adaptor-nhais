@@ -70,9 +70,9 @@ public class FhirToEdifactServiceTest {
 
     @BeforeEach
     public void beforeEach() throws Exception {
-        when(sequenceService.generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
-        when(sequenceService.generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
-        when(sequenceService.generateTransactionId(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
+        when(sequenceService.generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
+        when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
+        when(sequenceService.generateTransactionNumber(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
             .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
@@ -94,9 +94,9 @@ public class FhirToEdifactServiceTest {
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
-        verify(sequenceService).generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
-        verify(sequenceService).generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
-        verify(sequenceService).generateTransactionId(GP_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateTransactionNumber(GP_TRADING_PARTNER_CODE);
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
@@ -105,9 +105,9 @@ public class FhirToEdifactServiceTest {
         expected.setSender(GP_TRADING_PARTNER_CODE);
         expected.setInterchangeSequence(SIS);
         expected.setMessageSequence(SMS);
-        expected.setTransactionId(TN);
+        expected.setTransactionNumber(TN);
         expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
-        expected.setTransactionTimestamp(expectedTimestamp);
+        expected.setTranslationTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
     }
