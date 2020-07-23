@@ -400,3 +400,16 @@ You need to clear invalid messages from the inbound mesh queue.
 * Login: admin/admin
 * Click 'Queues' tab
 * On the `nhais_mesh_inbound` click 'Purge'
+
+## Operating the Adaptor
+
+### Monitoring GP Links messaging state
+
+There are two Mongo collections recording the state of GP Links transactions:
+
+- `outboundState` records every transaction sent by the adaptor (GP->HA)
+- `inboundState` records every transaction received by the adaptor (HA->GP)
+
+These collections should be monitored to identify any transactions that may be missing.
+
+See [REPORTING.md](./REPORTING.md) for details about how to run these reports.

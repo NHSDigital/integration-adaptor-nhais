@@ -7,17 +7,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.time.Instant;
 
 @CompoundIndexes({
     @CompoundIndex(
-        name = "unique_message",
-        def = "{'interchangeSequence' : 1, 'messageSequence': 1, 'sender': 1, 'recipient': 1}",
+        name = "unique_outbound_state",
+        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
         unique = true)
 })
 @Data
@@ -28,8 +28,8 @@ public class OutboundState {
     private String id;
     private WorkflowId workflowId;
     private String operationId;
-    private Long transactionId;
-    private Instant transactionTimestamp;
+    private Long transactionNumber;
+    private Instant translationTimestamp;
     private ReferenceTransactionType.Outbound transactionType;
     private Long interchangeSequence;
     private Long messageSequence;
@@ -49,6 +49,6 @@ public class OutboundState {
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
-            .setTransactionTimestamp(dateTimePeriod.getTimestamp());
+            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

@@ -86,10 +86,10 @@ public class RecepProducerService {
     }
 
     private void setSequenceNumbers(List<Segment> recepMessageSegments, RecepHeader recepInterchangeHeader, RecepMessageHeader recepMessageHeader, MessageTrailer recepMessageTrailer, InterchangeTrailer recepInterchangeTrailer) {
-        var recepInterchangeSequence = sequenceService.generateInterchangeId(
+        var recepInterchangeSequence = sequenceService.generateInterchangeSequence(
             recepInterchangeHeader.getSender(),
             recepInterchangeHeader.getRecipient());
-        var recepMessageSequence = sequenceService.generateMessageId(
+        var recepMessageSequence = sequenceService.generateMessageSequence(
             recepInterchangeHeader.getSender(),
             recepInterchangeHeader.getRecipient());
 

@@ -227,7 +227,7 @@ public class RegistrationConsumerServiceTest {
             .setRecipient(RECEP_RECIPIENT)
             .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
             .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
-            .setTransactionTimestamp(MESSAGE_1_TRANSLATION_TIME);
+            .setTranslationTimestamp(MESSAGE_1_TRANSLATION_TIME);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
