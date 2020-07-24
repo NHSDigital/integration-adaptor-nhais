@@ -19,7 +19,7 @@ pipeline {
         ECR_REPO_DIR = "nhais"
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
         FAKE_MESH_ECR_REPO_DIR = "nhais-fake-mesh"
-        FAKE_MESH_VERSION = "0.1.6"
+        FAKE_MESH_VERSION = "0.2.0"
         FAKE_MESH_IMAGE = "${DOCKER_REGISTRY}/${FAKE_MESH_ECR_REPO_DIR}:${FAKE_MESH_VERSION}"
     }    
 
@@ -27,8 +27,8 @@ pipeline {
         stage('Deploy fake-mesh to ECR') {
             steps {
                 script {
-                    sh label: "Pulling fake-mesh image", script: "docker pull nhsdev/fake-mesh:0.1.6"
-                    sh label: "Re-tag fake-mesh image", script: "docker image tag nhsdev/fake-mesh:0.1.6 ${FAKE_MESH_IMAGE}"
+                    sh label: "Pulling fake-mesh image", script: "docker pull nhsdev/fake-mesh:0.2.0"
+                    sh label: "Re-tag fake-mesh image", script: "docker image tag nhsdev/fake-mesh:0.2.0 ${FAKE_MESH_IMAGE}"
                     if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
                     String dockerPushCommand = "docker push ${FAKE_MESH_IMAGE}"
                     if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
