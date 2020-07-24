@@ -45,7 +45,7 @@ nhais:
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
   mesh:
-    mailboxId: ${NHAIS_MESH_MAILBOX_ID:responder_mailbox} #defaults below are used by fake-mesh
+    mailboxId: ${NHAIS_MESH_MAILBOX_ID:nhais_mailbox} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
@@ -131,13 +131,13 @@ nhais:
       +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
-    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=fake_mailboxId
-      TES5=fake_mailboxId
-      YY21=fake_mailboxId
-      KC01=fake_mailboxId
-      WHI5=fake_mailboxId
-      SO01=fake_mailboxId
-      UNY5=fake_mailboxId}
+    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=gp_mailbox
+      TES5=gp_mailbox
+      YY21=gp_mailbox
+      KC01=gp_mailbox
+      WHI5=gp_mailbox
+      SO01=gp_mailbox
+      UNY5=gp_mailbox}
     scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:10000}
     scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:30}
   scheduler:
