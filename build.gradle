@@ -20,7 +20,7 @@ sourceSets {
 		runtimeClasspath += sourceSets.main.output
     }
 
-	responder {
+	recepResponder {
 		compileClasspath += sourceSets.main.output
 		runtimeClasspath += sourceSets.main.output
 	}
@@ -34,9 +34,9 @@ configurations {
 	intTestImplementation.extendsFrom testImplementation
 	intTestRuntimeOnly.extendsFrom runtimeOnly
 
-	responderImplementation.extendsFrom implementation
-	responderImplementation.extendsFrom testImplementation
-	responderRuntimeOnly.extendsFrom runtimeOnly
+	recepResponderImplementation.extendsFrom implementation
+	recepResponderImplementation.extendsFrom testImplementation
+	recepResponderRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {

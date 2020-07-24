@@ -56,7 +56,8 @@ public class MeshService {
             }
             LOGGER.info("Mesh mailbox scanning finished");
         } else {
-            LOGGER.info("Can't scan MESH mailbox - scan delay time hasn't passed yet or another instance did the scan");
+            LOGGER.info("Can't scan MESH mailbox - scan delay time hasn't passed yet or another instance did the scan. " +
+                "Next scan in {} seconds", scanDelayInSeconds);
         }
     }
 
