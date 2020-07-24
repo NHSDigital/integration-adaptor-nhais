@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RegistrationConsumerService {
+public class RegistrationConsumerService implements RegistrationConsumer {
 
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
@@ -39,6 +39,7 @@ public class RegistrationConsumerService {
     private final EdifactParser edifactParser;
     private final InboundEdifactTransactionHandler inboundEdifactTransactionService;
 
+    @Override
     public void handleRegistration(InboundMeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
         Interchange interchange = edifactParser.parse(meshMessage.getContent());
