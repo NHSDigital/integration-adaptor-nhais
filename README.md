@@ -189,7 +189,7 @@ when the service is run.
 | Environment Variable               | Default                   | Description 
 | -----------------------------------|---------------------------|-------------
 | NHAIS_OUTBOUND_SERVER_PORT         | 80                        | The port on which the outbound FHIR REST API will run
-| NHAIS_LOGGING_LEVEL                | DEBUG                     | Application logging level. One of: DEBUG, INFO, WARN, ERROR
+| NHAIS_LOGGING_LEVEL                | INFO                     | Application logging level. One of: DEBUG, INFO, WARN, ERROR
 | NHAIS_AMQP_BROKERS                 | amqp://localhost:5672     | A comma-separated list of URLs to AMQP brokers for the outbound (to mesh) message queue (*)
 | NHAIS_MESH_OUTBOUND_QUEUE_NAME     | nhais_mesh_outbound       | The name of the outbound (to mesh) message queue
 | NHAIS_MESH_INBOUND_QUEUE_NAME      | nhais_mesh_inbound        | The name of the inbound (from mesh) message queue
