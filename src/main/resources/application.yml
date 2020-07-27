@@ -7,7 +7,7 @@ logging:
       nhs:
         digital:
           nhsconnect:
-            nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
+            nhais: ${NHAIS_LOGGING_LEVEL:INFO}
 spring:
   jms:
     listener:
