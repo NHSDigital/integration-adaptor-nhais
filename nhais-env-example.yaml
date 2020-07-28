@@ -1,7 +1,7 @@
 # It is not required to provide additional variables for local development. application.yml include sensible defaults
 # for using the adaptor with the dependencies provided by docker-compose.yml
 
-# All values in this file must be a string. Numerical or boolean (true/false) values must be enclosed in double quotes.
+# All values in this file must be a string. Numerical or boolean (true/false) values must be enclosed in single or double quotes.
 
 # NHAIS connection settings
 NHAIS_OUTBOUND_SERVER_PORT: "80"
