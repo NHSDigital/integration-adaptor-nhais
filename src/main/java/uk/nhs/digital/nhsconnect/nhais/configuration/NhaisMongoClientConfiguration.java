@@ -61,10 +61,10 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     private String createConnectionString() {
         LOGGER.info("Creating a connection string for mongo client settings...");
         if (!Strings.isNullOrEmpty(host)) {
-            LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
+            LOGGER.info("A value was provided from mongodb host ({}). Generating a connection string from individual properties.", host);
             return createConnectionStringFromProperties();
         } else if (!Strings.isNullOrEmpty(uri)) {
-            LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
+            LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri ({}) and will be used to configure the database connection.", uri);
             return uri;
         } else {
             LOGGER.error("Mongodb must be configured using a connection string or individual properties. Both uri and host are null or empty");

@@ -10,6 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -23,15 +24,20 @@ public class MeshService {
 
     private final Long scanDelayInSeconds;
 
+    @Value("${nhais.mesh.scanMailboxIntervalInMilliseconds}")
+    private final long scanIntervalInMilliseconds;
+
     @Autowired
     public MeshService(MeshClient meshClient,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
-                       @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long scanDelayInSeconds) {
+                       @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long scanDelayInSeconds,
+                       @Value("${nhais.mesh.scanMailboxIntervalInMilliseconds}") long scanIntervalInMilliseconds) {
         this.meshClient = meshClient;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
         this.scanDelayInSeconds = scanDelayInSeconds;
+        this.scanIntervalInMilliseconds = scanIntervalInMilliseconds;
     }
 
     @Scheduled(fixedRateString = "${nhais.mesh.scanMailboxIntervalInMilliseconds}")
@@ -63,8 +69,9 @@ public class MeshService {
             }
             LOGGER.info("Completed MESH mailbox polling cycle");
         } else {
-            LOGGER.info("Could not obtain database lock to run MESH mailbox polling cycle: insufficient time as elapsed " +
-                "since the previous polling cycle or another adaptor instance has already started the polling cycle.");
+            LOGGER.info("Could not obtain database lock to run MESH mailbox polling cycle: insufficient time has elapsed " +
+                "since the previous polling cycle or another adaptor instance has already started the polling cycle. " +
+                "Next scan in {} seconds", TimeUnit.SECONDS.convert(scanIntervalInMilliseconds, TimeUnit.MILLISECONDS));
         }
     }
 

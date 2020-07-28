@@ -21,7 +21,7 @@ public class ResponderNhaisApplication {
 
 		@Bean
 		String registrationConsumerService() {
-			return RecepResponderService.class.getSimpleName();
+			return uk.nhs.digital.nhsconnect.nhais.responder.RecepResponderService.class.getSimpleName();
 		}
 	}
 }
