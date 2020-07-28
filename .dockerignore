@@ -1,3 +1,5 @@
 */**
 !src/**
-!build/libs/
+!build/**/
+!activemq/**
+!fake-mesh/**
