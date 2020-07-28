@@ -3,10 +3,10 @@
 set -e
 
 export BUILD_TAG=latest
-export RELEASE_VERSION=1.0.1
+export RELEASE_VERSION=1.0.2
 cd ..
 
-docker-compose build
+docker-compose build nhais
 
 docker tag local/nhais:latest nhsdev/nia-nhais-adaptor:${RELEASE_VERSION}
 
