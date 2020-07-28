@@ -4,6 +4,7 @@ server:
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
 
 management:
   endpoints:
