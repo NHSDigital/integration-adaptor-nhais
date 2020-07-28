@@ -1,10 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -35,19 +37,22 @@ public class MeshClient {
 
     @SneakyThrows
     public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
+        final var loggingName = "Send a message";
         String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
-        LOGGER.debug("Sending EDIFACT message - recipient: {} MESH mailbox: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox);
+        LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
             request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
+            logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
+                logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
                     throw new MeshApiConnectionException("Couldn't send MESH message.",
                         HttpStatus.ACCEPTED,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
-                MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response);
-                LOGGER.debug("Successfully sent MESH message to mailbox {}. Message id: {}", recipientMailbox, meshMessageId.getMessageID());
+                MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response, loggingName);
+                LOGGER.info("Successfully sent MESH message to mailbox {}. Message id: {}", recipientMailbox, meshMessageId.getMessageID());
                 return meshMessageId;
             }
         }
@@ -55,16 +60,24 @@ public class MeshClient {
 
     @SneakyThrows
     public InboundMeshMessage getEdifactMessage(String messageId) {
+        final var loggingName = "Download message";
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            try (CloseableHttpResponse response = client.execute(meshRequests.getMessage(messageId))) {
+            var request = meshRequests.getMessage(messageId);
+            logRequest(loggingName, request);
+            try (CloseableHttpResponse response = client.execute(request)) {
+                logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
                     throw new MeshApiConnectionException("Couldn't download MESH message using id: " + messageId,
                         HttpStatus.OK,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
                 var meshMessage = new MeshMessage();
-                meshMessage.setContent(EntityUtils.toString(response.getEntity()));
+                /* Get the workflowId before extracting the message body. An exception is thrown if the workflowId is
+                unsupported causing that message to be skipped. Messages for unsupported workflows might be very large
+                (up to 100mb) so we want to avoid reading the content into a String if not needed. */
                 meshMessage.setWorkflowId(WorkflowId.fromString(response.getHeaders("Mex-WorkflowID")[0].getValue()));
+                meshMessage.setContent(EntityUtils.toString(response.getEntity()));
+                LOGGER.debug("MESH '{}' response content: {}", loggingName, meshMessage.getContent());
                 meshMessage.setMeshMessageId(messageId);
                 return meshMessage;
             }
@@ -73,9 +86,13 @@ public class MeshClient {
 
     @SneakyThrows
     public void acknowledgeMessage(String messageId) {
+        final var loggingName = "Acknowledge message";
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            try (CloseableHttpResponse response = client.execute(meshRequests.acknowledge(messageId))) {
+            var request = meshRequests.acknowledge(messageId);
+            logRequest(loggingName, request);
+            try (CloseableHttpResponse response = client.execute(request)) {
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+                    logResponse(loggingName, response);
                     throw new MeshApiConnectionException("Couldn't acknowledge MESH message using id: " + messageId,
                         HttpStatus.OK,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
@@ -86,21 +103,56 @@ public class MeshClient {
 
     @SneakyThrows
     public List<String> getInboxMessageIds() {
+        final var loggingName = "Check inbox";
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
-            try (CloseableHttpResponse response = client.execute(meshRequests.getMessageIds())) {
+            var request = meshRequests.getMessageIds();
+            logRequest(loggingName, request);
+            try (CloseableHttpResponse response = client.execute(request)) {
+                logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
                     throw new MeshApiConnectionException("Couldn't receive MESH message list",
-                            HttpStatus.OK,
-                            HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.OK,
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
-                return Arrays.asList(parseInto(MeshMessages.class, response).getMessageIDs());
+                var meshMessages = parseInto(MeshMessages.class, response, loggingName);
+                return Arrays.asList(meshMessages.getMessageIDs());
             }
         }
     }
 
-    private <T> T parseInto(Class<T> clazz, CloseableHttpResponse response) throws IOException {
+    private <T> T parseInto(Class<T> clazz, CloseableHttpResponse response, String loggingName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonParser parser = objectMapper.reader().createParser(EntityUtils.toString(response.getEntity()));
-        return objectMapper.readValue(parser, clazz);
+        var content = EntityUtils.toString(response.getEntity());
+        LOGGER.debug("MESH '{}' response content: {}", loggingName, content);
+        return objectMapper.readValue(content, clazz);
+    }
+
+    @SneakyThrows
+    private void logRequest(String type, HttpRequest request) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("MESH '{}' request line: {}", type, request.getRequestLine());
+            LOGGER.debug("MESH '{}' request headers: {}", type, request.getAllHeaders());
+
+            if (request instanceof HttpEntityEnclosingRequest) {
+                var entity = ((HttpEntityEnclosingRequest) request).getEntity();
+                if (entity != null) {
+                    LOGGER.debug("MESH '{}' request content line: {}", type, entity);
+                    // request content is usually not "repeatable" so we can only decode it once. Log response content separately.
+                }
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void logResponse(String type, HttpResponse response) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("MESH '{}' response status line: {}", type, response.getStatusLine());
+            LOGGER.debug("MESH '{}' response headers: {}", type, response.getAllHeaders());
+            if (response.getEntity() != null) {
+                var entity = response.getEntity();
+                LOGGER.debug("MESH '{}' response content encoding: {}, content type: {}, content length: {}", type, entity.getContentEncoding(), entity.getContentType(), entity.getContentLength());
+                // response is usually not "repeatable" so we can only decode it once. Log response content separately.
+            }
+        }
     }
 }

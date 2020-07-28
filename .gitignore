@@ -19,5 +19,6 @@ nhais-env*.yaml
 .vscode/
 bin/
 /out/
+.run
 
 fake_mesh_dir
