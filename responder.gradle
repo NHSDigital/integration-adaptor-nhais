@@ -3,7 +3,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
 	id "io.freefair.lombok" version "5.1.0"
-	id 'jacoco'
 }
 
 group = 'uk.nhs.digital.nhsconnect'
@@ -15,18 +14,19 @@ repositories {
 }
 
 bootJar {
-	mainClassName = 'uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication'
+	mainClassName = 'uk.nhs.digital.nhsconnect.nhais.ResponderNhaisApplication'
 }
 
 sourceSets {
-    intTest {
-		compileClasspath += sourceSets.main.output
-		runtimeClasspath += sourceSets.main.output
-    }
-
-	recepResponder {
-		compileClasspath += sourceSets.main.output
-		runtimeClasspath += sourceSets.main.output
+	main {
+		java {
+			srcDir 'src/main'
+			exclude 'src/main/resources/**'
+			srcDir 'src/recepResponder/'
+		}
+		resources {
+			srcDir 'src/recepResponder/resources'
+		}
 	}
 }
 
@@ -34,13 +34,6 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	intTestImplementation.extendsFrom implementation
-	intTestImplementation.extendsFrom testImplementation
-	intTestRuntimeOnly.extendsFrom runtimeOnly
-
-	recepResponderImplementation.extendsFrom implementation
-	recepResponderImplementation.extendsFrom testImplementation
-	recepResponderRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {
@@ -75,33 +68,3 @@ dependencies {
 lombok {
 	config['lombok.log.fieldName'] = 'LOGGER'
 }
-
-test {
-	useJUnitPlatform() {
-		excludeTags 'component'
-	}
-}
-
-jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
-}
-
-task componentTest(type: Test) {
-	useJUnitPlatform() {
-		includeTags 'component'
-	}
-}
-
-task integrationTest(type: Test) {
-	useJUnitPlatform() {
-		description = 'Runs integration tests.'
-		group = 'verification'
-
-		testClassesDirs = sourceSets.intTest.output.classesDirs
-		classpath = sourceSets.intTest.runtimeClasspath
-		shouldRunAfter test
-	}
-}
-
-check.dependsOn componentTest
-check.dependsOn integrationTest
