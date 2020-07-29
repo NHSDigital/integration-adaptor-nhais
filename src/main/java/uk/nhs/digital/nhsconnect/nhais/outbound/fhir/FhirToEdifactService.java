@@ -44,7 +44,6 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
         translationItems.setParameters(parameters);
         translationItems.setSender(getSenderTradingPartnerCode(translationItems.getParameters()));
         String haCipher = getHaCipher(new ParametersExtension(parameters).extractPatient());
-        translationItems.setHaCypher(haCipher);
         translationItems.setRecipient(getRecipientTradingPartnerCode(haCipher));
         translationItems.setTransactionType(transactionType);
 

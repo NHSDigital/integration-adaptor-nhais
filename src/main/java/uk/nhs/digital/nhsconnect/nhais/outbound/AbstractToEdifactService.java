@@ -50,7 +50,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
     }
 
     protected void validateRecipient(T translationItems) {
-        meshCypherDecoder.validateRecipient(translationItems.getHaCypher());
+        meshCypherDecoder.validateRecipient(translationItems.getRecipient());
     }
 
     protected void generateTimestamp(T translationItems) {
