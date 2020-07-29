@@ -1,6 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact.message;
 
-import uk.nhs.digital.nhsconnect.nhais.exceptions.BadRequestException;
+import uk.nhs.digital.nhsconnect.nhais.rest.exception.BadRequestException;
 
 public class ToEdifactParsingException extends BadRequestException {
 

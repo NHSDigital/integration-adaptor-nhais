@@ -7,8 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.service.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.mesh.scheduler.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 @Component
 @Slf4j

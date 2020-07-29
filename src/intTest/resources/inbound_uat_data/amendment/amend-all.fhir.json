@@ -5,32 +5,28 @@
   "healthcarePartyCode" : "XX1",
   "patches" : [ {
     "op" : "replace",
-    "path" : "/address/0/line/4",
-    "value" : "KENT"
-  }, {
-    "op" : "replace",
     "path" : "/address/0/line/0",
     "value" : "HOLLY COTTAGE"
-  }, {
-    "op" : "replace",
-    "path" : "/address/0/line/2",
-    "value" : "LITTLE HAMLET"
   }, {
     "op" : "replace",
     "path" : "/address/0/line/1",
     "value" : "12 LONG LANE"
   }, {
     "op" : "replace",
-    "path" : "/address/0/postalCode",
-    "value" : "BR5  4ER"
+    "path" : "/address/0/line/2",
+    "value" : "LITTLE HAMLET"
   }, {
     "op" : "replace",
     "path" : "/address/0/line/3",
     "value" : "BROMLEY"
   }, {
     "op" : "replace",
-    "path" : "/identifier/0/value",
-    "value" : "9999999999"
+    "path" : "/address/0/line/4",
+    "value" : "KENT"
+  }, {
+    "op" : "replace",
+    "path" : "/address/0/postalCode",
+    "value" : "BR5  4ER"
   }, {
     "op" : "replace",
     "path" : "/birthDate",
@@ -44,18 +40,6 @@
     }
   }, {
     "op" : "replace",
-    "path" : "/name/0/given/0",
-    "value" : "SALLY"
-  }, {
-    "op" : "replace",
-    "path" : "/gender",
-    "value" : "unknown"
-  }, {
-    "op" : "replace",
-    "path" : "/name/1/family",
-    "value" : "PATTERSON"
-  }, {
-    "op" : "replace",
     "path" : "/extension/0",
     "value" : {
       "url" : "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
@@ -63,12 +47,24 @@
     }
   }, {
     "op" : "replace",
-    "path" : "/name/0/given/1",
-    "value" : "JANE"
+    "path" : "/gender",
+    "value" : "unknown"
+  }, {
+    "op" : "replace",
+    "path" : "/identifier/0/value",
+    "value" : "9999999999"
   }, {
     "op" : "replace",
     "path" : "/name/0/family",
     "value" : "ROBINSON-PATTERSON"
+  }, {
+    "op" : "replace",
+    "path" : "/name/0/given/0",
+    "value" : "SALLY"
+  }, {
+    "op" : "replace",
+    "path" : "/name/0/given/1",
+    "value" : "JANE"
   }, {
     "op" : "replace",
     "path" : "/name/0/given/2",
@@ -77,5 +73,9 @@
     "op" : "replace",
     "path" : "/name/0/prefix/0",
     "value" : "MRS"
+  }, {
+    "op" : "replace",
+    "path" : "/name/1/family",
+    "value" : "PATTERSON"
   } ]
 }

@@ -7,7 +7,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.mesh.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHeaders;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +76,7 @@ class MeshRequestsTest {
 
     private void assertSending(HttpEntityEnclosingRequestBase request, String recipient, WorkflowId workflowId) {
         assertThat(request).isExactlyInstanceOf(HttpPost.class);
-        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");
+        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox");
         Header[] mexToHeader = request.getHeaders("Mex-To");
         assertThat(mexToHeader.length).isEqualTo(1);
         assertThat(mexToHeader[0].getValue()).isEqualTo(recipient);

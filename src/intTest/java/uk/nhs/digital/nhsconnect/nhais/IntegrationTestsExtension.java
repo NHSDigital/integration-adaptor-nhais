@@ -9,17 +9,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.container.ActiveMqContainer;
 import uk.nhs.digital.nhsconnect.nhais.container.FakeMeshContainer;
 import uk.nhs.digital.nhsconnect.nhais.container.MongoDbContainer;
-import uk.nhs.digital.nhsconnect.nhais.repository.InboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.SchedulerTimestampRepository;
-import uk.nhs.digital.nhsconnect.nhais.repository.SequenceDao;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.mesh.scheduler.SchedulerTimestampRepository;
+import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceDao;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 import static org.springframework.jms.support.destination.JmsDestinationAccessor.RECEIVE_TIMEOUT_NO_WAIT;
-import static uk.nhs.digital.nhsconnect.nhais.jms.MeshServiceBaseTest.DLQ_PREFIX;
+import static uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest.DLQ_PREFIX;
 
 @Slf4j
 public class IntegrationTestsExtension implements BeforeAllCallback, BeforeEachCallback {
