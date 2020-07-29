@@ -1,9 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound;
 
 import lombok.AllArgsConstructor;
-import uk.nhs.digital.nhsconnect.nhais.exceptions.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.*;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
