@@ -3,11 +3,8 @@ server:
 
 logging:
   level:
-    uk:
-      nhs:
-        digital:
-          nhsconnect:
-            nhais: ${NHAIS_LOGGING_LEVEL:INFO}
+    uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:INFO}
+    org.apache.qpid.jms: WARN  # at INFO logs every 30 seconds
 spring:
   jms:
     listener:
