@@ -58,6 +58,9 @@ public class FhirControllerIntegrationTest {
     @Value("classpath:patient/acceptance-unknown-recipient.fhir.json")
     private Resource acceptanceUnknownRecipient;
 
+    @Value("classpath:patient/amendment-unknown-recipient.fhir.json")
+    private Resource amendmentUknownRecipient;
+
     @Test
     void whenNotJson_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
@@ -128,4 +131,5 @@ public class FhirControllerIntegrationTest {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
+
 }
