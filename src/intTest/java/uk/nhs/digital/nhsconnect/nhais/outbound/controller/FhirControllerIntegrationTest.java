@@ -55,6 +55,9 @@ public class FhirControllerIntegrationTest {
     @Value("classpath:patient/removal-invalid-json-structure.fhir.json")
     private Resource removalInvalidJsonStructure;
 
+    @Value("classpath:patient/acceptance-unknown-recipient.fhir.json")
+    private Resource acceptanceUnknownRecipient;
+
     @Test
     void whenNotJson_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
@@ -116,6 +119,13 @@ public class FhirControllerIntegrationTest {
     void whenRemovalInvalidJsonStructure_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalInvalidJsonStructure.getFile().toPath()));
         mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenUnknownRecipient_thenReturns400() throws Exception {
+        String requestBody = new String(Files.readAllBytes(acceptanceUnknownRecipient.getFile().toPath()));
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
