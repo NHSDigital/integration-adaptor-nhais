@@ -27,4 +27,5 @@ public class TranslationItems implements JsonPatchTranslationItems, FhirTranslat
     private Long sendInterchangeSequence;
     private Long transactionNumber;
     private Instant translationTimestamp;
+    private String haCypher;
 }

@@ -43,4 +43,8 @@ public interface CommonTranslationItems {
     Instant getTranslationTimestamp();
 
     CommonTranslationItems setTranslationTimestamp(Instant translationTimestamp);
+
+    String getHaCypher();
+
+    CommonTranslationItems setHaCypher(String haCypher);
 }
