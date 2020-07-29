@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import uk.nhs.digital.nhsconnect.nhais.responder.RecepResponderService;
 
 @EnableJms
 @EnableScheduling
