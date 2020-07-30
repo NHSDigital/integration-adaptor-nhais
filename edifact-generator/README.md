@@ -1,4 +1,4 @@
-# Inbound EDIFACT interchnage generator
+# Inbound EDIFACT interchange generator
 
 A Python script that generates inbound EDIFACT interchanges.
 
@@ -13,4 +13,4 @@ Script creates files in `edifact-generator/output/` folder.
 
 All generated files have exactly the same messages/transactions. Only header and footer of EDIFACT interchange generate dynamically.
 
-Each interchange contains all supported by NHAIS adaptor inbound transaction types. DEDUCTION (F2) contains multiple transactions in single message.
+Each interchange contains all supported by NHAIS adaptor inbound transaction types.
