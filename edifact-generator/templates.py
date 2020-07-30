@@ -109,10 +109,11 @@ UNT+12+00000012'
 """
 
     def _header(self):
-        return "UNB+UNOA:2+XX11+" + '{:04d}'.format(self._number % 10000) + "+920125:1235+" + '{:08d}'.format(self._number) + "'"
+        return f"UNB+UNOA:2+XX11+{'{:04d}'.format(self._number % 10000)}+920125:1235+{'{:08d}'.format(self._number)}'"
 
     def _footer(self):
-        return "UNZ+6+" '{:08d}'.format(self._number) + "'"
+        return f"UNZ+6+{'{:08d}'.format(self._number)}'"
 
     def create_edifact(self):
-        return self._header() + self._edifact + self._footer()
+        return f"{self._header()}{self._edifact}{self._footer()}"
+
