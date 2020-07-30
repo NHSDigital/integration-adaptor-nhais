@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound;
 
 import lombok.AllArgsConstructor;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
@@ -28,6 +29,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
     protected final SequenceService sequenceService;
     protected final TimestampService timestampService;
     protected final OutboundStateRepository outboundStateRepository;
+    protected final MeshCypherDecoder meshCypherDecoder;
 
     protected abstract List<Segment> createMessageSegments(T translationItems);
 
@@ -36,6 +38,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
         Objects.requireNonNull(translationItems.getRecipient(), "Recipient can't be null");
         Objects.requireNonNull(translationItems.getTransactionType(), "Transaction type can't be null");
 
+        validateRecipient(translationItems);
         generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
@@ -44,6 +47,10 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
         recordOutboundState(translationItems);
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
+    }
+
+    protected void validateRecipient(T translationItems) {
+        meshCypherDecoder.validateRecipient(translationItems.getRecipient());
     }
 
     protected void generateTimestamp(T translationItems) {

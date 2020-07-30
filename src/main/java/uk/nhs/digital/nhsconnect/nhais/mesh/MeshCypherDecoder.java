@@ -29,6 +29,13 @@ public class MeshCypherDecoder {
         return mappings.get(recipient);
     }
 
+    public void validateRecipient(String recipient) {
+        Map<String, String> mappings = createMappings();
+        if (!mappings.containsKey(recipient)) {
+            throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);
+        }
+    }
+
     private Map<String, String> createMappings() {
         return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
             .map(row -> row.split("="))
