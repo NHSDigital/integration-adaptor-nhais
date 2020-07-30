@@ -2,7 +2,7 @@ import argparse
 import os
 from templates import Inbound
 
-parser = argparse.ArgumentParser(prog='Inbound EDIFACT generator', description='Generate inbound EDIFACT interchanges as .dat files')
+parser = argparse.ArgumentParser(prog=__file__, description='Generate inbound EDIFACT interchanges as .dat files')
 parser.add_argument('--count', type=int, help='the number of files to generate - minimum 1 maximum 9999',
                     default='1', required=False)
 
