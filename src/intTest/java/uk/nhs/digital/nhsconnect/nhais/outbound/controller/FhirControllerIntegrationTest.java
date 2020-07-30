@@ -15,17 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshRecipientUnknownException;
-import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
-import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import java.nio.file.Files;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
