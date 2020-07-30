@@ -44,7 +44,7 @@ def generate_edifact_files():
     for i in range(0, args.count):
         filename = f"./{OUTPUT_FOLDER}/{i}.dat"
         file = open(filename, "w")
-        file.write(Inbound(i).create_edifact())
+        file.write(Inbound(i+1).create_edifact())
         file.close()
 
 

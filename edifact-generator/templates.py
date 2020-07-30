@@ -146,7 +146,7 @@ UNT+18+00000012'
 """
 
     def _header(self):
-        return f"UNB+UNOA:2+XX11+{'{:04d}'.format(self._number % 10000)}+920125:1235+{'{:08d}'.format(self._number)}'"
+        return f"UNB+UNOA:2+XX11+{'{:04d}'.format(self._number)}+920125:1235+{'{:08d}'.format(self._number)}'"
 
     def _footer(self):
         return f"UNZ+6+{'{:08d}'.format(self._number)}'"

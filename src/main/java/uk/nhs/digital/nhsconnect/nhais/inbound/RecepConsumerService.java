@@ -97,7 +97,7 @@ public class RecepConsumerService {
             .filter(message -> {
                 boolean hasBeenProcessed = hasAlreadyBeenProcessed(message);
                 if (hasBeenProcessed) {
-                    LOGGER.info("Skipping message {} as it has already been processed", message);
+                    LOGGER.warn("Skipping message {} as it has already been processed", message);
                 }
                 return !hasBeenProcessed;
             })
