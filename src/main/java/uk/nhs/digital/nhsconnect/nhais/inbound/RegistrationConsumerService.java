@@ -15,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
@@ -56,8 +57,10 @@ public class RegistrationConsumerService implements RegistrationConsumer {
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
-                inboundGpSystemService.publishToSupplierQueue(pair.getRight());
-                inboundStateRepository.save(pair.getLeft());
+                if (!pair.getRight().getTransactionType().equals(ReferenceTransactionType.Inbound.CLOSE_QUARTER_NOTIFICATION)) {
+                    inboundGpSystemService.publishToSupplierQueue(pair.getRight());
+                    inboundStateRepository.save(pair.getLeft());
+                }
             });
 
         outboundQueueService.publish(recepOutboundMessage);
