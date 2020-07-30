@@ -1,6 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.controller;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.hl7.fhir.r4.model.OperationOutcome;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshRecipientUnknownException;
+import uk.nhs.digital.nhsconnect.nhais.model.fhir.PatientJsonPaths;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import java.nio.file.Files;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,6 +40,9 @@ public class FhirControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private FhirParser fhirParser;
 
     @Value("classpath:patient/not-json.xml")
     private Resource notJsonPayload;
@@ -68,72 +77,78 @@ public class FhirControllerIntegrationTest {
     @Test
     void whenNotJson_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Content does not appear to be FHIR JSON")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Content does not appear to be FHIR JSON");
     }
 
     @Test
     void whenDeductionNoDestinationHaCipher_thenRerturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoHaCipher.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
     @Test
     void whenRemovalNoDestinationHaCipher_thenRerturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoHaCipher.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
 
     @Test
     void whenDeductionNoGpCode_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoGpCode.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
     @Test
     void whenRemovalNoGpCode_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoGpCode.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
     @Test
     void whenDeductionNpGpTradingPartnerCode_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoTradingPartnerCode.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
     @Test
     void whenRemovalNpGpTradingPartnerCode_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoTradingPartnerCode.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof FhirValidationException))
-            .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResolvedException()).getMessage()
-                .contains("Invalid attribute value \"\": Attribute values must not be empty")));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Invalid attribute value \"\": Attribute values must not be empty");
     }
 
     @Test
@@ -141,6 +156,7 @@ public class FhirControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(deductionInvalidJsonStructure.getFile().toPath()));
         mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
+        //TODO 2020-07-30: to check the OperationOutcome when in NIAD-184 error status ir properly handled
     }
 
     @Test
@@ -148,16 +164,17 @@ public class FhirControllerIntegrationTest {
         String requestBody = new String(Files.readAllBytes(removalInvalidJsonStructure.getFile().toPath()));
         mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
+        //TODO 2020-07-30: to check the OperationOutcome when in NIAD-184 error status ir properly handled
     }
 
     @Test
     void whenUnknownRecipient_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(acceptanceUnknownRecipient.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof MeshRecipientUnknownException))
-            .andExpect(result -> assertEquals("Couldn't decode recipient: ABCD1", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Couldn't decode recipient: ABCD1");
     }
-
 
 }
