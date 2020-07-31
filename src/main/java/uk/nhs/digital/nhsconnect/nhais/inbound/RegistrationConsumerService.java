@@ -57,14 +57,18 @@ public class RegistrationConsumerService implements RegistrationConsumer {
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
-                if (!pair.getRight().getTransactionType().equals(ReferenceTransactionType.Inbound.CLOSE_QUARTER_NOTIFICATION)) {
+                if (!isCloseQuarterNotification(pair.getRight())) {
                     inboundGpSystemService.publishToSupplierQueue(pair.getRight());
-                    inboundStateRepository.save(pair.getLeft());
                 }
+                inboundStateRepository.save(pair.getLeft());
             });
 
         outboundQueueService.publish(recepOutboundMessage);
         outboundStateRepository.save(recepOutboundState);
+    }
+
+    private boolean isCloseQuarterNotification(InboundGpSystemService.DataToSend dataToSend) {
+        return dataToSend.getTransactionType().equals(ReferenceTransactionType.Inbound.CLOSE_QUARTER_NOTIFICATION);
     }
 
     private List<Transaction> filterOutDuplicates(Interchange interchange) {
