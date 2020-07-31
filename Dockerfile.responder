@@ -9,7 +9,6 @@ FROM gradle:jdk11 AS build
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN rm -rf /home/gradle/src/build/libs/*
 RUN gradle --no-daemon -b responder.gradle bootJar -i --stacktrace
 
 FROM adoptopenjdk/openjdk11-openj9:jre
