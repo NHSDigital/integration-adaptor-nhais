@@ -200,7 +200,7 @@ public class RegistrationConsumerServiceTest {
         registrationConsumerService.handleRegistration(meshInterchangeMessage);
 
         assertInboundMessageHandling();
-        assertOutboundRecepProducer();
+        assertOutboundRecepProducer(MESSAGE_1_TRANSLATION_TIME);
     }
 
     private void assertInboundMessageHandling() {
@@ -223,7 +223,7 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
     }
 
-    private void assertOutboundRecepProducer() {
+    private void assertOutboundRecepProducer(Instant translationTime) {
         var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
         verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
@@ -233,7 +233,7 @@ public class RegistrationConsumerServiceTest {
             .setRecipient(RECEP_RECIPIENT)
             .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
             .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
-            .setTranslationTimestamp(MESSAGE_1_TRANSLATION_TIME);
+            .setTranslationTimestamp(translationTime);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
@@ -295,6 +295,7 @@ public class RegistrationConsumerServiceTest {
 
         verifyInboundStateForCloseQuarterNotification();
         verifyNoInteractions(inboundGpSystemService);
+        assertOutboundRecepProducer(CQN_MESSAGE_TRANSLATION_TIME);
     }
 
     private void verifyInboundStateForCloseQuarterNotification() {
