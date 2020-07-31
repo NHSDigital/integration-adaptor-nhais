@@ -1,19 +1,15 @@
-ARG GRADLE_BUILD_FILENAME=build.gradle
-
 FROM gradle:jdk11 as cache
-ARG GRADLE_BUILD_FILENAME
 RUN mkdir -p /home/gradle/cache_home
 ENV GRADLE_USER_HOME /home/gradle/cache_home
-COPY $GRADLE_BUILD_FILENAME /home/gradle/src/build.gradle
+COPY build.gradle /home/gradle/src/
 WORKDIR /home/gradle/src
-RUN gradle clean build -i --stacktrace
+RUN gradle -b build.gradle clean build -i --stacktrace
 
 FROM gradle:jdk11 AS build
-ARG GRADLE_BUILD_FILENAME
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle --no-daemon -b $GRADLE_BUILD_FILENAME bootJar -i --stacktrace
+RUN gradle --no-daemon -b build.gradle bootJar -i --stacktrace
 
 FROM adoptopenjdk/openjdk11-openj9:jre
 
