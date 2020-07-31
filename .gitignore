@@ -22,3 +22,5 @@ bin/
 .run
 
 fake_mesh_dir
+edifact-generator/output
+*/__pycache__
