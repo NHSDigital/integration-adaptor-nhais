@@ -71,7 +71,7 @@ public class RegistrationConsumerService implements RegistrationConsumer {
             .filter(transaction -> {
                 boolean hasBeenProcessed = hasAlreadyBeenProcessed(transaction);
                 if (hasBeenProcessed) {
-                    LOGGER.info("Skipping transaction {} as it has already been processed", transaction);
+                    LOGGER.warn("Skipping transaction {} as it has already been processed", transaction);
                 }
                 return !hasBeenProcessed;
             })
