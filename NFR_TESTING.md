@@ -26,7 +26,7 @@ The `src/recepResponder/resources/application.yml` contains defaults for testing
 
 From your IDE run `src/recepResponder/java/uk/nhs/digital/nhsconnect/nhais/ResponderNhaisApplication.java`
 
-### Inbound interchange EDIFACT generator
+### Inbound interchange EDIFACT generator/sender
 
 The folder [./edifact-generator/](edifact-generator/) contains script [inbound-generator.py](edifact-generator/inbound-generator.py) 
 that allows quick generation of inbound interchanges which can be later uploaded to MESH mailbox for NHAIS adapter to consume them.
