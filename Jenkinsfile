@@ -18,10 +18,7 @@ pipeline {
         ENVIRONMENT_ID = "nhais-build"
         ECR_REPO_DIR = "nhais"
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
-        FAKE_MESH_ECR_REPO_DIR = "nhais-fake-mesh"
-        FAKE_MESH_VERSION = "0.2.0"
-        FAKE_MESH_IMAGE = "${DOCKER_REGISTRY}/${FAKE_MESH_ECR_REPO_DIR}:${FAKE_MESH_VERSION}"
-    }    
+    }
 
     stages {
         stage('Build and Test Locally') {
