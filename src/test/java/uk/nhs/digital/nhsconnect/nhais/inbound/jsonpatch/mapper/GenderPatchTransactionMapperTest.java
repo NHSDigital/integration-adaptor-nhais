@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.GenderPatchTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;

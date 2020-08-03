@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumer;
 import uk.nhs.digital.nhsconnect.nhais.inbound.RecepConsumerService;
-import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumerService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
@@ -25,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InboundQueueService {
 
-    private final RegistrationConsumerService registrationConsumerService;
+    private final RegistrationConsumer registrationConsumerService;
 
     private final RecepConsumerService recepConsumerService;
 

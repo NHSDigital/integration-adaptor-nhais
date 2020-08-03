@@ -17,7 +17,7 @@ public class MeshRequests {
     private final MeshHeaders meshHeaders;
 
     public HttpPost sendMessage(String recipient, WorkflowId workflowId){
-        var request = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId() + "/outbox/");
+        var request = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId() + "/outbox");
         request.setHeaders(meshHeaders.createSendHeaders(recipient, workflowId));
         return request;
     }
@@ -39,4 +39,5 @@ public class MeshRequests {
         request.setHeaders(meshHeaders.createMinimalHeaders());
         return request;
     }
+
 }

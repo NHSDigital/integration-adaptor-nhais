@@ -1,4 +1,4 @@
-package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
+package uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper;
 
 import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.PatchTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonSex;

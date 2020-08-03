@@ -1,0 +1,70 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id "io.freefair.lombok" version "5.1.0"
+}
+
+group = 'uk.nhs.digital.nhsconnect'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+bootJar {
+	mainClassName = 'uk.nhs.digital.nhsconnect.nhais.ResponderNhaisApplication'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src/main'
+			exclude 'src/main/resources/**'
+			srcDir 'src/recepResponder/'
+		}
+		resources {
+			srcDir 'src/recepResponder/resources'
+		}
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+	implementation 'com.heroku.sdk:env-keystore:1.1.4'
+
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.2.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.2.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.2.0'
+	implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'org.springframework:spring-jms:5.2.6.RELEASE'
+	implementation 'org.apache.qpid:qpid-jms-client:0.51.0'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	implementation 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+
+    testImplementation "org.testcontainers:testcontainers:1.14.2"
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
+    testImplementation("org.assertj:assertj-core:3.16.1")
+}
+
+lombok {
+	config['lombok.log.fieldName'] = 'LOGGER'
+}
