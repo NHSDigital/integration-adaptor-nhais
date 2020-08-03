@@ -24,18 +24,6 @@ pipeline {
     }    
 
     stages {
-        stage('Deploy fake-mesh to ECR') {
-            steps {
-                script {
-                    sh label: "Pulling fake-mesh image", script: "docker pull nhsdev/fake-mesh:0.2.0"
-                    sh label: "Re-tag fake-mesh image", script: "docker image tag nhsdev/fake-mesh:0.2.0 ${FAKE_MESH_IMAGE}"
-                    if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
-                    String dockerPushCommand = "docker push ${FAKE_MESH_IMAGE}"
-                    if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
-                }
-            }
-        }
-
         stage('Build and Test Locally') {
             stages {
                 stage('Run Tests') {
