@@ -69,10 +69,27 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
         // fetch FHIR from "gp inbound queue"
         var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
 
-        assertThat(gpSystemInboundQueueMessage).isNotNull();
+        if (category.equals("close_quarter_notification/close-quarter-notification")) {
+            verifyThatCloseQuarterNotificationIsNotPresentOnGpSystemInboundQueue(gpSystemInboundQueueMessage);
+        } else if (category.equals("close_quarter_notification/close-quarter-notification-other-transactions")) {
+            verifyThatNonCloseQuarterNotificationMessageIsTranslated(testData, gpSystemInboundQueueMessage);
+        } else {
+            assertThat(gpSystemInboundQueueMessage).isNotNull();
+            // assert transaction type in JMS header is correct
+            assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
+            // assert output body is correct
+            assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
+        }
+    }
 
+    private void verifyThatCloseQuarterNotificationIsNotPresentOnGpSystemInboundQueue(Message gpSystemInboundQueueMessage) {
+        assertThat(gpSystemInboundQueueMessage).isNull();
+    }
+
+    private void verifyThatNonCloseQuarterNotificationMessageIsTranslated(TestData testData, Message gpSystemInboundQueueMessage) throws JMSException {
+        assertThat(gpSystemInboundQueueMessage).isNotNull();
         // assert transaction type in JMS header is correct
-        assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
+        assertMessageHeaders(gpSystemInboundQueueMessage, "fp69_prior_notification");
         // assert output body is correct
         assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
     }

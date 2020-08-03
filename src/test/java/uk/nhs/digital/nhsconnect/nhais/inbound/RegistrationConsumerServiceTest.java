@@ -57,11 +57,11 @@ public class RegistrationConsumerServiceTest {
     public static final String RECIPIENT = "XX11";
     public static final ReferenceTransactionType.Inbound MESSAGE_1_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
     public static final ReferenceTransactionType.Inbound MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    public static final ReferenceTransactionType.Inbound CQN_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.CLOSE_QUARTER_NOTIFICATION;
     public static final long RECEP_INTERCHANGE_SEQUENCE = 100L;
     public static final long RECEP_MESSAGE_SEQUENCE = 200L;
     public static final String RECEP_SENDER = RECIPIENT;
     public static final String RECEP_RECIPIENT = SENDER;
-    private static final String MAILBOX_ID = "mailbox";
     private static final String TN_1_OPERATION_ID = "241edf33054d1570ada7fdf1f4cdb3180c0097cf56ab1932ccd111d6cf3f2771";
     private static final String TN_2_OPERATION_ID = "972cca19643ea501d7bd6319c836f7181e1892f01483185bc245284b5a0f7d88";
     private static final String TN_3_OPERATION_ID = "df5c78da3dab361476798142762a6b3da7ee47d6bfb92780883bbb5f5e8a42c9";
@@ -70,6 +70,9 @@ public class RegistrationConsumerServiceTest {
         .parse("199201141619", DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(TimestampService.UKZone))
         .toInstant();
     private static final Instant MESSAGE_2_TRANSLATION_TIME = MESSAGE_1_TRANSLATION_TIME.plusSeconds(100);
+    private static final Instant CQN_MESSAGE_TRANSLATION_TIME = ZonedDateTime
+        .parse("199312131720", DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(TimestampService.UKZone))
+        .toInstant();
 
     private static final Parameters TRANSLATED_TRANSACTION_1 = mock(Parameters.class);
     private static final AmendmentBody TRANSLATED_TRANSACTION_2 = mock(AmendmentBody.class);
@@ -106,6 +109,9 @@ public class RegistrationConsumerServiceTest {
 
     @Mock
     Message message2;
+
+    @Mock
+    Message cqnMessage;
 
     @Mock
     Transaction transaction1;
@@ -194,7 +200,7 @@ public class RegistrationConsumerServiceTest {
         registrationConsumerService.handleRegistration(meshInterchangeMessage);
 
         assertInboundMessageHandling();
-        assertOutboundRecepProducer();
+        assertOutboundRecepProducer(MESSAGE_1_TRANSLATION_TIME);
     }
 
     private void assertInboundMessageHandling() {
@@ -217,7 +223,7 @@ public class RegistrationConsumerServiceTest {
         assertInboundState(inboundStateValues.get(2), SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE, MESSAGE_2_TRANSLATION_TIME);
     }
 
-    private void assertOutboundRecepProducer() {
+    private void assertOutboundRecepProducer(Instant translationTime) {
         var outboundStateArgumentCaptor = ArgumentCaptor.forClass(OutboundState.class);
         verify(outboundStateRepository).save(outboundStateArgumentCaptor.capture());
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
@@ -227,7 +233,7 @@ public class RegistrationConsumerServiceTest {
             .setRecipient(RECEP_RECIPIENT)
             .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
             .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
-            .setTranslationTimestamp(MESSAGE_1_TRANSLATION_TIME);
+            .setTranslationTimestamp(translationTime);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
 
@@ -274,5 +280,66 @@ public class RegistrationConsumerServiceTest {
         verifyNoInteractions(inboundGpSystemService);
         verifyNoInteractions(outboundStateRepository);
         verifyNoInteractions(outboundQueueService);
+    }
+
+    @Test
+    void whenCloseQuarterNotification_thenNotPublishedToSupplierQueue() {
+        mockInterchangeForCloseQuarterNotificationMessage();
+        mockRecepForCloseQuarterNotification();
+
+        var meshInterchangeMessage = new MeshMessage();
+        meshInterchangeMessage.setWorkflowId(WorkflowId.REGISTRATION);
+        meshInterchangeMessage.setContent(CONTENT);
+
+        registrationConsumerService.handleRegistration(meshInterchangeMessage);
+
+        verifyInboundStateForCloseQuarterNotification();
+        verifyNoInteractions(inboundGpSystemService);
+        assertOutboundRecepProducer(CQN_MESSAGE_TRANSLATION_TIME);
+    }
+
+    private void verifyInboundStateForCloseQuarterNotification() {
+        var inboundStateArgumentCaptor = ArgumentCaptor.forClass(InboundState.class);
+        verify(inboundStateRepository, times(1)).save(inboundStateArgumentCaptor.capture());
+
+        var inboundStateValues = inboundStateArgumentCaptor.getAllValues();
+        assertThat(inboundStateValues).hasSize(1);
+        assertInboundState(inboundStateValues.get(0), SMS_1, TN_1, CQN_TRANSACTION_TYPE, CQN_MESSAGE_TRANSLATION_TIME);
+    }
+
+    private void mockRecepForCloseQuarterNotification() {
+        when(recep.getMessages()).thenReturn(List.of(recepMessage));
+        when(recep.getInterchangeHeader()).thenReturn(
+            new InterchangeHeader(RECEP_SENDER, RECEP_RECIPIENT, CQN_MESSAGE_TRANSLATION_TIME).setSequenceNumber(RECEP_INTERCHANGE_SEQUENCE));
+        when(recepMessage.getInterchange()).thenReturn(recep);
+        when(recepMessage.getMessageHeader()).thenReturn(
+            new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
+        when(recepMessage.getTranslationDateTime()).thenReturn(
+            new DateTimePeriod(CQN_MESSAGE_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+
+        when(recepProducerService.produceRecep(interchange)).thenReturn(RECEP_AS_EDIFACT);
+        when(edifactParser.parse(RECEP_AS_EDIFACT)).thenReturn(recep);
+    }
+
+    private void mockInterchangeForCloseQuarterNotificationMessage() {
+        when(inboundEdifactTransactionHandler.translate(transaction1))
+            .thenReturn(new InboundGpSystemService.DataToSend().setContent(TRANSLATED_TRANSACTION_1));
+
+        when(edifactParser.parse(CONTENT)).thenReturn(interchange);
+
+        when(interchange.getInterchangeHeader()).thenReturn(new InterchangeHeader(SENDER, RECIPIENT, CQN_MESSAGE_TRANSLATION_TIME).setSequenceNumber(SIS));
+        when(interchange.getMessages()).thenReturn(List.of(cqnMessage));
+
+        when(cqnMessage.getMessageHeader()).thenReturn(new MessageHeader(SMS_1));
+        when(cqnMessage.getTransactions()).thenReturn(List.of(transaction1));
+        when(cqnMessage.getInterchange()).thenReturn(interchange);
+        when(cqnMessage.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(CQN_TRANSACTION_TYPE));
+        when(cqnMessage.getTranslationDateTime()).thenReturn(new DateTimePeriod(CQN_MESSAGE_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+
+        when(transaction1.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber(TN_1));
+        when(transaction1.getMessage()).thenReturn(cqnMessage);
+
+        when(inboundStateRepository.findBy(eq(WorkflowId.REGISTRATION), eq(SENDER), eq(RECIPIENT), eq(SIS), any(), any()))
+            .thenReturn(Optional.empty());
     }
 }
