@@ -18,7 +18,7 @@ pipeline {
         ENVIRONMENT_ID = "nhais-build"
         ECR_REPO_DIR = "nhais"
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
-    }    
+    }
 
     stages {
         stage('Build and Test Locally') {
@@ -118,12 +118,9 @@ pipeline {
                     }
                  } //stage
             } //stages
-        } //stage Deploy and Test
-        // stage('Run SonarQube analysis') {
-        //     steps {
-        //         runSonarQubeAnalysis()
-        //     }
-        // }
+        }
+
+
     }
     post {
         always {
