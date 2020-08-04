@@ -7,6 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
@@ -27,10 +32,25 @@ class RejectionTransactionMapperTest {
     Transaction transaction;
     @Mock
     FreeText freeText;
+    @Mock
+    Message message;
+    @Mock
+    Interchange interchange;
+    @Mock
+    InterchangeHeader interchangeHeader;
+    @Mock
+    HealthAuthorityNameAndAddress healthAuthorityNameAndAddress;
+    @Mock
+    GpNameAndAddress gpNameAndAddress;
 
     @Test
     void testMap(SoftAssertions softly) {
         when(transaction.getFreeText()).thenReturn(Optional.of(freeText));
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
 
         when(freeText.getFreeTextValue()).thenReturn(TEXT_LITERAL);
 
@@ -38,13 +58,18 @@ class RejectionTransactionMapperTest {
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        softly.assertThat(parameters.getParameter().size()).isEqualTo(1);
+        softly.assertThat(parameters.getParameter().size()).isEqualTo(3);
         softly.assertThat(parametersExt.extractValue(ParameterNames.FREE_TEXT)).isEqualTo(TEXT_LITERAL);
     }
 
     @Test
     void whenFreeTextIsMissing_expectException(SoftAssertions softly) {
         when(transaction.getFreeText()).thenReturn(Optional.empty());
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
 
         softly.assertThatThrownBy(() -> new RejectionTransactionMapper().map(transaction))
             .isInstanceOf(EdifactValidationException.class);

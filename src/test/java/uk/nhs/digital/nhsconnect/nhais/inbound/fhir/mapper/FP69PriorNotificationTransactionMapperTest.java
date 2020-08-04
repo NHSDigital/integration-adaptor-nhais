@@ -10,6 +10,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ExpiryDate;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ReasonCode;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonDateOfBirth;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
@@ -48,9 +53,29 @@ class FP69PriorNotificationTransactionMapperTest {
     @Mock
     private Transaction transaction;
 
+    @Mock
+    private Message message;
+
+    @Mock
+    private Interchange interchange;
+
+    @Mock
+    private InterchangeHeader interchangeHeader;
+
+    @Mock
+    private HealthAuthorityNameAndAddress healthAuthorityNameAndAddress;
+
+    @Mock
+    private GpNameAndAddress gpNameAndAddress;
+
     @Test
     void whenPersonNameSegmentIsMissing_expectException() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
 
         assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
@@ -60,6 +85,11 @@ class FP69PriorNotificationTransactionMapperTest {
     @Test
     void whenNhsNumberIsMissing_expectException() {
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder().build()));
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
 
         assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
@@ -68,6 +98,11 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenSurnameIsMissing_expectException() {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder()
             .nhsNumber(NHS_NUMBER)
             .build()));
@@ -79,6 +114,11 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenDateOfBirthSegmentIsMissing_expectException() {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder()
             .nhsNumber(NHS_NUMBER)
             .surname(SURNAME)
@@ -92,6 +132,11 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenReasonCodeSegmentIsMissing_expectException() {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder()
             .nhsNumber(NHS_NUMBER)
             .surname(SURNAME)
@@ -108,6 +153,11 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenExpiryDateSegmentIsMissing_expectException() {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder()
             .nhsNumber(NHS_NUMBER)
             .surname(SURNAME)
@@ -125,6 +175,12 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenMappingRequiredValues_expectParametersAreMapped(SoftAssertions softly) {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
+
         mockRequiredEdifact();
 
         Parameters parameters = transactionMapper.map(transaction);
@@ -134,6 +190,11 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void whenMappingAllValues_expectParametersAreMapped(SoftAssertions softly) {
+        when(transaction.getMessage()).thenReturn(message);
+        when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
+        when(message.getInterchange()).thenReturn(interchange);
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         mockRequiredEdifact();
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder()
             .nhsNumber(NHS_NUMBER)
@@ -173,7 +234,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     private void assertRequiredFields(SoftAssertions softly, Parameters parameters) {
-        softly.assertThat(parameters.getParameter()).hasSize(3);
+        softly.assertThat(parameters.getParameter()).hasSize(4);
 
         var patient = ParametersExtension.extractPatient(parameters);
         softly.assertThat(patient.getName()).hasSize(1);
