@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Acknowledge (RECEP) inbound Close Quarter Notification transactions without producing a FHIR message or error
+
 ## [1.1.0] - 2020-08-04
 
 ### Release Notes
@@ -13,12 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The fix for [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) changes the names of some
 properties in two database collections. Any existing collections should be dropped before using this version.
 
-### Added
-
 Features:
 
 - Validate that a MESH Mailbox ID has been configured for the HA Trading Partner Code before translating outbound transactions
-- Acknowledge (RECEP) inbound Close Quarter Notification transactions without producing a FHIR message or error
 - Improved logging of MESH API interactions and handling of messages with unsupported workflow ids
 
 Non-functional:
