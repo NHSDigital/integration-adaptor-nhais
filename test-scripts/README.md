@@ -28,7 +28,7 @@ $ cd integration-adaptor-nhais/test-scripts
 Each release has its own folder. Use the scripts for the specific release being tested.
 
 ```bash
-$ cd 1.0.2
+$ cd 1.1.0
 ```
 
 ## Configure the application
@@ -51,7 +51,7 @@ and populate the variables in this file with the details provided when you signe
 
 ## Start it up
 ```bash
-$ cd 1.0.2
+$ cd 1.1.0
 $ ./run.sh
 ```
 
