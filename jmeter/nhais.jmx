@@ -16,33 +16,45 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="HOST" elementType="Argument">
             <stringProp name="Argument.name">HOST</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">${__P(host,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Host for outbound requests</stringProp>
           </elementProp>
           <elementProp name="PORT" elementType="Argument">
             <stringProp name="Argument.name">PORT</stringProp>
-            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.value">${__P(port,80)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Port for outbound requests</stringProp>
           </elementProp>
           <elementProp name="ACCEPTANCE_TPM" elementType="Argument">
             <stringProp name="Argument.name">ACCEPTANCE_TPM</stringProp>
-            <stringProp name="Argument.value">19.2</stringProp>
+            <stringProp name="Argument.value">${__P(acceptance.tpm,19.2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Acceptance transactions per minute</stringProp>
           </elementProp>
           <elementProp name="AMENDMENT_TPM" elementType="Argument">
             <stringProp name="Argument.name">AMENDMENT_TPM</stringProp>
-            <stringProp name="Argument.value">13.2</stringProp>
+            <stringProp name="Argument.value">${__P(amendment.tmp,13.2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Amendment transactions per minute</stringProp>
           </elementProp>
           <elementProp name="DEDUCTION_TPM" elementType="Argument">
             <stringProp name="Argument.name">DEDUCTION_TPM</stringProp>
-            <stringProp name="Argument.value">2.4</stringProp>
+            <stringProp name="Argument.value">${__P(deduction.tpm,2.4)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Deduction transactions per minute</stringProp>
           </elementProp>
           <elementProp name="REMOVAL_TPM" elementType="Argument">
             <stringProp name="Argument.name">REMOVAL_TPM</stringProp>
-            <stringProp name="Argument.value">2.4</stringProp>
+            <stringProp name="Argument.value">${__P(removal.tpm,2.4)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Removal transactions per minute</stringProp>
+          </elementProp>
+          <elementProp name="DURATION_SECONDS" elementType="Argument">
+            <stringProp name="Argument.name">DURATION_SECONDS</stringProp>
+            <stringProp name="Argument.value">${__P(duration,60)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">Test duration in seconds</stringProp>
           </elementProp>
         </collectionProp>
       </Arguments>
@@ -79,7 +91,7 @@
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">60</stringProp>
+        <stringProp name="ThreadGroup.duration">${DURATION_SECONDS}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
@@ -221,7 +233,7 @@
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">60</stringProp>
+        <stringProp name="ThreadGroup.duration">${DURATION_SECONDS}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
@@ -362,7 +374,7 @@
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">60</stringProp>
+        <stringProp name="ThreadGroup.duration">${DURATION_SECONDS}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
@@ -456,7 +468,7 @@
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">60</stringProp>
+        <stringProp name="ThreadGroup.duration">${DURATION_SECONDS}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
