@@ -2,13 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
@@ -42,9 +40,7 @@ class DeductionRejectionTransactionMapperTest {
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
         when(transaction.getFreeText()).thenReturn(Optional.of(new FreeText("TEXT VALUE")));
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        new DeductionRejectionTransactionMapper().map(parameters, transaction);
+        var parameters = new DeductionRejectionTransactionMapper().map(transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -60,9 +56,7 @@ class DeductionRejectionTransactionMapperTest {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getNhsNumber()).thenReturn(null);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessageContaining("NHS Number");
     }
@@ -71,9 +65,7 @@ class DeductionRejectionTransactionMapperTest {
     void when_missingPersonNameSegment_then_throwsException() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessageContaining("NHS Number");
     }
@@ -84,9 +76,7 @@ class DeductionRejectionTransactionMapperTest {
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
         when(transaction.getFreeText()).thenReturn(Optional.empty());
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionRejectionTransactionMapper().map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessageContaining("HA Notes");
     }

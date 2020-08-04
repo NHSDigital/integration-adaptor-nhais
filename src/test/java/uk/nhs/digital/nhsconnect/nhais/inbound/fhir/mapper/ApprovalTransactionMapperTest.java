@@ -2,13 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
@@ -35,9 +33,7 @@ class ApprovalTransactionMapperTest {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        new ApprovalTransactionMapper().map(parameters, transaction);
+        var parameters = new ApprovalTransactionMapper().map(transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 

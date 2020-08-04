@@ -20,15 +20,9 @@ public class EdifactToFhirService {
     public final Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 
     public Parameters convertToFhir(Transaction transaction) {
-        var parameters = new Parameters()
-            .addParameter(new GpTradingPartnerCode(transaction.getMessage().getInterchange()))
-            .addParameter(new PatientParameter(transaction));
-
         var transactionType = transaction.getMessage().getReferenceTransactionType().getTransactionType();
-        transactionMappers
+        return transactionMappers
             .getOrDefault(transactionType, new NotSupportedFhirTransactionMapper(transactionType))
-            .map(parameters, transaction);
-
-        return parameters;
+            .map(transaction);
     }
 }

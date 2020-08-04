@@ -111,9 +111,9 @@ class EdifactToFhirServiceTest {
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
         assertThat(gpTradingPartnerCode).isEqualTo("XX11");
 
-        verify(acceptanceMapper, never()).map(any(), any());
-        verify(approvalMapper, never()).map(any(), any());
-        verify(rejectionMapper).map(any(), any());
+        verify(acceptanceMapper, never()).map(any());
+        verify(approvalMapper, never()).map(any());
+        verify(rejectionMapper).map(any());
     }
 
     @Test
@@ -135,8 +135,8 @@ class EdifactToFhirServiceTest {
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
         assertThat(gpTradingPartnerCode).isEqualTo("XX11");
 
-        verify(acceptanceMapper, never()).map(any(), any());
-        verify(rejectionMapper, never()).map(any(), any());
-        verify(approvalMapper).map(any(), any());
+        verify(acceptanceMapper, never()).map(any());
+        verify(rejectionMapper, never()).map(any());
+        verify(approvalMapper).map(any());
     }
 }

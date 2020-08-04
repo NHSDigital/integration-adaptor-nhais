@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,8 +34,7 @@ class RejectionTransactionMapperTest {
 
         when(freeText.getFreeTextValue()).thenReturn(TEXT_LITERAL);
 
-        var parameters = new Parameters();
-        new RejectionTransactionMapper().map(parameters, transaction);
+        var parameters = new RejectionTransactionMapper().map(transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -48,7 +46,7 @@ class RejectionTransactionMapperTest {
     void whenFreeTextIsMissing_expectException(SoftAssertions softly) {
         when(transaction.getFreeText()).thenReturn(Optional.empty());
 
-        softly.assertThatThrownBy(() -> new RejectionTransactionMapper().map(new Parameters(), transaction))
+        softly.assertThatThrownBy(() -> new RejectionTransactionMapper().map(transaction))
             .isInstanceOf(EdifactValidationException.class);
     }
 

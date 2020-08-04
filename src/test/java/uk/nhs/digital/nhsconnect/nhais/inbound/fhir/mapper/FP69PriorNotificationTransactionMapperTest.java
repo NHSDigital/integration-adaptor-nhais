@@ -3,14 +3,11 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.Patient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ExpiryDate;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.FP69ReasonCode;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
@@ -48,22 +45,14 @@ class FP69PriorNotificationTransactionMapperTest {
     @InjectMocks
     private FP69PriorNotificationTransactionMapper transactionMapper;
 
-    private Parameters parameters;
-
     @Mock
     private Transaction transaction;
-
-    @BeforeEach
-    void setUp() {
-        parameters = new Parameters();
-        parameters.addParameter(new PatientParameter().setName("patient").setResource(new Patient()));
-    }
 
     @Test
     void whenPersonNameSegmentIsMissing_expectException() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the PNA+PAT segment is required to provide the patient NHS number");
     }
@@ -72,7 +61,7 @@ class FP69PriorNotificationTransactionMapperTest {
     void whenNhsNumberIsMissing_expectException() {
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder().build()));
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the PNA+PAT segment is required to provide the patient NHS number");
     }
@@ -83,7 +72,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .nhsNumber(NHS_NUMBER)
             .build()));
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the PNA+PAT segment is required to provide the patient surname");
     }
@@ -96,7 +85,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .build()));
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth");
     }
@@ -112,7 +101,7 @@ class FP69PriorNotificationTransactionMapperTest {
             .build()));
         when(transaction.getFp69ReasonCode()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the HEA+FRN segment is required");
     }
@@ -129,7 +118,7 @@ class FP69PriorNotificationTransactionMapperTest {
         when(transaction.getFp69ReasonCode()).thenReturn(Optional.of(new FP69ReasonCode(REASON_CODE)));
         when(transaction.getFp69ExpiryDate()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> transactionMapper.map(parameters, transaction))
+        assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("For an FP69 prior notification (reference F9) the DTM+962 segment is required");
     }
@@ -138,9 +127,9 @@ class FP69PriorNotificationTransactionMapperTest {
     void whenMappingRequiredValues_expectParametersAreMapped(SoftAssertions softly) {
         mockRequiredEdifact();
 
-        transactionMapper.map(parameters, transaction);
+        Parameters parameters = transactionMapper.map(transaction);
 
-        assertRequiredFields(softly);
+        assertRequiredFields(softly, parameters);
     }
 
     @Test
@@ -161,9 +150,9 @@ class FP69PriorNotificationTransactionMapperTest {
             .postalCode(POSTAL_CODE)
             .build()));
 
-        transactionMapper.map(parameters, transaction);
+        Parameters parameters = transactionMapper.map(transaction);
 
-        assertRequiredFields(softly);
+        assertRequiredFields(softly, parameters);
 
         var patient = ParametersExtension.extractPatient(parameters);
 
@@ -183,7 +172,7 @@ class FP69PriorNotificationTransactionMapperTest {
         softly.assertThat(address.getPostalCode()).isEqualTo(POSTAL_CODE);
     }
 
-    private void assertRequiredFields(SoftAssertions softly) {
+    private void assertRequiredFields(SoftAssertions softly, Parameters parameters) {
         softly.assertThat(parameters.getParameter()).hasSize(3);
 
         var patient = ParametersExtension.extractPatient(parameters);

@@ -2,13 +2,11 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DeductionDate;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DeductionReasonCode;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NewHealthAuthorityName;
@@ -59,9 +57,7 @@ class DeductionTransactionMapperTest {
         when(deductionDate.getDate()).thenReturn(DEDUCTION_DATE);
         when(newHealthAuthorityName.getHaName()).thenReturn(NEW_HA_CIPHER);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        new DeductionTransactionMapper().map(parameters, transaction);
+        var parameters = new DeductionTransactionMapper().map(transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -85,9 +81,7 @@ class DeductionTransactionMapperTest {
         when(deductionReasonCode.getCode()).thenReturn(DEDUCTION_REASON_CODE);
         when(deductionDate.getDate()).thenReturn(DEDUCTION_DATE);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        new DeductionTransactionMapper().map(parameters, transaction);
+        var parameters = new DeductionTransactionMapper().map(transaction);
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
@@ -103,9 +97,7 @@ class DeductionTransactionMapperTest {
     void when_NhsNumberIsMissing_Then_ThrowException(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionTransactionMapper().map(transaction))
             .isExactlyInstanceOf(EdifactValidationException.class);
     }
 
@@ -116,9 +108,7 @@ class DeductionTransactionMapperTest {
 
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionTransactionMapper().map(transaction))
             .isExactlyInstanceOf(EdifactValidationException.class);
     }
 
@@ -131,9 +121,7 @@ class DeductionTransactionMapperTest {
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
         when(deductionReasonCode.getCode()).thenReturn(DEDUCTION_REASON_CODE);
 
-        var parameters = new Parameters()
-            .addParameter(new PatientParameter(new Patient()));
-        assertThatThrownBy(() -> new DeductionTransactionMapper().map(parameters, transaction))
+        assertThatThrownBy(() -> new DeductionTransactionMapper().map(transaction))
             .isExactlyInstanceOf(EdifactValidationException.class);
     }
 
