@@ -81,10 +81,10 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
     private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
-            .setMessageSequence(MESSAGE_SEQUENCE)
-            .setSender(SENDER)
-            .setRecipient(RECIPIENT)
+            .setIntSeq(INTERCHANGE_SEQUENCE)
+            .setMsgSeq(MESSAGE_SEQUENCE)
+            .setSndr(SENDER)
+            .setRecip(RECIPIENT)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
@@ -98,9 +98,9 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
     private OutboundState buildOutboundState(long refMessageSequence1) {
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setInterchangeSequence(REF_INTERCHANGE_SEQUENCE_1)
-            .setMessageSequence(refMessageSequence1)
-            .setSender(RECIPIENT)
-            .setRecipient(SENDER);
+            .setIntSeq(REF_INTERCHANGE_SEQUENCE_1)
+            .setMsgSeq(refMessageSequence1)
+            .setSndr(RECIPIENT)
+            .setRecip(SENDER);
     }
 }

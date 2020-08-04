@@ -61,12 +61,12 @@ Database schema information (only relevant fields listed):
     collection: 
         outboundState / inboundState
     fields:
-        sender
-        recipient
+        sndr
+        recip
         translationTimestamp
-        interchangeSequence
-        messageSequence
-        transactionNumber
+        intSeq
+        msgSeq
+        tn
          
 ## Missing Sequence Number Report
 
@@ -76,8 +76,8 @@ To generate a report on missing sequence numbers use the following query:
         [
             {$match : {
                 translationTimestamp : { $gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>') },
-                sender : "some_sender",
-                recipient : "some_recipient"
+                sndr : "some_sender",
+                recip : "some_recipient"
             }},
             {$group : {_id : null, min : {$min : "$<db_field>"}, max : {$max : "$<db_field>"}}},
             {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
@@ -93,9 +93,9 @@ where
 - `<state_table>` state table to run report on (one of: `[inboundState, outboundState]`)
 - `<from_timestamp>` defines the "from date" of the report
 - `<to_timestamp>` defines the "to date" of the report
-- `<sender>` trading partner code of the GP that sent the message
-- `<recipient>` trading partner code of the HA that the message was addressed to
-- `<db_field>` the field to generate report for (one of: `[translationTimestamp, interchangeSequence, messageSequence, transactionNumber]`)
+- `<sndr>` trading partner code of the GP that sent the message
+- `<recip>` trading partner code of the HA that the message was addressed to
+- `<db_field>` the field to generate report for (one of: `[translationTimestamp, intSeq, msgSeq, tn]`)
 
 yields a single result document:
 
@@ -112,13 +112,13 @@ Report missing `outbound` interchange sequences from `2020-01-01` to `2020-01-31
         [
             {$match : {
                 translationTimestamp : { $gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z') },
-                sender : "TES5",
-                recipient : "XX11"
+                sndr : "TES5",
+                recip : "XX11"
             }},
-            {$group : {_id : null, min : {$min : "$interchangeSequence"}, max : {$max : "$interchangeSequence"}}},
+            {$group : {_id : null, min : {$min : "$intSeq"}, max : {$max : "$intSeq"}}},
             {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
             {$unwind : '$allPossibleNumbers'},
-            {$lookup : {from : "outboundState", localField : "allPossibleNumbers", foreignField : "interchangeSequence", as : "entries"}},
+            {$lookup : {from : "outboundState", localField : "allPossibleNumbers", foreignField : "intSeq", as : "entries"}},
             {$match : {entries : { $size: 0 }}},
             {$group: { "_id": null, "missingNumbers": {"$push": "$allPossibleNumbers" }}}
         ]
@@ -137,13 +137,13 @@ Report missing `inbound` message sequences from `2020-03-15 15:59:15` to `2020-0
         [
             {$match : {
                 translationTimestamp : { $gt: ISODate('2020-03-15 15:59:15.000Z'), $lt: ISODate('2020-03-16 14:13:12.000Z') },
-                sender : "TES5",
-                recipient : "XX1"
+                sndr : "TES5",
+                recip : "XX1"
             }},
-            {$group : {_id : null, min : {$min : "$messageSequence"}, max : {$max : "$messageSequence"}}},
+            {$group : {_id : null, min : {$min : "$msgSeq"}, max : {$max : "$msgSeq"}}},
             {$addFields : {allPossibleNumbers : {$range : ["$min", "$max"]}}},
             {$unwind : '$allPossibleNumbers'},
-            {$lookup : {from : "inboundState", localField : "allPossibleNumbers", foreignField : "messageSequence", as : "entries"}},
+            {$lookup : {from : "inboundState", localField : "allPossibleNumbers", foreignField : "msgSeq", as : "entries"}},
             {$match : {entries : { $size: 0 }}},
             {$group: { "_id": null, "missingNumbers": {"$push": "$allPossibleNumbers" }}}
         ]
@@ -163,8 +163,8 @@ To generate a report on outbound transactions for which no RECEP has been receiv
     db.getCollection('outboundState').find(
         {   
             $and: [
-                {sender: '<sender>'},
-                {recipient: '<recipient>'},
+                {sndr: '<sender>'},
+                {recip: '<recipient>'},
                 {translationTimestamp: {$gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>')}},
                 {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
             ]
@@ -173,12 +173,12 @@ To generate a report on outbound transactions for which no RECEP has been receiv
     
 where
 
-- `<sender>` trading partner code of the GP that sent the message (optional)
-- `<recipient>` trading partner code of the HA that the message was addressed to (optional)
+- `<sndr>` trading partner code of the GP that sent the message (optional)
+- `<recip>` trading partner code of the HA that the message was addressed to (optional)
 - `<from_timestamp>` defines the "from date" of the report
 - `<to_timestamp>` defines the "to date" of the report
-- `<sender>` trading partner code of the GP that sent the message
-- `<recipient>` trading partner code of the HA that the message was addressed to
+- `<sndr>` trading partner code of the GP that sent the message
+- `<recip>` trading partner code of the HA that the message was addressed to
 
 ### Missing RECEP Report Examples
 
@@ -187,8 +187,8 @@ Report on interchanges that have not received RECEP from `2020-01-01` to `2020-0
     db.getCollection('outboundState').find(
         {   
             $and: [
-                {sender: 'TES5'},
-                {recipient: 'XX1'},
+                {sndr: 'TES5'},
+                {recip: 'XX1'},
                 {translationTimestamp: {$gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z')}},
                 {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
             ]
