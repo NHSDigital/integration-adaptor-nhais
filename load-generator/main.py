@@ -51,11 +51,11 @@ collection = client['nhais'][state_type + 'State']
 
 @dataclass
 class OutboundState:
-    interchangeSequence: int
-    messageSequence: int
-    transactionNumber: int
-    sender: str
-    recipient: str
+    intSeq: int
+    msgSeq: int
+    tn: int
+    sndr: str
+    recip: str
     translationTimestamp: datetime
     workflowId: str
     operationId: str
@@ -66,11 +66,11 @@ class OutboundState:
 
 @dataclass
 class InboundState:
-    interchangeSequence: int
-    messageSequence: int
-    transactionNumber: int
-    sender: str
-    recipient: str
+    intSeq: int
+    msgSeq: int
+    tn: int
+    sndr: str
+    recip: str
     translationTimestamp: datetime
     workflowId: str
     operationId: str
@@ -90,15 +90,15 @@ def build_state_record(
     if state_record_type == 'inbound':
         operation_id = build_operation_id(recipient)
         return InboundState(
-            interchangeSequence=sis, messageSequence=sms, transactionNumber=tn, operationId=operation_id,
-            workflowId="NHAIS_REG", sender=sender, recipient=recipient, translationTimestamp=translation_timestamp,
+            intSeq=sis, msgSeq=sms, tn=tn, operationId=operation_id,
+            workflowId="NHAIS_REG", sndr=sender, recip=recipient, translationTimestamp=translation_timestamp,
             transactionType=random.choice(inboundTransactionTypes))
         pass
     elif state_record_type == 'outbound':
         operation_id = build_operation_id(sender)
         return OutboundState(
-            interchangeSequence=sis, messageSequence=sms, transactionNumber=tn, operationId=operation_id,
-            workflowId="NHAIS_REG", sender=sender, recipient=recipient, translationTimestamp=translation_timestamp,
+            intSeq=sis, msgSeq=sms, tn=tn, operationId=operation_id,
+            workflowId="NHAIS_REG", sndr=sender, recip=recipient, translationTimestamp=translation_timestamp,
             recepCode=random.choice(recepCodes), recepDateTime=datetime.now(),
             transactionType=random.choice(outboundTransactionTypes))
     else:
