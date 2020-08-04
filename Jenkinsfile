@@ -1,6 +1,6 @@
-String tfProject     = "nia"
-String tfEnvironment = "build1" // change for ptl, vp goes here
-String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
+// String tfProject     = "nia"
+// String tfEnvironment = "build1" // change for ptl, vp goes here
+// String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
 
 pipeline {
     agent{
@@ -16,7 +16,7 @@ pipeline {
         BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
         BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
         ENVIRONMENT_ID = "nhais-build"
-        ECR_REPO_DIR = "nhais"
+        ECR_REPO_DIR = "nhais-responder"
         DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
     }
 
