@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface InboundStateRepository extends CrudRepository<InboundState, String> {
-    @Query("{ 'workflowId' : ?0, 'sender' : ?1, 'recipient' : ?2, 'interchangeSequence' : ?3, 'messageSequence' : ?4, 'transactionNumber' : ?5}")
+    @Query("{ 'workflowId' : ?0, 'sndr' : ?1, 'recip' : ?2, 'intSeq' : ?3, 'msgSeq' : ?4, 'tn' : ?5}")
     Optional<InboundState> findBy(WorkflowId workflowId, String sender, String recipient, Long interchangeSequence, Long messageSequence, Long transactionNumber);
 }
