@@ -27,16 +27,16 @@ public class OutboundStateRepositoryTest {
     void whenDuplicateInterchangeOutboundStateInserted_thenThrowsException() {
         var outboundState = new OutboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setSender("some_sender")
-            .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
-            .setMessageSequence(234L);
+            .setSndr("some_sender")
+            .setRecip("some_recipient")
+            .setIntSeq(123L)
+            .setMsgSeq(234L);
         var duplicateOutboundState = new OutboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setSender("some_sender")
-            .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
-            .setMessageSequence(234L);
+            .setSndr("some_sender")
+            .setRecip("some_recipient")
+            .setIntSeq(123L)
+            .setMsgSeq(234L);
 
         assertInsert(outboundState, duplicateOutboundState);
     }
@@ -45,14 +45,14 @@ public class OutboundStateRepositoryTest {
     void whenDuplicateRecepOutboundStateInserted_thenThrowsException() {
         var outboundState = new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSender("some_sender")
-            .setRecipient("some_recipient")
-            .setInterchangeSequence(123L);
+            .setSndr("some_sender")
+            .setRecip("some_recipient")
+            .setIntSeq(123L);
         var duplicateOutboundState = new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSender("some_sender")
-            .setRecipient("some_recipient")
-            .setInterchangeSequence(123L);
+            .setSndr("some_sender")
+            .setRecip("some_recipient")
+            .setIntSeq(123L);
 
         assertInsert(outboundState, duplicateOutboundState);
     }

@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.state;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -31,10 +30,10 @@ public class InboundStateRecepTest {
     private static final long MESSAGE_SEQUENCE = 234L;
     public static final InboundState EXPECTED_RECEP_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.RECEP)
-        .setSender(SENDER)
-        .setRecipient(RECIPIENT)
-        .setInterchangeSequence(INTERCHANGE_SEQUENCE)
-        .setMessageSequence(MESSAGE_SEQUENCE)
+        .setSndr(SENDER)
+        .setRecip(RECIPIENT)
+        .setIntSeq(INTERCHANGE_SEQUENCE)
+        .setMsgSeq(MESSAGE_SEQUENCE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 
     @BeforeEach

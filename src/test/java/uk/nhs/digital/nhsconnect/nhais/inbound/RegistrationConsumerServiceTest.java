@@ -229,10 +229,10 @@ public class RegistrationConsumerServiceTest {
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
         var expectedRecepOutboundState = new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSender(RECEP_SENDER)
-            .setRecipient(RECEP_RECIPIENT)
-            .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
-            .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
+            .setSndr(RECEP_SENDER)
+            .setRecip(RECEP_RECIPIENT)
+            .setIntSeq(RECEP_INTERCHANGE_SEQUENCE)
+            .setMsgSeq(RECEP_MESSAGE_SEQUENCE)
             .setTranslationTimestamp(translationTime);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
@@ -261,11 +261,11 @@ public class RegistrationConsumerServiceTest {
         InboundState savedInboundState, long sms, long tn, ReferenceTransactionType.TransactionType transactionType, Instant translationTyime) {
 
         assertThat(savedInboundState.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
-        assertThat(savedInboundState.getSender()).isEqualTo(SENDER);
-        assertThat(savedInboundState.getRecipient()).isEqualTo(RECIPIENT);
-        assertThat(savedInboundState.getInterchangeSequence()).isEqualTo(SIS);
-        assertThat(savedInboundState.getMessageSequence()).isEqualTo(sms);
-        assertThat(savedInboundState.getTransactionNumber()).isEqualTo(tn);
+        assertThat(savedInboundState.getSndr()).isEqualTo(SENDER);
+        assertThat(savedInboundState.getRecip()).isEqualTo(RECIPIENT);
+        assertThat(savedInboundState.getIntSeq()).isEqualTo(SIS);
+        assertThat(savedInboundState.getMsgSeq()).isEqualTo(sms);
+        assertThat(savedInboundState.getTn()).isEqualTo(tn);
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo(transactionType.getCode());
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(translationTyime);
     }

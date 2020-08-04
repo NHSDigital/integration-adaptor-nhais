@@ -17,7 +17,7 @@ import java.time.Instant;
 @CompoundIndexes({
     @CompoundIndex(
         name = "unique_outbound_state",
-        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
+        def = "{'sndr': 1, 'recip': 1, 'intSeq' : 1, 'msgSeq': 1, 'tn': 1}",
         unique = true)
 })
 @Data
@@ -28,13 +28,13 @@ public class OutboundState {
     private String id;
     private WorkflowId workflowId;
     private String operationId;
-    private Long transactionNumber;
+    private Long tn;
     private Instant translationTimestamp;
     private ReferenceTransactionType.Outbound transactionType;
-    private Long interchangeSequence;
-    private Long messageSequence;
-    private String sender;
-    private String recipient;
+    private Long intSeq;
+    private Long msgSeq;
+    private String sndr;
+    private String recip;
     private ReferenceMessageRecep.RecepCode recepCode;
     private Instant recepDateTime;
 
@@ -45,10 +45,10 @@ public class OutboundState {
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setMessageSequence(messageHeader.getSequenceNumber())
-            .setSender(interchangeHeader.getSender())
-            .setRecipient(interchangeHeader.getRecipient())
+            .setIntSeq(interchangeHeader.getSequenceNumber())
+            .setMsgSeq(messageHeader.getSequenceNumber())
+            .setSndr(interchangeHeader.getSender())
+            .setRecip(interchangeHeader.getRecipient())
             .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }

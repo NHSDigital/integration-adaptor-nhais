@@ -18,7 +18,7 @@ import java.time.Instant;
 @CompoundIndexes({
     @CompoundIndex(
         name = "unique_inbound_state",
-        def = "{'sender': 1, 'recipient': 1, 'interchangeSequence' : 1, 'messageSequence': 1, 'transactionNumber': 1}",
+        def = "{'sndr': 1, 'recip': 1, 'intSeq' : 1, 'msgSeq': 1, 'tn': 1}",
         unique = true)
 })
 @Data
@@ -29,11 +29,11 @@ public class InboundState {
     private String id;
     private WorkflowId workflowId;
     private String operationId;
-    private Long interchangeSequence;
-    private Long messageSequence;
-    private String sender;
-    private String recipient;
-    private Long transactionNumber;
+    private Long intSeq;
+    private Long msgSeq;
+    private String sndr;
+    private String recip;
+    private Long tn;
     private Instant translationTimestamp;
     private ReferenceTransactionType.Inbound transactionType;
 
@@ -50,11 +50,11 @@ public class InboundState {
         return new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(OperationId.buildOperationId(recipient, transactionNumber))
-            .setSender(interchangeHeader.getSender())
-            .setRecipient(recipient)
-            .setInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setMessageSequence(messageHeader.getSequenceNumber())
-            .setTransactionNumber(transactionNumber)
+            .setSndr(interchangeHeader.getSender())
+            .setRecip(recipient)
+            .setIntSeq(interchangeHeader.getSequenceNumber())
+            .setMsgSeq(messageHeader.getSequenceNumber())
+            .setTn(transactionNumber)
             .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationDateTime.getTimestamp());
     }
@@ -66,10 +66,10 @@ public class InboundState {
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setInterchangeSequence(interchangeHeader.getSequenceNumber())
-            .setMessageSequence(messageHeader.getSequenceNumber())
-            .setSender(interchangeHeader.getSender())
-            .setRecipient(interchangeHeader.getRecipient())
+            .setIntSeq(interchangeHeader.getSequenceNumber())
+            .setMsgSeq(messageHeader.getSequenceNumber())
+            .setSndr(interchangeHeader.getSender())
+            .setRecip(interchangeHeader.getRecipient())
             .setTranslationTimestamp(dateTimePeriod.getTimestamp());
     }
 }
