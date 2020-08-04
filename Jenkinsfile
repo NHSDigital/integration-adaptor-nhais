@@ -1,6 +1,6 @@
-// String tfProject     = "nia"
-// String tfEnvironment = "build1" // change for ptl, vp goes here
-// String tfComponent   = "nhais"  // this defines the application - nhais, mhs, 111 etc
+String tfProject     = "nia"
+String tfEnvironment = "build1" // change for ptl, vp goes here
+String tfComponent   = "nhais-responder"  // this defines the application - nhais, mhs, 111 etc
 
 pipeline {
     agent{
