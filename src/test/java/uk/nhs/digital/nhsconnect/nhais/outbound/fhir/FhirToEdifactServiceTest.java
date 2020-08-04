@@ -107,11 +107,11 @@ public class FhirToEdifactServiceTest {
 
         OutboundState expected = new OutboundState();
         expected.setWorkflowId(WorkflowId.REGISTRATION);
-        expected.setRecipient(HA_TRADING_PARTNER_CODE);
-        expected.setSender(GP_TRADING_PARTNER_CODE);
-        expected.setInterchangeSequence(SIS);
-        expected.setMessageSequence(SMS);
-        expected.setTransactionNumber(TN);
+        expected.setRecip(HA_TRADING_PARTNER_CODE);
+        expected.setSndr(GP_TRADING_PARTNER_CODE);
+        expected.setIntSeq(SIS);
+        expected.setMsgSeq(SMS);
+        expected.setTn(TN);
         expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
         expected.setTranslationTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);

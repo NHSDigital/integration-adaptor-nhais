@@ -7,7 +7,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.RecepConsumerService;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -17,7 +16,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.EdifactParser;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
@@ -155,10 +153,10 @@ class RecepConsumerServiceTest {
         assertThat(inboundState).isEqualTo(
             new InboundState()
                 .setWorkflowId(WorkflowId.RECEP)
-                .setInterchangeSequence(SIS)
-                .setMessageSequence(sms)
-                .setSender(SENDER)
-                .setRecipient(RECIPIENT)
+                .setIntSeq(SIS)
+                .setMsgSeq(sms)
+                .setSndr(SENDER)
+                .setRecip(RECIPIENT)
                 .setTranslationTimestamp(translationTimestamp));
     }
 }

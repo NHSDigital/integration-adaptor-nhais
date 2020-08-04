@@ -37,11 +37,11 @@ public class InboundStateInterchangeTest {
     public static final InboundState EXPECTED_INTERCHANGE_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)
-        .setSender(SENDER)
-        .setRecipient(RECIPIENT)
-        .setInterchangeSequence(INTERCHANGE_SEQUENCE)
-        .setMessageSequence(MESSAGE_SEQUENCE)
-        .setTransactionNumber(TRANSACTION_NUMBER)
+        .setSndr(SENDER)
+        .setRecip(RECIPIENT)
+        .setIntSeq(INTERCHANGE_SEQUENCE)
+        .setMsgSeq(MESSAGE_SEQUENCE)
+        .setTn(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 
