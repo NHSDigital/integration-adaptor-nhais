@@ -46,7 +46,14 @@ configurations {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation( 'org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE') {
+		exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-core'
+	}
+	compile 'org.apache.tomcat.embed:tomcat-embed-core:9.0.37'
+	compile 'org.glassfish:jakarta.el:3.0.3'
+	compile ('org.apache.tomcat.embed:tomcat-embed-websocket:9.0.37') {
+		exclude group: 'tomcat-annotations-api', module: 'org.apache.tomcat'
+	}
 	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
 	implementation 'com.heroku.sdk:env-keystore:1.1.4'
 
