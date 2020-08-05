@@ -9,7 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
@@ -24,6 +24,9 @@ import java.util.stream.Stream;
 
 @Component
 public class EdifactParser {
+
+    private final String TRANSACTION_START_SEGMENT = ReferenceTransactionNumber.KEY_QUALIFIER;
+
     public Interchange parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));
 
@@ -59,7 +62,7 @@ public class EdifactParser {
 
     private Message parseMessage(List<String> singleMessageEdifactSegments) {
         var messageTrailerIndex = singleMessageEdifactSegments.size() - 1;
-        var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01).stream()
+        var firstTransactionStartIndex = findAllIndexesOfSegment(singleMessageEdifactSegments, TRANSACTION_START_SEGMENT).stream()
             .findFirst()
             // there might be no transaction inside - RECEP - so all message lines belong to the message
             .orElse(messageTrailerIndex);
@@ -76,7 +79,7 @@ public class EdifactParser {
     }
 
     private List<Transaction> parseAllTransactions(List<String> singleMessageEdifactSegments) {
-        var transactionStartIndexes = findAllIndexesOfSegment(singleMessageEdifactSegments, SegmentGroup.KEY_01);
+        var transactionStartIndexes = findAllIndexesOfSegment(singleMessageEdifactSegments, TRANSACTION_START_SEGMENT);
         var transactionEndIndexes = new ArrayList<>(transactionStartIndexes);
 
         // there might be no transactions inside - RECEP
