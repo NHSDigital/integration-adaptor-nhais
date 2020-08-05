@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The fix for [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) changes the names of some
 properties in two database collections. Any existing collections should be dropped before using this version.
 
+### Changed
+
 Features:
 
 - Validate that a MESH Mailbox ID has been configured for the HA Trading Partner Code before translating outbound transactions
@@ -32,13 +34,14 @@ Documentation:
 - [REPORTING.md](./REPORTING.md) describes how to detect missing interchanges
 
 ### Fixed
+
 - [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) Shortened Inbound and Outbound state 
 key names to make them CosmosDB compliant.
 - Removed extra trailing slash from MESH send message URI which prevented sending messages to MESH API
 
 ## [1.0.2] - 2020-07-28
 
-### Changes
+### Changed
 
 - Fixes a bug preventing messages from being sent to MESH
 
