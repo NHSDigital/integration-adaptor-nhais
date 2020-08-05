@@ -1,15 +1,16 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper;
 
+import org.hl7.fhir.r4.model.Parameters;
+import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 
-import org.hl7.fhir.r4.model.Parameters;
-
-public class CloseQuarterNotificationMapper implements FhirTransactionMapper{
+@Component
+public class CloseQuarterNotificationMapper implements FhirTransactionMapper {
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
-        //this mapper is intentionally left blank, parameters are not modified for close quarter notification
+    public Parameters map(Transaction transaction) {
+        return new Parameters();//this mapper is intentionally left blank, parameters are not modified for close quarter notification
     }
 
     @Override

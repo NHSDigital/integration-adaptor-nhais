@@ -12,8 +12,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 public class RejectionTransactionMapper implements FhirTransactionMapper {
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
         mapFreeText(parameters, transaction);
+        return parameters;
     }
 
     private void mapFreeText(Parameters parameters, Transaction transaction) {

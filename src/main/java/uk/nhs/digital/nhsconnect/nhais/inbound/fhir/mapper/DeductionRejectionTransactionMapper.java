@@ -17,7 +17,8 @@ import java.util.List;
 public class DeductionRejectionTransactionMapper implements FhirTransactionMapper {
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
         var nhsIdentifier = transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
@@ -30,6 +31,7 @@ public class DeductionRejectionTransactionMapper implements FhirTransactionMappe
         parameters.addParameter()
             .setName(ParameterNames.FREE_TEXT)
             .setValue(new StringType(freeText.getFreeTextValue()));
+        return parameters;
     }
 
     @Override
