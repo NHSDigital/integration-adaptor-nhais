@@ -24,7 +24,7 @@ Create configuration to run the main.py, using the virtual environment, with par
 --state_type outbound 
 --batch_size 100
 ```
-Timestamp works with " ", while for ' ' there is a parser error. 
+Timestamp works with " ", while for ' ' or without quotes it cannot be parsed. 
 
 Default mongodb location is localhost:27017. If you use another, add host and port to parameters:
 ```
