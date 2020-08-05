@@ -1,0 +1,45 @@
+  environment {
+        BUILD_TAG = sh label: 'Generating build tag', returnStdout: true, script: 'python3 pipeline/scripts/tag.py ${GIT_BRANCH} ${BUILD_NUMBER} ${GIT_COMMIT}'
+        BUILD_TAG_LOWER = sh label: 'Lowercase build tag', returnStdout: true, script: "echo -n ${BUILD_TAG} | tr '[:upper:]' '[:lower:]'"
+        ENVIRONMENT_ID = "nhais-build"
+        ECR_REPO_DIR = "nhais-fake-responder"
+        DOCKER_IMAGE = "${DOCKER_REGISTRY}/${ECR_REPO_DIR}:${BUILD_TAG}"
+    }
+
+    stages {
+        stage('Build Locally') {
+            stages {
+                stage('Build responder image locally') {
+                    steps {
+                        script {
+                            sh label: 'Build responder image', script: 'docker build -t local/nhais-responder:${BUILD_TAG} -f Dockerfile.responder .'
+                        }
+                    }
+                }
+                stage('Build Docker Images') {
+                    steps {
+                        script {
+                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
+                        }
+                    }
+                }
+                stage('Push image') {
+                    when {
+                        expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+                    }
+                    steps {
+                        script {
+                            if (ecrLogin(TF_STATE_BUCKET_REGION) != 0 )  { error("Docker login to ECR failed") }
+                            String dockerPushCommand = "docker push ${DOCKER_IMAGE}"
+                            if (sh (label: "Pushing image", script: dockerPushCommand, returnStatus: true) !=0) { error("Docker push image failed") }
+                        }
+                    }
+                }
+            }
+post {
+        always {
+            sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
+            sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
+        }
+    }
+        }
