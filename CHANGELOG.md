@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inbound EDIFACT interchange files generator
 - Validate HA Cypher before generating sequence numbers
 - Inbound EDIFACT interchange files sender
+- Handling of inbound Close Quarter Notification transaction 
 
 ### Fixed
 - Shortened Inbound and Outbound state key names to make them CosmosDB compliant - 
