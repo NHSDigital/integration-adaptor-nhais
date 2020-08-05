@@ -40,6 +40,7 @@ post {
         always {
             sh label: 'Remove all unused images not just dangling ones', script:'docker system prune --force'
             sh 'docker image rm -f $(docker images "*/*:*${BUILD_TAG}" -q) $(docker images "*/*/*:*${BUILD_TAG}" -q) || true'
+        }  
         }
+}
     }
-        }
