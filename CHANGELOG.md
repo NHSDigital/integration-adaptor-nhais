@@ -6,21 +6,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [1.1.0] - 2020-08-05
 
-- RECEP responder - NHAIS adaptor instance that responds with RECEP messages
-- Dockerized RECEP responder
-- Inbound EDIFACT interchange files generator
-- Validate HA Cypher before generating sequence numbers
-- Inbound EDIFACT interchange files sender
+### Release Notes
+
+The fix for [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) changes the names of some
+properties in two database collections. Any existing collections should be dropped before using this version.
+
+### Changed
+
+Features:
+
+- Validate that a MESH Mailbox ID has been configured for the HA Trading Partner Code before translating outbound transactions
+- Improved logging of MESH API interactions and handling of messages with unsupported workflow ids
+- Acknowledge (RECEP) inbound Close Quarter Notification transactions without producing a FHIR message or error
+
+Non-functional:
+
+- V&P Testing: RECEP Responder - NHAIS adaptor instance that responds with RECEP messages
+- V&P Testing: Dockerised RECEP Responder
+- V&P Testing: Batch inbound EDIFACT file generator
+- V&P Testing: Batch inbound EDIFACT file sender
+- V&P Testing: JMeter script for outbound transactions
+
+Documentation:
+
+- [REPORTING.md](./REPORTING.md) describes how to detect missing interchanges
 
 ### Fixed
-- Shortened Inbound and Outbound state key names to make them CosmosDB compliant - 
-if MongoDb is still in use the data in those collections will be invalid
+
+- [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) Shortened Inbound and Outbound state 
+key names to make them CosmosDB compliant.
+- Removed extra trailing slash from MESH send message URI which prevented sending messages to MESH API
 
 ## [1.0.2] - 2020-07-28
 
-### Changes
+### Changed
 
 - Fixes a bug preventing messages from being sent to MESH
 
