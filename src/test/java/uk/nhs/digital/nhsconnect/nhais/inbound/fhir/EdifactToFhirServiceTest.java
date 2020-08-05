@@ -5,19 +5,18 @@ import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.EdifactParser;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.ApprovalTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.DeductionTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.FhirTransactionMapper;
+import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.mapper.RejectionTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
@@ -28,8 +27,8 @@ class EdifactToFhirServiceTest {
         "NAD+FHS+XX1:954'\n" +
         "DTM+137:199201141619:203'\n" +
         "RFF+950:F3'\n" +
-        "S01+1'\n" +
         "RFF+TN:18'\n" +
+        "S01+1'\n" +
         "NAD+GP+2750922,295:900'\n" +
         "NAD+RIC+RT:956'\n" +
         "QTY+951:6'\n" +
@@ -55,8 +54,8 @@ class EdifactToFhirServiceTest {
         "NAD+FHS+XX1:954'\n" +
         "DTM+137:199201141619:203'\n" +
         "RFF+950:F4'\n" +
-        "S01+1'\n" +
         "RFF+TN:18'\n" +
+        "S01+1'\n" +
         "NAD+GP+2750922,295:900'\n" +
         "NAD+RIC+RT:956'\n" +
         "QTY+951:6'\n" +
@@ -75,21 +74,15 @@ class EdifactToFhirServiceTest {
         "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
         "UNT+24+00000004'\n" +
         "UNZ+1+00000003'";
-    @Mock
-    private FhirTransactionMapper rejectionMapper;
-    @Mock
-    private FhirTransactionMapper acceptanceMapper;
-    @Mock
-    private FhirTransactionMapper approvalMapper;
 
     private Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 
     @BeforeEach
     void setUp() {
         transactionMappers = Map.of(
-            ReferenceTransactionType.Inbound.REJECTION, rejectionMapper,
-            ReferenceTransactionType.Outbound.ACCEPTANCE, acceptanceMapper,
-            ReferenceTransactionType.Inbound.APPROVAL, approvalMapper);
+            ReferenceTransactionType.Inbound.REJECTION, new RejectionTransactionMapper(),
+            ReferenceTransactionType.Inbound.DEDUCTION, new DeductionTransactionMapper(),
+            ReferenceTransactionType.Inbound.APPROVAL, new ApprovalTransactionMapper());
     }
 
     @Test
@@ -110,10 +103,6 @@ class EdifactToFhirServiceTest {
             .isEqualTo("https://fhir.hl7.org.uk/Id/gmc-number");
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
         assertThat(gpTradingPartnerCode).isEqualTo("XX11");
-
-        verify(acceptanceMapper, never()).map(any());
-        verify(approvalMapper, never()).map(any());
-        verify(rejectionMapper).map(any());
     }
 
     @Test
@@ -134,9 +123,5 @@ class EdifactToFhirServiceTest {
             .isEqualTo("https://fhir.hl7.org.uk/Id/gmc-number");
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getValue()).isEqualTo("2750922,295");
         assertThat(gpTradingPartnerCode).isEqualTo("XX11");
-
-        verify(acceptanceMapper, never()).map(any());
-        verify(rejectionMapper, never()).map(any());
-        verify(approvalMapper).map(any());
     }
 }
