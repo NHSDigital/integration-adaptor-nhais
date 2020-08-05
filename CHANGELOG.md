@@ -34,7 +34,7 @@ Documentation:
 ### Fixed
 - [Issue #201](https://github.com/nhsconnect/integration-adaptor-nhais/issues/201) Shortened Inbound and Outbound state 
 key names to make them CosmosDB compliant.
-- Removed extra tailing slash from MESH send message URI which prevented sending messages to MESH API
+- Removed extra trailing slash from MESH send message URI which prevented sending messages to MESH API
 
 ## [1.0.2] - 2020-07-28
 
