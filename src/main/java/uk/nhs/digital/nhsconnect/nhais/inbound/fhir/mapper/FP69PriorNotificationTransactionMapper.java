@@ -34,7 +34,8 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
         var patient = ParametersExtension.extractPatient(parameters);
         mapNHSNumber(patient, transaction);
         mapName(patient, transaction);
@@ -44,6 +45,7 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
         mapReasonCode(parameters, transaction);
         mapExpiryDate(parameters, transaction);
         mapFreeText(parameters, transaction);
+        return parameters;
     }
 
     @Override

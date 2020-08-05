@@ -13,11 +13,14 @@ import java.util.List;
 @Component
 public class ApprovalTransactionMapper implements FhirTransactionMapper {
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
+
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
             .ifPresent(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)));
+        return parameters;
     }
 
     @Override

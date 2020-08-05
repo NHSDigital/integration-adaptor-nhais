@@ -22,7 +22,8 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
     private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
@@ -42,6 +43,7 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
         transaction.getNewHealthAuthorityName()
             .map(NewHealthAuthorityName::getHaName)
             .ifPresent(haName -> parameters.addParameter(ParameterNames.NEW_HA_CIPHER, haName));
+        return parameters;
     }
 
     @Override

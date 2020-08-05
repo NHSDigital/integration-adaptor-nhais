@@ -15,12 +15,14 @@ import java.util.List;
 public class FP69FlagRemovalTransactionMapper implements FhirTransactionMapper {
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
+        var parameters = FhirTransactionMapper.createParameters(transaction);
         var nhsIdentifier = transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
             .orElseThrow(() -> new EdifactValidationException("NHS Number is mandatory for inbound FP69 flag removal transaction"));
         ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier));
+        return parameters;
     }
 
     @Override
