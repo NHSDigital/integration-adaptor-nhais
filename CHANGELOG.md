@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Acknowledge (RECEP) inbound Close Quarter Notification transactions without producing a FHIR message or error
-
 ## [1.1.0] - 2020-08-04
 
 ### Release Notes
@@ -21,6 +17,7 @@ Features:
 
 - Validate that a MESH Mailbox ID has been configured for the HA Trading Partner Code before translating outbound transactions
 - Improved logging of MESH API interactions and handling of messages with unsupported workflow ids
+- Acknowledge (RECEP) inbound Close Quarter Notification transactions without producing a FHIR message or error
 
 Non-functional:
 
