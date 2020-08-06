@@ -46,7 +46,7 @@ configurations {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
 	implementation 'com.heroku.sdk:env-keystore:1.1.4'
 
