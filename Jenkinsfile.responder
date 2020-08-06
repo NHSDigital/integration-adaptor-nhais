@@ -25,7 +25,7 @@
                     steps {
                         script {
                             sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
-                            sh label: "Re-tag responder image", script: "docker image tag ${BUILD_TAG} ${DOCKER_IMAGE}"
+                            sh label: "Re-tag responder image", script: "docker image tag ${BUILD_TAG_LOWER} ${DOCKER_IMAGE}"
                         }
                     }
                 }
