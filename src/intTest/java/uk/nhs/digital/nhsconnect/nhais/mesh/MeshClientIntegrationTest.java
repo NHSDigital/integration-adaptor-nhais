@@ -122,4 +122,9 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
 
         assertThat(meshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
     }
+
+    @Test
+    void When_Authenticating_Then_NoExceptionThrown() {
+        assertThatCode( () -> meshClient.authenticate()).doesNotThrowAnyException();
+    }
 }
