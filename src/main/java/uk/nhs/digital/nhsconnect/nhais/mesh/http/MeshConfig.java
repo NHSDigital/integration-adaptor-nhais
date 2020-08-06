@@ -1,13 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import lombok.Getter;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
+@Slf4j
 public class MeshConfig {
 
     private final String mailboxId;
@@ -34,18 +35,24 @@ public class MeshConfig {
     }
 
     public String getEndpointCert() {
+        LOGGER.debug("RAW MESH ENDPOINT CERT: {}", endpointCert);
         String cert = endpointCert;  //below computations are needed when default certificate is imported from application.yml
         cert = cert.replaceAll("-----BEGIN CERTIFICATE-----", "");
         cert = cert.replaceAll("-----END CERTIFICATE-----", "");
         cert = cert.replaceAll(" ", "\n");
-        return "-----BEGIN CERTIFICATE-----\n" + cert + "-----END CERTIFICATE-----";
+        cert =  "-----BEGIN CERTIFICATE-----\n" + cert + "-----END CERTIFICATE-----";
+        LOGGER.debug("TRANSFORMED MESH ENDPOINT CERT: {}", cert);
+        return cert;
     }
 
     public String getEndpointPrivateKey() {
+        LOGGER.debug("RAW MESH ENDPOINT PRIVATE KEY: {}", endpointPrivateKey);
         String key = endpointPrivateKey; //below computations are needed when default private key is imported from application.yml
         key = key.replaceAll("-----BEGIN RSA PRIVATE KEY-----", "");
         key = key.replaceAll("-----END RSA PRIVATE KEY-----", "");
         key = key.replaceAll(" ", "\n");
-        return "-----BEGIN RSA PRIVATE KEY-----\n" + key + "-----END RSA PRIVATE KEY-----";
+        key = "-----BEGIN RSA PRIVATE KEY-----\n" + key + "-----END RSA PRIVATE KEY-----";
+        LOGGER.debug("TRANSFORMED MESH ENDPOINT PRIVATE KEY: {}", key);
+        return key;
     }
 }
