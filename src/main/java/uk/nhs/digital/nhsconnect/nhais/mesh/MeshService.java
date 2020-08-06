@@ -50,6 +50,7 @@ public class MeshService {
         LOGGER.info("Requesting lock from database to run MESH mailbox polling cycle");
         if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
             LOGGER.info("Starting MESH mailbox polling cycle");
+            meshClient.authenticate();
             List<String> inboxMessageIds = meshClient.getInboxMessageIds();
             LOGGER.info("There are {} messages in the MESH mailbox", inboxMessageIds.size());
             for (String messageId : inboxMessageIds) {

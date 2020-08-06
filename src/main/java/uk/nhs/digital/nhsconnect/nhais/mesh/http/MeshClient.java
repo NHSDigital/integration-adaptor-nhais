@@ -36,6 +36,23 @@ public class MeshClient {
     private final MeshCypherDecoder meshCypherDecoder;
 
     @SneakyThrows
+    public void authenticate() {
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+            final var loggingName = "Authenticate";
+            var request = meshRequests.authenticate();
+            logRequest(loggingName, request);
+            try (CloseableHttpResponse response = client.execute(request)) {
+                logResponse(loggingName, response);
+                if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
+                    throw new MeshApiConnectionException("Couldn't authenticate to MESH.",
+                        HttpStatus.OK,
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                }
+            }
+        }
+    }
+
+    @SneakyThrows
     public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
         final var loggingName = "Send a message";
         String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
