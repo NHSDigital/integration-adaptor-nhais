@@ -14,18 +14,10 @@
     stages {
         stage('Build Locally') {
             stages {
-                stage('Build responder image locally') {
-                    steps {
-                        script {
-                            sh label: 'Build responder image', script: 'docker build -t local/nhais-responder:${BUILD_TAG} -f Dockerfile.responder .'
-                        }
-                    }
-                }
                 stage('Build Docker Images') {
                     steps {
                         script {
-                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} .'
-                            sh label: "Re-tag responder image", script: "docker image tag ${DOCKER_IMAGE} ${BUILD_TAG_LOWER}"
+                            sh label: 'Running docker build', script: 'docker build -t ${DOCKER_IMAGE} -f Dockerfile.responder .'
                         }
                     }
                 }
