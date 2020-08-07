@@ -2,11 +2,14 @@ package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,10 +62,22 @@ public class MeshConfig {
         return key;
     }
 
+    private static final Pattern PEM_PATTERN = Pattern.compile("(-----[A-Z ]+-----)([^-]+)(-----[A-Z ]+-----)");
+
     private String trimExtraWhitespace(String value) {
-        return Arrays.stream(value.split("\\r?\\n"))
+        Matcher matcher = PEM_PATTERN.matcher(value);
+        if(!matcher.matches()) {
+            throw new RuntimeException("Invalid certificate or key format.");
+        }
+        String header = matcher.group(1).strip();
+        String body = matcher.group(2);
+        String footer = matcher.group(3).strip();
+
+        body = Arrays.stream(body.split("\\s+"))
             .map(String::strip)
-            .filter(s -> s != null && !s.isBlank())
+            .filter(StringUtils::isNotBlank)
             .collect(Collectors.joining("\n"));
+
+        return String.join("\n", header, body, footer);
     }
 }
