@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MeshConfig {
 
+    private static final Pattern PEM_PATTERN = Pattern.compile("(-----[A-Z ]+-----)([^-]+)(-----[A-Z ]+-----)");
+
     private final String mailboxId;
     private final String mailboxPassword;
     private final String sharedKey;
@@ -41,34 +43,28 @@ public class MeshConfig {
     }
 
     public String getEndpointCert() {
-        LOGGER.debug("RAW MESH ENDPOINT CERT: {}", endpointCert);
-        String cert = trimExtraWhitespace(endpointCert);  //below computations are needed when default certificate is imported from application.yml
-//        cert = cert.replaceAll("-----BEGIN CERTIFICATE-----", "");
-//        cert = cert.replaceAll("-----END CERTIFICATE-----", "");
-//        cert = cert.replaceAll(" ", "\n");
-//        cert =  "-----BEGIN CERTIFICATE-----\n" + cert + "-----END CERTIFICATE-----";
-        LOGGER.debug("TRANSFORMED MESH ENDPOINT CERT: {}", cert);
-        return cert;
+        return trimExtraWhitespace(endpointCert);
     }
 
     public String getEndpointPrivateKey() {
-        LOGGER.debug("RAW MESH ENDPOINT PRIVATE KEY: {}", endpointPrivateKey);
-        String key = trimExtraWhitespace(endpointPrivateKey);
-//        key = key.replaceAll("-----BEGIN RSA PRIVATE KEY-----", "");
-//        key = key.replaceAll("-----END RSA PRIVATE KEY-----", "");
-//        key = key.replaceAll(" ", "\n");
-//        key = "-----BEGIN RSA PRIVATE KEY-----\n" + key + "-----END RSA PRIVATE KEY-----";
-        LOGGER.debug("TRANSFORMED MESH ENDPOINT PRIVATE KEY: {}", key);
-        return key;
+        return trimExtraWhitespace(endpointPrivateKey);
     }
 
-    private static final Pattern PEM_PATTERN = Pattern.compile("(-----[A-Z ]+-----)([^-]+)(-----[A-Z ]+-----)");
-
+    /**
+     * Different methods of importing the certificates (application.yml, ENV, Cloud secret) can affect whitespace
+     * and line delimiters. For these to be read as valid PEM files the whitespace needs to be stripped and newlines
+     * included appropriately. This method parses and reformats these inputs into strings that can be read as PEM files.
+     *
+     * @param value the certificate or key to reform
+     * @return the reformatted certificate or key
+     */
     private String trimExtraWhitespace(String value) {
         Matcher matcher = PEM_PATTERN.matcher(value);
-        if(!matcher.matches()) {
-            throw new RuntimeException("Invalid certificate or key format.");
+
+        if (!matcher.matches()) {
+            throw new RuntimeException("Invalid certificate or key format");
         }
+
         String header = matcher.group(1).strip();
         String body = matcher.group(2);
         String footer = matcher.group(3).strip();
