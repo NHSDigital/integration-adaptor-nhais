@@ -37,6 +37,7 @@ public class MeshClient {
 
     @SneakyThrows
     public void authenticate() {
+        System.out.println("---------------------------------- authenticate");
         try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
             final var loggingName = "Authenticate";
             var request = meshRequests.authenticate();

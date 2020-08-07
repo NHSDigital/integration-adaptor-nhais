@@ -14,13 +14,17 @@ import org.apache.http.ssl.SSLContexts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshHttpClientBuilder {
+    private static final String KEY_MANAGER_FACTORY_TYPE = "Sunx509";
 
     private final MeshConfig meshConfig;
 
@@ -38,15 +42,25 @@ public class MeshHttpClientBuilder {
 
     @SneakyThrows
     private SSLContext defaultSSLContext() {
+        System.out.println("------------------------------------- default SSL CONTEXT");
         KeyStore ks = EnvKeyStore.createFromPEMStrings(meshConfig.getEndpointPrivateKey(), meshConfig.getEndpointCert(), meshConfig.getMailboxPassword()).keyStore();
+        KeyStore ts = EnvKeyStore.createFromPEMStrings(meshConfig.getSubCAcert(), meshConfig.getMailboxPassword()).keyStore();
 
-        // subCA certificate + Root CA certificate
-        KeyStore ts = EnvKeyStore.createFromPEMStrings(meshConfig.getSubCAcert(), meshConfig.getRootCA(), meshConfig.getMailboxPassword()).keyStore();
-        return SSLContexts.custom()
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE);
+        keyManagerFactory.init(ks, meshConfig.getMailboxPassword().toCharArray());
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(ts);
+
+        SSLContext sslContext = SSLContexts.custom()
             .loadKeyMaterial(ks, this.meshConfig.getMailboxPassword().toCharArray())
 //            .loadTrustMaterial(TrustAllStrategy.INSTANCE) //TODO: TrustAllStrategy works for fake mesh - in production TrustSelfSignedStrategy should be used
             .loadTrustMaterial(ts, TrustSelfSignedStrategy.INSTANCE)
             .build();
+
+        sslContext.init(keyManagerFactory.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+
+        return sslContext;
     }
 
 }
