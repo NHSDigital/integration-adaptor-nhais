@@ -37,18 +37,14 @@ public class MeshConfigTest {
     }
 
     @Test
-    public void when_certUsesDifferentHeaderAndFormattedCorrectly_then_itIsOutputCorrectly() {
-        String withoutNewlines = "-----BEGIN PRIVATE KEY-----\n" +
+    public void when_certUsesDifferentHeaderAndFormattedCorrectly_then_itIsNotModified() {
+        String pem = "-----BEGIN PRIVATE KEY-----\n" +
             "MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5\n" +
             "M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG\n" +
             "-----END PRIVATE KEY-----";
-        String trimmed = "-----BEGIN PRIVATE KEY-----\n" +
-            "MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5\n" +
-            "M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG\n" +
-            "-----END PRIVATE KEY-----";
-        MeshConfig meshConfig = new MeshConfig(null, null, null, null, withoutNewlines, withoutNewlines);
-        assertThat(meshConfig.getEndpointCert()).isEqualTo(trimmed);
-        assertThat(meshConfig.getEndpointPrivateKey()).isEqualTo(trimmed);
+        MeshConfig meshConfig = new MeshConfig(null, null, null, null, pem, pem);
+        assertThat(meshConfig.getEndpointCert()).isEqualTo(pem);
+        assertThat(meshConfig.getEndpointPrivateKey()).isEqualTo(pem);
     }
 
 
