@@ -114,7 +114,7 @@ public class AcceptanceTransferInTranslator implements FhirToEdifactTranslator {
             //NAD+PAT
             personAddressMapper,
             //NAD+PER
-            optional(personOldAddressMapper, parameters),
+            personOldAddressMapper,
             //S02
             optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
             //PNA+PER
