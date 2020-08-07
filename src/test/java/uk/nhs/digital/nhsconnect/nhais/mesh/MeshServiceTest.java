@@ -1,10 +1,12 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshApiConnectionException;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -61,6 +63,7 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(MESSAGE_ID);
         verify(inboundQueueService).publish(meshMessage);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID);
@@ -79,6 +82,7 @@ class MeshServiceTest {
 
         assertThatThrownBy(meshService::scanMeshInboxForMessages).isExactlyInstanceOf(MeshApiConnectionException.class);
 
+        verify(meshClient).authenticate();
         verify(meshClient, times(0)).getEdifactMessage(any());
         verify(inboundQueueService, times(0)).publish(any());
         verify(meshClient, times(0)).acknowledgeMessage(any());
@@ -98,6 +102,7 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(inboundQueueService, times(0)).publish(any());
         verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID);
@@ -119,6 +124,7 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(meshClient).getEdifactMessage(MESSAGE_ID);
         verify(inboundQueueService).publish(meshMessage);
@@ -146,6 +152,7 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(meshClient).getEdifactMessage(MESSAGE_ID);
         verify(inboundQueueService).publish(messageForAckError);
@@ -169,6 +176,7 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(MESSAGE_ID);
         verify(inboundQueueService).publish(meshMessage);
         verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID);
@@ -193,7 +201,22 @@ class MeshServiceTest {
 
         meshService.scanMeshInboxForMessages();
 
+        verify(meshClient).authenticate();
         verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID);
+        verifyNoInteractions(inboundQueueService);
+    }
+
+    @Test
+    public void When_IntervalHasPassedButAuthenticationFails_Then_StopProcessing() {
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
+        doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR)).when(meshClient).authenticate();
+
+        Assertions.assertThatThrownBy(() -> meshService.scanMeshInboxForMessages())
+            .isExactlyInstanceOf(MeshApiConnectionException.class);
+
+        verify(meshClient).authenticate();
+        verifyNoMoreInteractions(meshClient);
         verifyNoInteractions(inboundQueueService);
     }
 
