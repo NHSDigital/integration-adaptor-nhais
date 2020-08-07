@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.utils;
 
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
