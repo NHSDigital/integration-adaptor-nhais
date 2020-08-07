@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Component
 @Getter
-@Slf4j
 public class MeshConfig {
 
     private static final Pattern PEM_PATTERN = Pattern.compile("(-----[A-Z ]+-----)([^-]+)(-----[A-Z ]+-----)");
