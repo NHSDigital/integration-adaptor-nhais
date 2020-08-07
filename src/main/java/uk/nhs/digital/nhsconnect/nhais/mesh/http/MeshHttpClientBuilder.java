@@ -3,8 +3,11 @@ package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 import com.heroku.sdk.EnvKeyStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.util.DomainType;
 import org.apache.http.conn.util.PublicSuffixMatcher;
@@ -19,8 +22,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.Arrays;
+import java.util.Collections;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshHttpClientBuilder {
@@ -29,22 +33,34 @@ public class MeshHttpClientBuilder {
     private final MeshConfig meshConfig;
 
     public CloseableHttpClient build() {
-        return build(defaultSSLContext());
+        if (Boolean.parseBoolean(meshConfig.getCertValidation())) {
+            return buildDefaultHttpClient(defaultSSLContext());
+        } else {
+            LOGGER.warn("Using SSL without cert validation!");
+            return buildNoCertValidationClient(noValidationSSLContext());
+        }
     }
 
-    public CloseableHttpClient build(SSLContext sslContext) {
-//        NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier(); //TODO: NoopHostnameVerifier works for fake-mesh - in production DefaultHostnameVerifier should be used
-        PublicSuffixMatcher publicSuffixMatcher = new PublicSuffixMatcher(DomainType.UNKNOWN, Arrays.asList("gov.uk"), null);
+    private CloseableHttpClient buildDefaultHttpClient(SSLContext sslContext) {
+        PublicSuffixMatcher publicSuffixMatcher = new PublicSuffixMatcher(
+            DomainType.UNKNOWN,
+            Collections.singletonList(meshConfig.getPublicSuffix()),
+            null);
         DefaultHostnameVerifier defaultHostnameVerifier = new DefaultHostnameVerifier(publicSuffixMatcher);
         SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslContext, defaultHostnameVerifier);
         return HttpClients.custom().setSSLSocketFactory(factory).build();
     }
 
+    private CloseableHttpClient buildNoCertValidationClient(SSLContext sslContext) {
+        NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier();
+        SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+        return HttpClients.custom().setSSLSocketFactory(factory).build();
+    }
+
     @SneakyThrows
     private SSLContext defaultSSLContext() {
-        System.out.println("------------------------------------- default SSL CONTEXT");
-        KeyStore ks = EnvKeyStore.createFromPEMStrings(meshConfig.getEndpointPrivateKey(), meshConfig.getEndpointCert(), meshConfig.getMailboxPassword()).keyStore();
-        KeyStore ts = EnvKeyStore.createFromPEMStrings(meshConfig.getSubCAcert(), meshConfig.getMailboxPassword()).keyStore();
+        KeyStore ks = buildKeyStore();
+        KeyStore ts = buildTrustStore();
 
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE);
         keyManagerFactory.init(ks, meshConfig.getMailboxPassword().toCharArray());
@@ -54,8 +70,7 @@ public class MeshHttpClientBuilder {
 
         SSLContext sslContext = SSLContexts.custom()
             .loadKeyMaterial(ks, this.meshConfig.getMailboxPassword().toCharArray())
-//            .loadTrustMaterial(TrustAllStrategy.INSTANCE) //TODO: TrustAllStrategy works for fake mesh - in production TrustSelfSignedStrategy should be used
-            .loadTrustMaterial(ts, TrustSelfSignedStrategy.INSTANCE)
+            .loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE)
             .build();
 
         sslContext.init(keyManagerFactory.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
@@ -63,4 +78,26 @@ public class MeshHttpClientBuilder {
         return sslContext;
     }
 
+    @SneakyThrows
+    private SSLContext noValidationSSLContext() {
+        return SSLContexts.custom()
+            .loadKeyMaterial(buildKeyStore(), this.meshConfig.getMailboxPassword().toCharArray())
+            .loadTrustMaterial(TrustAllStrategy.INSTANCE)
+            .build();
+    }
+
+    @SneakyThrows
+    private KeyStore buildKeyStore() {
+        return EnvKeyStore.createFromPEMStrings(
+            meshConfig.getEndpointPrivateKey(),
+            meshConfig.getEndpointCert(),
+            meshConfig.getMailboxPassword()).keyStore();
+    }
+
+    @SneakyThrows
+    private KeyStore buildTrustStore() {
+        return EnvKeyStore.createFromPEMStrings(
+            meshConfig.getSubCAcert(),
+            meshConfig.getMailboxPassword()).keyStore();
+    }
 }

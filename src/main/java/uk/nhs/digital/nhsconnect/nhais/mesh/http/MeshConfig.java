@@ -14,6 +14,8 @@ public class MeshConfig {
     private final String mailboxPassword;
     private final String sharedKey;
     private final String host;
+    private final String certValidation;
+    private final String publicSuffix;
     private final String endpointCert;
     private final String endpointPrivateKey;
     private final String subCAcert;
@@ -24,6 +26,8 @@ public class MeshConfig {
             @Value("${nhais.mesh.mailboxPassword}") String mailboxPassword,
             @Value("${nhais.mesh.sharedKey}") String sharedKey,
             @Value("${nhais.mesh.host}") String host,
+            @Value("${nhais.mesh.certValidation}") String certValidation,
+            @Value("${nhais.mesh.publicSuffix}") String publicSuffix,
             @Value("${nhais.mesh.endpointCert}") String endpointCert,
             @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey,
             @Value("${nhais.mesh.subCAcert}") String subCAcert) {
@@ -31,6 +35,8 @@ public class MeshConfig {
         this.mailboxPassword = mailboxPassword;
         this.sharedKey = sharedKey;
         this.host = host;
+        this.certValidation = certValidation;
+        this.publicSuffix = publicSuffix;
         this.endpointCert = endpointCert;
         this.endpointPrivateKey = endpointPrivateKey;
         this.subCAcert = subCAcert;
