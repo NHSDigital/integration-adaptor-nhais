@@ -16,6 +16,8 @@ public class MeshConfig {
     private final String host;
     private final String endpointCert;
     private final String endpointPrivateKey;
+    private final String subCAcert;
+    private final String rootCA;
 
     @Autowired
     public MeshConfig(
@@ -24,13 +26,17 @@ public class MeshConfig {
             @Value("${nhais.mesh.sharedKey}") String sharedKey,
             @Value("${nhais.mesh.host}") String host,
             @Value("${nhais.mesh.endpointCert}") String endpointCert,
-            @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey) {
+            @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey,
+            @Value("${nhais.mesh.subCAcert}") String subCAcert,
+            @Value("${nhais.mesh.rootCA}") String rootCA) {
         this.mailboxId = mailboxId;
         this.mailboxPassword = mailboxPassword;
         this.sharedKey = sharedKey;
         this.host = host;
         this.endpointCert = endpointCert;
         this.endpointPrivateKey = endpointPrivateKey;
+        this.subCAcert = subCAcert;
+        this.rootCA = rootCA;
     }
 
     public String getEndpointCert() {
@@ -47,5 +53,21 @@ public class MeshConfig {
         key = key.replaceAll("-----END RSA PRIVATE KEY-----", "");
         key = key.replaceAll(" ", "\n");
         return "-----BEGIN RSA PRIVATE KEY-----\n" + key + "-----END RSA PRIVATE KEY-----";
+    }
+
+    public String getSubCAcert() {
+        String cert = subCAcert; //below computations are needed when default private key is imported from application.yml
+        cert = cert.replaceAll("-----BEGIN CERTIFICATE-----", "");
+        cert = cert.replaceAll("-----END CERTIFICATE-----", "");
+        cert = cert.replaceAll(" ", "\n");
+        return "-----BEGIN CERTIFICATE-----\n" + cert + "-----END CERTIFICATE-----";
+    }
+
+    public String getRootCA() {
+        String cert = rootCA; //below computations are needed when default private key is imported from application.yml
+        cert = cert.replaceAll("-----BEGIN CERTIFICATE-----", "");
+        cert = cert.replaceAll("-----END CERTIFICATE-----", "");
+        cert = cert.replaceAll(" ", "\n");
+        return "-----BEGIN CERTIFICATE-----\n" + cert + "-----END CERTIFICATE-----";
     }
 }
