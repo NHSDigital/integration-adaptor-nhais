@@ -1,10 +1,11 @@
-package uk.nhs.digital.nhsconnect.nhais.mesh.http;
+package uk.nhs.digital.nhsconnect.nhais.utils;
 
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MeshConfigTest {
+public class PemFormatterTest {
 
     @Test
     public void when_certHasExtraWhitespace_then_itIsTrimmed() {
@@ -16,9 +17,9 @@ public class MeshConfigTest {
             "MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV\n" +
             "W/JNIRmhLoeFNGNh8HvhI2PwOCsFiqT1rrCaUtusTyH0Ggs=\n" +
             "-----END CERTIFICATE-----";
-        MeshConfig meshConfig = new MeshConfig(null, null, null, null, withWhitespace, withWhitespace);
-        assertThat(meshConfig.getEndpointCert()).isEqualTo(trimmed);
-        assertThat(meshConfig.getEndpointPrivateKey()).isEqualTo(trimmed);
+        String formatted = PemFormatter.format(withWhitespace);
+        assertThat(formatted).isEqualTo(trimmed);
+        assertThat(formatted).isEqualTo(trimmed);
     }
 
     @Test
@@ -31,9 +32,9 @@ public class MeshConfigTest {
             "MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5\n" +
             "M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG\n" +
             "-----END RSA PRIVATE KEY-----";
-        MeshConfig meshConfig = new MeshConfig(null, null, null, null, withoutNewlines, withoutNewlines);
-        assertThat(meshConfig.getEndpointCert()).isEqualTo(trimmed);
-        assertThat(meshConfig.getEndpointPrivateKey()).isEqualTo(trimmed);
+        String formatted = PemFormatter.format(withoutNewlines);
+        assertThat(formatted).isEqualTo(trimmed);
+        assertThat(formatted).isEqualTo(trimmed);
     }
 
     @Test
@@ -42,9 +43,9 @@ public class MeshConfigTest {
             "MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5\n" +
             "M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG\n" +
             "-----END PRIVATE KEY-----";
-        MeshConfig meshConfig = new MeshConfig(null, null, null, null, pem, pem);
-        assertThat(meshConfig.getEndpointCert()).isEqualTo(pem);
-        assertThat(meshConfig.getEndpointPrivateKey()).isEqualTo(pem);
+        String formatted = PemFormatter.format(pem);
+        assertThat(formatted).isEqualTo(pem);
+        assertThat(formatted).isEqualTo(pem);
     }
 
 
