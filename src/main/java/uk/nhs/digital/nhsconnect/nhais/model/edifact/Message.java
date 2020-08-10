@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,5 +54,17 @@ public class Message extends Section {
         return String.format("Message{SIS: %s, SMS: %s}",
             getInterchange().getInterchangeHeader().getSequenceNumber(),
             getMessageHeader().getSequenceNumber());
+    }
+
+    public String findFirstGpCode() {
+        return getTransactions()
+            .stream()
+            .limit(1)
+            .map(transaction -> transaction.extractOptionalSegment(GpNameAndAddress.KEY_QUALIFIER))
+            .flatMap(Optional::stream)
+            .map(GpNameAndAddress::fromString)
+            .map(GpNameAndAddress::getIdentifier)
+            .findFirst()
+            .orElse("9999");
     }
 }
