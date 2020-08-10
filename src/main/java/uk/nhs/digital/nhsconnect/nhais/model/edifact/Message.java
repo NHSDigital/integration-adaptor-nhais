@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Message extends Section {
+
+    private static final String DEFAULT_GP_CODE = "9999";
+
     @Getter(lazy = true)
     private final MessageHeader messageHeader =
         MessageHeader.fromString(extractSegment(MessageHeader.KEY));
@@ -65,6 +68,6 @@ public class Message extends Section {
             .map(GpNameAndAddress::fromString)
             .map(GpNameAndAddress::getIdentifier)
             .findFirst()
-            .orElse("9999");
+            .orElse(DEFAULT_GP_CODE);
     }
 }
