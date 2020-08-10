@@ -163,6 +163,6 @@ nhais:
       SO01=fake_mailboxId
       UNY5=fake_mailboxId}
     scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:1000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:1}
+    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:2}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}
