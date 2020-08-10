@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.uat.common.CustomArgumentsProvider;
+import uk.nhs.digital.nhsconnect.nhais.uat.common.OutboundArgumentsProvider;
 import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -52,7 +52,7 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
-    @ArgumentsSource(CustomArgumentsProvider.Outbound.class)
+    @ArgumentsSource(OutboundArgumentsProvider.class)
     void testTranslatingFromFhirToEdifact(String category, TestData testData) throws Exception {
         var transactionType = category.split("/")[0];
 

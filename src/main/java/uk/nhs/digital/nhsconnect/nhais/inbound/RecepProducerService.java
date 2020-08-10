@@ -12,11 +12,12 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNationalHealthBody;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
 import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -119,8 +120,19 @@ public class RecepProducerService {
         return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime());
     }
 
-    private RecepNameAndAddress mapToNameAndAddress(Interchange interchange) {
-        return new RecepNameAndAddress(interchange.getInterchangeHeader().getSender());
+    private RecepNationalHealthBody mapToNameAndAddress(Interchange interchange) {
+        var message = interchange.getMessages().get(0);
+        var cypher = message.getHealthAuthorityNameAndAddress().getIdentifier();
+        var gpCode = findGpCode(message);
+        return new RecepNationalHealthBody(cypher, gpCode);
+    }
+
+    private String findGpCode(Message message) {
+        try {
+            return message.getTransactions().get(0).getGpNameAndAddress().getIdentifier();
+        } catch (MissingSegmentException e) {
+            return "9999"; //default if NAD+GP segment is missing in first transaction
+        }
     }
 
     private ReferenceMessageRecep mapToReferenceMessage(Message message) {
