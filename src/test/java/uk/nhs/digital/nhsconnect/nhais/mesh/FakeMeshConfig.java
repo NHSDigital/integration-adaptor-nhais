@@ -9,7 +9,6 @@ public class FakeMeshConfig extends MeshConfig {
             "SharedKey",
             "https://localhost:8829/messageexchange/",
             "false",
-            "gov.uk",
             System.getProperty("NHAIS_MESH_HOST"),
             System.getProperty("NHAIS_MESH_ENDPOINT_CERT"),
             System.getProperty("NHAIS_MESH_ENDPOINT_KEY"));

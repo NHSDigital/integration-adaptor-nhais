@@ -20,7 +20,6 @@ import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
-import uk.nhs.digital.nhsconnect.nhais.mesh.http.SSLContextBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessageId;
@@ -50,6 +49,8 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     MeshRequests meshRequests;
     @Autowired
     MeshCypherDecoder meshCypherDecoder;
+    @Autowired
+    private MeshHttpClientBuilder meshHttpClientBuilder;
 
     @AfterEach
     void tearDown() {
@@ -86,7 +87,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
         OutboundMeshMessage messageForMappingMailboxId = new MeshMessage().setHaTradingPartnerCode("XX11");
         var recipientMailbox = meshCypherDecoder.getRecipientMailbox(messageForMappingMailboxId);
 
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(SSLContextBuilder.build(meshConfig))) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, WorkflowId.REGISTRATION);
             request.removeHeaders("Mex-WorkflowID");
             request.setHeader("Mex-WorkflowID", "NOT_NHAIS");

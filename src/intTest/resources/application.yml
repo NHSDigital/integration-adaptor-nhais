@@ -41,7 +41,6 @@ nhais:
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
     certValidation: ${NHAIS_MESH_CERT_VALIDATION:false}
-    publicSuffix: ${NHAIS_MESH_PUBLIC_SUFFIX:gov.uk} #https://publicsuffix.org/list/
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:-----BEGIN CERTIFICATE-----
       MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
       BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX

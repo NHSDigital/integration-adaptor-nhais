@@ -16,7 +16,6 @@ NHAIS_MESH_MAILBOX_PASSWORD:  #The password for MAILBOX_ID can be found in your 
 NHAIS_MESH_SHARED_KEY:  #Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
 NHAIS_MESH_HOST: https://localhost:8829/messageexchange/ #fake-mesh as default, for OpenTest use: https://msg.opentest.hscic.gov.uk/messageexchange/
 NHAIS_MESH_CERT_VALIDATION: false
-NHAIS_MESH_PUBLIC_SUFFIX: gov.uk #https://publicsuffix.org/list/
 NHAIS_MESH_ENDPOINT_CERT: | #The content of the endpoint certificate
   -----BEGIN CERTIFICATE-----
   #keep 2 spaces indent for whole certificate

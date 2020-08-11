@@ -21,7 +21,6 @@ class MeshRequestsTest {
         "SharedKey",
         "https://localhost:8829/messageexchange/",
         "false",
-        "gov.uk",
         StringUtils.EMPTY,
         StringUtils.EMPTY,
         StringUtils.EMPTY);
