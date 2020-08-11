@@ -269,9 +269,11 @@ MESH configuration is done using environment variables:
 | NHAIS_MESH_MAILBOX_PASSWORD      | N/A                       | The password for MAILBOX_ID
 | NHAIS_MESH_SHARED_KEY            | N/A                       | Shared key used to generate auth token. Provided by MESH operator (OpenTest, PTL, etc)
 | NHAIS_MESH_HOST                  | N/A                       | Hostname of MESH service
+| NHAIS_MESH_CERT_VALIDATION       | false                     | Certificate validation for SSL connection
 | NHAIS_MESH_ENDPOINT_CERT         | N/A                       | Certificate used for connecting to MESH (content of it)
 | NHAIS_MESH_ENDPOINT_PRIVATE_KEY  | N/A                       | Private key of certificate used for connecting to MESH (content of it)
-| NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox 
+| NHAIS_MESH_SUB_CA                | N/A                       | Sub CA certificate for cert validation. Not needed if NHAIS_MESH_CERT_VALIDATION is false
+| NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox
 | NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
 
 The following two variables control how often the adaptor checks its MESH mailbox for new messages. To prevent
