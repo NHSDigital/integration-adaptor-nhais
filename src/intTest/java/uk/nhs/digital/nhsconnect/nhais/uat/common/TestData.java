@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 public class TestData {
     private final String edifact;
+    private final String recep;
     private final String json;
 }

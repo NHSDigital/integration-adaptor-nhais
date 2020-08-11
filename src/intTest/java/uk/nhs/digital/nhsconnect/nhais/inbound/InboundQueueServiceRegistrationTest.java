@@ -84,7 +84,10 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        List<String> messageIds = meshClient.getInboxMessageIds();
+        List<String> messageIds = waitFor(() -> {
+            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+            return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
+        } );
         var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.HealthAuthorityNameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
@@ -30,10 +31,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RecepProducerServiceTest {
     private static final String RECEP_EXAMPLE_PATH = "/edifact/recep_example.txt";
-    private static final String SENDER = "GP123";
+    private static final String SENDER = "GP11";
     private static final String RECIPIENT = "HA456";
     private static final String REF_SENDER = RECIPIENT;
     private static final String REF_RECIPIENT = SENDER;
+    private static final String HA_CIPHER = "GP1";
+    private static final String GP_CODE = "123456,123";
     private static final Long INTERCHANGE_SEQUENCE = 45L;
     private static final Long MESSAGE_SEQUENCE_1 = 56L;
     private static final Instant FIXED_TIME = ZonedDateTime
@@ -56,8 +59,10 @@ class RecepProducerServiceTest {
         when(timestampService.getCurrentTimestamp()).thenReturn(FIXED_TIME);
         when(sequenceService.generateInterchangeSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_INTERCHANGE_SEQUENCE);
         when(sequenceService.generateMessageSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_MESSAGE_SEQUENCE);
+        var message = mock(Message.class);
+        when(message.findFirstGpCode()).thenReturn(GP_CODE);
 
-        var recep = recepProducerService.produceRecep(createInterchange());
+        var recep = recepProducerService.produceRecep(createInterchange(message));
 
         assertEquals(recep, readFile(RECEP_EXAMPLE_PATH));
 
@@ -67,9 +72,9 @@ class RecepProducerServiceTest {
         verifyNoMoreInteractions(sequenceService);
     }
 
-    private Interchange createInterchange() {
+    private Interchange createInterchange(Message message) {
         var interchange = mock(Interchange.class);
-        var message = mock(Message.class);
+        var healthAuthorityNameAndAddress = mock(HealthAuthorityNameAndAddress.class);
 
         when(interchange.getInterchangeHeader()).thenReturn(
             new InterchangeHeader(SENDER, RECIPIENT, FIXED_TIME).setSequenceNumber(INTERCHANGE_SEQUENCE));
@@ -78,6 +83,9 @@ class RecepProducerServiceTest {
         when(interchange.getMessages()).thenReturn(List.of(message));
         when(message.getMessageHeader()).thenReturn(
             new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE_1));
+        when(message.getHealthAuthorityNameAndAddress()).thenReturn(healthAuthorityNameAndAddress);
+        when(healthAuthorityNameAndAddress.getIdentifier()).thenReturn(HA_CIPHER);
+
         return interchange;
     }
 

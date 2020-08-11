@@ -12,24 +12,23 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class RecepNameAndAddress extends Segment {
-    private final static String NHS_PREFIX = "FHS:819:201+";
-    private final static String NHS_SUFFIX = ":814:202";
+public class RecepNationalHealthBody extends Segment {
+    private final static String KEY = "NHS";
 
-    // TODO should be numeric representation
     //example: NHS+FHS:819:201+4826940:814:202'
+    private @NonNull String cipher;
     private @NonNull String gpCode;
 
     @Override
     public String getKey() {
-        return "NHS";
+        return KEY;
     }
 
     @Override
     public String getValue() {
-        return NHS_PREFIX
+        return cipher.concat(":819:201+")
                 .concat(gpCode)
-                .concat(NHS_SUFFIX);
+                .concat(":814:202");
     }
 
     @Override
