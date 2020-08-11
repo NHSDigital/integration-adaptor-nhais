@@ -123,7 +123,7 @@ nhais:
       +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
-    subCAcert:
+    subCAcert: ${NHAIS_MESH_SUB_CA:}
     cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=fake_mailboxId
       TES5=fake_mailboxId
       YY21=fake_mailboxId
