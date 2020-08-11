@@ -20,9 +20,8 @@ import java.util.Collections;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshHttpClientBuilder {
     private final MeshConfig meshConfig;
-    private final SSLContext sslContext;
 
-    public CloseableHttpClient build() {
+    public CloseableHttpClient build(SSLContext sslContext) {
         if (Boolean.parseBoolean(meshConfig.getCertValidation())) {
             return buildDefaultHttpClient(sslContext);
         } else {

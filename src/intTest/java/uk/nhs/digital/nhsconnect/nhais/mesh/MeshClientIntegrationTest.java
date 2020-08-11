@@ -86,7 +86,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
         OutboundMeshMessage messageForMappingMailboxId = new MeshMessage().setHaTradingPartnerCode("XX11");
         var recipientMailbox = meshCypherDecoder.getRecipientMailbox(messageForMappingMailboxId);
 
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig, SSLContextBuilder.build(meshConfig)).build()) {
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(SSLContextBuilder.build(meshConfig))) {
             var request = meshRequests.sendMessage(recipientMailbox, WorkflowId.REGISTRATION);
             request.removeHeaders("Mex-WorkflowID");
             request.setHeader("Mex-WorkflowID", "NOT_NHAIS");

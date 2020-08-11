@@ -35,7 +35,7 @@ public class MeshConnectivityIntegrationTest {
      */
     @Test
     void when_CallingMeshCountMessagesEndpoint_Then_Http200IsReturned() throws Exception {
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig, SSLContextBuilder.build(meshConfig)).build()) {
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(SSLContextBuilder.build(meshConfig))) {
             HttpGet httpGet = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/count");
             httpGet.setHeaders(new MeshHeaders(meshConfig).createMinimalHeaders());
             try (CloseableHttpResponse response = client.execute(httpGet)) {
