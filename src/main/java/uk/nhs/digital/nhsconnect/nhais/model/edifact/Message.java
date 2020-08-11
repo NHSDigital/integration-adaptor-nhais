@@ -4,11 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Message extends Section {
+
+    private static final String DEFAULT_GP_CODE = "9999";
+
     @Getter(lazy = true)
     private final MessageHeader messageHeader =
         MessageHeader.fromString(extractSegment(MessageHeader.KEY));
@@ -53,5 +57,17 @@ public class Message extends Section {
         return String.format("Message{SIS: %s, SMS: %s}",
             getInterchange().getInterchangeHeader().getSequenceNumber(),
             getMessageHeader().getSequenceNumber());
+    }
+
+    public String findFirstGpCode() {
+        return getTransactions()
+            .stream()
+            .limit(1)
+            .map(transaction -> transaction.extractOptionalSegment(GpNameAndAddress.KEY_QUALIFIER))
+            .flatMap(Optional::stream)
+            .map(GpNameAndAddress::fromString)
+            .map(GpNameAndAddress::getIdentifier)
+            .findFirst()
+            .orElse(DEFAULT_GP_CODE);
     }
 }
