@@ -20,16 +20,17 @@ import java.util.Collections;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshHttpClientBuilder {
     private final MeshConfig meshConfig;
+    private final SSLContext sslContext;
 
-    public CloseableHttpClient build(SSLContext sslContext) {
+    public CloseableHttpClient build() {
         if (Boolean.parseBoolean(meshConfig.getCertValidation())) {
-            return buildDefaultHttpClient(sslContext);
+            return buildDefaultHttpClient();
         } else {
-            return buildNoCertValidationClient(sslContext);
+            return buildNoCertValidationClient();
         }
     }
 
-    private CloseableHttpClient buildDefaultHttpClient(SSLContext sslContext) {
+    private CloseableHttpClient buildDefaultHttpClient() {
         PublicSuffixMatcher publicSuffixMatcher = new PublicSuffixMatcher(
             DomainType.UNKNOWN,
             Collections.singletonList(meshConfig.getPublicSuffix()),
@@ -39,7 +40,7 @@ public class MeshHttpClientBuilder {
         return HttpClients.custom().setSSLSocketFactory(factory).build();
     }
 
-    private CloseableHttpClient buildNoCertValidationClient(SSLContext sslContext) {
+    private CloseableHttpClient buildNoCertValidationClient() {
         NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier();
         SSLConnectionSocketFactory factory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
         return HttpClients.custom().setSSLSocketFactory(factory).build();

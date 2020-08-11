@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -10,6 +11,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
@@ -20,30 +22,22 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessages;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshClient {
 
-    private final MeshConfig meshConfig;
     private final MeshRequests meshRequests;
     private final MeshCypherDecoder meshCypherDecoder;
-    private final SSLContext sslContext;
-
-    public MeshClient(MeshConfig meshConfig, MeshRequests meshRequests, MeshCypherDecoder meshCypherDecoder) {
-        this.meshConfig = meshConfig;
-        this.meshRequests = meshRequests;
-        this.meshCypherDecoder = meshCypherDecoder;
-        this.sslContext = SSLContextBuilder.build(meshConfig);
-    }
+    private final MeshHttpClientBuilder meshHttpClientBuilder;
 
     @SneakyThrows
     public void authenticate() {
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(sslContext)) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             final var loggingName = "Authenticate";
             var request = meshRequests.authenticate();
             logRequest(loggingName, request);
@@ -63,7 +57,7 @@ public class MeshClient {
         final var loggingName = "Send a message";
         String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
         LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(sslContext)) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
             request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
             logRequest(loggingName, request);
@@ -84,7 +78,7 @@ public class MeshClient {
     @SneakyThrows
     public InboundMeshMessage getEdifactMessage(String messageId) {
         final var loggingName = "Download message";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(sslContext)) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.getMessage(messageId);
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
@@ -110,7 +104,7 @@ public class MeshClient {
     @SneakyThrows
     public void acknowledgeMessage(String messageId) {
         final var loggingName = "Acknowledge message";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(sslContext)) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.acknowledge(messageId);
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
@@ -127,7 +121,7 @@ public class MeshClient {
     @SneakyThrows
     public List<String> getInboxMessageIds() {
         final var loggingName = "Check inbox";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build(sslContext)) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.getMessageIds();
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {

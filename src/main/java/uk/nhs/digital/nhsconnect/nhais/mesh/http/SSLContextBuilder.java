@@ -1,11 +1,14 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import com.heroku.sdk.EnvKeyStore;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.ssl.SSLContexts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -16,10 +19,14 @@ import java.security.SecureRandom;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SSLContextBuilder {
     private static final String KEY_MANAGER_FACTORY_TYPE = "Sunx509";
 
-    public static SSLContext build(MeshConfig meshConfig) {
+    private final MeshConfig meshConfig;
+
+    @Bean
+    public SSLContext build() {
         if (Boolean.parseBoolean(meshConfig.getCertValidation())) {
             return defaultSSLContext(meshConfig);
         } else {
