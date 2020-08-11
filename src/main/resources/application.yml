@@ -135,7 +135,7 @@ nhais:
       WHI5=nhais_mailbox
       SO01=nhais_mailbox
       UNY5=nhais_mailbox}
-    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:10000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:100}
+    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:60000}
+    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:300}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:true}

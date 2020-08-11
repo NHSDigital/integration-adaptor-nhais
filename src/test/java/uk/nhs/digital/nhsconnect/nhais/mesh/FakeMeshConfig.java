@@ -7,10 +7,10 @@ public class FakeMeshConfig extends MeshConfig {
         super("mailboxId",
             "password",
             "SharedKey",
-            "https://localhost:8829/messageexchange/",
-            "false",
             System.getProperty("NHAIS_MESH_HOST"),
+            "false",
             System.getProperty("NHAIS_MESH_ENDPOINT_CERT"),
-            System.getProperty("NHAIS_MESH_ENDPOINT_KEY"));
+            System.getProperty("NHAIS_MESH_ENDPOINT_KEY"),
+            System.getProperty("NHAIS_MESH_SUB_CA"));
     }
 }
