@@ -100,7 +100,6 @@ services:
           +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
           3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
           -----END RSA PRIVATE KEY-----
-      - NHAIS_MESH_SUB_CA=
       - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=nhais_mailbox
         TES5=nhais_mailbox
         YY21=nhais_mailbox
