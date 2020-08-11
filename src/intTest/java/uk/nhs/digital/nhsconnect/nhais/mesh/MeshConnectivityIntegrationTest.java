@@ -15,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHeaders;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.SSLContextBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +35,7 @@ public class MeshConnectivityIntegrationTest {
      */
     @Test
     void when_CallingMeshCountMessagesEndpoint_Then_Http200IsReturned() throws Exception {
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig, SSLContextBuilder.build(meshConfig)).build()) {
             HttpGet httpGet = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/count");
             httpGet.setHeaders(new MeshHeaders(meshConfig).createMinimalHeaders());
             try (CloseableHttpResponse response = client.execute(httpGet)) {
