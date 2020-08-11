@@ -4,8 +4,13 @@ import com.heroku.sdk.EnvKeyStore;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.util.DomainType;
+import org.apache.http.conn.util.PublicSuffixMatcher;
 import org.apache.http.ssl.SSLContexts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +21,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Collections;
 
 @Slf4j
 @Component
@@ -26,17 +32,23 @@ public class SSLContextBuilder {
     private final MeshConfig meshConfig;
 
     @Bean
-    public SSLContext build() {
+    public SSLConnectionSocketFactory factory() {
         if (Boolean.parseBoolean(meshConfig.getCertValidation())) {
-            return defaultSSLContext(meshConfig);
+            PublicSuffixMatcher publicSuffixMatcher = new PublicSuffixMatcher(
+                DomainType.UNKNOWN,
+                Collections.singletonList(meshConfig.getPublicSuffix()),
+                null);
+            DefaultHostnameVerifier defaultHostnameVerifier = new DefaultHostnameVerifier(publicSuffixMatcher);
+            return new SSLConnectionSocketFactory(defaultSSLContext(), defaultHostnameVerifier);
         } else {
             LOGGER.warn("Using SSL without cert validation!");
-            return noValidationSSLContext(meshConfig);
+            NoopHostnameVerifier hostnameVerifier = new NoopHostnameVerifier();
+            return new SSLConnectionSocketFactory(noValidationSSLContext(), hostnameVerifier);
         }
     }
 
     @SneakyThrows
-    private static SSLContext defaultSSLContext(MeshConfig meshConfig) {
+    private SSLContext defaultSSLContext() {
         KeyStore ks = buildKeyStore(meshConfig);
         KeyStore ts = buildTrustStore(meshConfig);
 
@@ -57,7 +69,7 @@ public class SSLContextBuilder {
     }
 
     @SneakyThrows
-    private static SSLContext noValidationSSLContext(MeshConfig meshConfig) {
+    private SSLContext noValidationSSLContext() {
         return SSLContexts.custom()
             .loadKeyMaterial(buildKeyStore(meshConfig), meshConfig.getMailboxPassword().toCharArray())
             .loadTrustMaterial(TrustAllStrategy.INSTANCE)
