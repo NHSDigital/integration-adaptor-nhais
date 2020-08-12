@@ -19,7 +19,7 @@ public class PemFormatter {
      * @return the reformatted certificate or key
      */
     public static String format(String value) {
-        Matcher matcher = PEM_PATTERN.matcher(value);
+        Matcher matcher = PEM_PATTERN.matcher(value.strip());
 
         if (!matcher.matches()) {
             throw new RuntimeException("Invalid certificate or key format");
