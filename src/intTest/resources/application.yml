@@ -135,3 +135,5 @@ nhais:
     scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:2}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}
+  test:
+    ptlDnsNAme: ${PTL_DNS_NAME:localhost}

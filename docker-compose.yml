@@ -107,6 +107,7 @@ services:
         WHI5=nhais_mailbox
         SO01=nhais_mailbox
         UNY5=nhais_mailbox
+        BAA1=nhais_mailbox
       - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
       - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
       - NHAIS_SCHEDULER_ENABLED=true
@@ -156,6 +157,7 @@ services:
         WHI5=gp_mailbox
         SO01=gp_mailbox
         UNY5=gp_mailbox
+        BAA1=gp_mailbox
       - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
       - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
       - NHAIS_SCHEDULER_ENABLED=true

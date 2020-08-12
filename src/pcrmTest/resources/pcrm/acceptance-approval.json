@@ -1,0 +1,92 @@
+{
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "WHC5"
+    },
+    {
+      "name": "acceptanceCode",
+      "valueString": "A"
+    },
+    {
+      "name": "acceptanceType",
+      "valueString": "2"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "2020-08-07"
+    },
+    {
+      "name": "freeText",
+      "valueString": "REGISTRATION"
+    },
+    {
+      "name": "patient",
+      "resource": {
+        "managingOrganization": {
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "BAA"
+            }
+          ]
+        },
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "4229931,790"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "%%NHS_NUMBER%%"
+          }
+        ],
+        "name": [
+          {
+            "family": "DOLE",
+            "given": [
+              "MIKE"
+            ],
+            "prefix": [
+              "MR"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1999-10-10",
+        "address": [
+          {
+            "line": [
+              null,
+              "Bt Global Services",
+              "1 Sovereign Street",
+              "LEEDS",
+              null
+            ],
+            "postalCode": "LS1 4BT"
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
+            "valueString": "BARNSLEY"
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
+            "valueBoolean": true
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
+            "valueString": "STU"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    }
+  ],
+  "resourceType": "Parameters"
+}
