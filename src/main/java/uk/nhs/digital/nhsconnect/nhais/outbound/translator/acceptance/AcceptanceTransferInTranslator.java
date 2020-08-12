@@ -69,6 +69,9 @@ public class AcceptanceTransferInTranslator implements FhirToEdifactTranslator {
         if(nhsNumberIsMissing && placeOfBirthIsMissing) {
             throw new FhirValidationException("Place of birth is mandatory when NHS number is missing");
         }
+        if (validator.surnameIsMissing(parameters)) {
+            throw new FhirValidationException("Surname of patient is missing");
+        }
 
         return Stream.of(
             //BGM
@@ -114,7 +117,7 @@ public class AcceptanceTransferInTranslator implements FhirToEdifactTranslator {
             //NAD+PAT
             personAddressMapper,
             //NAD+PER
-            optional(personOldAddressMapper, parameters),
+            personOldAddressMapper,
             //S02
             optionalGroup(new SegmentGroup(2), List.of(personPreviousNameMapper), parameters),
             //PNA+PER
