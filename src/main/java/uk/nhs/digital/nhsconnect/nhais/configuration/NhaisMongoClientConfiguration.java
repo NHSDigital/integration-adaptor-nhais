@@ -41,6 +41,8 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String autoIndexCreation;
 
+    private String ttl;
+
     @Override
     public String getDatabaseName() {
         return this.database;

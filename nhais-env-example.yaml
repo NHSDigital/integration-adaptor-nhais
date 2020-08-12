@@ -9,6 +9,7 @@ NHAIS_AMQP_BROKERS: localhost:5672
 NHAIS_MESH_OUTBOUND_QUEUE_NAME: 'nhais_mesh_outbound'
 NHAIS_MONGO_DATABASE_NAME: nhais
 NHAIS_MONGO_URI: mongodb://localhost:27017
+NHAIS_MONGO_TTL: PT60S #ISO-8601 duration default P30D - 30 days
 
 #MESH client settings
 NHAIS_MESH_MAILBOX_ID:  #Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail

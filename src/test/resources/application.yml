@@ -32,6 +32,7 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: true
+    ttl: ${NHAIS_MONGO_TTL:P30D}
   mesh:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:fake_mailboxId} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}

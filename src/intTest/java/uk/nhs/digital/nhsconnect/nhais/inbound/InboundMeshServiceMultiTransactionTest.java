@@ -204,12 +204,12 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(expectedOperationId)
-            .setIntSeq(SIS)
-            .setMsgSeq(expectedSMS)
-            .setSndr(SENDER)
-            .setRecip(RECIPIENT)
+            .setInterchangeSequence(SIS)
+            .setMessageSequence(expectedSMS)
+            .setSender(SENDER)
+            .setRecipient(RECIPIENT)
             .setTransactionType(expectedTransactionType)
-            .setTn(expectedTN)
+            .setTransactionNumber(expectedTN)
             .setTranslationTimestamp(MESSAGE_TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }
