@@ -27,6 +27,10 @@ public class MeshConnectivityIntegrationTest {
     @Autowired
     private MeshConfig meshConfig;
 
+    @Autowired
+    private MeshHttpClientBuilder meshHttpClientBuilder;
+
+
     /**
      * This test by default calls fake-mesh, but if MESH credentials are passed as env variables it uses them to connect
      *
@@ -34,7 +38,7 @@ public class MeshConnectivityIntegrationTest {
      */
     @Test
     void when_CallingMeshCountMessagesEndpoint_Then_Http200IsReturned() throws Exception {
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             HttpGet httpGet = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/count");
             httpGet.setHeaders(new MeshHeaders(meshConfig).createMinimalHeaders());
             try (CloseableHttpResponse response = client.execute(httpGet)) {

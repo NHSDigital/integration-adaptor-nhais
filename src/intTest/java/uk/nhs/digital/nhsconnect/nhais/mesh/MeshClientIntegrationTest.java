@@ -49,6 +49,8 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     MeshRequests meshRequests;
     @Autowired
     MeshCypherDecoder meshCypherDecoder;
+    @Autowired
+    private MeshHttpClientBuilder meshHttpClientBuilder;
 
     @AfterEach
     void tearDown() {
@@ -85,7 +87,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
         OutboundMeshMessage messageForMappingMailboxId = new MeshMessage().setHaTradingPartnerCode("XX11");
         var recipientMailbox = meshCypherDecoder.getRecipientMailbox(messageForMappingMailboxId);
 
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, WorkflowId.REGISTRATION);
             request.removeHeaders("Mex-WorkflowID");
             request.setHeader("Mex-WorkflowID", "NOT_NHAIS");
@@ -125,6 +127,6 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
 
     @Test
     void When_Authenticating_Then_NoExceptionThrown() {
-        assertThatCode( () -> meshClient.authenticate()).doesNotThrowAnyException();
+        assertThatCode(() -> meshClient.authenticate()).doesNotThrowAnyException();
     }
 }

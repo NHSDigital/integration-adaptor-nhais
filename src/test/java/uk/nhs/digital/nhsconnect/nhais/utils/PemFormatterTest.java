@@ -8,8 +8,8 @@ public class PemFormatterTest {
 
     @Test
     public void when_certHasExtraWhitespace_then_itIsTrimmed() {
-        String withWhitespace = "-----BEGIN CERTIFICATE-----\n" +
-            "    \t  MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV\n" +
+        String withWhitespace = " -----BEGIN CERTIFICATE-----\n " +
+            "    \t  MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV \n" +
             "  \n\n    W/JNIRmhLoeFNGNh8HvhI2PwOCsFiqT1rrCaUtusTyH0Ggs=\n" +
             "   \r   -----END CERTIFICATE-----";
         String trimmed = "-----BEGIN CERTIFICATE-----\n" +

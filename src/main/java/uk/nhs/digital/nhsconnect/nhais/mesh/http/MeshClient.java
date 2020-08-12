@@ -31,13 +31,13 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MeshClient {
 
-    private final MeshConfig meshConfig;
     private final MeshRequests meshRequests;
     private final MeshCypherDecoder meshCypherDecoder;
+    private final MeshHttpClientBuilder meshHttpClientBuilder;
 
     @SneakyThrows
     public void authenticate() {
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             final var loggingName = "Authenticate";
             var request = meshRequests.authenticate();
             logRequest(loggingName, request);
@@ -57,7 +57,7 @@ public class MeshClient {
         final var loggingName = "Send a message";
         String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
         LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
             request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
             logRequest(loggingName, request);
@@ -78,7 +78,7 @@ public class MeshClient {
     @SneakyThrows
     public InboundMeshMessage getEdifactMessage(String messageId) {
         final var loggingName = "Download message";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.getMessage(messageId);
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
@@ -104,7 +104,7 @@ public class MeshClient {
     @SneakyThrows
     public void acknowledgeMessage(String messageId) {
         final var loggingName = "Acknowledge message";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.acknowledge(messageId);
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
@@ -121,7 +121,7 @@ public class MeshClient {
     @SneakyThrows
     public List<String> getInboxMessageIds() {
         final var loggingName = "Check inbox";
-        try (CloseableHttpClient client = new MeshHttpClientBuilder(meshConfig).build()) {
+        try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.getMessageIds();
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {

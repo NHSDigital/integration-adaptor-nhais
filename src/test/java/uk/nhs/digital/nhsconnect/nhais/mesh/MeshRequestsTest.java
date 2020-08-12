@@ -20,6 +20,8 @@ class MeshRequestsTest {
         "password",
         "SharedKey",
         "https://localhost:8829/messageexchange/",
+        "false",
+        StringUtils.EMPTY,
         StringUtils.EMPTY,
         StringUtils.EMPTY);
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
