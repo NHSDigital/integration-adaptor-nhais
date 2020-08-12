@@ -63,6 +63,9 @@ public class AcceptanceFirstTranslator implements FhirToEdifactTranslator {
         if(nhsNumberIsMissing && placeOfBirthIsMissing) {
             throw new FhirValidationException("Place of birth is mandatory when NHS number is missing");
         }
+        if (validator.surnameIsMissing(parameters)) {
+            throw new FhirValidationException("Surname of patient is missing");
+        }
 
         return Stream.of(
             //BGM

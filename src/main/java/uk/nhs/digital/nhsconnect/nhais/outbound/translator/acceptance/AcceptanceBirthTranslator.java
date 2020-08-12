@@ -61,6 +61,9 @@ public class AcceptanceBirthTranslator implements FhirToEdifactTranslator {
         if (validator.nhsNumberIsMissing(parameters)) {
             throw new FhirValidationException("NHS number of patient is missing");
         }
+        if (validator.surnameIsMissing(parameters)) {
+            throw new FhirValidationException("Surname of patient is missing");
+        }
 
         return Stream.of(
             //BGM
