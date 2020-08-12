@@ -43,6 +43,8 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String ttl;
 
+    private boolean cosmosDbEnabled;
+
     @Override
     public String getDatabaseName() {
         return this.database;

@@ -217,6 +217,7 @@ If any value is set for `NHAIS_MONGO_HOST` then the following properties will be
 | NHAIS_MONGO_PASSWORD             |         | (Optional) Mongodb password
 | NHAIS_MONGO_OPTIONS              |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?
 | NHAIS_MONGO_TTL                  | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents in ISO-8601 format
+| NHAIS_COSMOS_DB_ENABLED          | false   | (Optional) If true NHAIS will use Cosmos DB implementation instead of Mongo DB
 
 If no value is set for `NHAIS_MONGO_HOST` then the following properties are used:
 

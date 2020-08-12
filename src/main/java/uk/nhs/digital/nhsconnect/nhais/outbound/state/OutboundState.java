@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import uk.nhs.digital.nhsconnect.nhais.configuration.ttl.TimeToLive;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
@@ -23,7 +24,7 @@ import java.time.Instant;
 })
 @Data
 @Document
-public class OutboundState {
+public class OutboundState implements TimeToLive {
     @Id
     @Setter(AccessLevel.NONE)
     private String id;

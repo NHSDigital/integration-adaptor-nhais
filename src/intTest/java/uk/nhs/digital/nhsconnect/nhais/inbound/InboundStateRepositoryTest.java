@@ -13,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.configuration.NhaisMongoClientConfiguration;
-import uk.nhs.digital.nhsconnect.nhais.configuration.TtlConfiguration;
+import uk.nhs.digital.nhsconnect.nhais.configuration.ttl.TimeToLiveConfiguration;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
@@ -86,7 +86,7 @@ public class InboundStateRepositoryTest {
     private boolean timeToLiveIndexExists(IndexOperations indexOperations) {
         return indexOperations.getIndexInfo()
             .stream()
-            .filter(index -> index.getName().equals(TtlConfiguration.TTL_INDEX_NAME))
+            .filter(index -> index.getName().equals(TimeToLiveConfiguration.TTL_INDEX_NAME))
             .map(IndexInfo::getExpireAfter)
             .flatMap(Optional::stream)
             .anyMatch(indexExpire -> indexExpire.compareTo(Duration.parse(mongoConfig.getTtl())) == 0);
