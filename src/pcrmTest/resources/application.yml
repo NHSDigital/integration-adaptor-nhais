@@ -9,12 +9,12 @@ logging:
 
 nhais:
   amqp:
-    brokers: ${NHAIS_AMQP_BROKERS:amqps://b-deb93f13-9c80-4543-8941-0bc8859edcc4-1.mq.eu-west-2.amazonaws.com:5671}
+    brokers: ${NHAIS_AMQP_BROKERS:}
     meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:ptl_nhais_mesh_outbound}
     meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:ptl_nhais_mesh_inbound}
     gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:ptl_nhais_gp_system_inbound}
     exchange: amq.direct
-    username: ${NHAIS_AMQP_USERNAME:build}
+    username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}
     maxRedeliveries: ${NHAIS_AMQP_MAX_REDELIVERIES:3}
   test:
