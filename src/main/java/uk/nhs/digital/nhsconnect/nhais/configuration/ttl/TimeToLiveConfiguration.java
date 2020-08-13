@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.configuration.ttl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,7 +11,6 @@ import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 
 import javax.annotation.PostConstruct;
-import java.time.Duration;
 
 @Component
 @Slf4j
@@ -25,14 +23,14 @@ public class TimeToLiveConfiguration {
 
     @PostConstruct
     public void init() {
-        if(BooleanUtils.toBoolean(mongoConfig.getAutoIndexCreation())) {
+        if(mongoConfig.isAutoIndexCreation()) {
             createTimeToLiveIndex(InboundState.class);
             createTimeToLiveIndex(OutboundState.class);
         }
     }
 
     private void createTimeToLiveIndex(Class<? extends TimeToLive> clazz) {
-        var duration = Duration.parse(mongoConfig.getTtl());
+        var duration = mongoConfig.getTtl();
         var indexOperations = mongoTemplate.indexOps(clazz);
 
         if(mongoConfig.isCosmosDbEnabled()) {

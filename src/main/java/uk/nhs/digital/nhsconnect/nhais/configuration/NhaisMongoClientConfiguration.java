@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
+import java.time.Duration;
 import java.util.List;
 
 @Configuration
@@ -39,9 +40,9 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String options;
 
-    private String autoIndexCreation;
+    private boolean autoIndexCreation;
 
-    private String ttl;
+    private Duration ttl;
 
     private boolean cosmosDbEnabled;
 
@@ -59,7 +60,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     @Override
     protected boolean autoIndexCreation() {
         LOGGER.info("Auto index creation is '{}'", this.autoIndexCreation);
-        return Boolean.parseBoolean(this.autoIndexCreation);
+        return this.autoIndexCreation;
     }
 
     private String createConnectionString() {

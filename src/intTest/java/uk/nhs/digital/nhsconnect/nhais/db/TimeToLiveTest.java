@@ -21,7 +21,6 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -66,7 +65,7 @@ public class TimeToLiveTest {
             .filter(index -> index.getName().equals(MongoTtlCreator.TTL_INDEX_NAME))
             .map(IndexInfo::getExpireAfter)
             .flatMap(Optional::stream)
-            .anyMatch(indexExpire -> indexExpire.compareTo(Duration.parse(mongoConfig.getTtl())) == 0);
+            .anyMatch(indexExpire -> indexExpire.compareTo(mongoConfig.getTtl()) == 0);
     }
 
     @Test
