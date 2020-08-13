@@ -10,9 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundGpSystemService;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.inbound.queue.ObjectSerializer;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -26,18 +24,20 @@ import static org.mockito.Mockito.when;
 public class InboundGpSystemServiceTest {
 
     @Mock
-    ObjectSerializer serializer;
+    private ObjectSerializer serializer;
 
     @Mock
-    JmsTemplate jmsTemplate;
+    private JmsTemplate jmsTemplate;
 
     @Mock
-    Session session;
+    private Session session;
 
     @Mock
-    TextMessage textMessage;
+    private TextMessage textMessage;
+
     @InjectMocks
-    InboundGpSystemService inboundGpSystemService;
+    private InboundGpSystemService inboundGpSystemService;
+
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
 

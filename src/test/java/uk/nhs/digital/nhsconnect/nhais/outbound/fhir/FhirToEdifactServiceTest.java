@@ -54,27 +54,27 @@ public class FhirToEdifactServiceTest {
     private static final Long TN = 5174L;
 
     @Mock
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Mock
-    SequenceService sequenceService;
+    private SequenceService sequenceService;
 
     @Mock
-    TimestampService timestampService;
+    private TimestampService timestampService;
 
     @Mock
-    FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
+    private FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
     @Mock
-    MeshCypherDecoder meshCypherDecoder;
+    private MeshCypherDecoder meshCypherDecoder;
 
     @InjectMocks
-    FhirToEdifactService fhirToEdifactService;
+    private FhirToEdifactService fhirToEdifactService;
 
     private Instant expectedTimestamp;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() {
         doNothing().when(meshCypherDecoder).validateRecipient(any());
         when(sequenceService.generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
@@ -95,7 +95,7 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
+    public void when_convertedSuccessfully_dependenciesCalledCorrectly() {
         Parameters patient = createPatient();
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
@@ -119,7 +119,7 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
+    public void when_convertedSuccessfully_edifactIsCorrect() {
         Parameters patient = createPatient();
 
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);

@@ -30,7 +30,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     private static final String SCHEDULER_TYPE = "meshTimestamp";
 
     @InjectMocks
-    SchedulerTimestampRepositoryExtensionsImpl schedulerTimestampRepositoryExtensions;
+    private SchedulerTimestampRepositoryExtensionsImpl schedulerTimestampRepositoryExtensions;
 
     @Mock
     private MongoOperations mongoOperations;

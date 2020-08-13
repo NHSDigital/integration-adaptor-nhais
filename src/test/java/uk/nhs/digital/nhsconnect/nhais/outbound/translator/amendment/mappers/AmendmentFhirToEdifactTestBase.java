@@ -16,10 +16,10 @@ public class AmendmentFhirToEdifactTestBase {
     protected static final String REMOVE_INDICATOR = "%";
 
     @Mock
-    AmendmentBody amendmentBody;
+    protected AmendmentBody amendmentBody;
 
     @Mock
-    JsonPatches jsonPatches;
+    protected JsonPatches jsonPatches;
 
     @SuppressWarnings("unused")
     protected static Stream<Arguments> getAddOrReplaceEnums() {

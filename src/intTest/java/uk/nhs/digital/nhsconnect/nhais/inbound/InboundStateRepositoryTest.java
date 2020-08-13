@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class InboundStateRepositoryTest {
 
     @Autowired
-    InboundStateRepository inboundStateRepository;
+    private InboundStateRepository inboundStateRepository;
 
     @Test
     void whenDuplicateInterchangeInboundStateInserted_thenThrowsException() {

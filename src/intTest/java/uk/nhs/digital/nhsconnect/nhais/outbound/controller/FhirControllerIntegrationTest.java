@@ -27,10 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Slf4j
 public class FhirControllerIntegrationTest {
-    private static final String expectedOperationId = "c35b1432682a04ca77b287b11f240fbd8c46f22fe589b513a84e307b57dcb820";
-
-    @Autowired
-    OutboundStateRepository outboundStateRepository;
 
     @Autowired
     private MockMvc mockMvc;

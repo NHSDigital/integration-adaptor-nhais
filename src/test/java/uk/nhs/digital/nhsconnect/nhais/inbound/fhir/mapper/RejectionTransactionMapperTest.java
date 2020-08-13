@@ -29,19 +29,19 @@ class RejectionTransactionMapperTest {
 
     private static final String TEXT_LITERAL = "some_text_literal";
     @Mock
-    Transaction transaction;
+    private Transaction transaction;
     @Mock
-    FreeText freeText;
+    private FreeText freeText;
     @Mock
-    Message message;
+    private Message message;
     @Mock
-    Interchange interchange;
+    private Interchange interchange;
     @Mock
-    InterchangeHeader interchangeHeader;
+    private InterchangeHeader interchangeHeader;
     @Mock
-    HealthAuthorityNameAndAddress healthAuthorityNameAndAddress;
+    private HealthAuthorityNameAndAddress healthAuthorityNameAndAddress;
     @Mock
-    GpNameAndAddress gpNameAndAddress;
+    private GpNameAndAddress gpNameAndAddress;
 
     @Test
     void testMap(SoftAssertions softly) {
