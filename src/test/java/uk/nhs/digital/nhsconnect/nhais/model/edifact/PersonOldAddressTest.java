@@ -1,8 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PersonOldAddressTest {
 
@@ -18,7 +20,7 @@ public class PersonOldAddressTest {
             .addressLine5("KENT")
             .build();
 
-        assertEquals(expectedValue, personOldAddress.toEdifact());
+        assertThat(personOldAddress.toEdifact()).isEqualTo(expectedValue);
     }
 
     @Test
@@ -31,7 +33,15 @@ public class PersonOldAddressTest {
             .addressLine5("KENT")
             .build();
 
-        assertEquals(expectedValue, personOldAddress.toEdifact());
+        assertThat(personOldAddress.toEdifact()).isEqualTo(expectedValue);
     }
 
+    @Test
+    void When_MappingEmptyAddress_Then_ThrowException() {
+        var personOldAddress = PersonOldAddress.builder()
+            .build();
+
+        assertThatThrownBy(personOldAddress::toEdifact)
+            .isExactlyInstanceOf(EdifactValidationException.class);
+    }
 }
