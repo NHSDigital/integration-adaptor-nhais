@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.util.Objects;
@@ -40,6 +41,10 @@ public class PersonOldAddress extends Segment {
 
     @Override
     protected void validateStateful() throws EdifactValidationException {
+        Stream<String> addressLines = Stream.of(this.addressLine1, addressLine2, addressLine3, addressLine4, addressLine5);
+        if (addressLines.allMatch(StringUtils::isBlank)) {
+            throw new EdifactValidationException("At least 1 address line in patient's previous address should not be blank");
+        }
     }
 
     @Override
