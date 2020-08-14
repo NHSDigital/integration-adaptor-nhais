@@ -7,12 +7,15 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - NHAIS_LOGGING_LEVEL=INFO
       - NHAIS_OUTBOUND_SERVER_PORT=8080
       - NHAIS_AMQP_RETRY_DELAY=100
       - NHAIS_AMQP_MAX_RETRIES=3
       - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
+      - NHAIS_MONGO_TTL=P30D
+      - NHAIS_COSMOS_DB_ENABLED=false
       - NHAIS_MESH_MAILBOX_ID=gp_mailbox
       - NHAIS_MESH_MAILBOX_PASSWORD=password
       - NHAIS_MESH_SHARED_KEY=SharedKey
@@ -138,6 +141,7 @@ services:
     ports:
       - "8090:8080"
     environment:
+      - NHAIS_LOGGING_LEVEL=INFO
       - NHAIS_OUTBOUND_SERVER_PORT=8080
       - NHAIS_AMQP_RETRY_DELAY=100
       - NHAIS_AMQP_MAX_RETRIES=3

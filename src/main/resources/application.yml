@@ -39,6 +39,8 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
+    ttl: ${NHAIS_MONGO_TTL:P30D}
+    cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh: # sensible defaults for local development using fake-mesh
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:gp_mailbox}
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}

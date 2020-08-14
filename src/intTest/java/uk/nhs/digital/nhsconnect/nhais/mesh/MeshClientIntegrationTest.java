@@ -46,9 +46,9 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     );
 
     @Autowired
-    MeshRequests meshRequests;
+    private MeshRequests meshRequests;
     @Autowired
-    MeshCypherDecoder meshCypherDecoder;
+    private MeshCypherDecoder meshCypherDecoder;
     @Autowired
     private MeshHttpClientBuilder meshHttpClientBuilder;
 

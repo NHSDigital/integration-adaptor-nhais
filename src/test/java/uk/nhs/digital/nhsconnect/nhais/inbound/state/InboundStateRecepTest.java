@@ -30,10 +30,10 @@ public class InboundStateRecepTest {
     private static final long MESSAGE_SEQUENCE = 234L;
     public static final InboundState EXPECTED_RECEP_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.RECEP)
-        .setSndr(SENDER)
-        .setRecip(RECIPIENT)
-        .setIntSeq(INTERCHANGE_SEQUENCE)
-        .setMsgSeq(MESSAGE_SEQUENCE)
+        .setSender(SENDER)
+        .setRecipient(RECIPIENT)
+        .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+        .setMessageSequence(MESSAGE_SEQUENCE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
 
     @BeforeEach

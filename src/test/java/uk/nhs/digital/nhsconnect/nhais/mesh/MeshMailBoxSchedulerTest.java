@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class MeshMailBoxSchedulerTest {
 
     @InjectMocks
-    MeshMailBoxScheduler meshMailBoxScheduler;
+    private MeshMailBoxScheduler meshMailBoxScheduler;
 
     @Mock
     private SchedulerTimestampRepository schedulerTimestampRepository;

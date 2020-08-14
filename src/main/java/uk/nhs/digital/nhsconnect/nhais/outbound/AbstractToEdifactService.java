@@ -92,12 +92,12 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
     protected void recordOutboundState(T translationItems) {
         var outboundState = new OutboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setRecip(translationItems.getRecipient())
-            .setSndr(translationItems.getSender())
+            .setRecipient(translationItems.getRecipient())
+            .setSender(translationItems.getSender())
 
-            .setIntSeq(translationItems.getSendInterchangeSequence())
-            .setMsgSeq(translationItems.getSendMessageSequence())
-            .setTn(translationItems.getTransactionNumber())
+            .setInterchangeSequence(translationItems.getSendInterchangeSequence())
+            .setMessageSequence(translationItems.getSendMessageSequence())
+            .setTransactionNumber(translationItems.getTransactionNumber())
 
                 .setTransactionType(translationItems.getTransactionType())
                 .setTranslationTimestamp(translationItems.getTranslationTimestamp())

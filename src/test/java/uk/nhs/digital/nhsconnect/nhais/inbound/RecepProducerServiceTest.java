@@ -46,13 +46,13 @@ class RecepProducerServiceTest {
     private static final long RECEP_MESSAGE_SEQUENCE = 234234;
 
     @InjectMocks
-    RecepProducerService recepProducerService;
+    private RecepProducerService recepProducerService;
 
     @Mock
-    SequenceService sequenceService;
+    private SequenceService sequenceService;
 
     @Mock
-    TimestampService timestampService;
+    private TimestampService timestampService;
 
     @Test
     public void whenProducingRecep_thenValidRecepIsCreated() throws IOException {

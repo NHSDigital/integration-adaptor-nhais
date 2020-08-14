@@ -23,22 +23,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class InboundStateRepositoryTest {
 
     @Autowired
-    InboundStateRepository inboundStateRepository;
+    private InboundStateRepository inboundStateRepository;
 
     @Test
     void whenDuplicateInterchangeInboundStateInserted_thenThrowsException() {
         var inboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setSndr("some_sender")
-            .setRecip("some_recipient")
-            .setIntSeq(123L)
-            .setMsgSeq(234L);
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setInterchangeSequence(123L)
+            .setMessageSequence(234L);
         var duplicateInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setSndr("some_sender")
-            .setRecip("some_recipient")
-            .setIntSeq(123L)
-            .setMsgSeq(234L);
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setInterchangeSequence(123L)
+            .setMessageSequence(234L);
 
         assertInsert(inboundState, duplicateInboundState);
     }
@@ -47,14 +47,14 @@ public class InboundStateRepositoryTest {
     void whenDuplicateRecepInboundStateInserted_thenThrowsException() {
         var inboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSndr("some_sender")
-            .setRecip("some_recipient")
-            .setIntSeq(123L);
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setInterchangeSequence(123L);
         var duplicateInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSndr("some_sender")
-            .setRecip("some_recipient")
-            .setIntSeq(123L);
+            .setSender("some_sender")
+            .setRecipient("some_recipient")
+            .setInterchangeSequence(123L);
 
         assertInsert(inboundState, duplicateInboundState);
     }
