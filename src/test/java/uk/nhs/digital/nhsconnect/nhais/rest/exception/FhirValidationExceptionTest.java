@@ -25,10 +25,10 @@ import static org.mockito.Mockito.when;
 public class FhirValidationExceptionTest {
 
     @Mock
-    ValidationResult validationResult;
+    private ValidationResult validationResult;
 
     @Mock
-    IBaseOperationOutcome operationOutcome;
+    private IBaseOperationOutcome operationOutcome;
 
     @BeforeEach
     public void beforeEach() {

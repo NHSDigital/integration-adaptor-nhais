@@ -153,10 +153,10 @@ class RecepConsumerServiceTest {
         assertThat(inboundState).isEqualTo(
             new InboundState()
                 .setWorkflowId(WorkflowId.RECEP)
-                .setIntSeq(SIS)
-                .setMsgSeq(sms)
-                .setSndr(SENDER)
-                .setRecip(RECIPIENT)
+                .setInterchangeSequence(SIS)
+                .setMessageSequence(sms)
+                .setSender(SENDER)
+                .setRecipient(RECIPIENT)
                 .setTranslationTimestamp(translationTimestamp));
     }
 }

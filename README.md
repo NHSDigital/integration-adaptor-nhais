@@ -216,6 +216,8 @@ If any value is set for `NHAIS_MONGO_HOST` then the following properties will be
 | NHAIS_MONGO_USERNAME             |         | (Optional) Mongodb username. If set then password must also be set.
 | NHAIS_MONGO_PASSWORD             |         | (Optional) Mongodb password
 | NHAIS_MONGO_OPTIONS              |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?
+| NHAIS_MONGO_TTL                  | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
+| NHAIS_COSMOS_DB_ENABLED          | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB
 
 If no value is set for `NHAIS_MONGO_HOST` then the following properties are used:
 
@@ -223,6 +225,29 @@ If no value is set for `NHAIS_MONGO_HOST` then the following properties are used
 | ---------------------------------|---------------------------|-------------
 | NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
 | NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
+
+#### Time-to-live Indexes
+
+The adaptor creates TTL (time to live) indexes on the `outboundState` and `inboundState` collections to automatically 
+remove old documents. The variable `NHAIS_MONGO_TTL` described above controls the duration. There are differences between
+how TTL indexes work between MongoDb and Azure Cosmos DB. When using Cosmos the `NHAIS_COSMOS_DB_ENABLED` flag must be true.
+
+**TTL Indexes in Mongo**
+
+The property `translationTimestamp` is indexed. For outbound, this is the timestamp when the adaptor translates FHIR 
+into EDIFACT and is the timestamp enclosed in the EDIFACT interchange sent to NHAIS. For inbound, this is the 
+timestamp enclosed within the EDIFACT interchange received from NHAIS.
+
+**TTL Indexes in Cosmos**
+
+[TTL Index in Cosmos](https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live) are limited in that only 
+a specific `_ts` property may have this index. The _ts property "is a system generated property (that) specifies the 
+last updated timestamp of the resource". ([Reference](https://docs.microsoft.com/en-us/rest/api/cosmos-db/databases))
+
+For outbound, each document is "last updated" when the adaptor processes the inbound RECEP for that transaction. For
+inbound each document is "last updated" after publishing the FHIR message to the inbound GP System message queue.
+
+The impact is that documents in Cosmos may live slightly longer than those stored in Mongo.
 
 ## Configuring your AMQP Broker
 

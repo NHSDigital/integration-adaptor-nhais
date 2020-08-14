@@ -81,58 +81,58 @@ public class RegistrationConsumerServiceTest {
     private static final String RECEP_AS_EDIFACT = "some_recep_edifact";
 
     @Mock
-    InboundGpSystemService inboundGpSystemService;
+    private InboundGpSystemService inboundGpSystemService;
 
     @Mock
-    InboundStateRepository inboundStateRepository;
+    private InboundStateRepository inboundStateRepository;
 
     @Mock
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Mock
-    OutboundQueueService outboundQueueService;
+    private OutboundQueueService outboundQueueService;
 
     @Mock
-    RecepProducerService recepProducerService;
+    private RecepProducerService recepProducerService;
 
     @Mock
-    InboundEdifactTransactionHandler inboundEdifactTransactionHandler;
+    private InboundEdifactTransactionHandler inboundEdifactTransactionHandler;
 
     @InjectMocks
-    RegistrationConsumerService registrationConsumerService;
+    private RegistrationConsumerService registrationConsumerService;
 
     @Mock
-    Interchange interchange;
+    private Interchange interchange;
 
     @Mock
-    Message message1;
+    private Message message1;
 
     @Mock
-    Message message2;
+    private Message message2;
 
     @Mock
-    Message cqnMessage;
+    private Message cqnMessage;
 
     @Mock
-    Transaction transaction1;
+    private Transaction transaction1;
 
     @Mock
-    Transaction transaction2;
+    private Transaction transaction2;
 
     @Mock
-    Transaction transaction3;
+    private Transaction transaction3;
 
     @Mock
-    Transaction transaction4;
+    private Transaction transaction4;
 
     @Mock
-    Interchange recep;
+    private Interchange recep;
 
     @Mock
-    Message recepMessage;
+    private Message recepMessage;
 
     @Mock
-    EdifactParser edifactParser;
+    private EdifactParser edifactParser;
 
     private void mockInterchangeSegments() {
         when(edifactParser.parse(CONTENT)).thenReturn(interchange);
@@ -229,10 +229,10 @@ public class RegistrationConsumerServiceTest {
         var savedRecepOutboundState = outboundStateArgumentCaptor.getValue();
         var expectedRecepOutboundState = new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
-            .setSndr(RECEP_SENDER)
-            .setRecip(RECEP_RECIPIENT)
-            .setIntSeq(RECEP_INTERCHANGE_SEQUENCE)
-            .setMsgSeq(RECEP_MESSAGE_SEQUENCE)
+            .setSender(RECEP_SENDER)
+            .setRecipient(RECEP_RECIPIENT)
+            .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
+            .setMessageSequence(RECEP_MESSAGE_SEQUENCE)
             .setTranslationTimestamp(translationTime);
 
         assertThat(savedRecepOutboundState).isEqualToIgnoringGivenFields(expectedRecepOutboundState, "id");
@@ -261,11 +261,11 @@ public class RegistrationConsumerServiceTest {
         InboundState savedInboundState, long sms, long tn, ReferenceTransactionType.TransactionType transactionType, Instant translationTyime) {
 
         assertThat(savedInboundState.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
-        assertThat(savedInboundState.getSndr()).isEqualTo(SENDER);
-        assertThat(savedInboundState.getRecip()).isEqualTo(RECIPIENT);
-        assertThat(savedInboundState.getIntSeq()).isEqualTo(SIS);
-        assertThat(savedInboundState.getMsgSeq()).isEqualTo(sms);
-        assertThat(savedInboundState.getTn()).isEqualTo(tn);
+        assertThat(savedInboundState.getSender()).isEqualTo(SENDER);
+        assertThat(savedInboundState.getRecipient()).isEqualTo(RECIPIENT);
+        assertThat(savedInboundState.getInterchangeSequence()).isEqualTo(SIS);
+        assertThat(savedInboundState.getMessageSequence()).isEqualTo(sms);
+        assertThat(savedInboundState.getTransactionNumber()).isEqualTo(tn);
         assertThat(savedInboundState.getTransactionType().getCode()).isEqualTo(transactionType.getCode());
         assertThat(savedInboundState.getTranslationTimestamp()).isEqualTo(translationTyime);
     }

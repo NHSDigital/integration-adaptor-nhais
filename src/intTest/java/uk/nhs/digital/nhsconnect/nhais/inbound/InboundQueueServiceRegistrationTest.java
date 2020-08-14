@@ -110,12 +110,12 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(OPERATION_ID)
-            .setIntSeq(SIS)
-            .setMsgSeq(SMS)
-            .setSndr(SENDER)
-            .setRecip(RECIPIENT)
+            .setInterchangeSequence(SIS)
+            .setMessageSequence(SMS)
+            .setSender(SENDER)
+            .setRecipient(RECIPIENT)
             .setTransactionType(TRANSACTION_TYPE)
-            .setTn(TN)
+            .setTransactionNumber(TN)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

@@ -31,22 +31,22 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private static final Instant RECEP_DATE_TIME = Instant.ofEpochMilli(123123);
 
     @Autowired
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Test
     void whenUpdatingRecep_thenRecepDetailsAreUpdated() {
 
         var outboundState = new OutboundState()
-            .setSndr(SENDER)
-            .setRecip(RECIPIENT)
-            .setIntSeq(INTERCHANGE_SEQUENCE)
-            .setMsgSeq(MESSAGE_SEQUENCE);
+            .setSender(SENDER)
+            .setRecipient(RECIPIENT)
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
 
         var otherOutboundState = new OutboundState()
-            .setSndr(OTHER_SENDER)
-            .setRecip(RECIPIENT)
-            .setIntSeq(INTERCHANGE_SEQUENCE)
-            .setMsgSeq(MESSAGE_SEQUENCE);
+            .setSender(OTHER_SENDER)
+            .setRecipient(RECIPIENT)
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
 
         outboundState = outboundStateRepository.save(outboundState);
         otherOutboundState = outboundStateRepository.save(otherOutboundState);
