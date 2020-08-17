@@ -127,5 +127,6 @@ nhais:
       TES5=A91561OT002}
     wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:6000}
     pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:5}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:4}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}

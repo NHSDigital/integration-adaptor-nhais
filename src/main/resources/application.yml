@@ -139,6 +139,6 @@ nhais:
       UNY5=nhais_mailbox}
     wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:60000}
     pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:300}
-    pollingCycleDurationBufferInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:285}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:285}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:true}

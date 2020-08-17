@@ -142,5 +142,6 @@ nhais:
       UNY5=gp_mailbox}
     wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:10000}
     pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:30}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:25}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:true}

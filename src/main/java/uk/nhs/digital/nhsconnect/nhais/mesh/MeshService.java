@@ -39,13 +39,13 @@ public class MeshService {
                        MeshMailBoxScheduler meshMailBoxScheduler,
                        @Value("${nhais.mesh.pollingCycleMinimumIntervalInSeconds}") long pollingCycleMinimumIntervalInSeconds,
                        @Value("${nhais.mesh.wakeupIntervalInMilliseconds}") long wakeupIntervalInMilliseconds,
-                       @Value("${nhais.mesh.pollingCycleMaximumDurationInSeconds}") long pollingCycleMaximumDurationInSeconds) {
+                       @Value("${nhais.mesh.pollingCycleDurationInSeconds}") long pollingCycleDurationInSeconds) {
         this.meshClient = meshClient;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
         this.pollingCycleMinimumIntervalInSeconds = pollingCycleMinimumIntervalInSeconds;
         this.wakeupIntervalInMilliseconds = wakeupIntervalInMilliseconds;
-        this.pollingCycleMaximumDurationInSeconds = pollingCycleMaximumDurationInSeconds;
+        this.pollingCycleMaximumDurationInSeconds = pollingCycleDurationInSeconds;
     }
 
     @Scheduled(fixedRateString = "${nhais.mesh.wakeupIntervalInMilliseconds}")
