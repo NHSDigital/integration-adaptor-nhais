@@ -45,7 +45,7 @@ public class AmendmentController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> amendment(@PathVariable(name = "nhsNumber") String nhsNumber, @RequestBody String body) {
         AmendmentBody amendmentBody = parseRequest(body);
-        LOGGER.info("Amendment request: {}", amendmentBody);
+        LOGGER.debug("Amendment request: {}", amendmentBody);
         validateRequest(nhsNumber, amendmentBody);
         OutboundMeshMessage meshMessage = jsonPatchToEdifactService.convertToEdifact(amendmentBody);
         outboundQueueService.publish(meshMessage);
