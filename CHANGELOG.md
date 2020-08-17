@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Empty patient previous address is not allowed anymore
 - A patient previous address is required for acceptance type 3 (Transfer in)
 - A patient surname is required for all acceptance types
+- Renamed two MESH environment variables and added one new variable. Added more detailed descriptions in README of these variables.
 
 ## [1.1.0] - 2020-08-05
 

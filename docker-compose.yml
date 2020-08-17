@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+#    ports: See docker-compose.override.yml
     environment:
       - NHAIS_LOGGING_LEVEL=INFO
       - NHAIS_OUTBOUND_SERVER_PORT=8080
@@ -111,9 +112,10 @@ services:
         SO01=nhais_mailbox
         UNY5=nhais_mailbox
         BAA1=nhais_mailbox
-      - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
-      - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
+      - NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS=300
+      - NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS=60000
       - NHAIS_SCHEDULER_ENABLED=true
+
   activemq:
     build:
       context: ./activemq
@@ -162,6 +164,7 @@ services:
         SO01=gp_mailbox
         UNY5=gp_mailbox
         BAA1=gp_mailbox
-      - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
-      - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
+      - NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS=30
+      - NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS=10000
       - NHAIS_SCHEDULER_ENABLED=true
+      - NHAIS_MESH_CERT_VALIDATION=false
