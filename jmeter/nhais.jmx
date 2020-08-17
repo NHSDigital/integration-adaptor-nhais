@@ -52,7 +52,7 @@
           </elementProp>
           <elementProp name="DURATION_SECONDS" elementType="Argument">
             <stringProp name="Argument.name">DURATION_SECONDS</stringProp>
-            <stringProp name="Argument.value">${__P(duration,60)}</stringProp>
+            <stringProp name="Argument.value">${__P(duration,3600)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Test duration in seconds</stringProp>
           </elementProp>

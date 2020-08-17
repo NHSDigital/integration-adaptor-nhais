@@ -62,7 +62,7 @@ public class MeshService {
                     processSingleMessage(messageId);
                 } else {
                     LOGGER.warn("Insufficient time remains to complete the polling cycle. Processed {} of {} messages from inbox.", i + 1, inboxMessageIds.size());
-                    break;
+                    return;
                 }
             }
             LOGGER.info("Completed MESH mailbox polling cycle. Processed all messages from inbox.");
