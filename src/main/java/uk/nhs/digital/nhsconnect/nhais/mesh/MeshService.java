@@ -23,15 +23,11 @@ public class MeshService {
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private final Long pollingCycleMinimumIntervalInSeconds;
+    private final long pollingCycleMinimumIntervalInSeconds;
 
     private final long wakeupIntervalInMilliseconds;
 
-    /**
-     * If less than POLLING_CYCLE_DURATION_BUFFER_SECONDS remain in the polling cycle then stop downloading new
-     * messages.
-     */
-    private final long pollingCycleMaximumDurationInSeconds;
+    private final long pollingCycleDurationInSeconds;
 
     @Autowired
     public MeshService(MeshClient meshClient,
@@ -45,7 +41,7 @@ public class MeshService {
         this.meshMailBoxScheduler = meshMailBoxScheduler;
         this.pollingCycleMinimumIntervalInSeconds = pollingCycleMinimumIntervalInSeconds;
         this.wakeupIntervalInMilliseconds = wakeupIntervalInMilliseconds;
-        this.pollingCycleMaximumDurationInSeconds = pollingCycleDurationInSeconds;
+        this.pollingCycleDurationInSeconds = pollingCycleDurationInSeconds;
     }
 
     @Scheduled(fixedRateString = "${nhais.mesh.wakeupIntervalInMilliseconds}")
@@ -87,7 +83,7 @@ public class MeshService {
     }
 
     private boolean sufficientTimeRemainsInPollingCycle(StopWatch stopWatch) {
-        return stopWatch.getTime(TimeUnit.SECONDS) < pollingCycleMaximumDurationInSeconds;
+        return stopWatch.getTime(TimeUnit.SECONDS) < pollingCycleDurationInSeconds;
     }
 
     private void processSingleMessage(String messageId) {
@@ -102,7 +98,7 @@ public class MeshService {
             LOGGER.warn("Message id {} has an unsupported workflow id {} and has been left in the inbox.", messageId, ex.getWorkflowId());
         } catch (Exception ex) {
             LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
-            //ignore exception and try to download next message
+            // skip message with error and attempt to download the next one
         }
     }
 
