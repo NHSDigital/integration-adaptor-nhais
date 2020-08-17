@@ -140,7 +140,7 @@ nhais:
       WHI5=gp_mailbox
       SO01=gp_mailbox
       UNY5=gp_mailbox}
-    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:10000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:30}
+    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:10000}
+    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:30}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:true}

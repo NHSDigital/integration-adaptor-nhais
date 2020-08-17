@@ -31,9 +31,10 @@ public class RecepResponderService implements RegistrationConsumer {
         var recepEdifact = recepProducerService.produceRecep(interchange);
         var recep = edifactParser.parse(recepEdifact);
         var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact, recep);
-
         outboundQueueService.publish(recepOutboundMessage);
-
+        LOGGER.info("Published RECEP to acknowledge RIS {}. Outbound message has SIS {}",
+            interchange.getInterchangeHeader().getSequenceNumber(),
+            recep.getInterchangeHeader().getSequenceNumber());
     }
 
     private OutboundMeshMessage prepareRecepOutboundMessage(String recepEdifact, Interchange recep) {

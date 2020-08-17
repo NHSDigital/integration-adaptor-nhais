@@ -17,36 +17,38 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MeshService {
 
-    /**
-     * If less than POLLING_CYCLE_DURATION_BUFFER_SECONDS remain in the polling cycle then stop downloading new
-     * messages.
-     */
-    private static final long POLLING_CYCLE_DURATION_BUFFER_SECONDS = 15;
-
     private final MeshClient meshClient;
 
     private final InboundQueueService inboundQueueService;
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private final Long scanDelayInSeconds;
+    private final Long pollingCycleMinimumIntervalInSeconds;
 
-    private final long scanIntervalInMilliseconds;
+    private final long wakeupIntervalInMilliseconds;
+
+    /**
+     * If less than POLLING_CYCLE_DURATION_BUFFER_SECONDS remain in the polling cycle then stop downloading new
+     * messages.
+     */
+    private final long pollingCycleMaximumDurationInSeconds;
 
     @Autowired
     public MeshService(MeshClient meshClient,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
-                       @Value("${nhais.mesh.scanMailboxDelayInSeconds}") long scanDelayInSeconds,
-                       @Value("${nhais.mesh.scanMailboxIntervalInMilliseconds}") long scanIntervalInMilliseconds) {
+                       @Value("${nhais.mesh.pollingCycleMinimumIntervalInSeconds}") long pollingCycleMinimumIntervalInSeconds,
+                       @Value("${nhais.mesh.wakeupIntervalInMilliseconds}") long wakeupIntervalInMilliseconds,
+                       @Value("${nhais.mesh.pollingCycleMaximumDurationInSeconds}") long pollingCycleMaximumDurationInSeconds) {
         this.meshClient = meshClient;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
-        this.scanDelayInSeconds = scanDelayInSeconds;
-        this.scanIntervalInMilliseconds = scanIntervalInMilliseconds;
+        this.pollingCycleMinimumIntervalInSeconds = pollingCycleMinimumIntervalInSeconds;
+        this.wakeupIntervalInMilliseconds = wakeupIntervalInMilliseconds;
+        this.pollingCycleMaximumDurationInSeconds = pollingCycleMaximumDurationInSeconds;
     }
 
-    @Scheduled(fixedRateString = "${nhais.mesh.scanMailboxIntervalInMilliseconds}")
+    @Scheduled(fixedRateString = "${nhais.mesh.wakeupIntervalInMilliseconds}")
     public void scanMeshInboxForMessages() {
         if (!meshMailBoxScheduler.isEnabled()){
             LOGGER.warn("Not running the MESH mailbox polling cycle because it is disabled. Set variable " +
@@ -56,7 +58,7 @@ public class MeshService {
         LOGGER.info("Requesting lock from database to run MESH mailbox polling cycle");
         StopWatch pollingCycleElapsedTime = new StopWatch();
         pollingCycleElapsedTime.start();
-        if (meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)) {
+        if (meshMailBoxScheduler.hasTimePassed(pollingCycleMinimumIntervalInSeconds)) {
             List<String> inboxMessageIds = authenticateAndGetInboxMessageIds();
             for (int i = 0; i < inboxMessageIds.size(); i++) {
                 String messageId = inboxMessageIds.get(i);
@@ -67,11 +69,11 @@ public class MeshService {
                     break;
                 }
             }
-            LOGGER.info("Completed MESH mailbox polling cycle");
+            LOGGER.info("Completed MESH mailbox polling cycle. Processed all messages from inbox.");
         } else {
             LOGGER.info("Could not obtain database lock to run MESH mailbox polling cycle: insufficient time has elapsed " +
                 "since the previous polling cycle or another adaptor instance has already started the polling cycle. " +
-                "Next scan in {} seconds", TimeUnit.SECONDS.convert(scanIntervalInMilliseconds, TimeUnit.MILLISECONDS));
+                "Next scan in {} seconds", TimeUnit.SECONDS.convert(wakeupIntervalInMilliseconds, TimeUnit.MILLISECONDS));
         }
     }
 
@@ -85,8 +87,7 @@ public class MeshService {
     }
 
     private boolean sufficientTimeRemainsInPollingCycle(StopWatch stopWatch) {
-        long bufferedElapsedTime = stopWatch.getTime(TimeUnit.SECONDS) + POLLING_CYCLE_DURATION_BUFFER_SECONDS;
-        return bufferedElapsedTime < scanDelayInSeconds;
+        return stopWatch.getTime(TimeUnit.SECONDS) < pollingCycleMaximumDurationInSeconds;
     }
 
     private void processSingleMessage(String messageId) {
