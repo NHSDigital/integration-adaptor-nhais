@@ -356,6 +356,7 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
 ### Running with Docker Compose
 
+    export BUILD_TAG=latest
     docker-compose build
     docker-compose up
     
@@ -363,6 +364,7 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
 Docker compose configuration allows running multiple instances of NHAIS application with an NGINX load balancer in front using round robin routing by default.
 
+    export BUILD_TAG=latest
     docker-compose build
     docker-compose -f docker-compose.yml -f docker-compose.lb.override.yml up --scale nhais=3
 
