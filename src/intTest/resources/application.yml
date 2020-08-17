@@ -133,7 +133,8 @@ nhais:
       WHI5=fake_mailboxId
       SO01=fake_mailboxId
       UNY5=fake_mailboxId}
-    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:1000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:2}
+    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:1000}
+    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:2}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:1}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}

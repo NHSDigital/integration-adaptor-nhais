@@ -7,7 +7,7 @@ export HEAP="-Xmx512m"
 # duration: number of seconds to run the test for
 # host: DNS name of NHAIS adaptor LB
 # See nahis.jmx for other options, but defaults should be fine
-JOPTS="-Jduration=10 -Jhost=internal-nia-vp-nhais-ecs-lb-2026655822.eu-west-2.elb.amazonaws.com"
+JOPTS="-Jduration=10 -Jhost=$1"
 echo "Removing old reports/"
 rm -Rf reports/
 echo "Removing old results.csv"

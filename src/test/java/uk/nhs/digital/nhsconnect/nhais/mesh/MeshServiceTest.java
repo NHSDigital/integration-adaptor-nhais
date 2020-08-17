@@ -30,52 +30,72 @@ class MeshServiceTest {
     @Mock
     private MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private final long scanDelayInSeconds = 5L;
+    private final long scanDelayInSeconds = 2L;
     private final long scanIntervalInMilliseconds = 6000L;
-    private static final String MESSAGE_ID = "messageId";
-    private static final String ERROR_MESSAGE_ID = "messageId_2";
+    private final long pollingCycleMaximumDurationInSeconds = 1L;
+    private static final String MESSAGE_ID1 = "messageId1";
+    private static final String MESSAGE_ID2 = "messageId2";
+    private static final String ERROR_MESSAGE_ID = "messageId_error";
     private MeshService meshService;
-    private MeshMessage meshMessage;
+    private MeshMessage meshMessage1;
+    private MeshMessage meshMessage2;
 
     @BeforeEach
     public void setUp() {
-        meshMessage = new MeshMessage();
-        meshMessage.setMeshMessageId(MESSAGE_ID);
+        meshMessage1 = new MeshMessage();
+        meshMessage1.setMeshMessageId(MESSAGE_ID1);
+        meshMessage2 = new MeshMessage();
+        meshMessage2.setMeshMessageId(MESSAGE_ID2);
 
         meshService = new MeshService(meshClient,
             inboundQueueService,
             meshMailBoxScheduler,
             scanDelayInSeconds,
-            scanIntervalInMilliseconds);
+            scanIntervalInMilliseconds,
+            pollingCycleMaximumDurationInSeconds);
     }
 
     @Test
-    public void When_IntervalPassedAndMessagesFound_Then_DownloadAndPublishMessage() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
+    public void When_IntervalPassedAndMessagesFound_Then_DownloadAndPublishAllMessages() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
-        when(meshClient.getEdifactMessage(any())).thenReturn(meshMessage);
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1, MESSAGE_ID2));
+        when(meshClient.getEdifactMessage(MESSAGE_ID1)).thenReturn(meshMessage1);
+        when(meshClient.getEdifactMessage(MESSAGE_ID2)).thenReturn(meshMessage2);
 
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).authenticate();
-        verify(meshClient).getEdifactMessage(MESSAGE_ID);
-        verify(inboundQueueService).publish(meshMessage);
-        verify(meshClient).acknowledgeMessage(MESSAGE_ID);
+        verify(meshClient).getEdifactMessage(MESSAGE_ID1);
+        verify(inboundQueueService).publish(meshMessage1);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
+
+        verify(meshClient).getEdifactMessage(MESSAGE_ID2);
+        verify(inboundQueueService).publish(meshMessage1);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID2);
+    }
+
+    @Test
+    public void When_IntervalHasPassed_DurationExceeded_Then_StopDownloading() {
+        when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
+        when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1, MESSAGE_ID2));
+        when(meshClient.getEdifactMessage(any())).thenAnswer((invocation) -> {
+            Thread.sleep((pollingCycleMaximumDurationInSeconds + 1) * 1000L); // ensure first download exceeds duration
+            return meshMessage1;
+        });
+
+        meshService.scanMeshInboxForMessages();
+
+        verify(meshClient).authenticate();
+        verify(meshClient).getEdifactMessage(MESSAGE_ID1);
+        verify(inboundQueueService).publish(meshMessage1);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
+        verifyNoMoreInteractions(meshClient, inboundQueueService); // second message not downloaded and published
     }
 
     @Test
     public void When_IntervalPassedAndRequestToGetMessageListFails_Then_DoNotPublishAndAcknowledgeMessages() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenThrow(new MeshApiConnectionException("error"));
@@ -90,11 +110,6 @@ class MeshServiceTest {
 
     @Test
     public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Then_DoNotPublishAndAcknowledgeMessage() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID));
@@ -105,81 +120,64 @@ class MeshServiceTest {
         verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(inboundQueueService, times(0)).publish(any());
-        verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID);
+        verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID1);
     }
 
     @Test
     public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Then_SkipMessageAndDownloadNextOne() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
-
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID));
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID1));
         when(meshClient.getEdifactMessage(ERROR_MESSAGE_ID)).thenThrow(new MeshApiConnectionException("error"));
-        when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(meshMessage);
+        when(meshClient.getEdifactMessage(MESSAGE_ID1)).thenReturn(meshMessage1);
 
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
-        verify(meshClient).getEdifactMessage(MESSAGE_ID);
-        verify(inboundQueueService).publish(meshMessage);
-        verify(meshClient).acknowledgeMessage(MESSAGE_ID);
+        verify(meshClient).getEdifactMessage(MESSAGE_ID1);
+        verify(inboundQueueService).publish(meshMessage1);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
     }
 
     @Test
     public void When_IntervalPassedAndAcknowledgeMeshMessageFails_Then_SkipMessageAndDownloadNextOne() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
-
         MeshMessage messageForAckError = new MeshMessage();
         messageForAckError.setMeshMessageId(ERROR_MESSAGE_ID);
 
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID));
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID1));
         doThrow(new MeshApiConnectionException("error")).when(meshClient).acknowledgeMessage(ERROR_MESSAGE_ID);
-        doNothing().when(meshClient).acknowledgeMessage(MESSAGE_ID);
+        doNothing().when(meshClient).acknowledgeMessage(MESSAGE_ID1);
         when(meshClient.getEdifactMessage(ERROR_MESSAGE_ID)).thenReturn(messageForAckError);
-        when(meshClient.getEdifactMessage(MESSAGE_ID)).thenReturn(meshMessage);
+        when(meshClient.getEdifactMessage(MESSAGE_ID1)).thenReturn(meshMessage1);
 
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).authenticate();
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
-        verify(meshClient).getEdifactMessage(MESSAGE_ID);
+        verify(meshClient).getEdifactMessage(MESSAGE_ID1);
         verify(inboundQueueService).publish(messageForAckError);
-        verify(inboundQueueService).publish(meshMessage);
+        verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient).acknowledgeMessage(ERROR_MESSAGE_ID);
-        verify(meshClient).acknowledgeMessage(MESSAGE_ID);
+        verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
     }
 
     @Test
     public void When_IntervalPassedAndPublishingToQueueFails_Then_DoNotAcknowledgeMessage() {
-        MeshService meshService = new MeshService(meshClient,
-            inboundQueueService,
-            meshMailBoxScheduler,
-            scanDelayInSeconds,
-            scanIntervalInMilliseconds);
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID));
-        when(meshClient.getEdifactMessage(any())).thenReturn(meshMessage);
+        when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1));
+        when(meshClient.getEdifactMessage(any())).thenReturn(meshMessage1);
         doThrow(new RuntimeException("error")).when(inboundQueueService).publish(any());
 
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).authenticate();
-        verify(meshClient).getEdifactMessage(MESSAGE_ID);
-        verify(inboundQueueService).publish(meshMessage);
-        verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID);
+        verify(meshClient).getEdifactMessage(MESSAGE_ID1);
+        verify(inboundQueueService).publish(meshMessage1);
+        verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID1);
     }
 
     @Test
@@ -202,7 +200,7 @@ class MeshServiceTest {
         meshService.scanMeshInboxForMessages();
 
         verify(meshClient).authenticate();
-        verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID);
+        verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID1);
         verifyNoInteractions(inboundQueueService);
     }
 
@@ -227,7 +225,7 @@ class MeshServiceTest {
         meshService.scanMeshInboxForMessages();
 
         verify(meshMailBoxScheduler, times(0)).hasTimePassed(scanDelayInSeconds);
-        verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID);
+        verify(meshClient, times(0)).getEdifactMessage(MESSAGE_ID1);
         verifyNoInteractions(inboundQueueService);
     }
 

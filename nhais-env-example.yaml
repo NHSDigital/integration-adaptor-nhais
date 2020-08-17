@@ -31,8 +31,8 @@ NHAIS_MESH_SUB_CA: | #The content of the Sub CA certificate
   #keep 2 spaces indent for whole certificate
   -----END CERTIFICATE-----
 NHAIS_MESH_CYPHER_TO_MAILBOX: #recipient codes translation in format cypher=mesh_recipient_code (one per line)
-NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS: "300"
-NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS: "60000"
+NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS: "300"
+NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS: "60000"
 
 #scheduler settings
 NHAIS_SCHEDULER_ENABLED: "true" #should be false for unit/integration testing

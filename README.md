@@ -301,21 +301,35 @@ MESH configuration is done using environment variables:
 | NHAIS_MESH_CYPHER_TO_MAILBOX     | N/A                       | HA cypher (HA trading partner code) to MESH mailbox mapping (one per line) ex. cypher=mailbox
 | NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
 
-The following two variables control how often the adaptor checks its MESH mailbox for new messages. To prevent
-duplicate processing of MESH messages only one instance of the adaptor downloads messages at a time. The MESH API
-specifies that a MESH mailbox should not be checked more than once every five minutes. The variable 
-`NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS` controls how often the adaptor will check its mailbox for new messages. After
-checking the mailbox for new messages the same adaptor instance will proceed to download and acknowledge all of the 
-new messages.
+The following three variables control how often the adaptor performs a MESH polling cycle. During a polling cycle the 
+adaptor will download and acknowledge up to "the first 500 messages" (a MESH API limit).
 
-A database lock is used to prevent more than one instance of the adaptor from downloading messages at the same time.
-The variable `NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS` controls how often each instance of the adaptor will attempt
-to obtain this lock.
+Important: If the MESH mailbox uses workflows other than NHAIS_REG and NHAIS_RECEP then these messages must be
+downloaded and acknowledged by some other means in a timely manner. The adaptor will skip messages with other workflow
+ids leaving them in the inbox. If more than 500 "other" messages accumulate the adaptor wil no longer receive new 
+inbound GP Links messages.
+
+| Environment Variable                                 | Default | Description 
+| -----------------------------------------------------|---------|-------------
+| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS    | 60000   | The time period (in milliseconds) between when each adaptor instance "wakes up" and attempts to obtain the lock to start a polling cycle
+| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300     | The minimum time period (in seconds) between MESH polling cycles
+| NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS         | 285     | The duration (in seconds) fo the MESH polling cycle
+
+The MESH API specifies that a MESH mailbox should be checked "a maximum of once every five minutes". The variable 
+`NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS` controls how often the adaptor will check its mailbox for new 
+messages. This should not be set to less than 300 seconds. A time lock in the database prevents the polling cycle from
+running more often than this minimum interval. Each adaptor instance will wake up every 
+`NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS` to try this time lock. Therefore, the maximum polling cycle interval
+is the sum of these two values.
+
+Only one instance of the adaptor runs the polling cycle at any given time to prevent duplicate processing. The value
+`NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS` prevents one polling cycle from overrunning into the next time interval.
+This value must always be less than `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS`.
 
 | Environment Variable             | Default                   | Description 
 | ---------------------------------|---------------------------|-------------
-| NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
-| NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
+| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
+| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
 
 
 For local test scripts see [mesh/README.md](/mesh/README.md)
@@ -342,6 +356,7 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
 ### Running with Docker Compose
 
+    export BUILD_TAG=latest
     docker-compose build
     docker-compose up
     
@@ -349,6 +364,7 @@ can be run from this project's [docker-compose.yml](./docker-compose.yml) file.
 
 Docker compose configuration allows running multiple instances of NHAIS application with an NGINX load balancer in front using round robin routing by default.
 
+    export BUILD_TAG=latest
     docker-compose build
     docker-compose -f docker-compose.yml -f docker-compose.lb.override.yml up --scale nhais=3
 
