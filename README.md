@@ -305,9 +305,9 @@ The following three variables control how often the adaptor performs a MESH poll
 adaptor will download and acknowledge up to "the first 500 messages" (a MESH API limit).
 
 Important: If the MESH mailbox uses workflows other than NHAIS_REG and NHAIS_RECEP then these messages must be
-downloaded and acknowledged my some other means in a timely manner. The adaptor will skip messages with other workflow
-ids leaving them in the inbox. If more than 500 of these "other" messages accumulate the adaptor wil no longer receive
-new inbound GP Links messages.
+downloaded and acknowledged by some other means in a timely manner. The adaptor will skip messages with other workflow
+ids leaving them in the inbox. If more than 500 "other" messages accumulate the adaptor wil no longer receive new 
+inbound GP Links messages.
 
 | Environment Variable                                 | Default | Description 
 | -----------------------------------------------------|---------|-------------
