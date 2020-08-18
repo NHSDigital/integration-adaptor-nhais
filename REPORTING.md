@@ -38,7 +38,7 @@ A "Missing RECEP Report" can detect these faults.
 
 ## Missing Inbound Transaction
 
-It is possible, however unlikely, that an inbound transaction fails to process successfully is lost in transmission. If any
+It is also possible that an inbound transaction fails to process successfully is lost in transmission. If any
 missing inbound transactions are identified the GP System operator must check the dead-letter queues for any messages that
 could not be processed successfully and correlate with the application logs to determine the cause of the error. If there
 are no matching messages in the dead-letter queues then the GP System operator must ask the NHAIS operator to investigate
@@ -48,8 +48,9 @@ A "Missing Sequence Number Report" on the `inboundState` collection can detect t
 
 ## Matching Interchange Sequence Numbers to Operation Ids
 
-It is possible, however unlikely, that the NHAIS operator may call upon the GP System to re-enter transactions due to
-a data loss in an NHAIS system. The data that needs to be re-entered would be identified by interchange sequence numbers.
+In the event of an NHAIS system failure that causes data loss, the NHAIS operator may call upon the GP System to 
+re-enter previously submitted transactions. The transactions that need to be re-entered would be identified by 
+interchange sequence numbers.
 
 A "Interchange-OperationId Report" will map a range of interchange sequence numbers to their cooresponding operation ids.
 
