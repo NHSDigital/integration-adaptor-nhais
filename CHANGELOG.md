@@ -10,11 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Calling MESH "Authenticate Mailbox" action before each polling cycle and before each sent message
-- The adaptor now validates certificates used for the TLS connection to the MESH API by default
+- The adaptor now calls the MESH "Authenticate Mailbox" action before each polling cycle and before each sent message
+- The adaptor now by default validates certificates used for the TLS connection to the MESH API
   - New environment variables described in [README.md](./README.md): `NHAIS_MESH_CERT_VALIDATION`, `NHAIS_MESH_SUB_CA`
-  - Renamed environment variables: ``
-- Time-to-live indexes on `outboundState` and `inboundState` collection. 
+- Time-to-live indexes added to the `outboundState` and `inboundState` collections
   - New environment variables described in [README.md](./README.md): `NHAIS_MONGO_TTL`, `NHAIS_COSMOS_DB_ENABLED`
   - [README.md](./README.md) notes some differences between TTL indexes in MongoDB and Cosmos DB
 
@@ -25,12 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #127](https://github.com/nhsconnect/integration-adaptor-nhais/issues/127) All Acceptance types now require the patient's surname
 - [Issue #225](https://github.com/nhsconnect/integration-adaptor-nhais/issues/225) Improved the documentation for the `NHAIS_MESH_CYPHER_TO_MAILBOX` environment variable
 - [Issue #219](https://github.com/nhsconnect/integration-adaptor-nhais/issues/219) Improved the documentation for the `NHAIS_MESH_HOST` environment variable
-- Renamed two MESH environment variables and added one new variable. Added more detailed descriptions in README of these variables.
 - Upgraded a number of Java dependencies to fix CVEs
-- The `NHS` segment of generated RECEP messages now contain the correct values for HA Cypher and GP Codes
-- The MESH polling cycle is given a duration to prevent a previous cycle from overrunning into the next
+- The `NHS` segment of generated RECEP interchanges now contain the correct values for HA Cypher and GP Codes
+- The MESH polling cycle now has a duration to prevent a previous cycle from overrunning into the next
   - New environment variable described in [README.md](./README.md): `NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS`
   - Renamed environment variables described in [README.md](./README.md): `NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS`, `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS`
+- Restructured [README.md](./README.md) to make information easier to find and to remove duplication
 
 ## [1.1.0] - 2020-08-05
 
