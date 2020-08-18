@@ -25,7 +25,7 @@ nhais:
     brokers: ${NHAIS_AMQP_BROKERS:amqp://localhost:5672}
     meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:nhais_mesh_outbound}
     meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:nhais_mesh_inbound}
-    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:nahis_gp_system_inbound}
+    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:nhais_gp_system_inbound}
     exchange: amq.direct
     username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}

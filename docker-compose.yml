@@ -150,7 +150,7 @@ services:
       - NHAIS_AMQP_MAX_RETRIES=3
       - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_INBOUND_QUEUE_NAME=nhais_responder_mesh_inbound
-      - NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME=nahis_responder_gp_system_inbound
+      - NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME=nhais_responder_gp_system_inbound
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_responder_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
       - NHAIS_MONGO_DATABASE_NAME=nhais_responder

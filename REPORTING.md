@@ -38,13 +38,21 @@ A "Missing RECEP Report" can detect these faults.
 
 ## Missing Inbound Transaction
 
-It is possible that an inbound transaction was not processed successfully by the adaptor or lost in transmission. If any
-missing inbound transaction is identified the GP System operator must check the dead-letter queues for any messages that
+It is also possible that an inbound transaction fails to process successfully is lost in transmission. If any
+missing inbound transactions are identified the GP System operator must check the dead-letter queues for any messages that
 could not be processed successfully and correlate with the application logs to determine the cause of the error. If there
-are no matching messages in the dead-letter queues then the GP System operator must ask the NHAIS operator for the reason
-why the message was not received.
+are no matching messages in the dead-letter queues then the GP System operator must ask the NHAIS operator to investigate
+and possibly resend the lost message.
 
 A "Missing Sequence Number Report" on the `inboundState` collection can detect these faults.
+
+## Matching Interchange Sequence Numbers to Operation Ids
+
+In the event of an NHAIS system failure that causes data loss, the NHAIS operator may call upon the GP System to 
+re-enter previously submitted transactions. The transactions that need to be re-entered would be identified by 
+interchange sequence numbers.
+
+A "Interchange-OperationId Report" will map a range of interchange sequence numbers to their cooresponding operation ids.
 
 ## Adaptor State Database Overview
 
@@ -205,3 +213,74 @@ Report on interchanges that have not received RECEP from `2020-01-01` to `2020-0
             ]
         }
     )
+    
+### Interchange-OperationId Report
+
+To report on all OperationIds that correspond to a range of interchange sequence numbers:
+
+    db.getCollection('outboundState').find(
+        {
+            $and: [
+                {intSeq: { $gte : <from_interchange_sequence_number>} },
+                {intSeq: { $lte : <to_interchange_sequence_number>} },
+                {sndr: '<sender>'},
+                {recip: '<recipient>>'}
+            ]
+        },
+        {
+            intSeq: 1,
+            operationId: 1,
+            _id: 0
+        }
+    )
+    
+where
+
+- `<from_interchange_sequence_number>` is the first sequence number in the range NHAIS reported as lost
+- `<to_interchange_sequence_number>` is the last sequence number in the range NHAIS reported as lost
+- `<sender>` is the GP Trading Partner Code of the sender in the sequence
+- `<recipient>` is the HA Trading Partner Code of the recipient in the sequence
+
+The second parameter to `find()` causes only the `intSeq` and `operationId` to be included in the result. Omit this 
+to return the entire documents.
+
+### Interchange-OperationId Report Example
+
+Searching for OperationIds for interchanges 3-10:
+
+    db.getCollection('outboundState').find(
+        {
+            $and: [
+                {intSeq: { $gte : 4} },
+                {intSeq: { $lte : 6} },
+                {sndr: 'TES5'},
+                {recip: 'XX11'}
+            ]
+        },
+        {
+            intSeq: 1,
+            operationId: 1,
+            _id: 0
+        }
+    )
+               
+     
+Produces three interchange sequence number / operation id pairs
+
+    /* 1 */
+    {
+        "operationId" : "739cfe9904c5448deea9be01ef73e70d754b700259a7a3d6c2900709dee49322",
+        "intSeq" : NumberLong(4)
+    }
+    
+    /* 2 */
+    {
+        "operationId" : "07bf220d26c36078540173e691906cecd26234e0118cdf0bc2c07163c9c9b067",
+        "intSeq" : NumberLong(5)
+    }
+    
+    /* 3 */
+    {
+        "operationId" : "e3be2e3e7213ffe777de8f1da7879337af45affc3825a692cc07109472d8b94a",
+        "intSeq" : NumberLong(6)
+    }

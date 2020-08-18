@@ -17,7 +17,7 @@ nhais:
     brokers: "localhost:5672"
     meshOutboundQueueName: nhais_mesh_outbound
     meshInboundQueueName: nhais_mesh_inbound
-    gpSystemInboundQueueName: nahis_gp_system_inbound
+    gpSystemInboundQueueName: nhais_gp_system_inbound
     exchange: amq.direct
     username: ""
     password: ""
