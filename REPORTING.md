@@ -222,6 +222,8 @@ To report on all OperationIds that correspond to a range of interchange sequence
             $and: [
                 {intSeq: { $gte : <from_interchange_sequence_number>} },
                 {intSeq: { $lte : <to_interchange_sequence_number>} },
+                {sndr: '<sender>'},
+                {recip: '<recipient>>'}
             ]
         },
         {
@@ -235,35 +237,49 @@ where
 
 - `<from_interchange_sequence_number>` is the first sequence number in the range NHAIS reported as lost
 - `<to_interchange_sequence_number>` is the last sequence number in the range NHAIS reported as lost
+- `<sender>` is the GP Trading Partner Code of the sender in the sequence
+- `<recipient>` is the HA Trading Partner Code of the recipient in the sequence
+
+The second parameter to `find()` causes only the `intSeq` and `operationId` to be included in the result. Omit this 
+to return the entire documents.
 
 ### Interchange-OperationId Report Example
 
 Searching for OperationIds for interchanges 3-10:
 
     db.getCollection('outboundState').find(
-            {
-                $and: [
-                    {intSeq: { $gte : 4} },
-                    {intSeq: { $lte : 6} },
-                ]
-            },
-            {
-                intSeq: 1,
-                operationId: 1,
-                _id: 0
-            }
-     )
+        {
+            $and: [
+                {intSeq: { $gte : 4} },
+                {intSeq: { $lte : 6} },
+                {sndr: 'TES5'},
+                {recip: 'XX11'}
+            ]
+        },
+        {
+            intSeq: 1,
+            operationId: 1,
+            _id: 0
+        }
+    )
+               
      
-Produces two interchange sequence number / operation id pairs
+Produces three interchange sequence number / operation id pairs
 
     /* 1 */
     {
-        "operationId" : "b985d1eeca1770a35a8ccb799c154e2e04c7b4b32bac3a59662680905418d0c8",
-        "intSeq" : NumberLong(5)
+        "operationId" : "739cfe9904c5448deea9be01ef73e70d754b700259a7a3d6c2900709dee49322",
+        "intSeq" : NumberLong(4)
     }
     
     /* 2 */
     {
-        "operationId" : "9c4175fa376df99e5bf04ab16d39efd8fd61738b45003ffd1889e8b63cc7b3db",
+        "operationId" : "07bf220d26c36078540173e691906cecd26234e0118cdf0bc2c07163c9c9b067",
+        "intSeq" : NumberLong(5)
+    }
+    
+    /* 3 */
+    {
+        "operationId" : "e3be2e3e7213ffe777de8f1da7879337af45affc3825a692cc07109472d8b94a",
         "intSeq" : NumberLong(6)
     }
