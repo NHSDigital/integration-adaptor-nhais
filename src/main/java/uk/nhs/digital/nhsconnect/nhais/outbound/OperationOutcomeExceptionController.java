@@ -3,31 +3,35 @@ package uk.nhs.digital.nhsconnect.nhais.outbound;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import uk.nhs.digital.nhsconnect.nhais.rest.exception.OperationOutcomeError;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationOutcomeUtils;
 
 import static java.util.Collections.singletonList;
 
-@ControllerAdvice
-@RestController
+@Component
 @Slf4j
-public class OperationOutcomeExceptionHandler extends ResponseEntityExceptionHandler {
+public class OperationOutcomeExceptionController extends BasicErrorController {
 
     @Autowired
     private FhirParser fhirParser;
 
-    @ExceptionHandler(Exception.class)
-    public final ResponseEntity<String> handleAllErrors(Exception ex, WebRequest request) {
+    public OperationOutcomeExceptionController(ErrorAttributes errorAttributes) {
+        super(errorAttributes, new ErrorProperties());
+    }
+
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<String> handleAllErrors(Exception ex) {
         LOGGER.error("Creating OperationOutcome response for unhandled exception", ex);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put("content-type", singletonList("application/json"));
