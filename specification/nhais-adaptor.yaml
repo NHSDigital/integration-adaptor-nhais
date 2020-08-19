@@ -105,16 +105,8 @@ paths:
         | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
         | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
         | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
-        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | See table below for deduction reason codes |
+        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
         | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
-
-        **Deduction Reason Codes**
-
-        | Deduction Reason Code | Description  |
-        |-----------------------|--------------|
-        | 1                     | Death        |
-        | 5                     | Emigrated    |
-        | 13                    | Other reason |
 
         ## Operation Id
 

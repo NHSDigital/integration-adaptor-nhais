@@ -88,7 +88,7 @@ BLANK - the value is not used by this transaction type
 | Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
 | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
 | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
-| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    |       |
+| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
 | New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |       |
 
 ### Deduction Request Rejection
