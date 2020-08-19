@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,17 +15,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirController;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirToEdifactService;
-import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 
 import java.nio.file.Files;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -147,5 +149,23 @@ public class FhirControllerTest {
             .content(requestBody))
             .andExpect(status().isInternalServerError())
             .andExpect(content().json(expectedResponse));
+    }
+
+    @Test
+    void whenInvalidMediaType_thenReturn415() throws Exception {
+        String expectedResponse = "{\"expected\":\"response\"}";
+        when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
+
+        mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
+            .contentType("text/plain")
+            .content("qwe"))
+            .andExpect(status().is(415))
+            .andExpect(content().json(expectedResponse));
+
+        var operationOutcomeArgumentCaptor = ArgumentCaptor.forClass(OperationOutcome.class);
+        verify(fhirParser).encodeToString(operationOutcomeArgumentCaptor.capture());
+        var operationOutcome = operationOutcomeArgumentCaptor.getValue();
+
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).isEqualTo("Content type 'text/plain' not supported");
     }
 }
