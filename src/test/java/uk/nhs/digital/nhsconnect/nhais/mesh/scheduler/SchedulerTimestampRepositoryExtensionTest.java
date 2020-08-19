@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
@@ -29,7 +30,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     private static final String SCHEDULER_TYPE = "meshTimestamp";
 
     @InjectMocks
-    SchedulerTimestampRepositoryExtensionsImpl schedulerTimestampRepositoryExtensions;
+    private SchedulerTimestampRepositoryExtensionsImpl schedulerTimestampRepositoryExtensions;
 
     @Mock
     private MongoOperations mongoOperations;
@@ -54,10 +55,22 @@ public class SchedulerTimestampRepositoryExtensionTest {
     }
 
     @Test
-    public void whenUnableToCreateInitialDocument_thenReturnFalse() {
+    public void whenUnableToCreateInitialDocument_mongoException_thenReturnFalse() {
         when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(0L);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         MongoWriteException exception = mock(MongoWriteException.class);
+        when(mongoOperations.save(any(), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenThrow(exception);
+
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);
+
+        assertThat(updated).isFalse();
+    }
+
+    @Test
+    public void whenUnableToCreateInitialDocument_springException_thenReturnFalse() {
+        when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(0L);
+        when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
+        DuplicateKeyException exception = mock(DuplicateKeyException.class);
         when(mongoOperations.save(any(), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenThrow(exception);
 
         boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);

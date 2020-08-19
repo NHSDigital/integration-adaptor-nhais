@@ -17,7 +17,7 @@ nhais:
     brokers: "localhost:5672"
     meshOutboundQueueName: nhais_mesh_outbound
     meshInboundQueueName: nhais_mesh_inbound
-    gpSystemInboundQueueName: nahis_gp_system_inbound
+    gpSystemInboundQueueName: nhais_gp_system_inbound
     exchange: amq.direct
     username: ""
     password: ""
@@ -32,11 +32,14 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: true
+    ttl: ${NHAIS_MONGO_TTL:P30D}
+    cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:fake_mailboxId} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
+    certValidation: ${NHAIS_MESH_CERT_VALIDATION:false}
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:-----BEGIN CERTIFICATE-----
       MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
       BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
@@ -119,9 +122,11 @@ nhais:
       +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
+    subCAcert: ${NHAIS_MESH_SUB_CA:}
     cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=A91561OT001
       TES5=A91561OT002}
-    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:6000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:5}
+    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:6000}
+    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:5}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:4}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}

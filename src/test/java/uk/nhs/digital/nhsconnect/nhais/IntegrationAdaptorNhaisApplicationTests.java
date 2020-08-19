@@ -11,7 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 class IntegrationAdaptorNhaisApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void when_databaseIsNotReachable_then_applicationStartsUpWithNegativeHealthcheck() {
 	}
 
 }

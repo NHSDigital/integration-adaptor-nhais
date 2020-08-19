@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import javax.jms.JMSException;
 import java.io.IOException;
@@ -84,7 +84,10 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        List<String> messageIds = meshClient.getInboxMessageIds();
+        List<String> messageIds = waitFor(() -> {
+            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+            return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
+        } );
         var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));

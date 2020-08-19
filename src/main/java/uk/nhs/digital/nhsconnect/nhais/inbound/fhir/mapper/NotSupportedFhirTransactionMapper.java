@@ -13,7 +13,7 @@ public class NotSupportedFhirTransactionMapper implements FhirTransactionMapper 
     }
 
     @Override
-    public void map(Parameters parameters, Transaction transaction) {
+    public Parameters map(Transaction transaction) {
         throw new UnsupportedOperationException("Transaction type " + transactionType.name() + " is not supported");
     }
 

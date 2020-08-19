@@ -6,17 +6,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+#    ports: See docker-compose.override.yml
     environment:
+      - NHAIS_LOGGING_LEVEL=INFO
       - NHAIS_OUTBOUND_SERVER_PORT=8080
       - NHAIS_AMQP_RETRY_DELAY=100
       - NHAIS_AMQP_MAX_RETRIES=3
       - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
+      - NHAIS_MONGO_TTL=P30D
+      - NHAIS_COSMOS_DB_ENABLED=false
       - NHAIS_MESH_MAILBOX_ID=gp_mailbox
       - NHAIS_MESH_MAILBOX_PASSWORD=password
       - NHAIS_MESH_SHARED_KEY=SharedKey
       - NHAIS_MESH_HOST=https://fake-mesh:8829/messageexchange/
+      - NHAIS_MESH_CERT_VALIDATION=false
       - NHAIS_MESH_ENDPOINT_CERT=-----BEGIN CERTIFICATE-----
           MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
           BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
@@ -100,10 +105,16 @@ services:
           3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
           -----END RSA PRIVATE KEY-----
       - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=nhais_mailbox
-          TES5=nhais_mailbox
-      - NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS=300
-      - NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS=60000
+        TES5=nhais_mailbox
+        YY21=nhais_mailbox
+        KC01=nhais_mailbox
+        WHI5=nhais_mailbox
+        SO01=nhais_mailbox
+        UNY5=nhais_mailbox
+      - NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS=300
+      - NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS=60000
       - NHAIS_SCHEDULER_ENABLED=true
+
   activemq:
     build:
       context: ./activemq
@@ -117,9 +128,41 @@ services:
       - "27017:27017"
 
   fake-mesh:
-    image: nhsdev/fake-mesh:0.1.6
+    image: nhsdev/fake-mesh:0.2.0
     ports:
       - "8829:8829"
 # Enable if you need to inspect the fake-mesh database for any reason
 #    volumes:
 #      - ./fake_mesh_dir:/tmp/fake_mesh_dir
+
+  responder:
+    image: local/responder:${BUILD_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.responder
+    ports:
+      - "8090:8080"
+    environment:
+      - NHAIS_LOGGING_LEVEL=INFO
+      - NHAIS_OUTBOUND_SERVER_PORT=8080
+      - NHAIS_AMQP_RETRY_DELAY=100
+      - NHAIS_AMQP_MAX_RETRIES=3
+      - NHAIS_AMQP_BROKERS=amqp://activemq:5672
+      - NHAIS_MESH_INBOUND_QUEUE_NAME=nhais_responder_mesh_inbound
+      - NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME=nhais_responder_gp_system_inbound
+      - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_responder_mesh_outbound
+      - NHAIS_MONGO_URI=mongodb://mongodb:27017
+      - NHAIS_MONGO_DATABASE_NAME=nhais_responder
+      - NHAIS_MESH_MAILBOX_ID=nhais_mailbox
+      - NHAIS_MESH_HOST=https://fake-mesh:8829/messageexchange/
+      - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=gp_mailbox
+        TES5=gp_mailbox
+        YY21=gp_mailbox
+        KC01=gp_mailbox
+        WHI5=gp_mailbox
+        SO01=gp_mailbox
+        UNY5=gp_mailbox
+      - NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS=30
+      - NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS=10000
+      - NHAIS_SCHEDULER_ENABLED=true
+      - NHAIS_MESH_CERT_VALIDATION=false

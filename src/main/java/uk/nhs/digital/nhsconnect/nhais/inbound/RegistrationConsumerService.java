@@ -15,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RegistrationConsumerService {
+public class RegistrationConsumerService implements RegistrationConsumer {
 
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
@@ -39,6 +40,7 @@ public class RegistrationConsumerService {
     private final EdifactParser edifactParser;
     private final InboundEdifactTransactionHandler inboundEdifactTransactionService;
 
+    @Override
     public void handleRegistration(InboundMeshMessage meshMessage) {
         LOGGER.debug("Received Registration message: {}", meshMessage);
         Interchange interchange = edifactParser.parse(meshMessage.getContent());
@@ -55,12 +57,18 @@ public class RegistrationConsumerService {
 
         Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
             .forEach(pair -> {
-                inboundGpSystemService.publishToSupplierQueue(pair.getRight());
+                if (!isCloseQuarterNotification(pair.getRight())) {
+                    inboundGpSystemService.publishToSupplierQueue(pair.getRight());
+                }
                 inboundStateRepository.save(pair.getLeft());
             });
 
         outboundQueueService.publish(recepOutboundMessage);
         outboundStateRepository.save(recepOutboundState);
+    }
+
+    private boolean isCloseQuarterNotification(InboundGpSystemService.DataToSend dataToSend) {
+        return dataToSend.getTransactionType().equals(ReferenceTransactionType.Inbound.CLOSE_QUARTER_NOTIFICATION);
     }
 
     private List<Transaction> filterOutDuplicates(Interchange interchange) {
@@ -70,7 +78,7 @@ public class RegistrationConsumerService {
             .filter(transaction -> {
                 boolean hasBeenProcessed = hasAlreadyBeenProcessed(transaction);
                 if (hasBeenProcessed) {
-                    LOGGER.info("Skipping transaction {} as it has already been processed", transaction);
+                    LOGGER.warn("Skipping transaction {} as it has already been processed", transaction);
                 }
                 return !hasBeenProcessed;
             })

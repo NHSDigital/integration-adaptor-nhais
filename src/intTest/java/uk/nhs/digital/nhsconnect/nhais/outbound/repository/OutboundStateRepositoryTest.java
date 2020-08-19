@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class OutboundStateRepositoryTest {
 
     @Autowired
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Test
     void whenDuplicateInterchangeOutboundStateInserted_thenThrowsException() {

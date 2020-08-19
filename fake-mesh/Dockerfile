@@ -1,1 +1,1 @@
-FROM nhsdev/fake-mesh:0.1.6
+FROM nhsdev/fake-mesh:0.2.0

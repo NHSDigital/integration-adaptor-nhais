@@ -20,6 +20,8 @@ class MeshRequestsTest {
         "password",
         "SharedKey",
         "https://localhost:8829/messageexchange/",
+        "false",
+        StringUtils.EMPTY,
         StringUtils.EMPTY,
         StringUtils.EMPTY);
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
@@ -74,9 +76,19 @@ class MeshRequestsTest {
         assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/inbox/messageId/status/acknowledged");
     }
 
+    @Test
+    void When_Authenticate_Then_ExpectHttpPostAndCorrectUri() {
+        MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
+
+        var request = meshRequests.authenticate();
+
+        assertThat(request).isExactlyInstanceOf(HttpPost.class);
+        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId");
+    }
+
     private void assertSending(HttpEntityEnclosingRequestBase request, String recipient, WorkflowId workflowId) {
         assertThat(request).isExactlyInstanceOf(HttpPost.class);
-        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox/");
+        assertThat(request.getURI().toString()).isEqualTo("https://localhost:8829/messageexchange/mailboxId/outbox");
         Header[] mexToHeader = request.getHeaders("Mex-To");
         assertThat(mexToHeader.length).isEqualTo(1);
         assertThat(mexToHeader[0].getValue()).isEqualTo(recipient);

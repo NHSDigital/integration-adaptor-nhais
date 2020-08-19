@@ -5,6 +5,7 @@ import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
@@ -44,7 +45,7 @@ public class SchedulerTimestampRepositoryExtensionsImpl implements SchedulerTime
             SchedulerTimestamp schedulerTimestamp = new SchedulerTimestamp(schedulerType, timestampService.getCurrentTimestamp());
             try {
                 mongoOperations.save(schedulerTimestamp, MESH_TIMESTAMP_COLLECTION_NAME);
-            } catch (MongoWriteException e) {
+            } catch (MongoWriteException | DuplicateKeyException e) {
                 LOGGER.warn("Unable to create new document for scheduler type " + schedulerType + ". Most likely another instance already created the document.", e);
             }
             return false;

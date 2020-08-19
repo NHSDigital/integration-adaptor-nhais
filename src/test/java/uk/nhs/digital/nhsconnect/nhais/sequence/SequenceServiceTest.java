@@ -26,44 +26,44 @@ public class SequenceServiceTest {
     @Test
     public void When_GenerateTransactionId_Expect_CorrectValue() {
         when(sequenceRepository.getNextForTransaction(TRANSACTION_ID)).thenReturn(SEQ_VALUE);
-        assertThat(sequenceService.generateTransactionId("sender")).isEqualTo(SEQ_VALUE);
+        assertThat(sequenceService.generateTransactionNumber("sender")).isEqualTo(SEQ_VALUE);
     }
 
     @Test
     public void When_GenerateInterchangeId_Expect_CorrectValue() {
         when(sequenceRepository.getNext(INTERCHANGE_ID)).thenReturn(SEQ_VALUE);
-        assertThat(sequenceService.generateInterchangeId("sender", "recipient"))
+        assertThat(sequenceService.generateInterchangeSequence("sender", "recipient"))
                 .isEqualTo(SEQ_VALUE);
     }
 
     @Test
     public void When_generateMessageId_Expect_ResetValue() {
         when(sequenceRepository.getNext(MESSAGE_ID)).thenReturn(SEQ_VALUE);
-        assertThat(sequenceService.generateMessageId("sender", "recipient"))
+        assertThat(sequenceService.generateMessageSequence("sender", "recipient"))
                 .isEqualTo(SEQ_VALUE);
     }
 
     @Test
     public void When_GenerateIdsForInvalidSender_Expect_Exception() {
-        assertThatThrownBy(() -> sequenceService.generateInterchangeId(null, "recipient"))
+        assertThatThrownBy(() -> sequenceService.generateInterchangeSequence(null, "recipient"))
             .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateIdsForInvalidRecipient_Expect_Exception() {
-        assertThatThrownBy(() -> sequenceService.generateInterchangeId("sender", ""))
+        assertThatThrownBy(() -> sequenceService.generateInterchangeSequence("sender", ""))
             .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateTransactionIdsForNullSender_Expect_Exception() {
-        assertThatThrownBy(() -> sequenceService.generateTransactionId(null))
+        assertThatThrownBy(() -> sequenceService.generateTransactionNumber(null))
             .isExactlyInstanceOf(SequenceException.class);
     }
 
     @Test
     public void When_GenerateTransactionIdsForEmptySender_Expect_Exception() {
-        assertThatThrownBy(() -> sequenceService.generateTransactionId(""))
+        assertThatThrownBy(() -> sequenceService.generateTransactionNumber(""))
             .isExactlyInstanceOf(SequenceException.class);
     }
 }

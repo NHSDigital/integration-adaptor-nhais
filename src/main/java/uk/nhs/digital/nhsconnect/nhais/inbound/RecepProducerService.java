@@ -12,7 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNationalHealthBody;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -86,10 +86,10 @@ public class RecepProducerService {
     }
 
     private void setSequenceNumbers(List<Segment> recepMessageSegments, RecepHeader recepInterchangeHeader, RecepMessageHeader recepMessageHeader, MessageTrailer recepMessageTrailer, InterchangeTrailer recepInterchangeTrailer) {
-        var recepInterchangeSequence = sequenceService.generateInterchangeId(
+        var recepInterchangeSequence = sequenceService.generateInterchangeSequence(
             recepInterchangeHeader.getSender(),
             recepInterchangeHeader.getRecipient());
-        var recepMessageSequence = sequenceService.generateMessageId(
+        var recepMessageSequence = sequenceService.generateMessageSequence(
             recepInterchangeHeader.getSender(),
             recepInterchangeHeader.getRecipient());
 
@@ -119,13 +119,16 @@ public class RecepProducerService {
         return new RecepHeader(recepSender, recepRecipient, interchange.getInterchangeHeader().getTranslationTime());
     }
 
-    private RecepNameAndAddress mapToNameAndAddress(Interchange interchange) {
-        return new RecepNameAndAddress(interchange.getInterchangeHeader().getSender());
+    private RecepNationalHealthBody mapToNameAndAddress(Interchange interchange) {
+        var message = interchange.getMessages().get(0);
+        var cypher = message.getHealthAuthorityNameAndAddress().getIdentifier();
+        var gpCode = message.findFirstGpCode();
+        return new RecepNationalHealthBody(cypher, gpCode);
     }
 
     private ReferenceMessageRecep mapToReferenceMessage(Message message) {
-        return new ReferenceMessageRecep(
-            message.getMessageHeader().getSequenceNumber(), ReferenceMessageRecep.RecepCode.SUCCESS);
+        var messageHeader = message.getMessageHeader();
+        return new ReferenceMessageRecep(messageHeader.getSequenceNumber(), ReferenceMessageRecep.RecepCode.SUCCESS);
     }
 
     private ReferenceInterchangeRecep mapToReferenceInterchange(Interchange interchange) {

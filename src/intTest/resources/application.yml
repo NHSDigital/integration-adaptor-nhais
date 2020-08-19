@@ -4,6 +4,7 @@ server:
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
 
 management:
   endpoints:
@@ -20,7 +21,7 @@ nhais:
     brokers: ${NHAIS_AMQP_BROKERS:amqp://localhost:5672}
     meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:nhais_mesh_outbound}
     meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:nhais_mesh_inbound}
-    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:nahis_gp_system_inbound}
+    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:nhais_gp_system_inbound}
     exchange: amq.direct
     username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}
@@ -34,11 +35,14 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
+    ttl: ${NHAIS_MONGO_TTL:PT60S}
+    cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:fake_mailboxId} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
+    certValidation: ${NHAIS_MESH_CERT_VALIDATION:false}
     endpointCert: ${NHAIS_MESH_ENDPOINT_CERT:-----BEGIN CERTIFICATE-----
       MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
       BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
@@ -121,6 +125,7 @@ nhais:
       +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
+    subCAcert: ${NHAIS_MESH_SUB_CA:}
     cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=fake_mailboxId
       TES5=fake_mailboxId
       YY21=fake_mailboxId
@@ -128,7 +133,8 @@ nhais:
       WHI5=fake_mailboxId
       SO01=fake_mailboxId
       UNY5=fake_mailboxId}
-    scanMailboxIntervalInMilliseconds: ${NHAIS_SCAN_MAILBOX_INTERVAL_IN_MILLISECONDS:1000}
-    scanMailboxDelayInSeconds: ${NHAIS_SCAN_MAILBOX_DELAY_IN_SECONDS:1}
+    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:1000}
+    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:2}
+    pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:1}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}

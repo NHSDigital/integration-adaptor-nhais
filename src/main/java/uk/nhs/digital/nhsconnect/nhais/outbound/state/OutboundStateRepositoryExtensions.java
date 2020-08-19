@@ -36,10 +36,10 @@ public interface OutboundStateRepositoryExtensions {
         }
 
         public Query buildQuery() {
-            return query(where("sender").is(sender)
-                .and("recipient").is(recipient)
-                .and("interchangeSequence").is(interchangeSequence)
-                .and("messageSequence").is(messageSequence)
+            return query(where("sndr").is(sender)
+                .and("recip").is(recipient)
+                .and("intSeq").is(interchangeSequence)
+                .and("msgSeq").is(messageSequence)
                 .and("recepCode").exists(false)
                 .and("recepDateTime").exists(false));
         }

@@ -41,9 +41,9 @@ class MeshHeadersTest {
             "Mex-MessageType");
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isEqualTo("1.0");
-            softly.assertThat(getHeaderValue(headers, "Mex-OSVersion")).isEqualTo("1.0");
-            softly.assertThat(getHeaderValue(headers, "Mex-OSName")).isEqualTo("Unix");
+            softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSName")).isNotBlank();
             softly.assertThat(getHeaderValue(headers, "Authorization")).startsWith("NHSMESH mailboxId:");
             softly.assertThat(getHeaderValue(headers, "Mex-From")).isEqualTo("mailboxId");
             softly.assertThat(getHeaderValue(headers, "Mex-To")).isEqualTo(meshRecipient);
@@ -68,9 +68,35 @@ class MeshHeadersTest {
             "Authorization");
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isEqualTo("1.0");
-            softly.assertThat(getHeaderValue(headers, "Mex-OSVersion")).isEqualTo("1.0");
-            softly.assertThat(getHeaderValue(headers, "Mex-OSName")).isEqualTo("Unix");
+            softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSName")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Authorization")).startsWith("NHSMESH mailboxId:");
+        });
+    }
+
+    @Test
+    void createAuthenticateHeaders() {
+        Header[] headers = meshHeaders.createAuthenticateHeaders();
+
+        List<String> headerNames = Arrays.stream(headers)
+            .map(BasicHeader.class::cast)
+            .map(BasicHeader::getName)
+            .collect(Collectors.toList());
+        assertThat(headerNames).containsExactlyInAnyOrder(
+            "Mex-JavaVersion",
+            "Mex-OSArchitecture",
+            "Mex-ClientVersion",
+            "Mex-OSVersion",
+            "Mex-OSName",
+            "Authorization");
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(getHeaderValue(headers, "Mex-JavaVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSArchitecture")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSVersion")).isNotBlank();
+            softly.assertThat(getHeaderValue(headers, "Mex-OSName")).isNotBlank();
             softly.assertThat(getHeaderValue(headers, "Authorization")).startsWith("NHSMESH mailboxId:");
         });
     }

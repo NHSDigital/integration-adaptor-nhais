@@ -2,6 +2,7 @@ package uk.nhs.digital.nhsconnect.nhais.outbound.jsonpatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -27,9 +28,10 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
         SequenceService sequenceService,
         TimestampService timestampService,
         OutboundStateRepository outboundStateRepository,
-        AmendmentToEdifactTranslator amendmentTranslator) {
+        AmendmentToEdifactTranslator amendmentTranslator,
+        MeshCypherDecoder meshCypherDecoder) {
 
-        super(sequenceService, timestampService, outboundStateRepository);
+        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder);
         this.amendmentTranslator = amendmentTranslator;
     }
 

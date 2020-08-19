@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
+import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,27 +54,31 @@ public class FhirToEdifactServiceTest {
     private static final Long TN = 5174L;
 
     @Mock
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Mock
-    SequenceService sequenceService;
+    private SequenceService sequenceService;
 
     @Mock
-    TimestampService timestampService;
+    private TimestampService timestampService;
 
     @Mock
-    FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
+    private FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
+
+    @Mock
+    private MeshCypherDecoder meshCypherDecoder;
 
     @InjectMocks
-    FhirToEdifactService fhirToEdifactService;
+    private FhirToEdifactService fhirToEdifactService;
 
     private Instant expectedTimestamp;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
-        when(sequenceService.generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
-        when(sequenceService.generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
-        when(sequenceService.generateTransactionId(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
+    public void beforeEach() {
+        doNothing().when(meshCypherDecoder).validateRecipient(any());
+        when(sequenceService.generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
+        when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
+        when(sequenceService.generateTransactionNumber(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
             .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UKZone)
             .toInstant();
@@ -89,14 +95,14 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_dependenciesCalledCorrectly() throws Exception {
+    public void when_convertedSuccessfully_dependenciesCalledCorrectly() {
         Parameters patient = createPatient();
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
-        verify(sequenceService).generateInterchangeId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
-        verify(sequenceService).generateMessageId(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
-        verify(sequenceService).generateTransactionId(GP_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE);
+        verify(sequenceService).generateTransactionNumber(GP_TRADING_PARTNER_CODE);
         verify(timestampService).getCurrentTimestamp();
 
         OutboundState expected = new OutboundState();
@@ -105,15 +111,15 @@ public class FhirToEdifactServiceTest {
         expected.setSender(GP_TRADING_PARTNER_CODE);
         expected.setInterchangeSequence(SIS);
         expected.setMessageSequence(SMS);
-        expected.setTransactionId(TN);
+        expected.setTransactionNumber(TN);
         expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
-        expected.setTransactionTimestamp(expectedTimestamp);
+        expected.setTranslationTimestamp(expectedTimestamp);
         expected.setOperationId(OPERATION_ID);
         verify(outboundStateRepository).save(expected);
     }
 
     @Test
-    public void when_convertedSuccessfully_edifactIsCorrect() throws Exception {
+    public void when_convertedSuccessfully_edifactIsCorrect() {
         Parameters patient = createPatient();
 
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);

@@ -4,8 +4,10 @@ package uk.nhs.digital.nhsconnect.nhais.configuration;
 import com.google.common.base.Strings;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
@@ -14,35 +16,35 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 
+import java.time.Duration;
 import java.util.List;
 
 @Configuration
+@ConfigurationProperties(prefix = "nhais.mongodb")
+@Getter
+@Setter
 @Slf4j
 public class NhaisMongoClientConfiguration extends AbstractMongoClientConfiguration {
 
-    @Value("${nhais.mongodb.database}")
     private String database;
 
-    @Value("${nhais.mongodb.uri}")
     private String uri;
 
-    @Value("${nhais.mongodb.host}")
     private String host;
 
-    @Value("${nhais.mongodb.port}")
     private String port;
 
-    @Value("${nhais.mongodb.username}")
     private String username;
 
-    @Value("${nhais.mongodb.password}")
     private String password;
 
-    @Value("${nhais.mongodb.options}")
     private String options;
 
-    @Value("${nhais.mongodb.autoIndexCreation}")
-    private String autoIndexCreation;
+    private boolean autoIndexCreation;
+
+    private Duration ttl;
+
+    private boolean cosmosDbEnabled;
 
     @Override
     public String getDatabaseName() {
@@ -58,7 +60,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     @Override
     protected boolean autoIndexCreation() {
         LOGGER.info("Auto index creation is '{}'", this.autoIndexCreation);
-        return Boolean.parseBoolean(this.autoIndexCreation);
+        return this.autoIndexCreation;
     }
 
     private String createConnectionString() {

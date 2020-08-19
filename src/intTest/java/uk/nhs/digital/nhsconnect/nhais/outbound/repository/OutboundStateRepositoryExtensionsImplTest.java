@@ -31,7 +31,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private static final Instant RECEP_DATE_TIME = Instant.ofEpochMilli(123123);
 
     @Autowired
-    OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
 
     @Test
     void whenUpdatingRecep_thenRecepDetailsAreUpdated() {

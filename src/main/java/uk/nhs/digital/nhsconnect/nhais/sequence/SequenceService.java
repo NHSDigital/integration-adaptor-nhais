@@ -13,17 +13,17 @@ public class SequenceService {
     @Autowired
     private SequenceRepository sequenceRepository;
 
-    public Long generateTransactionId(String generalPractitioner) {
+    public Long generateTransactionNumber(String generalPractitioner) {
         validateSender(generalPractitioner);
         return sequenceRepository.getNextForTransaction(String.format(TRANSACTION_KEY_FORMAT, generalPractitioner));
     }
 
-    public Long generateInterchangeId(String sender, String recipient) {
+    public Long generateInterchangeSequence(String sender, String recipient) {
         validateSenderAndRecipient(sender, recipient);
         return getNextSequence(String.format(INTERCHANGE_FORMAT, sender, recipient));
     }
 
-    public Long generateMessageId(String sender, String recipient) {
+    public Long generateMessageSequence(String sender, String recipient) {
         validateSenderAndRecipient(sender, recipient);
         return getNextSequence(String.format(INTERCHANGE_MESSAGE_FORMAT, sender, recipient));
     }
