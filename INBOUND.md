@@ -83,10 +83,10 @@ BLANK - the value is not used by this transaction type
 
 | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
 |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
 | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
 | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
 | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    |       |
 | New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |       |
@@ -95,10 +95,10 @@ BLANK - the value is not used by this transaction type
 
 | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
 |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
 | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
 | Free Text               | Parameter     | freeText                                 | valueString              |                                    |       |
 
 ### FP69 Prior Notification
@@ -128,10 +128,10 @@ BLANK - the value is not used by this transaction type
 
 | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
 |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |       |
+| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
 | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |       |
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |       |
+| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
 
 ## Messages with JSONPatch Data Type
 
