@@ -246,7 +246,7 @@ to return the entire documents.
 
 ### Interchange-OperationId Report Example
 
-Searching for OperationIds for interchanges 3-10:
+Searching for OperationIds for interchanges 4-6:
 
     db.getCollection('outboundState').find(
         {
