@@ -140,10 +140,10 @@ BLANK - the value is not used by this transaction type
 #### Data Items for Amendment
 
 The inbound Amendment transaction uses a JSONPatch data type instead of FHIR. The format is very similar to outbound 
-amendments with two exceptions.
+amendments with two exceptions:
 
-* The NHAIS system may advise a new NHS number
-* Free text notes are never advised
+* NHAIS may provide a new NHS number
+* NHAIS never provides free text notes
 
 | GP Links Data Item                        | Amendment  | Erasable |
 |-------------------------------------------|------------|----------|
