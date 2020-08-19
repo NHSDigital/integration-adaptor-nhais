@@ -1008,12 +1008,12 @@ In particular:</p>
 <p>A number of example requests are available as part of the adaptor's user acceptance tests.</p>
 <p>The <a href="https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples">Examples</a> section
 of the README explains these examples in further detail.</p>
-<h2>Permitted Characters for Data Fields</h2>
-<p>Where the adaptor API represents a data item field as a string the GP System <strong>MUST</strong> supply a value that complies
+<h2>Permitted Characters for Data Items</h2>
+<p>Where the adaptor API represents a data item as a string the GP System <strong>MUST</strong> supply a value that complies
 with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
 specification. For &quot;free text&quot; fields Chapter 3 refers to Appendix K.</p>
-<p>There are four characters which must be given special treatment. If used within a string typed data item field the
-following characters must be escaped / preceded by a question mark: ' + : ?</p>
+<p>There are four characters which must be given special treatment. If used within a string-typed data item the
+following characters must be escaped (preceded) by a question mark: <code>' + : ?</code></p>
 <p>For example, to represent the GP Note</p>
 <pre><code>PATIENT'S + 1 : PATIENTS?
 </code></pre>
