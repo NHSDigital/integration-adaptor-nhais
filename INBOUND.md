@@ -7,22 +7,22 @@ All inbound (HA->GP) messages are published to this same queue. The message type
 
 ## Message Header
 
-| Name            | Description 
+| Header Name     | Description 
 |-----------------|---
 | OperationId     | Unique identifier for the message. If the message is a reply to the previous outbound transaction then this id will match the OperationId returned by that outbound request.
 | TransactionType | The type of transaction represented by the message. See 'Supported Transaction Types' below.
 
 ### Transaction Types
 
-| Transaction Type        | Status      | Data Type | Description                 |
-|-------------------------|-------------|-----------|-----------------------------|
-| approval                | Implemented | FHIR      | Approval                    |
-| rejection               | Implemented | FHIR      | Rejection (Wrong HA)        |
-| deduction               | Implemented | FHIR      | Deduction                   |
-| deduction_rejection     | Implemented | FHIR      | Deduction Request Rejection |
-| fp69_prior_notification | Implemented | FHIR      | FP69 Prior Notification     |
-| fp69_flag_removal       | Implemented | FHIR      | FP69 Flag Removal           |
-| amendment               | Implemented | JSONPatch | Amendment                   |
+| TransactionType Header Value | Data Type | Description
+|------------------------------|-----------|---
+| approval                     | FHIR      | Approval
+| rejection                    | FHIR      | Rejection (Wrong HA)
+| deduction                    | FHIR      | Deduction                   
+| deduction_rejection          | FHIR      | Deduction Request Rejection
+| fp69_prior_notification      | FHIR      | FP69 Prior Notification
+| fp69_flag_removal            | FHIR      | FP69 Flag Removal
+| amendment                    | JSONPatch | Amendment
 
 ## Messages with FHIR Data Type
 
@@ -77,7 +77,6 @@ BLANK - the value is not used by this transaction type
 | GP Trading Partner Code  | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
 | Patient's Responsible GP | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
 | Patient's Responsible HA | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
-| NHS Number               | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
 | Rejection Details        | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
 
 ### Deduction
