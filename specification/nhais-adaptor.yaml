@@ -19,6 +19,10 @@ info:
 
     The API is based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
 
+    **PLEASE NOTE** - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
+    adequate validation is performed against ALL data items. There is no data validation or transformation performed by
+    this adaptor for ANY transaction type.
+
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest).
 
@@ -38,6 +42,26 @@ info:
 
     The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
     of the README explains these examples in further detail.
+
+    ## Permitted Characters for Data Items
+
+    Where the adaptor API represents a data item as a string the GP System **MUST** supply a value that complies
+    with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
+    specification. For "free text" fields Chapter 3 refers to Appendix K.
+
+    There are four characters which must be given special treatment. If used within a string-typed data item the
+    following characters must be escaped (preceded) by a question mark: `' + : ?`
+
+    For example, to represent the GP Note
+
+        PATIENT'S + 1 : PATIENTS?
+
+    the JSON request to the adaptor would include the parameter
+
+        {
+          "name": "freeText",
+          "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
+        }
 
   contact:
     name: National Integration Adaptors API Support
@@ -85,16 +109,8 @@ paths:
         | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
         | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
         | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
-        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | See table below for deduction reason codes |
+        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
         | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
-
-        **Deduction Reason Codes**
-
-        | Deduction Reason Code | Description  |
-        |-----------------------|--------------|
-        | 1                     | Death        |
-        | 5                     | Emigrated    |
-        | 13                    | Other reason |
 
         ## Operation Id
 
