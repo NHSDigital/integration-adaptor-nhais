@@ -9,6 +9,11 @@ See the [Resources](#resources) section for links to the underlying services and
 
 ## Adaptor Scope
 
+The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of 
+EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP System Supplier **MUST** have 
+a complete understanding of the "HA/GP links registration GP systems specification". The specification contains many
+requirements pertaining to the GP System which are out of scope fo the adaptor.
+
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
 addition to GP Links, but these are out of scope for the GP Links - NHAIS Adaptor project.
 
@@ -38,9 +43,6 @@ Inbound (HA -> GP)
 | CQN*         | Close Quarter Notification (chapter 3.20, Chapter 3 page 154) (may be considered optional)
 
 \* The adaptor acknowledges Close Quarter Notifications but does not forward them to the GP System.
-
-The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of 
-EDIFACT and MESH messaging.
 
 ## Workflows
 
