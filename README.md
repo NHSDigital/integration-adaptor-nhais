@@ -3,7 +3,7 @@
 NHAIS is a system that allows General Practice (GP) Surgeries to keep their patient registration and demographics data 
 in sync with the regional Health Authorities (HA). Since the creation of this service the regional or area health 
 authorities (approx 80) have since been replaced by a fewer number of successor organisations. There is however still a 
-notion of every GP Practice’s patient being registered with one of the HAs.
+notion of every GP Practice's patient being registered with one of the HAs.
 
 See the [Resources](#resources) section for links to the underlying services and standards.
 
@@ -11,8 +11,9 @@ See the [Resources](#resources) section for links to the underlying services and
 
 The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of 
 EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP System Supplier **MUST** have 
-a complete understanding of the "HA/GP links registration GP systems specification". The specification contains many
-requirements pertaining to the GP System which are out of scope fo the adaptor.
+a complete understanding of the "HA/GP links registration GP systems specification" except where it directly involves
+EDIFACT. The specification contains many requirements pertaining to the GP System itself which are out of scope for the 
+adaptor.
 
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
 addition to GP Links, but these are out of scope for the GP Links - NHAIS Adaptor project.
