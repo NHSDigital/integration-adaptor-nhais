@@ -9,11 +9,12 @@ See the [Resources](#resources) section for links to the underlying services and
 
 ## Adaptor Scope
 
-The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of 
-EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP System Supplier **MUST** have 
-a complete understanding of the "HA/GP links registration GP systems specification" except where it directly involves
-EDIFACT. The specification contains many requirements pertaining to the GP System itself which are out of scope for the 
-adaptor.
+The main objective of  the GP Links - NHAIS  Adaptor is to hide complex legacy standards and instead present a simple 
+and consistent interface aligned to current NHSD national standards. The adaptor removes the requirement for a GP System 
+to handle the complexities of EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP 
+System Supplier **MUST** have a complete understanding of the "HA/GP links registration GP systems specification" except 
+where it directly involves EDIFACT. The specification contains many requirements pertaining to the GP System itself 
+which are out of scope for the adaptor.
 
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
 addition to GP Links, but these are out of scope for the GP Links - NHAIS Adaptor project.
