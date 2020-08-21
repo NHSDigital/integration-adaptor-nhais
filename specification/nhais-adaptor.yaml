@@ -75,10 +75,6 @@ paths:
   '/fhir/Patient/$nhais.deduction':
     post:
       description: |
-        ## Status
-
-        This endpoint is not implemented yet and the design is incomplete. The specification is expected to change.
-
         ## Overview
 
         Use this endpoint to send a Deduction transaction to NHAIS.
@@ -352,10 +348,6 @@ paths:
       - $ref: '#/components/parameters/Id'
     patch:
       description: |
-        ## Status
-
-        This endpoint is not implemented yet. The design is complete but some changes to specification may still be required.
-
         ## Overview
         Use this endpoint to send an Amendment to NHAIS.
 

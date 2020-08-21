@@ -3,11 +3,18 @@
 NHAIS is a system that allows General Practice (GP) Surgeries to keep their patient registration and demographics data 
 in sync with the regional Health Authorities (HA). Since the creation of this service the regional or area health 
 authorities (approx 80) have since been replaced by a fewer number of successor organisations. There is however still a 
-notion of every GP Practice’s patient being registered with one of the HAs.
+notion of every GP Practice's patient being registered with one of the HAs.
 
 See the [Resources](#resources) section for links to the underlying services and standards.
 
 ## Adaptor Scope
+
+The main objective of  the GP Links - NHAIS  Adaptor is to hide complex legacy standards and instead present a simple 
+and consistent interface aligned to current NHSD national standards. The adaptor removes the requirement for a GP System 
+to handle the complexities of EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP 
+System Supplier **MUST** have a complete understanding of the "HA/GP links registration GP systems specification" except 
+where it directly involves EDIFACT. The specification contains many requirements pertaining to the GP System itself 
+which are out of scope for the adaptor.
 
 The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
 addition to GP Links, but these are out of scope for the GP Links - NHAIS Adaptor project.
@@ -38,9 +45,6 @@ Inbound (HA -> GP)
 | CQN*         | Close Quarter Notification (chapter 3.20, Chapter 3 page 154) (may be considered optional)
 
 \* The adaptor acknowledges Close Quarter Notifications but does not forward them to the GP System.
-
-The goal of the GP Links - NHAIS Adaptor is to remove the requirement for a GP System to handle the complexities of 
-EDIFACT and MESH messaging.
 
 ## Workflows
 
