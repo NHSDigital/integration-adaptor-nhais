@@ -230,8 +230,9 @@ For local test scripts see [mesh/README.md](/mesh/README.md)
 
 ### AMQP Broker Requirements
 
-* Your broker must be configured with a limited number of retries and deadletter queues
-* Your broker must use persistent queues to avoid loss of data
+* The broker must be configured with a limited number of retries and deadletter queues
+* It is the responsibility of the GP supplier to configure adequate monitoring against the deadletter queues that allows ALL undeliverable messages to be investigated fully.
+* The broker must use persistent queues to avoid loss of data
 
 **Using AmazonMQ**
 
@@ -256,7 +257,7 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 **Azure Cosmos DB**
 
-Follow Azure documention Cosmos DB's API for MongoDB.
+Follow Azure documentation on Cosmos DB's API for MongoDB.
 
 #### Time-to-live Indexes
 
@@ -286,7 +287,7 @@ The impact is that documents in Cosmos may live slightly longer than those store
 **Note**: The "Development" section below refers to a fake-mesh component. fake-mesh is **not** part of the adaptor 
 solution and should only be used to assist local development.
 
-NHSD manage access to MESH, allocate mailboxes, provide connection details / credentials.
+NHSD manage access to MESH, allocate mailboxes, and provide connection details / credentials.
 
 ### Management Endpoints
 
