@@ -231,7 +231,7 @@ For local test scripts see [mesh/README.md](/mesh/README.md)
 ### AMQP Broker Requirements
 
 * The broker must be configured with a limited number of retries and deadletter queues
-* The deadletter queues must be monitored and all undeliverable messages must be investigated
+* It is the responsibility of the GP supplier to configure adequate monitoring against the deadletter queues that allows ALL undeliverable messages to be investigated fully.
 * The broker must use persistent queues to avoid loss of data
 
 **Using AmazonMQ**
