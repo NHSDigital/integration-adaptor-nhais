@@ -989,6 +989,9 @@ ul.nav-tabs {
 </ul>
 <p>The GP Links - NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.</p>
 <p>The API is based on the <a href="https://github.com/NHSDigital/personal-demographics-service-api">Personal Demographics Service API</a></p>
+<p><strong>PLEASE NOTE</strong> - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
+adequate validation is performed against ALL data items. There is no data validation or transformation performed by
+this adaptor for ANY transaction type.</p>
 <h2>Technology</h2>
 <p>This API is <a href="https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest">RESTful</a>.</p>
 <p>It also conforms to the <a href="https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir">FHIR</a> global standard for health care data exchange.
@@ -1005,6 +1008,21 @@ In particular:</p>
 <p>A number of example requests are available as part of the adaptor's user acceptance tests.</p>
 <p>The <a href="https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples">Examples</a> section
 of the README explains these examples in further detail.</p>
+<h2>Permitted Characters for Data Items</h2>
+<p>Where the adaptor API represents a data item as a string the GP System <strong>MUST</strong> supply a value that complies
+with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
+specification. For &quot;free text&quot; fields Chapter 3 refers to Appendix K.</p>
+<p>There are four characters which must be given special treatment. If used within a string-typed data item the
+following characters must be escaped (preceded) by a question mark: <code>' + : ?</code></p>
+<p>For example, to represent the GP Note</p>
+<pre><code>PATIENT'S + 1 : PATIENTS?
+</code></pre>
+<p>the JSON request to the adaptor would include the parameter</p>
+<pre><code>{
+  &quot;name&quot;: &quot;freeText&quot;,
+  &quot;valueString&quot;: &quot;PATIENT?'S ?+ 1 ?: PATIENTS??&quot;
+}
+</code></pre>
 
             </div>
           </div>
@@ -2046,16 +2064,8 @@ https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
 | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
 | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
-| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | See table below for deduction reason codes |
+| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
 | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
-
-**Deduction Reason Codes**
-
-| Deduction Reason Code | Description  |
-|-----------------------|--------------|
-| 1                     | Death        |
-| 5                     | Emigrated    |
-| 13                    | Other reason |
 
 ## Operation Id
 
