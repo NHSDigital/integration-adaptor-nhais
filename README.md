@@ -170,12 +170,49 @@ Option 1: If `NHAIS_MONGO_HOST` is defined then the adaptor forms a connection s
 | NHAIS_MONGO_TTL                  | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
 | NHAIS_COSMOS_DB_ENABLED          | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB
 
-Option 2: If `NHAIS_MONGO_HOST` is undefined then the the adaptor uses the connection string provided:
+Option 2: If `NHAIS_MONGO_HOST` is undefined then the adaptor uses the connection string provided:
 
 | Environment Variable             | Default                   | Description 
 | ---------------------------------|---------------------------|-------------
 | NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
 | NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
+
+###AWS DocumentDB TLS configuration
+
+AWS DocumentDB uses a private CA and thus requires managing a custom keystore for the CA certificates.
+
+To use TLS it has to be enabled in DocumentDB instance and Mongo connection string has to contain `tls=true` parameter
+(see [TLS options for Mongo connection string](https://docs.mongodb.com/manual/reference/connection-string/#tls-options) for details)
+and `NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED` environment variable has to be set to `true`.
+
+SSH tunneling might require adding connection string option: `tlsAllowInvalidHostnames=true` (as CA would try to resolve `localhost` as hostname). 
+This option shall be used only for local tests as this might create a vulnerability. 
+
+Use of DocumentDB TLS requires java trust store to be provided manually. Instructions on how to create trust store can be found here: 
+[Connect to Document DB programmatically](https://docs.aws.amazon.com/documentdb/latest/developerguide/connect_programmatically.html#connect_programmatically-tls_enabled) 
+
+There are two ways how one can configure trust store depending on how adaptor is ran:
+1. Local build
+   
+   Set absolute path to trust store file in `NHAIS_MONGO_TRUST_STORE_PATH` environment variable.
+   
+2. Docker-compose
+
+   Create folder `truststore` where docker-compose.yml file is. Then place trust store file inside this folder. 
+   As docker-compose starts it mounts `./truststore/` folder (it uses relative path from `docker-compose.yml` file) as volume inside docker image filesystem as `/truststore/`
+   Next step is to specify trust store filename in `NHAIS_MONGO_TRUST_STORE_PATH` environment variable. 
+   It has to be prepended with `/truststore/` (ex. `NHAIS_MONGO_TRUST_STORE_PATH=/truststore/aws-docdb-truststore.jks`).
+   
+Both of those ways require `NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED` set to `true` and `NHAIS_MONGO_TRUST_STORE_PASSWORD` set to trust store password
+   
+####Environment variables used in DocumentDB configuration:
+
+| Environment Variable                | Default       | Description 
+| ------------------------------------|---------------|-------------
+| NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED  | false         | Enables TLS configuration for AWS DocumentDB
+| NHAIS_MONGO_TRUST_STORE_PATH        |               | Path to trust store (used only in local/dev)
+| NHAIS_MONGO_TRUST_STORE_PASSWORD    |               | Password used to access trust store
+
 
 ## MESH API
 
