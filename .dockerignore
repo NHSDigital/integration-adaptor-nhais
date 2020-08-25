@@ -1,4 +1,5 @@
 */**
+!truststore/**
 !src/**
 !activemq/**
 !fake-mesh/**
