@@ -192,15 +192,16 @@ Use of DocumentDB TLS requires java trust store to be provided manually. Instruc
 [Connect to Document DB programmatically](https://docs.aws.amazon.com/documentdb/latest/developerguide/connect_programmatically.html#connect_programmatically-tls_enabled) 
 
 There are two ways how one can configure trust store depending on how adaptor is ran:
-1. Local build
+1. Gradle run
    
    Set absolute path to trust store file in `NHAIS_MONGO_TRUST_STORE_PATH` environment variable.
    
-2. Docker-compose
+2. Docker
 
-   Create folder `truststore` where docker-compose.yml file is. Then place trust store file inside this folder. 
-   As docker-compose starts it mounts `./truststore/` folder (it uses relative path from `docker-compose.yml` file) as volume inside docker image filesystem as `/truststore/`
-   Next step is to specify trust store filename in `NHAIS_MONGO_TRUST_STORE_PATH` environment variable. 
+   Create folder `truststore` where docker-compose.yml file is. Then place trust store file inside this folder.
+   Build docker image using `docker-compose build nhais`. As docker creates image it copies all files from `./truststore/` folder 
+   (it uses relative path from `docker-compose.yml` file) to docker image filesystem as `/truststore/`
+   Next step is to specify trust store filename using `NHAIS_MONGO_TRUST_STORE_PATH` environment variable in docker-compose.yml file. 
    It has to be prepended with `/truststore/` (ex. `NHAIS_MONGO_TRUST_STORE_PATH=/truststore/aws-docdb-truststore.jks`).
    
 Both of those ways require `NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED` set to `true` and `NHAIS_MONGO_TRUST_STORE_PASSWORD` set to trust store password
