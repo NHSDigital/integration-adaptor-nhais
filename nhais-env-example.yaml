@@ -11,6 +11,9 @@ NHAIS_MONGO_DATABASE_NAME: nhais
 NHAIS_MONGO_URI: mongodb://localhost:27017
 NHAIS_MONGO_TTL: PT60S #ISO-8601 duration default P30D - 30 days
 NHAIS_COSMOS_DB_ENABLED: "false" #false - use Mongo DB implementation, true - use Cosmos Db implementation
+NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED: "false" #true if connecting to DocumentDB with TLS enabled
+NHAIS_MONGO_TRUST_STORE_PATH: /integration-adaptor-nhais/truststore/aws-docdb-truststore.jks #absolute path to AWS trust store
+NHAIS_MONGO_TRUST_STORE_PASSWORD:  #password for default trust store
 
 #MESH client settings
 NHAIS_MESH_MAILBOX_ID:  #Your MESH mailbox id (sender) can be found in your OpenTest welcome e-mail
