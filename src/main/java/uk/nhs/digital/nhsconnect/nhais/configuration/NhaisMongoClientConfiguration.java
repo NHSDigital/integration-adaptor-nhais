@@ -1,12 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.configuration;
 
-
 import com.google.common.base.Strings;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -90,11 +88,9 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         }
     }
 
-    @SneakyThrows
     private void configureTls() {
-        LOGGER.info("TLS for DocumentDB enabled. Setting trust store properties.");
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
+        LOGGER.info("TLS for DocumentDB enabled. Adding AWS trust store to default.");
+        AwsTrustStore.addToDefault(trustStorePath, trustStorePassword);
     }
 
     private String createConnectionStringFromProperties() {
