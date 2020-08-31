@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -45,6 +46,8 @@ public class PcrmScenarios {
     String hostAndPort;
     @Value("classpath:pcrm/acceptance-approval.json")
     Resource acceptanceApproval;
+    @Value("classpath:pcrm/amendment.fhir.json")
+    Resource amendment;
 
     @BeforeEach
     public void before() {
@@ -59,7 +62,7 @@ public class PcrmScenarios {
     @Test
     void when_acceptance_then_approval() throws Exception {
         String requestBody = new String(Files.readAllBytes(acceptanceApproval.getFile().toPath()));
-        requestBody = replaceNhsNumber(requestBody);
+//        requestBody = replaceNhsNumber(requestBody);
         String operationId;
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             var request = new HttpPost("http://" + hostAndPort + "/fhir/Patient/$nhais.acceptance");
@@ -70,11 +73,33 @@ public class PcrmScenarios {
                 LOGGER.debug(content);
                 assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
                 operationId = response.getFirstHeader("OperationId").getValue();
+                LOGGER.info("OperationId: {}", operationId);
             }
         }
         var inboundQueueMessage = waitFor(this::getGpSystemInboundQueueMessage);
         assertThat(inboundQueueMessage.getStringProperty("OperationId")).isEqualTo(operationId);
         assertThat(inboundQueueMessage.getStringProperty("TransactionType")).isEqualTo("approval");
+    }
+
+    @Test
+    void when_amendment_then_() throws Exception {
+        String requestBody = new String(Files.readAllBytes(amendment.getFile().toPath()));
+        String operationId;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            var request = new HttpPatch("http://" + hostAndPort + "/fhir/Patient/9692186105");
+            request.setHeader("Content-Type", "application/json");
+            request.setEntity(new StringEntity(requestBody));
+            try (CloseableHttpResponse response = client.execute(request)) {
+                String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                LOGGER.debug(content);
+                assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
+                operationId = response.getFirstHeader("OperationId").getValue();
+                LOGGER.info("OperationId: {}", operationId);
+            }
+        }
+//        var inboundQueueMessage = waitFor(this::getGpSystemInboundQueueMessage);
+//        assertThat(inboundQueueMessage.getStringProperty("OperationId")).isEqualTo(operationId);
+//        assertThat(inboundQueueMessage.getStringProperty("TransactionType")).isEqualTo("amendment");
     }
 
     private String replaceNhsNumber(String value) {

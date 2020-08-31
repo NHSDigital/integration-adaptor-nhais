@@ -14,11 +14,7 @@
     },
     {
       "name": "acceptanceDate",
-      "valueString": "2020-08-07"
-    },
-    {
-      "name": "freeText",
-      "valueString": "REGISTRATION"
+      "valueString": "2020-08-27"
     },
     {
       "name": "patient",
@@ -42,14 +38,15 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "%%NHS_NUMBER%%"
+            "value": "9692186105"
           }
         ],
         "name": [
           {
-            "family": "DOLE",
+            "family": "MADGE",
             "given": [
-              "MIKE"
+              "JOSH",
+              "TERRY"
             ],
             "prefix": [
               "MR"
@@ -57,31 +54,17 @@
           }
         ],
         "gender": "male",
-        "birthDate": "1999-10-10",
+        "birthDate": "1922-10-29",
         "address": [
           {
             "line": [
-              "Bt Global Services",
-              "1 Sovereign Street",
-              "LEEDS",
               null,
-              null
+              "12 MANOR FARM ROAD",
+              null,
+              "SCUNTHORPE",
+              "S HUMBERSIDE"
             ],
-            "postalCode": "LS1 4BT"
-          }
-        ],
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
-            "valueString": "BARNSLEY"
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker",
-            "valueBoolean": true
-          },
-          {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode",
-            "valueString": "STU"
+            "postalCode": "DN17 1LF"
           }
         ],
         "resourceType": "Patient"
