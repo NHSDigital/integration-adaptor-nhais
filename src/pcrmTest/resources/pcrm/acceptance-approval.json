@@ -1,0 +1,75 @@
+{
+  "parameter": [
+    {
+      "name": "gpTradingPartnerCode",
+      "valueString": "WHC5"
+    },
+    {
+      "name": "acceptanceCode",
+      "valueString": "A"
+    },
+    {
+      "name": "acceptanceType",
+      "valueString": "2"
+    },
+    {
+      "name": "acceptanceDate",
+      "valueString": "2020-08-27"
+    },
+    {
+      "name": "patient",
+      "resource": {
+        "managingOrganization": {
+          "identifier": [
+            {
+              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "value": "BAA"
+            }
+          ]
+        },
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+              "value": "4229931,790"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9692186105"
+          }
+        ],
+        "name": [
+          {
+            "family": "MADGE",
+            "given": [
+              "JOSH",
+              "TERRY"
+            ],
+            "prefix": [
+              "MR"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1922-10-29",
+        "address": [
+          {
+            "line": [
+              null,
+              "12 MANOR FARM ROAD",
+              null,
+              "SCUNTHORPE",
+              "S HUMBERSIDE"
+            ],
+            "postalCode": "DN17 1LF"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    }
+  ],
+  "resourceType": "Parameters"
+}
