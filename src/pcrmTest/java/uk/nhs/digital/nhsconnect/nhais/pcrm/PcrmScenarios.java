@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import javax.annotation.PostConstruct;
 import javax.jms.Message;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
@@ -85,6 +85,7 @@ public class PcrmScenarios {
     }
 
     @Test
+    @Disabled("WIP for NIAD-516")
     void when_amendment_then_() throws Exception {
         String requestBody = new String(Files.readAllBytes(amendment.getFile().toPath()));
         String operationId;
@@ -100,13 +101,6 @@ public class PcrmScenarios {
                 LOGGER.info("OperationId: {}", operationId);
             }
         }
-//        var inboundQueueMessage = waitFor(this::getGpSystemInboundQueueMessage);
-//        assertThat(inboundQueueMessage.getStringProperty("OperationId")).isEqualTo(operationId);
-//        assertThat(inboundQueueMessage.getStringProperty("TransactionType")).isEqualTo("amendment");
-    }
-
-    private String replaceNhsNumber(String value) {
-        return value.replace("%%NHS_NUMBER%%", NhsNumberGenerator.generateUniqueNhsNumber());
     }
 
     private String replaceTodayPlaceholder(String value) {
