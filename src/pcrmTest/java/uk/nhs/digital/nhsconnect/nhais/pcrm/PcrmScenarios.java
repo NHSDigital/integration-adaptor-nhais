@@ -24,6 +24,9 @@ import javax.annotation.PostConstruct;
 import javax.jms.Message;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -62,7 +65,7 @@ public class PcrmScenarios {
     @Test
     void when_acceptance_then_approval() throws Exception {
         String requestBody = new String(Files.readAllBytes(acceptanceApproval.getFile().toPath()));
-//        requestBody = replaceNhsNumber(requestBody);
+        requestBody = replaceTodayPlaceholder(requestBody);
         String operationId;
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             var request = new HttpPost("http://" + hostAndPort + "/fhir/Patient/$nhais.acceptance");
@@ -104,6 +107,10 @@ public class PcrmScenarios {
 
     private String replaceNhsNumber(String value) {
         return value.replace("%%NHS_NUMBER%%", NhsNumberGenerator.generateUniqueNhsNumber());
+    }
+
+    private String replaceTodayPlaceholder(String value) {
+        return value.replace("%%TODAY%%", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now()));
     }
 
     protected <T> T waitFor(Supplier<T> supplier) {

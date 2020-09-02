@@ -14,7 +14,7 @@
     },
     {
       "name": "acceptanceDate",
-      "valueString": "2020-08-27"
+      "valueString": "%%TODAY%%"
     },
     {
       "name": "patient",
@@ -38,15 +38,15 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9692186105"
+            "value": "9692186113"
           }
         ],
         "name": [
           {
-            "family": "MADGE",
+            "family": "TWIST",
             "given": [
-              "JOSH",
-              "TERRY"
+              "BRAD",
+              "WARREN"
             ],
             "prefix": [
               "MR"
@@ -54,17 +54,17 @@
           }
         ],
         "gender": "male",
-        "birthDate": "1922-10-29",
+        "birthDate": "1939-01-13",
         "address": [
           {
             "line": [
               null,
-              "12 MANOR FARM ROAD",
+              "4 THE FAIRWAYS",
               null,
               "SCUNTHORPE",
               "S HUMBERSIDE"
             ],
-            "postalCode": "DN17 1LF"
+            "postalCode": "DN15 7EF"
           }
         ],
         "resourceType": "Patient"
