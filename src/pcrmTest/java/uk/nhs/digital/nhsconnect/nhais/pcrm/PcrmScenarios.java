@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -27,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -34,6 +36,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest
@@ -41,16 +45,25 @@ import static org.awaitility.Awaitility.await;
 public class PcrmScenarios {
 
     private static final long WAIT_FOR_IN_SECONDS = 10 * 60; // 10 minutes * 60 seconds
-    @Value("${nhais.amqp.gpSystemInboundQueueName}")
-    protected String gpSystemInboundQueueName;
+
     @Autowired
     protected JmsTemplate jmsTemplate;
+
+    @Autowired
+    private MongoOperations mongoOperations;
+
+    @Value("${nhais.amqp.gpSystemInboundQueueName}")
+    protected String gpSystemInboundQueueName;
+
+
     @Value("${nhais.test.hostAndPort}")
     String hostAndPort;
+
     @Value("classpath:pcrm/acceptance-approval.json")
     Resource acceptanceApproval;
     @Value("classpath:pcrm/amendment.fhir.json")
     Resource amendment;
+
 
     @BeforeEach
     public void before() {
@@ -152,6 +165,12 @@ public class PcrmScenarios {
             LOGGER.debug("JmsTemplate returned null message");
         }
         return message;
+    }
+
+    protected OutboundState getRecepRecordForOutboundMessage(String operationId) {
+        var query = query(where("operationId").is(operationId));
+        var results = mongoOperations.find(query, OutboundState.class);
+        return results.stream().findFirst().orElse(null);
     }
 
     private static class Counter {

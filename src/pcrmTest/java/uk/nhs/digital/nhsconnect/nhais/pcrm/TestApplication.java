@@ -7,10 +7,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.jms.annotation.EnableJms;
 
 @EnableJms
-@SpringBootApplication(exclude = {
-	MongoAutoConfiguration.class,
-	MongoDataAutoConfiguration.class
-})
+@SpringBootApplication
 public class TestApplication {
 
 	public static void main(String[] args) {
