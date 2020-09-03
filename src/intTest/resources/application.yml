@@ -138,3 +138,5 @@ nhais:
     pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:1}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}
+  test:
+    ptlDnsNAme: ${PTL_DNS_NAME:localhost}

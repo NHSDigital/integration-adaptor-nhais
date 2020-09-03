@@ -1,0 +1,21 @@
+server:
+  port: 9999
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
+    org.apache.qpid: DEBUG
+
+nhais:
+  amqp:
+    brokers: ${NHAIS_AMQP_BROKERS:}
+    meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:ptl_nhais_mesh_outbound}
+    meshInboundQueueName: ${NHAIS_MESH_INBOUND_QUEUE_NAME:ptl_nhais_mesh_inbound}
+    gpSystemInboundQueueName: ${NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME:ptl_nhais_gp_system_inbound}
+    exchange: amq.direct
+    username: ${NHAIS_AMQP_USERNAME:}
+    password: ${NHAIS_AMQP_PASSWORD:}
+    maxRedeliveries: ${NHAIS_AMQP_MAX_REDELIVERIES:3}
+  test:
+    hostAndPort: ${HOST_AND_PORT:localhost:8080}
