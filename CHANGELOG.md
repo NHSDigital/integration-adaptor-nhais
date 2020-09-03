@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2020-09-03
+
 - Added DocumentDB TLS support
+- All API error responses are now FHIR OperationOutcome
 
 ## [1.2.0] - 2020-08-19
 
