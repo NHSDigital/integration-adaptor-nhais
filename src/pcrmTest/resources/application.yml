@@ -17,5 +17,16 @@ nhais:
     username: ${NHAIS_AMQP_USERNAME:}
     password: ${NHAIS_AMQP_PASSWORD:}
     maxRedeliveries: ${NHAIS_AMQP_MAX_REDELIVERIES:3}
+  mongodb:
+    uri: ${NHAIS_MONGO_URI:mongodb://localhost:27017}
+    database: ${NHAIS_MONGO_DATABASE_NAME:nhais}
+    host: ${NHAIS_MONGO_HOST:}
+    port: ${NHAIS_MONGO_PORT:}
+    username: ${NHAIS_MONGO_USERNAME:}
+    password: ${NHAIS_MONGO_PASSWORD:}
+    options: ${NHAIS_MONGO_OPTIONS:}
+    document-db-tls: ${NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED:false}
+    trust-store-path: ${NHAIS_MONGO_TRUST_STORE_PATH:}
+    trust-store-password: ${NHAIS_MONGO_TRUST_STORE_PASSWORD:}
   test:
     hostAndPort: ${HOST_AND_PORT:localhost:8080}

@@ -116,6 +116,11 @@ public class PcrmScenarios {
         }
     }
 
+    @Test
+    void test_mongo() {
+        mongoOperations.findAll(OutboundState.class);
+    }
+
     private String replaceTodayPlaceholder(String value) {
         return value.replace("%%TODAY%%", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now()));
     }

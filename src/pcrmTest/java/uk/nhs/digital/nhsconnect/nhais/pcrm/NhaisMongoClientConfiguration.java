@@ -33,12 +33,6 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private String options;
 
-    private boolean autoIndexCreation;
-
-    private Duration ttl;
-
-    private boolean cosmosDbEnabled;
-
     private String trustStorePath;
 
     private String trustStorePassword;
@@ -58,8 +52,8 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     @Override
     protected boolean autoIndexCreation() {
-        LOGGER.info("Auto index creation is '{}'", this.autoIndexCreation);
-        return this.autoIndexCreation;
+        // The tests are read-only into the adaptor's database. Indexes already exist if the adaptor is running.
+        return false;
     }
 
     private String createConnectionString() {
