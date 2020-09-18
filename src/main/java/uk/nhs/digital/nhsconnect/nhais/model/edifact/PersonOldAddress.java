@@ -10,6 +10,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The semi-structured previous address of the patient. Any non-blank address lines are translated as data elements.
+ * Empty address lines are skipped and not represented with empty EDIFACT data elements (consecutive : characters)
+ */
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Data
@@ -30,7 +34,7 @@ public class PersonOldAddress extends Segment {
     @Override
     public String getValue() {
         String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
-            .filter(Objects::nonNull)
+            .filter(StringUtils::isNotBlank)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
         return PAT_CODE
