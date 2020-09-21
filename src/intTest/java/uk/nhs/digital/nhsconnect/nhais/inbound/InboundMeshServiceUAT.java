@@ -134,11 +134,11 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     private List<String> filterTimestampedSegments(Interchange recep) {
         List<String> edifactSegments = recep.getMessages().get(0).getEdifactSegments();
         assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("BGM+")));
-        assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("DTM+137")));
+        assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("DTM+815")));
 
         return edifactSegments.stream()
             .filter(segment -> !segment.startsWith("BGM+"))
-            .filter(segment -> !segment.startsWith("DTM+137"))
+            .filter(segment -> !segment.startsWith("DTM+815"))
             .collect(Collectors.toList());
     }
 }

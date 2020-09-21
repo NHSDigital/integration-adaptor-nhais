@@ -33,7 +33,8 @@ public class DateTimePeriod extends Segment{
 
     public enum TypeAndFormat {
         TRANSLATION_TIMESTAMP("137", "203", "yyyyMMddHHmm"),
-        ACCEPTANCE_DATE("956", "102", "yyyMMdd");
+        ACCEPTANCE_DATE("956", "102", "yyyMMdd"),
+        RECEP_TIMESTAMP("815", "203", "yyyyMMddHHmm");
 
         private final String typeCode;
         private final String formatCode;
