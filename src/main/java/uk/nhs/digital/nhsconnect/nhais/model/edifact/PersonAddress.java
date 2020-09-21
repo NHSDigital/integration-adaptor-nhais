@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * The fully-structured present physical address of the patient
  * example: NAD+PAT++HOLLY COTTAGE:12 LONG LANE:LITTLE HAMLET:BROMLEY:KENT+++++BR5  4ER'
  */
 @EqualsAndHashCode(callSuper = false)
@@ -22,6 +23,7 @@ public class PersonAddress extends Segment {
     private final static String QUALIFIER = "PAT";
     public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private final static int POSTAL_CODE_OFFSET = 5;
+    private static final String EMPTY_FIRST_ADDRESS_LINE_PLACEHOLDER = "??";
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -39,7 +41,8 @@ public class PersonAddress extends Segment {
 
         var builder = PersonAddress.builder();
         if (addressLinesParts.length > 0) {
-            builder.addressLine1(addressLinesParts[0]);
+            String addressLine1 = replacePlaceholderWithEmpty(addressLinesParts[0]);
+            builder.addressLine1(addressLine1);
         }
         if (addressLinesParts.length > 1) {
             builder.addressLine2(addressLinesParts[1]);
@@ -61,7 +64,6 @@ public class PersonAddress extends Segment {
         return builder.build();
     }
 
-
     @Override
     public String getKey() {
         return KEY;
@@ -69,7 +71,8 @@ public class PersonAddress extends Segment {
 
     @Override
     public String getValue() {
-        String address = Stream.of(addressLine1, addressLine2, addressLine3, addressLine4, addressLine5)
+        String addressLine1WithPossiblePlaceholder = replaceEmptyWithPlaceholder(addressLine1);
+        String address = Stream.of(addressLine1WithPossiblePlaceholder, addressLine2, addressLine3, addressLine4, addressLine5)
             .map(StringUtils::defaultString)
             .collect(Collectors.joining(COLON_SEPARATOR));
 
@@ -100,5 +103,19 @@ public class PersonAddress extends Segment {
 
     private boolean isAddressLineValid(String addressLine) {
         return Objects.nonNull(addressLine) && !addressLine.isBlank();
+    }
+
+    private static String replaceEmptyWithPlaceholder(String addressLine1) {
+        if (StringUtils.isBlank(addressLine1)) {
+            return EMPTY_FIRST_ADDRESS_LINE_PLACEHOLDER;
+        }
+        return addressLine1;
+    }
+
+    private static String replacePlaceholderWithEmpty(String addressLine1) {
+        if (addressLine1.equals(EMPTY_FIRST_ADDRESS_LINE_PLACEHOLDER)) {
+            return StringUtils.EMPTY;
+        }
+        return addressLine1;
     }
 }
