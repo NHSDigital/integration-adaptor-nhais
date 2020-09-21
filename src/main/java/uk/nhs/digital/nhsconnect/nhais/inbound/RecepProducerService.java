@@ -109,7 +109,7 @@ public class RecepProducerService {
     }
 
     private DateTimePeriod mapToTranslationDateTime() {
-        return new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
+        return new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.RECEP_TIMESTAMP);
     }
 
     private RecepHeader mapToInterchangeHeader(Interchange interchange) {
