@@ -12,13 +12,14 @@ import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -144,13 +145,13 @@ public class RegistrationConsumerServiceTest {
         when(message1.getTransactions()).thenReturn(List.of(transaction1, transaction2));
         when(message1.getInterchange()).thenReturn(interchange);
         when(message1.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(MESSAGE_1_TRANSACTION_TYPE));
-        when(message1.getTranslationDateTime()).thenReturn(new DateTimePeriod(MESSAGE_1_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(message1.getTranslationDateTime()).thenReturn(new RegistrationTimestamp().setTimestamp(MESSAGE_1_TRANSLATION_TIME));
 
         when(message2.getMessageHeader()).thenReturn(new MessageHeader(SMS_2));
         when(message2.getTransactions()).thenReturn(List.of(transaction3, transaction4));
         when(message2.getInterchange()).thenReturn(interchange);
         when(message2.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(MESSAGE_2_TRANSACTION_TYPE));
-        when(message2.getTranslationDateTime()).thenReturn(new DateTimePeriod(MESSAGE_2_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(message2.getTranslationDateTime()).thenReturn(new RegistrationTimestamp().setTimestamp(MESSAGE_2_TRANSLATION_TIME));
 
         when(transaction1.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber(TN_1));
         when(transaction1.getMessage()).thenReturn(message1);
@@ -174,8 +175,8 @@ public class RegistrationConsumerServiceTest {
         when(recepMessage.getInterchange()).thenReturn(recep);
         when(recepMessage.getMessageHeader()).thenReturn(
             new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
-        when(recepMessage.getTranslationDateTime()).thenReturn(
-            new DateTimePeriod(MESSAGE_1_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(recepMessage.getRecepTranslationDateTime()).thenReturn(
+            new RecepTimestamp().setTimestamp(MESSAGE_1_TRANSLATION_TIME));
 
         when(recepProducerService.produceRecep(interchange)).thenReturn(RECEP_AS_EDIFACT);
         when(edifactParser.parse(RECEP_AS_EDIFACT)).thenReturn(recep);
@@ -314,8 +315,8 @@ public class RegistrationConsumerServiceTest {
         when(recepMessage.getInterchange()).thenReturn(recep);
         when(recepMessage.getMessageHeader()).thenReturn(
             new MessageHeader().setSequenceNumber(RECEP_MESSAGE_SEQUENCE));
-        when(recepMessage.getTranslationDateTime()).thenReturn(
-            new DateTimePeriod(CQN_MESSAGE_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(recepMessage.getRecepTranslationDateTime()).thenReturn(
+            new RecepTimestamp().setTimestamp(CQN_MESSAGE_TRANSLATION_TIME));
 
         when(recepProducerService.produceRecep(interchange)).thenReturn(RECEP_AS_EDIFACT);
         when(edifactParser.parse(RECEP_AS_EDIFACT)).thenReturn(recep);
@@ -334,7 +335,7 @@ public class RegistrationConsumerServiceTest {
         when(cqnMessage.getTransactions()).thenReturn(List.of(transaction1));
         when(cqnMessage.getInterchange()).thenReturn(interchange);
         when(cqnMessage.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(CQN_TRANSACTION_TYPE));
-        when(cqnMessage.getTranslationDateTime()).thenReturn(new DateTimePeriod(CQN_MESSAGE_TRANSLATION_TIME, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(cqnMessage.getTranslationDateTime()).thenReturn(new RegistrationTimestamp().setTimestamp(CQN_MESSAGE_TRANSLATION_TIME));
 
         when(transaction1.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber(TN_1));
         when(transaction1.getMessage()).thenReturn(cqnMessage);

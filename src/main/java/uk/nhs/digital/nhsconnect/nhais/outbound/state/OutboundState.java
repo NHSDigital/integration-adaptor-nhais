@@ -48,7 +48,7 @@ public class OutboundState implements TimeToLive {
     public static OutboundState fromRecep(Message message) {
         var interchangeHeader = message.getInterchange().getInterchangeHeader();
         var messageHeader = message.getMessageHeader();
-        var dateTimePeriod = message.getTranslationDateTime();
+        var dateTimePeriod = message.getRecepTranslationDateTime();
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)

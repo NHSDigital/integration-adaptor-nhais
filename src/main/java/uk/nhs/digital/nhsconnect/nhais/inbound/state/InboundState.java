@@ -69,7 +69,7 @@ public class InboundState implements TimeToLive {
     public static InboundState fromRecep(Message recep) {
         var interchangeHeader = recep.getInterchange().getInterchangeHeader();
         var messageHeader = recep.getMessageHeader();
-        var dateTimePeriod = recep.getTranslationDateTime();
+        var dateTimePeriod = recep.getRecepTranslationDateTime();
 
         return new InboundState()
             .setWorkflowId(WorkflowId.RECEP)

@@ -5,12 +5,12 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
@@ -122,11 +122,9 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             } else if (segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.getTransactionNumber());
-            } else if (segment instanceof DateTimePeriod) {
-                DateTimePeriod dateTimePeriod = (DateTimePeriod) segment;
-                if (dateTimePeriod.getTypeAndFormat().equals(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)) {
-                    dateTimePeriod.setTimestamp(translationItems.getTranslationTimestamp());
-                }
+            } else if (segment instanceof RegistrationTimestamp) {
+                RegistrationTimestamp registrationTimestamp = (RegistrationTimestamp) segment;
+                registrationTimestamp.setTimestamp(translationItems.getTranslationTimestamp());
             }
         }
     }

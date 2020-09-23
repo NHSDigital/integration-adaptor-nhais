@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 
 import java.time.Instant;
@@ -52,7 +52,7 @@ public class InboundStateTest {
 
         when(MESSAGE.getMessageHeader()).thenReturn(new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
         when(MESSAGE.getReferenceTransactionType()).thenReturn(new ReferenceTransactionType(TRANSACTION_TYPE));
-        when(MESSAGE.getTranslationDateTime()).thenReturn(new DateTimePeriod(TRANSLATION_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(MESSAGE.getTranslationDateTime()).thenReturn(new RegistrationTimestamp().setTimestamp(TRANSLATION_TIMESTAMP));
         when(MESSAGE.getInterchange()).thenReturn(INTERCHANGE);
         when(MESSAGE.getTransactions()).thenReturn(List.of(TRANSACTION));
 
