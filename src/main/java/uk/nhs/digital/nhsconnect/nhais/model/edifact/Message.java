@@ -20,8 +20,11 @@ public class Message extends Section {
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress =
         HealthAuthorityNameAndAddress.fromString(extractSegment(HealthAuthorityNameAndAddress.KEY_QUALIFIER));
     @Getter(lazy = true)
-    private final DateTimePeriod translationDateTime =
-        DateTimePeriod.fromString(extractSegment(DateTimePeriod.KEY));
+    private final RegistrationTimestamp translationDateTime =
+        RegistrationTimestamp.fromString(extractSegment(RegistrationTimestamp.KEY_QUALIFIER));
+    @Getter(lazy = true)
+    private final RecepTimestamp recepTranslationDateTime =
+        RecepTimestamp.fromString(extractSegment(RecepTimestamp.KEY_QUALIFIER));
     @Getter(lazy = true)
     private final ReferenceTransactionType referenceTransactionType =
         ReferenceTransactionType.fromString(extractSegment(ReferenceTransactionType.KEY_QUALIFIER));

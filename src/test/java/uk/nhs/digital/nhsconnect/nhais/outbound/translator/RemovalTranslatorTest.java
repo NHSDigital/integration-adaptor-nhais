@@ -1,38 +1,36 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.translator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
-import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.FreeTextMapper;
-import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.GpNameAndAddressMapper;
-import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PartyQualifierMapper;
-import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonNameMapper;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
-import uk.nhs.digital.nhsconnect.nhais.outbound.translator.acceptance.OptionalInputValidator;
-import uk.nhs.digital.nhsconnect.nhais.outbound.translator.removal.RemovalTranslator;
-
 import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.FreeText;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.GpNameAndAddress;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
+import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.FreeTextMapper;
+import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.GpNameAndAddressMapper;
+import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PartyQualifierMapper;
+import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonNameMapper;
+import uk.nhs.digital.nhsconnect.nhais.outbound.translator.acceptance.OptionalInputValidator;
+import uk.nhs.digital.nhsconnect.nhais.outbound.translator.removal.RemovalTranslator;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 public class RemovalTranslatorTest {
@@ -93,7 +91,7 @@ public class RemovalTranslatorTest {
 
         softly.assertThat(segments.get(0)).isExactlyInstanceOf(BeginningOfMessage.class);
         softly.assertThat(segments.get(1)).isEqualTo(partyQualifier);
-        softly.assertThat(segments.get(2)).isExactlyInstanceOf(DateTimePeriod.class);
+        softly.assertThat(segments.get(2)).isExactlyInstanceOf(RegistrationTimestamp.class);
         softly.assertThat(segments.get(3)).isExactlyInstanceOf(ReferenceTransactionType.class);
         softly.assertThat(segments.get(4)).isExactlyInstanceOf(SegmentGroup.class);
         softly.assertThat(segments.get(5)).isExactlyInstanceOf(ReferenceTransactionNumber.class);

@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepositoryExtensions;
 
@@ -74,7 +74,7 @@ public class RecepConsumerService {
         //sender is swapped with recipient as communication is done the opposite way
         var outbound_sender = message.getInterchange().getInterchangeHeader().getRecipient();
         var outbound_recipient = message.getInterchange().getInterchangeHeader().getSender();
-        var dateTimePeriod = message.getTranslationDateTime().getTimestamp();
+        var dateTimePeriod = message.getRecepTranslationDateTime().getTimestamp();
         var interchangeSequence = message.getReferenceInterchangeRecep().getInterchangeSequenceNumber();
 
         return message.getReferenceMessageReceps().stream()

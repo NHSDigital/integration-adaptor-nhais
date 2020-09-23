@@ -7,17 +7,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepositoryExtensions;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
@@ -82,8 +82,8 @@ class RecepConsumerServiceTest {
         when(message1.getInterchange()).thenReturn(recep);
         when(message1.getMessageHeader())
             .thenReturn(new MessageHeader().setSequenceNumber(SMS_1));
-        when(message1.getTranslationDateTime())
-            .thenReturn(new DateTimePeriod(MESSAGE_1_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(message1.getRecepTranslationDateTime())
+            .thenReturn(new RecepTimestamp().setTimestamp(MESSAGE_1_TIMESTAMP));
         when(message1.getReferenceInterchangeRecep())
             .thenReturn(new ReferenceInterchangeRecep(REF_SIS_1, ReferenceInterchangeRecep.RecepCode.RECEIVED, 2));
         when(message1.getReferenceMessageReceps())
@@ -94,8 +94,8 @@ class RecepConsumerServiceTest {
         when(message2.getInterchange()).thenReturn(recep);
         when(message2.getMessageHeader())
             .thenReturn(new MessageHeader().setSequenceNumber(SMS_2));
-        when(message2.getTranslationDateTime())
-            .thenReturn(new DateTimePeriod(MESSAGE_2_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(message2.getRecepTranslationDateTime())
+            .thenReturn(new RecepTimestamp().setTimestamp(MESSAGE_2_TIMESTAMP));
         when(message2.getReferenceInterchangeRecep())
             .thenReturn(new ReferenceInterchangeRecep(REF_SIS_2, ReferenceInterchangeRecep.RecepCode.INVALID_DATA, 1));
         when(message2.getReferenceMessageReceps())

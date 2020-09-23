@@ -15,10 +15,10 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
@@ -87,7 +87,7 @@ public class FhirToEdifactServiceTest {
         when(fhirToEdifactSegmentTranslator.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
             new BeginningOfMessage(),
             new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
-            new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+            new RegistrationTimestamp().setTimestamp(expectedTimestamp),
             new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE),
             new SegmentGroup(1),
             new ReferenceTransactionNumber()

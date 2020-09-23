@@ -3,14 +3,14 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.state;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -44,8 +44,8 @@ public class InboundStateRecepTest {
         when(MESSAGE.getInterchange()).thenReturn(RECEP);
         when(MESSAGE.getMessageHeader()).thenReturn(
             new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
-        when(MESSAGE.getTranslationDateTime()).thenReturn(
-            new DateTimePeriod(TRANSLATION_TIMESTAMP, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP));
+        when(MESSAGE.getRecepTranslationDateTime()).thenReturn(
+            new RecepTimestamp().setTimestamp(TRANSLATION_TIMESTAMP));
         when(MESSAGE.getReferenceInterchangeRecep()).thenReturn(
             new ReferenceInterchangeRecep(54343L, ReferenceInterchangeRecep.RecepCode.RECEIVED, 1));
         when(MESSAGE.getReferenceMessageReceps()).thenReturn(
