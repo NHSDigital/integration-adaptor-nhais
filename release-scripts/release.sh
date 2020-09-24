@@ -3,7 +3,7 @@
 set -e
 
 export BUILD_TAG=latest
-export RELEASE_VERSION=1.3.0
+export RELEASE_VERSION=1.3.1
 cd ..
 
 docker-compose build nhais
