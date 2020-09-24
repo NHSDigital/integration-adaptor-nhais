@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2020-09-24
+
+- [Issue #244](https://github.com/nhsconnect/integration-adaptor-nhais/issues/244) Documentation added about preserving 
+database contents and continuing an established HA/GP link
+- Fixed issues with RECEP message header and DTM segment that caused NHAIS validation errors
+- The adaptor now sends to NHAIS the '?' placeholder for empty first address lines. The adaptor removes the placeholder 
+for inbound addresses with empty first lines.
+
 ## [1.3.0] - 2020-09-03
 
 - Added DocumentDB TLS support
