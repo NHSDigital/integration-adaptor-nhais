@@ -17,6 +17,9 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Representation of the timestamp DTM segment used in RECEP messages
+ * <p>
+ * WARNING: Due to a bug in NHAIS the value if this segment when received inbound may not be as expected. The timestamp
+ * * of the interchange header is a more reliable data point for translation timestamp.
  */
 @Getter
 @Setter
@@ -24,10 +27,10 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class RecepTimestamp extends Segment {
+public class RecepMessageDateTime extends Segment {
 
-    public static final String KEY = "DTM";
-    private static final String TYPE_CODE = "815";
+    public static final String KEY = "DTM"; // Date/time/period
+    private static final String TYPE_CODE = "815"; // receive date of interchange
     public static final String KEY_QUALIFIER = KEY + "+" + TYPE_CODE;
     private static final String FORMAT_CODE = "306";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
@@ -39,13 +42,13 @@ public class RecepTimestamp extends Segment {
      */
     private Instant timestamp;
 
-    public static RecepTimestamp fromString(String edifactString) {
+    public static RecepMessageDateTime fromString(String edifactString) {
         if (!edifactString.startsWith(KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + RecepTimestamp.class.getSimpleName() + " from " + edifactString);
+            throw new IllegalArgumentException("Can't create " + RecepMessageDateTime.class.getSimpleName() + " from " + edifactString);
         }
         String timestamp = Split.byColon(edifactString)[1];
         Instant instant = ZonedDateTime.parse(timestamp, DATE_TIME_FORMAT).toInstant();
-        return new RecepTimestamp(instant);
+        return new RecepMessageDateTime(instant);
     }
 
     @Override

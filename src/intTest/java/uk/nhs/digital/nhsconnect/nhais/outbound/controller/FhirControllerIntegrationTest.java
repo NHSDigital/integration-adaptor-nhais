@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.controller;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
+
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;

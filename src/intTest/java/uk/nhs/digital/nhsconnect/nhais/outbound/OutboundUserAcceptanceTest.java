@@ -1,7 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound;
 
-import org.awaitility.Durations;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,44 +9,44 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.uat.common.OutboundArgumentsProvider;
 import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Reads test data from /outbound_uat_data. The FHIR .json files are sent to the adaptor's API. The test waits for the
+ * transaction to be processed and compares the EDIFACT sent to the MESH mailbox to the .dat file having the name name
+ * as the .json
+ */
 @AutoConfigureMockMvc
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
-public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
+public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
     @SpyBean
     private TimestampService timestampService;
 
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+            .toInstant();
+
     @BeforeEach
     void setUp() {
-        when(timestampService.getCurrentTimestamp()).thenReturn(ZonedDateTime
-            .of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
-            .toInstant());
-    }
-
-    @AfterEach
-    void tearDown() {
-        clearMeshMailbox();
+        when(timestampService.getCurrentTimestamp()).thenReturn(GENERATED_TIMESTAMP);
+        clearMeshMailboxes();
     }
 
     @ParameterizedTest(name = "[{index}] - {0}")
@@ -60,15 +58,10 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         sendToApi(testData.getJson(), transactionType);
 
         // fetch EDIFACT message from MESH
-        await().atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Durations.ONE_SECOND)
-            .pollInterval(Durations.TWO_HUNDRED_MILLISECONDS)
-            .until(this::isNewMessageAvailable);
-
-        List<String> messageIds = meshClient.getInboxMessageIds();
+        var meshMessage = waitForMeshMessage(nhaisMeshClient);
 
         // assert output EDIFACT is correct
-        assertMessageBody(meshClient.getEdifactMessage(messageIds.get(0)), testData.getEdifact());
+        assertMessageBody(meshMessage, testData.getEdifact());
     }
 
     private void sendToApi(String jsonInput, String transactionType) throws Exception {
@@ -86,7 +79,4 @@ public class OutboundMeshServiceUAT extends MeshServiceBaseTest {
         assertThat(meshMessage.getContent()).isEqualTo(expectedEdifact);
     }
 
-    private Boolean isNewMessageAvailable() {
-        return meshClient.getInboxMessageIds().size() > 0;
-    }
 }

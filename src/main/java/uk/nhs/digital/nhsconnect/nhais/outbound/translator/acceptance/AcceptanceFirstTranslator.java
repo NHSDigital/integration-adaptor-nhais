@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
@@ -73,7 +73,7 @@ public class AcceptanceFirstTranslator implements FhirToEdifactTranslator {
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            mapSegment(new RegistrationTimestamp()),
+            mapSegment(new RegistrationMessageDateTime()),
             //RFF+950
             mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01

@@ -1,17 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -20,12 +21,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import static org.mockito.Mockito.when;
 
+/**
+ * Tests the processing of a REGISTRATION interchange by publishing it onto the inbound MESH message queue. This bypasses the
+ * MESH polling loop / MESH Client / MESH API.
+ */
 @DirtiesContext
-public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
+public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
 
     private static final String SENDER = "XX11";
     private static final String RECIPIENT = "TES5";
@@ -35,11 +39,11 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
     private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
+        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
-    private static final Instant RECEP_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 00, 0, TimestampService.UKZone)
         .toInstant();
-    private static final String ISO_RECEP_SEND_TIMESTAMP = new TimestampService().formatInISO(RECEP_TIMESTAMP);
+    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
 
     @MockBean
     private TimestampService timestampService;
@@ -52,14 +56,10 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
 
     @BeforeEach
     void setUp() {
-        when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
-        when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
-    }
-
-    @AfterEach
-    void tearDown() {
-        clearInboundQueue();
-        clearMeshMailbox();
+        when(timestampService.getCurrentTimestamp()).thenReturn(GENERATED_TIMESTAMP);
+        when(timestampService.formatInISO(GENERATED_TIMESTAMP)).thenReturn(ISO_GENERATED_TIMESTAMP);
+        clearGpSystemInboundQueue();
+        clearMeshMailboxes();
     }
 
     @Test
@@ -71,42 +71,37 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
 
         sendToMeshInboundQueue(meshMessage);
 
+        assertInboundState(softly);
+        assertGpSystemInboundQueueMessage(softly);
+        assertOutboundRecepMessage(softly);
+        assertOutboundState(softly);
+    }
+
+    private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
+        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+
+        softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
+        softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
+        // timestamp not set for outbound recep messages
+        softly.assertThat(meshMessage.getMessageSentTimestamp()).isNull();
+    }
+
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException {
+        var message = getGpSystemInboundQueueMessage();
+        var content = parseTextMessage(message);
+        var expectedContent = new String(Files.readAllBytes(fhir.getFile().toPath()));
+
+        softly.assertThat(message.getStringProperty("OperationId")).isEqualTo(OPERATION_ID);
+        softly.assertThat(message.getStringProperty("TransactionType")).isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
+        softly.assertThat(content).isEqualTo(expectedContent);
+    }
+
+    private void assertInboundState(SoftAssertions softly) {
         var inboundState = waitFor(
             () -> inboundStateRepository
                 .findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS, TN)
                 .orElse(null));
 
-        assertInboundState(softly, inboundState);
-
-        assertGpSystemInboundQueueMessage(softly);
-
-        assertOutboundRecepMessage(softly);
-    }
-
-    private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        List<String> messageIds = waitFor(() -> {
-            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
-            return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
-        } );
-        var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
-
-        softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
-        softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        //TODO: other assertions on recep message
-    }
-
-    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException {
-        var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
-
-        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("OperationId"))
-            .isEqualTo(OPERATION_ID);
-        softly.assertThat(gpSystemInboundQueueMessage.getStringProperty("TransactionType"))
-            .isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
-        softly.assertThat(parseTextMessage(gpSystemInboundQueueMessage))
-            .isEqualTo(new String(Files.readAllBytes(fhir.getFile().toPath())));
-    }
-
-    private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(OPERATION_ID)
@@ -116,7 +111,23 @@ public class InboundQueueServiceRegistrationTest extends MeshServiceBaseTest {
             .setRecipient(RECIPIENT)
             .setTransactionType(TRANSACTION_TYPE)
             .setTransactionNumber(TN)
-            .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
+            .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
+            .setProcessedTimestamp(GENERATED_TIMESTAMP);
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
+    }
+
+    private void assertOutboundState(SoftAssertions softly) {
+        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+
+        softly.assertThat(outboundStates).hasSize(1);
+        var outboundState = outboundStates.iterator().next();
+        var expected = new OutboundState()
+            .setInterchangeSequence(1L)
+            .setMessageSequence(1L)
+            .setRecipient(SENDER)
+            .setSender(RECIPIENT)
+            .setWorkflowId(WorkflowId.RECEP)
+            .setTranslationTimestamp(GENERATED_TIMESTAMP);
+        softly.assertThat(outboundState).isEqualToIgnoringGivenFields(expected, "id");
     }
 }

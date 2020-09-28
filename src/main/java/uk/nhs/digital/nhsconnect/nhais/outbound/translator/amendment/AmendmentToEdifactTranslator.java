@@ -9,7 +9,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
@@ -44,7 +44,7 @@ public class AmendmentToEdifactTranslator {
         var segments = new ArrayList<Segment>();
         segments.add(new BeginningOfMessage());
         segments.add(new NameAndAddress(amendmentBody.getHealthcarePartyCode(), NameAndAddress.QualifierAndCode.FHS));
-        segments.add(new RegistrationTimestamp());
+        segments.add(new RegistrationMessageDateTime());
         segments.add(new ReferenceTransactionType(ReferenceTransactionType.Outbound.AMENDMENT));
         segments.add(new SegmentGroup(1));
         segments.add(new ReferenceTransactionNumber());

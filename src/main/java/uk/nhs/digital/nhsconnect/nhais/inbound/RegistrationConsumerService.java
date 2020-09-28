@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundGpSystemService;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateFactory;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -34,6 +35,7 @@ public class RegistrationConsumerService implements RegistrationConsumer {
 
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
+    private final InboundStateFactory inboundStateFactory;
     private final OutboundStateRepository outboundStateRepository;
     private final OutboundQueueService outboundQueueService;
     private final RecepProducerService recepProducerService;
@@ -133,7 +135,7 @@ public class RegistrationConsumerService implements RegistrationConsumer {
         return transactions.stream()
             .map(transaction -> {
                 LOGGER.debug("Building transaction {} inbound state", transaction);
-                return InboundState.fromTransaction(transaction);
+                return inboundStateFactory.fromTransaction(transaction);
             })
             .collect(Collectors.toList());
     }
