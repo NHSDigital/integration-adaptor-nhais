@@ -114,6 +114,13 @@ paths:
         to match against the asynchronous reply from NHAIS
 
       summary: Deduct a patient (Deduction transaction)
+      parameters:
+        - in: header
+          name: CorrelationId
+          required: false
+          description: (Optional) a unique identifier to trace this request in logs and databases
+          schema:
+            type: string
       operationId: deduction
       tags:
         - patients
@@ -131,12 +138,26 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-        '400':
-          description: Bad Request - The request could not be processed and forwarded to NHAIS
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
+        default:
+          description: The request could not be processed and forwarded to NHAIS
+          headers:
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
           content:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
+              examples:
+                bad-request:
+                  summary: The request payload is invalid
+                  value:
+                    $ref: components/examples/responses/400-bad-request.json
   '/fhir/Patient/$nhais.removal':
     post:
       description: |
@@ -179,6 +200,13 @@ paths:
         to match against the asynchronous reply from NHAIS
 
       summary: Removal (Out of Area)
+      parameters:
+        - in: header
+          name: CorrelationId
+          required: false
+          description: (Optional) a unique identifier to trace this request in logs and databases
+          schema:
+            type: string
       operationId: removal
       tags:
         - patients
@@ -196,8 +224,17 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-        '400':
-          description: Bad Request - The request could not be processed and forwarded to NHAIS
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
+        default:
+          description: The request could not be processed and forwarded to NHAIS
+          headers:
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
           content:
             application/fhir+json:
               schema:
@@ -314,6 +351,13 @@ paths:
         to match against the asynchronous reply from NHAIS
 
       summary: Accept a new patient (Acceptance transaction)
+      parameters:
+        - in: header
+          name: CorrelationId
+          required: false
+          description: (Optional) a unique identifier to trace this request in logs and databases
+          schema:
+            type: string
       operationId: acceptance
       tags:
         - patients
@@ -332,8 +376,17 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-        '400':
-          description: Client error.
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
+        default:
+          description: The request could not be processed and forwarded to NHAIS
+          headers:
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
           content:
             application/fhir+json:
               schema:
@@ -454,6 +507,13 @@ paths:
         as such and further amendments from NHAIS will not reference this operation id.
 
       summary: Amend patient details (Amendment transaction)
+      parameters:
+        - in: header
+          name: CorrelationId
+          required: false
+          description: (Optional) a unique identifier to trace this request in logs and databases
+          schema:
+            type: string
       operationId: amendment
       tags:
         - patients
@@ -474,12 +534,26 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-        '400':
-          description: Client error.
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
+        default:
+          description: The request could not be processed and forwarded to NHAIS
+          headers:
+            CorrelationId:
+              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+              schema:
+                type: string
           content:
             application/fhir+json:
               schema:
                 $ref: components/schemas/OperationOutcome.yaml
+              examples:
+                bad-request:
+                  summary: The request payload is invalid
+                  value:
+                    $ref: components/examples/responses/400-bad-request.json
 components:
   parameters:
     Id:

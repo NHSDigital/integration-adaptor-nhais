@@ -1,6 +1,8 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Slf4j
 public abstract class AbstractToEdifactService<T extends CommonTranslationItems> {
 
     protected final SequenceService sequenceService;
@@ -39,12 +42,14 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
         Objects.requireNonNull(translationItems.getTransactionType(), "Transaction type can't be null");
 
         validateRecipient(translationItems);
+        LOGGER.info("Preparing EDIFACT interchange from sender {} for recipient {}", translationItems.getSender(), translationItems.getRecipient());
         generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
         generateSequenceNumbers(translationItems);
         setOperationId(translationItems);
         recordOutboundState(translationItems);
+        LOGGER.info("Recorded outbound state for transaction with OperationId: {}", translationItems.getOperationId());
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
     }
@@ -83,6 +88,8 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             sequenceService.generateMessageSequence(translationItems.getSender(), translationItems.getRecipient()));
         translationItems.setTransactionNumber(
             sequenceService.generateTransactionNumber(translationItems.getSender()));
+        LOGGER.info("Generated sequence numbers SIS={} SMS={} TN={}", translationItems.getSendInterchangeSequence(),
+            translationItems.getSendMessageSequence(), translationItems.getTransactionNumber());
     }
 
     protected void setOperationId(T translationItems) {
@@ -94,14 +101,13 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setRecipient(translationItems.getRecipient())
             .setSender(translationItems.getSender())
-
             .setInterchangeSequence(translationItems.getSendInterchangeSequence())
             .setMessageSequence(translationItems.getSendMessageSequence())
             .setTransactionNumber(translationItems.getTransactionNumber())
-
-                .setTransactionType(translationItems.getTransactionType())
-                .setTranslationTimestamp(translationItems.getTranslationTimestamp())
-                .setOperationId(translationItems.getOperationId());
+            .setTransactionType(translationItems.getTransactionType())
+            .setTranslationTimestamp(translationItems.getTranslationTimestamp())
+            .setOperationId(translationItems.getOperationId())
+            .setCorrelationId(MDC.get(CorrelationIdFilter.KEY));
         outboundStateRepository.save(outboundState);
     }
 

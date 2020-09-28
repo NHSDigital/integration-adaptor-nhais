@@ -230,6 +230,26 @@ These collections should be monitored to identify any transactions that may be m
 
 See [REPORTING.md](./REPORTING.md) for details about how to run these reports.
 
+# Logging and Tracing
+
+The adaptor follows usual conventions for containerised solutions and logs to the console. The chosen container 
+orchestration solution must be configured to store and aggregate the adaptor's logs.
+
+## Correlation Id
+
+The adaptor uses a correlation id to make tracing individual requests easier. All log lines will contain the text 
+`CorrelationId=<Correlation Id>`. For outbound requests the value of `<Correlation Id>` is either declared in the 
+request headers or randomly generated. The [OpenAPI Specification](./specification/nhais-adaptor.yaml) describes the 
+CorrelationId header.
+
+**TODO**: inbound transactions
+
+Some log lines are uncorrelated to a specific transaction. These logs have an empty `<Correlation Id>` value.
+
+Documents in the `outboundState` (**TODO**: inboundState) collection also contain the correlation id.
+
+Messages published to the adaptor's three (**TODO**: inbound queues) AMQP message queues include a CorrelationId header.
+
 # Linking a GP Practice to an NHAIS system
 
 The NHAIS Adaptor and NHAIS system communications synchronise through a sequence number mechanism. Linking a GP 

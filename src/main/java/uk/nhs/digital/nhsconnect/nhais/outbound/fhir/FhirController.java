@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.fhir;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class FhirController {
 
     private final OutboundQueueService outboundQueueService;
@@ -34,10 +36,13 @@ public class FhirController {
     @PostMapping(path = "/fhir/Patient/{transactionTypeParam}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> fromFhirToEdifact(@PathVariable String transactionTypeParam, @RequestBody String body) throws FhirValidationException {
+        LOGGER.info("Handling a request for Patient operation {}", transactionTypeParam);
         Parameters parameters = fhirParser.parseParameters(body);
         ReferenceTransactionType.Outbound transactionType = new TransactionTypeMapper().mapTransactionType(transactionTypeParam);
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, transactionType);
+        LOGGER.info("Successfully translated transaction. OperationId={}", meshMessage.getOperationId());
         outboundQueueService.publish(meshMessage);
+        LOGGER.info("Published transaction to queue for asynchronous sending to MESH. OperationId={}", meshMessage.getOperationId());
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, List.of(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);

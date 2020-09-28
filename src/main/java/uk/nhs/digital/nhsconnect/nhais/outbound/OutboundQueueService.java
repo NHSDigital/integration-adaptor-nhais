@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
@@ -11,6 +12,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -32,9 +34,15 @@ public class OutboundQueueService {
     private String meshOutboundQueueName;
 
     @SneakyThrows
-    public void publish(OutboundMeshMessage message) {
-        message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
-        jmsTemplate.send(meshOutboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
+    public void publish(OutboundMeshMessage messageContent) {
+        LOGGER.info("Publishing message to outbound mesh queue for recipient {} using workflow {}", messageContent.getHaTradingPartnerCode(), messageContent.getWorkflowId());
+        LOGGER.debug("Publishing message to outbound mesh queue: {}", messageContent);
+        messageContent.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
+        jmsTemplate.send(meshOutboundQueueName, session -> {
+            var message = session.createTextMessage(serializeMeshMessage(messageContent));
+            message.setStringProperty(JmsHeaders.CORRELATION_ID, MDC.get(CorrelationIdFilter.KEY));
+            return message;
+        });
     }
 
     @SneakyThrows
