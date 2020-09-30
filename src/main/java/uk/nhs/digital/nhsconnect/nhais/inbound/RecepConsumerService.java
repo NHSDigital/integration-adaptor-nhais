@@ -5,16 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateFactory;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepositoryExtensions;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +29,12 @@ public class RecepConsumerService {
     private final EdifactParser edifactParser;
     private final OutboundStateRepository outboundStateRepository;
     private final InboundStateRepository inboundStateRepository;
+    private final InboundStateFactory inboundStateFactory;
+    private final TimestampService timestampService;
 
     public void handleRecep(InboundMeshMessage meshMessage) {
-        LOGGER.info("Received RECEP message: {}", meshMessage);
+        LOGGER.info("Processing inbound RECEP interchange");
+        LOGGER.debug("Received RECEP message: {}", meshMessage);
         var recep = edifactParser.parse(meshMessage.getContent());
         LOGGER.debug("Parsed RECEP message into: {}", recep);
 
@@ -43,23 +48,24 @@ public class RecepConsumerService {
     }
 
     private void insertInboundState(List<InboundState> inboundStateInserts) {
+        LOGGER.info("Inserting {} InboundState records for the RECEP interchange", inboundStateInserts.size());
         LOGGER.debug("Inserting InboundState records {}", inboundStateInserts);
         inboundStateInserts.forEach(inboundStateRepository::save);
     }
 
     private void updateOutboundStateWithRecepDetails(List<OutboundStateRepositoryExtensions.UpdateRecepParams> updateRecepParams) {
-        LOGGER.debug("Updating OutboundState with recep details {}", updateRecepParams);
+        LOGGER.info("Updating {} OutboundState records with RECEP details", updateRecepParams.size());
         updateRecepParams.forEach(updateRecepParam -> {
             outboundStateRepository.updateRecepDetails(updateRecepParam).ifPresentOrElse(
-                outboundState -> LOGGER.debug("Updated outbound state recep details using {}", updateRecepParams),
-                () -> LOGGER.warn("No outbound state row was updated with recep details using {}", updateRecepParams)
+                outboundState -> LOGGER.debug("Updated outbound state RECEP details using {}", updateRecepParam),
+                () -> LOGGER.warn("No outbound state document was updated with RECEP details using {}", updateRecepParam)
             );
         });
     }
 
     private List<InboundState> prepareInboundStateInserts(List<Message> recepMessages) {
         return recepMessages.stream()
-            .map(InboundState::fromRecep)
+            .map(inboundStateFactory::fromRecep)
             .collect(Collectors.toList());
     }
 
@@ -71,25 +77,28 @@ public class RecepConsumerService {
     }
 
     private List<OutboundStateRepositoryExtensions.UpdateRecepParams> prepareOutboundStateUpdateParams(Message message) {
-        //sender is swapped with recipient as communication is done the opposite way
-        var outbound_sender = message.getInterchange().getInterchangeHeader().getRecipient();
-        var outbound_recipient = message.getInterchange().getInterchangeHeader().getSender();
-        var dateTimePeriod = message.getRecepTranslationDateTime().getTimestamp();
-        var interchangeSequence = message.getReferenceInterchangeRecep().getInterchangeSequenceNumber();
-
         return message.getReferenceMessageReceps().stream()
-            .map(referenceMessageRecep -> prepareOutboundStateUpdateParams(outbound_sender, outbound_recipient, dateTimePeriod, interchangeSequence, referenceMessageRecep))
+            .map(referenceMessageRecep -> prepareOutboundStateUpdateParams(message, referenceMessageRecep))
             .collect(Collectors.toList());
     }
 
-    private OutboundStateRepositoryExtensions.UpdateRecepParams prepareOutboundStateUpdateParams(
-        String outbound_sender, String outbound_recipient, Instant dateTimePeriod, Long interchangeSequence, ReferenceMessageRecep referenceMessageRecep) {
+    private OutboundStateRepositoryExtensions.UpdateRecepParams prepareOutboundStateUpdateParams(Message message, ReferenceMessageRecep referenceMessageRecep) {
+        //sender is swapped with recipient as communication is done the opposite way
+        var outboundSender = message.getInterchange().getInterchangeHeader().getRecipient();
+        var outboundRecipient = message.getInterchange().getInterchangeHeader().getSender();
 
-        var messageSequence = referenceMessageRecep.getMessageSequenceNumber();
-        var recepCode = referenceMessageRecep.getRecepCode();
-
+        // sequence number of the interchange in which the RECEP was transmitted
+        var recepInterchangeSequence = message.getInterchange().getInterchangeHeader().getSequenceNumber();
+        var recepTranslationTimestamp = message.getInterchange().getInterchangeHeader().getTranslationTime();
+        var referencedInterchangeSequence = message.getReferenceInterchangeRecep().getInterchangeSequenceNumber();
+        var referencedMessageSequence = referenceMessageRecep.getMessageSequenceNumber();
+        var recepDocument = new OutboundState.Recep()
+            .setCode(referenceMessageRecep.getRecepCode())
+            .setTranslationTimestamp(recepTranslationTimestamp)
+            .setInterchangeSequence(recepInterchangeSequence)
+            .setProcessedTimestamp(timestampService.getCurrentTimestamp());
         return new OutboundStateRepositoryExtensions.UpdateRecepParams(
-            outbound_sender, outbound_recipient, interchangeSequence, messageSequence, recepCode, dateTimePeriod);
+            outboundSender, outboundRecipient, referencedInterchangeSequence, referencedMessageSequence, recepDocument);
     }
 
     private List<Message> filterOutDuplicates(Interchange interchange) {

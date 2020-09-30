@@ -42,13 +42,12 @@ public class OutboundState implements TimeToLive {
     private String sender;
     @Field(name = "recip")
     private String recipient;
-    private ReferenceMessageRecep.RecepCode recepCode;
-    private Instant recepDateTime;
+    private Recep recep;
 
     public static OutboundState fromRecep(Message message) {
         var interchangeHeader = message.getInterchange().getInterchangeHeader();
         var messageHeader = message.getMessageHeader();
-        var dateTimePeriod = message.getRecepTranslationDateTime();
+        var translationTimestamp = interchangeHeader.getTranslationTime();
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
@@ -56,6 +55,15 @@ public class OutboundState implements TimeToLive {
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
-            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
+            .setTranslationTimestamp(translationTimestamp);
+    }
+
+    @Data
+    @Document
+    public static class Recep {
+        private ReferenceMessageRecep.RecepCode code;
+        private Instant translationTimestamp;
+        private Instant processedTimestamp;
+        private Long interchangeSequence;
     }
 }

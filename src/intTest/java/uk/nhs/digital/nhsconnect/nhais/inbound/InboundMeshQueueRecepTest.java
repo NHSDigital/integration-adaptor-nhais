@@ -2,14 +2,17 @@ package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import com.google.common.collect.Lists;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
+import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -17,9 +20,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
+import static org.mockito.Mockito.when;
+
+/**
+ * Tests the processing of a RECEP interchange by publishing it onto the inbound MESH message queue. This bypasses the
+ * MESH polling loop / MESH Client / MESH API.
+ */
 @DirtiesContext
-public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
+public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
 
     private static final long INTERCHANGE_SEQUENCE = 64;
     private static final long MESSAGE_SEQUENCE = 28;
@@ -29,11 +39,23 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
     private static final String SENDER = "FHS1";
     private static final String RECIPIENT = "GP05";
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(1993, 5, 19, 6, 0, 0, 0, TimestampService.UKZone)
+        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UKZone)
         .toInstant();
+    // Mongo only supports millis precision
+    private static final Instant PROCESSED_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
+
+    @MockBean
+    private TimestampService timestampService;
+
+    @BeforeEach
+    void setUp() {
+        when(timestampService.getCurrentTimestamp()).thenReturn(PROCESSED_TIMESTAMP);
+        clearGpSystemInboundQueue();
+        clearMeshMailboxes();
+    }
 
     @Test
     void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
@@ -44,13 +66,7 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
             .setContent(new String(Files.readAllBytes(recep.getFile().toPath())))
             .setMeshMessageId("12345"));
 
-        var inboundState = waitFor(
-            () -> inboundStateRepository
-                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, null)
-                .orElse(null));
-
-        assertInboundState(softly, inboundState);
-
+        assertInboundState(softly);
         assertOutboundStateRecepUpdates(softly);
     }
 
@@ -60,7 +76,7 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
 
         var outboundStates = waitFor(() -> {
             var all = Lists.newArrayList(outboundStateRepository.findAll());
-            if (all.stream().allMatch(outboundState -> outboundState.getRecepCode() != null && outboundState.getRecepDateTime() != null)) {
+            if (all.stream().allMatch(outboundState -> outboundState.getRecep() != null)) {
                 return all;
             }
             return null;
@@ -74,18 +90,27 @@ public class InboundQueueServiceRecepTest extends MeshServiceBaseTest {
 
     private OutboundState buildExpectedOutboundState(long refMessageSequence1, ReferenceMessageRecep.RecepCode success) {
         return buildOutboundState(refMessageSequence1)
-            .setRecepCode(success)
-            .setRecepDateTime(TRANSLATION_TIMESTAMP);
+            .setRecep(new OutboundState.Recep()
+                .setCode(success)
+                .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
+                .setProcessedTimestamp(PROCESSED_TIMESTAMP)
+                .setInterchangeSequence(INTERCHANGE_SEQUENCE));
     }
 
-    private void assertInboundState(SoftAssertions softly, InboundState inboundState) {
+    private void assertInboundState(SoftAssertions softly) {
+        var inboundState = waitFor(
+            () -> inboundStateRepository
+                .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, null)
+                .orElse(null));
+
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setInterchangeSequence(INTERCHANGE_SEQUENCE)
             .setMessageSequence(MESSAGE_SEQUENCE)
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
-            .setTranslationTimestamp(TRANSLATION_TIMESTAMP);
+            .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
+            .setProcessedTimestamp(PROCESSED_TIMESTAMP);
 
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

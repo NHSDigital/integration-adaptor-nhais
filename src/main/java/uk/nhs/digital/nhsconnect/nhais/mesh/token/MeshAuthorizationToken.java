@@ -24,7 +24,7 @@ public class MeshAuthorizationToken {
     }
 
     public MeshAuthorizationToken(MeshConfig meshConfig) {
-        this(meshConfig, new TimestampService().getCurrentTimestamp(), new Nonce(), new AuthorizationHashGenerator());
+        this(meshConfig, Instant.now(), new Nonce(), new AuthorizationHashGenerator());
     }
 
     public String getValue(){

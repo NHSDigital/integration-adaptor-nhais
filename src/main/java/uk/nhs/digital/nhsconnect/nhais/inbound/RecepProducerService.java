@@ -10,9 +10,9 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNationalHealthBody;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepTimestamp;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -78,7 +78,7 @@ public class RecepProducerService {
             .collect(Collectors.toList());
     }
 
-    private void setTimestamps(RecepHeader recepInterchangeHeader, RecepBeginningOfMessage recepBeginningOfMessage, RecepTimestamp recepTranslationDateTime) {
+    private void setTimestamps(RecepHeader recepInterchangeHeader, RecepBeginningOfMessage recepBeginningOfMessage, RecepMessageDateTime recepTranslationDateTime) {
         var currentTimestamp = timestampService.getCurrentTimestamp();
         recepInterchangeHeader.setTranslationTime(currentTimestamp);
         recepBeginningOfMessage.setTimestamp(currentTimestamp);
@@ -108,8 +108,8 @@ public class RecepProducerService {
         return new InterchangeTrailer(receivedInterchangeFromHa.getInterchangeTrailer().getNumberOfMessages());
     }
 
-    private RecepTimestamp emptyRecepTimestamp() {
-        return new RecepTimestamp();
+    private RecepMessageDateTime emptyRecepTimestamp() {
+        return new RecepMessageDateTime();
     }
 
     private RecepHeader mapToInterchangeHeader(Interchange interchange) {

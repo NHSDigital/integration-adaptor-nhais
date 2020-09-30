@@ -2,13 +2,10 @@ package uk.nhs.digital.nhsconnect.nhais.model.edifact;
 
 import lombok.Getter;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.MissingSegmentException;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.ToEdifactParsingException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class Section {
     @Getter
@@ -35,21 +32,4 @@ public abstract class Section {
             .orElseThrow(() -> new MissingSegmentException("EDIFACT section is missing segment " + key));
     }
 
-    public List<ToEdifactParsingException> validate() {
-        return getSegmentsToValidate()
-            .map(this::checkData)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toList());
-    }
-
-    protected abstract Stream<Supplier<? extends Segment>> getSegmentsToValidate();
-
-    protected Optional<ToEdifactParsingException> checkData(Supplier<? extends Segment> segment) {
-        try {
-            segment.get().validate();
-        } catch (ToEdifactParsingException ex) {
-            return Optional.of(ex);
-        }
-        return Optional.empty();
-    }
 }

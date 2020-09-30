@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class Interchange extends Section {
     @Getter(lazy = true)
@@ -19,13 +17,6 @@ public class Interchange extends Section {
 
     public Interchange(List<String> edifactSegments) {
         super(edifactSegments);
-    }
-
-    @Override
-    protected Stream<Supplier<? extends Segment>> getSegmentsToValidate() {
-        return Stream.of(
-            (Supplier<? extends Segment>) this::getInterchangeHeader,
-            (Supplier<? extends Segment>) this::getInterchangeTrailer);
     }
 
     @Override

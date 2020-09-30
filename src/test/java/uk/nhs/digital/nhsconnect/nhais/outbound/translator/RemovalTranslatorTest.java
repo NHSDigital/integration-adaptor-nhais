@@ -15,7 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.PartyQualifier;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
@@ -91,7 +91,7 @@ public class RemovalTranslatorTest {
 
         softly.assertThat(segments.get(0)).isExactlyInstanceOf(BeginningOfMessage.class);
         softly.assertThat(segments.get(1)).isEqualTo(partyQualifier);
-        softly.assertThat(segments.get(2)).isExactlyInstanceOf(RegistrationTimestamp.class);
+        softly.assertThat(segments.get(2)).isExactlyInstanceOf(RegistrationMessageDateTime.class);
         softly.assertThat(segments.get(3)).isExactlyInstanceOf(ReferenceTransactionType.class);
         softly.assertThat(segments.get(4)).isExactlyInstanceOf(SegmentGroup.class);
         softly.assertThat(segments.get(5)).isExactlyInstanceOf(ReferenceTransactionNumber.class);

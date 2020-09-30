@@ -10,7 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationTimestamp;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
@@ -122,9 +122,9 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             } else if (segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.getTransactionNumber());
-            } else if (segment instanceof RegistrationTimestamp) {
-                RegistrationTimestamp registrationTimestamp = (RegistrationTimestamp) segment;
-                registrationTimestamp.setTimestamp(translationItems.getTranslationTimestamp());
+            } else if (segment instanceof RegistrationMessageDateTime) {
+                RegistrationMessageDateTime registrationMessageDateTime = (RegistrationMessageDateTime) segment;
+                registrationMessageDateTime.setTimestamp(translationItems.getTranslationTimestamp());
             }
         }
     }

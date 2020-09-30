@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -26,13 +24,10 @@ public interface OutboundStateRepositoryExtensions {
         private final String recipient;
         private final Long interchangeSequence;
         private final Long messageSequence;
-        private final ReferenceMessageRecep.RecepCode recepCode;
-        private final Instant recepDateTime;
+        private final OutboundState.Recep recep;
 
         public Update buildUpdate() {
-            return new Update()
-                .set("recepCode", recepCode)
-                .set("recepDateTime", recepDateTime);
+            return new Update().set("recep", recep);
         }
 
         public Query buildQuery() {
@@ -40,8 +35,7 @@ public interface OutboundStateRepositoryExtensions {
                 .and("recip").is(recipient)
                 .and("intSeq").is(interchangeSequence)
                 .and("msgSeq").is(messageSequence)
-                .and("recepCode").exists(false)
-                .and("recepDateTime").exists(false));
+                .and("recep").exists(false));
         }
     }
 

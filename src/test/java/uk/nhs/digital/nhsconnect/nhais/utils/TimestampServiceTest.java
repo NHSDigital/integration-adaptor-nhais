@@ -8,10 +8,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TimestampServiceTest {
     @Test
-    public void whenGettingTimestamp_thenNanosAreZeroed() {
+    public void whenGettingTimestamp_thenPrecisionIsMilliseconds() {
         var instant = new TimestampService().getCurrentTimestamp();
+        long remainder = instant.getNano() % 1000000; // nanoseconds per millisecond
 
-        assertThat(instant.getNano()).isEqualTo(0);
+        assertThat(remainder).isEqualTo(0);
     }
 
     @Test

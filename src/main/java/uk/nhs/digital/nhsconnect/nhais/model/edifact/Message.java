@@ -5,9 +5,7 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Message extends Section {
 
@@ -19,12 +17,6 @@ public class Message extends Section {
     @Getter(lazy = true)
     private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress =
         HealthAuthorityNameAndAddress.fromString(extractSegment(HealthAuthorityNameAndAddress.KEY_QUALIFIER));
-    @Getter(lazy = true)
-    private final RegistrationTimestamp translationDateTime =
-        RegistrationTimestamp.fromString(extractSegment(RegistrationTimestamp.KEY_QUALIFIER));
-    @Getter(lazy = true)
-    private final RecepTimestamp recepTranslationDateTime =
-        RecepTimestamp.fromString(extractSegment(RecepTimestamp.KEY_QUALIFIER));
     @Getter(lazy = true)
     private final ReferenceTransactionType referenceTransactionType =
         ReferenceTransactionType.fromString(extractSegment(ReferenceTransactionType.KEY_QUALIFIER));
@@ -46,13 +38,6 @@ public class Message extends Section {
 
     public Message(List<String> edifactSegments) {
         super(edifactSegments);
-    }
-
-    @Override
-    protected Stream<Supplier<? extends Segment>> getSegmentsToValidate() {
-        return Stream.of(
-            (Supplier<? extends Segment>) this::getMessageHeader,
-            (Supplier<? extends Segment>) this::getTranslationDateTime);
     }
 
     @Override

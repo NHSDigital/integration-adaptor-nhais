@@ -28,7 +28,9 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private static final Long INTERCHANGE_SEQUENCE = 123L;
     private static final Long MESSAGE_SEQUENCE = 234L;
     private static final ReferenceMessageRecep.RecepCode RECEP_CODE = ReferenceMessageRecep.RecepCode.ERROR;
-    private static final Instant RECEP_DATE_TIME = Instant.ofEpochMilli(123123);
+    private static final Instant RECEP_TRANSLATION_TIMESTAMP = Instant.ofEpochSecond(1601293246L);
+    private static final Instant RECEP_PROCESSED_TIMESTAMP = Instant.ofEpochSecond(1601292246L);
+    private static final Long RECEP_INTERCHANGE_SEQUENCE = 9999L;
 
     @Autowired
     private OutboundStateRepository outboundStateRepository;
@@ -51,30 +53,34 @@ public class OutboundStateRepositoryExtensionsImplTest {
         outboundState = outboundStateRepository.save(outboundState);
         otherOutboundState = outboundStateRepository.save(otherOutboundState);
 
-        assertThat(outboundState.getRecepCode()).isNull();
-        assertThat(outboundState.getRecepDateTime()).isNull();
+        assertThat(outboundState.getRecep()).isNull();
 
-        assertThat(otherOutboundState.getRecepCode()).isNull();
-        assertThat(otherOutboundState.getRecepDateTime()).isNull();
-
+        var recep = new OutboundState.Recep()
+            .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
+            .setProcessedTimestamp(RECEP_PROCESSED_TIMESTAMP)
+            .setTranslationTimestamp(RECEP_TRANSLATION_TIMESTAMP)
+            .setCode(RECEP_CODE);
         outboundStateRepository.updateRecepDetails(
             new OutboundStateRepositoryExtensions.UpdateRecepParams(
-                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME));
+                SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, recep));
 
         outboundState = outboundStateRepository.findById(outboundState.getId()).orElseThrow();
         otherOutboundState = outboundStateRepository.findById(otherOutboundState.getId()).orElseThrow();
 
-        assertThat(outboundState.getRecepCode()).isEqualTo(RECEP_CODE);
-        assertThat(outboundState.getRecepDateTime()).isEqualTo(RECEP_DATE_TIME);
+        assertThat(outboundState.getRecep()).isEqualTo(recep);
 
-        assertThat(otherOutboundState.getRecepCode()).isNull();
-        assertThat(otherOutboundState.getRecepDateTime()).isNull();
+        assertThat(otherOutboundState.getRecep()).isNull();
     }
 
     @Test
-    void whenUpdatingNonExistingEntity_thenThrowsException() {
+    void whenUpdatingNonExistingEntity_thenReturnsEmpty() {
+        var recep = new OutboundState.Recep()
+            .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
+            .setProcessedTimestamp(RECEP_PROCESSED_TIMESTAMP)
+            .setTranslationTimestamp(RECEP_TRANSLATION_TIMESTAMP)
+            .setCode(RECEP_CODE);
         var updateRecepParams = new OutboundStateRepositoryExtensions.UpdateRecepParams(
-            NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, RECEP_CODE, RECEP_DATE_TIME);
+            NON_EXISTING_SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, recep);
 
         assertThat(outboundStateRepository.updateRecepDetails(updateRecepParams)).isEmpty();
     }
