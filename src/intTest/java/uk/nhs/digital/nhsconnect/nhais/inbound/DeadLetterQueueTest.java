@@ -12,6 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.outbound.CorrelationIdFilter;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
+import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 import javax.jms.JMSException;
 
@@ -55,7 +56,7 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
 
         var message = getDeadLetterMeshInboundQueueMessage(meshOutboundQueueName);
 
-        assertThat(message.getStringProperty(CorrelationIdFilter.KEY)).isEqualTo(correlationId);
+        assertThat(message.getStringProperty(JmsHeaders.CORRELATION_ID)).isEqualTo(correlationId);
         assertThat(parseTextMessage(message)).isEqualTo(objectMapper.writeValueAsString(meshMessage));
     }
 

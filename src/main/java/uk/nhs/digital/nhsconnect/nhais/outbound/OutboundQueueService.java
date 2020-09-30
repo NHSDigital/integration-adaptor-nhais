@@ -35,7 +35,8 @@ public class OutboundQueueService {
 
     @SneakyThrows
     public void publish(OutboundMeshMessage messageContent) {
-        LOGGER.info("Publishing message to outbound mesh queue for recipient {} using workflow {}", messageContent.getHaTradingPartnerCode(), messageContent.getWorkflowId());
+        LOGGER.info("Publishing message with OperationId={} to outbound mesh queue for recipient={} using workflow={}",
+            messageContent.getOperationId(), messageContent.getHaTradingPartnerCode(), messageContent.getWorkflowId());
         LOGGER.debug("Publishing message to outbound mesh queue: {}", messageContent);
         messageContent.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> {
@@ -52,17 +53,35 @@ public class OutboundQueueService {
 
     @JmsListener(destination = "${nhais.amqp.meshOutboundQueueName}")
     public void receive(Message message) throws IOException, JMSException {
-        LOGGER.debug("Received message: {}", message);
         try {
+            setLoggingCorrelationId(message);
+            LOGGER.info("Consuming message from outbound MESH message queue");
             String body = JmsReader.readMessage(message);
-            LOGGER.debug("Received message body: {}", body);
             OutboundMeshMessage outboundMeshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
             LOGGER.debug("Parsed message into object: {}", outboundMeshMessage);
             meshClient.authenticate();
             meshClient.sendEdifactMessage(outboundMeshMessage);
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);
-            throw e; //message will be sent to DLQ after few unsuccessful redeliveries
+            throw e; // rethrow so message will be sent to DLQ after a few unsuccessful deliveries
+        } finally {
+            clearLoggingCorrelationId();
         }
+    }
+
+    private void setLoggingCorrelationId(Message message) {
+        try {
+            MDC.put(CorrelationIdFilter.KEY, message.getStringProperty(JmsHeaders.CORRELATION_ID));
+        } catch (JMSException e) {
+            LOGGER.error("Unable to read header " + JmsHeaders.CORRELATION_ID + " from message", e);
+        }
+    }
+
+    /**
+     * Must be called from a finally for the try in which setLoggingCorrelationId is called to ensure the value is
+     * always cleared after processing the message
+     */
+    private void clearLoggingCorrelationId() {
+        MDC.remove(CorrelationIdFilter.KEY);
     }
 }

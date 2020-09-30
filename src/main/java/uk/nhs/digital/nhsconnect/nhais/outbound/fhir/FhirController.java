@@ -40,9 +40,7 @@ public class FhirController {
         Parameters parameters = fhirParser.parseParameters(body);
         ReferenceTransactionType.Outbound transactionType = new TransactionTypeMapper().mapTransactionType(transactionTypeParam);
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(parameters, transactionType);
-        LOGGER.info("Successfully translated transaction. OperationId={}", meshMessage.getOperationId());
         outboundQueueService.publish(meshMessage);
-        LOGGER.info("Published transaction to queue for asynchronous sending to MESH. OperationId={}", meshMessage.getOperationId());
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, List.of(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);

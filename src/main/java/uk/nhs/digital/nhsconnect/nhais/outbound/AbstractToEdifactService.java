@@ -42,7 +42,6 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
         Objects.requireNonNull(translationItems.getTransactionType(), "Transaction type can't be null");
 
         validateRecipient(translationItems);
-        LOGGER.info("Preparing EDIFACT interchange from sender {} for recipient {}", translationItems.getSender(), translationItems.getRecipient());
         generateTimestamp(translationItems);
         createSegments(translationItems);
         prevalidateSegments(translationItems);
@@ -88,8 +87,8 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             sequenceService.generateMessageSequence(translationItems.getSender(), translationItems.getRecipient()));
         translationItems.setTransactionNumber(
             sequenceService.generateTransactionNumber(translationItems.getSender()));
-        LOGGER.info("Generated sequence numbers SIS={} SMS={} TN={}", translationItems.getSendInterchangeSequence(),
-            translationItems.getSendMessageSequence(), translationItems.getTransactionNumber());
+        LOGGER.info("Generated sequence numbers SIS={} SMS={} TN={} for sender={} and recipient={}", translationItems.getSendInterchangeSequence(),
+            translationItems.getSendMessageSequence(), translationItems.getTransactionNumber(), translationItems.getSender(), translationItems.getRecipient());
     }
 
     protected void setOperationId(T translationItems) {
