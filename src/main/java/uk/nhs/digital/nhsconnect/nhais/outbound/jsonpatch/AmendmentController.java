@@ -44,13 +44,11 @@ public class AmendmentController {
     @PatchMapping(path = "/fhir/Patient/{nhsNumber}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> amendment(@PathVariable(name = "nhsNumber") String nhsNumber, @RequestBody String body) {
-        LOGGER.info("Handling an Patient amendment transaction request");
+        LOGGER.info("Handling a Patient amendment transaction request");
         AmendmentBody amendmentBody = parseRequest(body);
         validateRequest(nhsNumber, amendmentBody);
         OutboundMeshMessage meshMessage = jsonPatchToEdifactService.convertToEdifact(amendmentBody);
-        LOGGER.info("Successfully translated transaction. OperationId={}", meshMessage.getOperationId());
         outboundQueueService.publish(meshMessage);
-        LOGGER.info("Published transaction to queue for asynchronous sending to MESH. OperationId={}", meshMessage.getOperationId());
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.OPERATION_ID, List.of(meshMessage.getOperationId()));
         return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
