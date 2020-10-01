@@ -44,8 +44,8 @@ public class AmendmentController {
     @PatchMapping(path = "/fhir/Patient/{nhsNumber}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> amendment(@PathVariable(name = "nhsNumber") String nhsNumber, @RequestBody String body) {
+        LOGGER.info("Handling a Patient amendment transaction request");
         AmendmentBody amendmentBody = parseRequest(body);
-        LOGGER.debug("Amendment request: {}", amendmentBody);
         validateRequest(nhsNumber, amendmentBody);
         OutboundMeshMessage meshMessage = jsonPatchToEdifactService.convertToEdifact(amendmentBody);
         outboundQueueService.publish(meshMessage);

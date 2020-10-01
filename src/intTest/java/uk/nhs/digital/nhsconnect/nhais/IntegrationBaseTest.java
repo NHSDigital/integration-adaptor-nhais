@@ -32,6 +32,8 @@ import javax.annotation.PreDestroy;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -109,8 +111,13 @@ public abstract class IntegrationBaseTest {
     }
 
     @SneakyThrows
-    protected Message getDeadLetterMeshInboundQueueMessage() {
-        return waitFor(() -> jmsTemplate.receive(DLQ_PREFIX + meshInboundQueueName));
+    protected Message getDeadLetterMeshInboundQueueMessage(String queueName) {
+        return waitFor(() -> jmsTemplate.receive(DLQ_PREFIX + queueName));
+    }
+
+    @SneakyThrows
+    protected void clearDeadLetterQueue(String queueName) {
+        waitForCondition(() -> jmsTemplate.receive(DLQ_PREFIX + queueName) == null);
     }
 
     protected String parseTextMessage(Message message) throws JMSException {
