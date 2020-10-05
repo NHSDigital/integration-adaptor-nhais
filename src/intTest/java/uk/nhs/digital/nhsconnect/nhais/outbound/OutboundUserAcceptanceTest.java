@@ -49,7 +49,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
     @SpyBean
     private TimestampService timestampService;
 
-    private String correlationId;
+    private String conversationId;
     private String operationId;
 
     @BeforeEach
@@ -91,7 +91,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
                 .andReturn();
         }
         this.operationId = result.getResponse().getHeader("OperationId");
-        this.correlationId = result.getResponse().getHeader(CorrelationIdFilter.KEY);
+        this.conversationId = result.getResponse().getHeader(ConversationIdFilter.HEADER_NAME);
     }
 
     private void assertMessageBody(InboundMeshMessage meshMessage, String expectedEdifact) {
@@ -113,7 +113,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
             .setSender(SENDER)
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setTranslationTimestamp(GENERATED_TIMESTAMP)
-            .setCorrelationId(correlationId)
+            .setConversationId(conversationId)
             .setOperationId(operationId)
             .setTransactionNumber(1L)
             .setTransactionType(ReferenceTransactionType.Outbound.valueOf(transactionTypeString.toUpperCase()));

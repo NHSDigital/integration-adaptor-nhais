@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumer;
 import uk.nhs.digital.nhsconnect.nhais.inbound.RecepConsumerService;
+import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumer;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
@@ -46,7 +46,7 @@ public class InboundQueueService {
             LOGGER.debug("Received message body: {}", body);
             InboundMeshMessage meshMessage = objectMapper.readValue(body, InboundMeshMessage.class);
             LOGGER.debug("Decoded message: {}", meshMessage);
-            // TODO: get the correlation id and attach to logger?
+            // TODO: get the conversation id and attach to logger?
 
             if (WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
                 registrationConsumerService.handleRegistration(meshMessage);

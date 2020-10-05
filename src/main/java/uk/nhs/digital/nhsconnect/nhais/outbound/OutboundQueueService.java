@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
@@ -12,6 +11,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
@@ -29,6 +29,7 @@ public class OutboundQueueService {
     private final ObjectMapper objectMapper;
     private final TimestampService timestampService;
     private final MeshClient meshClient;
+    private final ConversationIdService conversationIdService;
 
     @Value("${nhais.amqp.meshOutboundQueueName}")
     private String meshOutboundQueueName;
@@ -41,7 +42,7 @@ public class OutboundQueueService {
         messageContent.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> {
             var message = session.createTextMessage(serializeMeshMessage(messageContent));
-            message.setStringProperty(JmsHeaders.CORRELATION_ID, MDC.get(CorrelationIdFilter.KEY));
+            message.setStringProperty(JmsHeaders.CONVERSATION_ID, conversationIdService.getCurrentConversationId());
             return message;
         });
     }
@@ -54,7 +55,7 @@ public class OutboundQueueService {
     @JmsListener(destination = "${nhais.amqp.meshOutboundQueueName}")
     public void receive(Message message) throws IOException, JMSException {
         try {
-            setLoggingCorrelationId(message);
+            setLoggingConversationId(message);
             LOGGER.info("Consuming message from outbound MESH message queue");
             String body = JmsReader.readMessage(message);
             OutboundMeshMessage outboundMeshMessage = objectMapper.readValue(body, OutboundMeshMessage.class);
@@ -65,23 +66,15 @@ public class OutboundQueueService {
             LOGGER.error("Error while processing mesh inbound queue message", e);
             throw e; // rethrow so message will be sent to DLQ after a few unsuccessful deliveries
         } finally {
-            clearLoggingCorrelationId();
+            conversationIdService.resetConversationId();
         }
     }
 
-    private void setLoggingCorrelationId(Message message) {
+    private void setLoggingConversationId(Message message) {
         try {
-            MDC.put(CorrelationIdFilter.KEY, message.getStringProperty(JmsHeaders.CORRELATION_ID));
+            conversationIdService.applyConversationId(message.getStringProperty(JmsHeaders.CONVERSATION_ID));
         } catch (JMSException e) {
-            LOGGER.error("Unable to read header " + JmsHeaders.CORRELATION_ID + " from message", e);
+            LOGGER.error("Unable to read header " + JmsHeaders.CONVERSATION_ID + " from message", e);
         }
-    }
-
-    /**
-     * Must be called from a finally for the try in which setLoggingCorrelationId is called to ensure the value is
-     * always cleared after processing the message
-     */
-    private void clearLoggingCorrelationId() {
-        MDC.remove(CorrelationIdFilter.KEY);
     }
 }

@@ -7,12 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirController;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirToEdifactService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -21,9 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("component")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = FhirController.class)
-public class CorrelationIdControllerTest {
+public class ConversationIdHeadersTest {
 
-@Autowired
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -35,23 +37,26 @@ public class CorrelationIdControllerTest {
     @MockBean
     private FhirToEdifactService fhirToEdifactService;
 
+    @SpyBean
+    private ConversationIdService conversationIdService;
+
     @Test
-    void whenCorrelationIdInRequestHeader_thenProvidedIdIsUsed() throws Exception {
+    void whenConversationIdInRequestHeader_thenProvidedIdIsUsed() throws Exception {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
-            .header("CorrelationId", "asdf1234")
+            .header("ConversationId", "asdf1234")
             .content("qwe"))
             .andExpect(status().is(415))
-            .andExpect(header().string("CorrelationId", "asdf1234"));
+            .andExpect(header().string("ConversationId", "asdf1234"));
     }
 
     @Test
-    void whenCorrelationNotIdInRequestHeader_thenGeneratedIdIsUsed() throws Exception {
+    void whenConversationNotIdInRequestHeader_thenGeneratedIdIsUsed() throws Exception {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .content("qwe"))
             .andExpect(status().is(415))
-            .andExpect(header().string("CorrelationId", Matchers.matchesRegex("[0-9A-F]{32}")));
+            .andExpect(header().string("ConversationId", Matchers.matchesRegex("[0-9A-F]{32}")));
     }
 
 }

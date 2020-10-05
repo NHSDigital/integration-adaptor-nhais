@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,8 @@ public class MeshService {
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
 
+    private final ConversationIdService conversationIdService;
+
     private final long pollingCycleMinimumIntervalInSeconds;
 
     private final long wakeupIntervalInMilliseconds;
@@ -33,12 +36,14 @@ public class MeshService {
     public MeshService(MeshClient meshClient,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
+                       ConversationIdService conversationIdService,
                        @Value("${nhais.mesh.pollingCycleMinimumIntervalInSeconds}") long pollingCycleMinimumIntervalInSeconds,
                        @Value("${nhais.mesh.wakeupIntervalInMilliseconds}") long wakeupIntervalInMilliseconds,
                        @Value("${nhais.mesh.pollingCycleDurationInSeconds}") long pollingCycleDurationInSeconds) {
         this.meshClient = meshClient;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
+        this.conversationIdService = conversationIdService;
         this.pollingCycleMinimumIntervalInSeconds = pollingCycleMinimumIntervalInSeconds;
         this.wakeupIntervalInMilliseconds = wakeupIntervalInMilliseconds;
         this.pollingCycleDurationInSeconds = pollingCycleDurationInSeconds;
@@ -88,6 +93,7 @@ public class MeshService {
 
     private void processSingleMessage(String messageId) {
         try {
+            conversationIdService.applyConversationId(messageId);
             LOGGER.debug("Downloading message id {}", messageId);
             InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
             LOGGER.debug("Publishing content of message id {} to inbound mesh MQ", messageId);
@@ -99,6 +105,8 @@ public class MeshService {
         } catch (Exception ex) {
             LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
             // skip message with error and attempt to download the next one
+        } finally {
+            conversationIdService.resetConversationId();
         }
     }
 

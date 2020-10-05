@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +23,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirController;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirToEdifactService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import java.nio.file.Files;
 import java.util.UUID;
@@ -59,6 +61,9 @@ public class FhirControllerTest {
 
     @MockBean
     private FhirParser fhirParser;
+
+    @SpyBean
+    private ConversationIdService conversationIdService;
 
     @Test
     void whenValidAcceptanceInput_thenReturns202() throws Exception {

@@ -7,20 +7,21 @@ import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
-import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
+import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
-import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.outbound.AbstractToEdifactService;
+import uk.nhs.digital.nhsconnect.nhais.outbound.FhirElementsUtils;
+import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.TranslationItems;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.outbound.AbstractToEdifactService;
-import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
-import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.FhirToEdifactSegmentTranslator;
-import uk.nhs.digital.nhsconnect.nhais.outbound.FhirElementsUtils;
+import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
+import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.util.List;
 
@@ -33,9 +34,10 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
     public FhirToEdifactService(OutboundStateRepository outboundStateRepository,
                                 SequenceService sequenceService,
                                 TimestampService timestampService,
+                                ConversationIdService conversationIdService,
                                 FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator,
                                 MeshCypherDecoder meshCypherDecoder) {
-        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder);
+        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder, conversationIdService);
         this.fhirToEdifactSegmentTranslator = fhirToEdifactSegmentTranslator;
     }
 

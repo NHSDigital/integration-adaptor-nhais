@@ -1187,9 +1187,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.acceptance(parameters, correlationId);
+            apiInstance.acceptance(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1207,9 +1207,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.acceptance(parameters, correlationId);
+            apiInstance.acceptance(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1223,13 +1223,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-acceptance-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Accept a new patient (Acceptance transaction)
 [apiInstance acceptanceWith:parameters
-    correlationId:correlationId
+    conversationId:conversationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1244,7 +1244,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
-  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+  'conversationId': conversationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
 };
 
 var callback = function(error, data, response) {
@@ -1277,12 +1277,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
-            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
+            var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Accept a new patient (Acceptance transaction)
-                apiInstance.acceptance(parameters, correlationId);
+                apiInstance.acceptance(parameters, conversationId);
             }
             catch (Exception e)
             {
@@ -1300,10 +1300,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
-$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+$conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->acceptance($parameters, $correlationId);
+    $api_instance->acceptance($parameters, $conversationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->acceptance: ', $e->getMessage(), PHP_EOL;
 }
@@ -1317,10 +1317,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
-my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
+my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->acceptance(parameters => $parameters, correlationId => $correlationId);
+    $api_instance->acceptance(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->acceptance: $@\n";
@@ -1337,11 +1337,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
-correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Accept a new patient (Acceptance transaction)
-    api_instance.acceptance(parameters, correlationId=correlationId)
+    api_instance.acceptance(parameters, conversationId=conversationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->acceptance: %s\n" % e)</code></pre>
                             </div>
@@ -1351,10 +1351,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
-    let correlationId = correlationId_example; // String
+    let conversationId = conversationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.acceptance(parameters, correlationId, &context).wait();
+    let result = client.acceptance(parameters, conversationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1376,21 +1376,23 @@ pub fn main() {
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                  <tr><td style="width:150px;">CorrelationId</td>
-<td>
+                                <tr>
+                                    <td style="width:150px;">ConversationId</td>
+                                    <td>
 
 
-    <div id="d2e199_acceptance_correlationId">
-        <div class="json-schema-view">
-            <div class="primitive">
+                                        <div id="d2e199_acceptance_conversationId">
+                                            <div class="json-schema-view">
+                                                <div class="primitive">
                 <span class="type">
                     String
                 </span>
 
-                    <div class="inner description marked">
-(Optional) a unique identifier to trace this request in logs and databases
-                    </div>
-            </div>
+                                                    <div class="inner description marked">
+                                                        (Optional) a unique identifier to trace this request in logs and
+                                                        databases
+                                                    </div>
+                                                </div>
         </div>
     </div>
 </td>
@@ -1474,10 +1476,13 @@ $(document).ready(function() {
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -1518,8 +1523,8 @@ $(document).ready(function() {
                                         var schemaWrapper = {
   "description" : "The request could not be processed and forwarded to NHAIS",
   "headers" : {
-    "CorrelationId" : {
-      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+    "ConversationId" : {
+      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
       "style" : "simple",
       "explode" : false,
       "schema" : {
@@ -1572,10 +1577,13 @@ $(document).ready(function() {
                                               <th>Description</th>
                                           </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -1738,9 +1746,9 @@ public class PatientsApiExample {
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.amendment(nhsNumber, amendment, correlationId);
+            apiInstance.amendment(nhsNumber, amendment, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1759,9 +1767,9 @@ public class PatientsApiExample {
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.amendment(nhsNumber, amendment, correlationId);
+            apiInstance.amendment(nhsNumber, amendment, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1776,14 +1784,14 @@ public class PatientsApiExample {
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *nhsNumber = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 Amendment *amendment = ; // 
-String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
 [apiInstance amendmentWith:nhsNumber
     amendment:amendment
-    correlationId:correlationId
+    conversationId:conversationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1799,7 +1807,7 @@ var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var nhsNumber = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var amendment = ; // {Amendment} 
 var opts = {
-  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+  'conversationId': conversationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
 };
 
 var callback = function(error, data, response) {
@@ -1833,12 +1841,12 @@ namespace Example
             var apiInstance = new PatientsApi();
             var nhsNumber = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var amendment = new Amendment(); // Amendment | 
-            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
+            var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Amend patient details (Amendment transaction)
-                apiInstance.amendment(nhsNumber, amendment, correlationId);
+                apiInstance.amendment(nhsNumber, amendment, conversationId);
             }
             catch (Exception e)
             {
@@ -1857,10 +1865,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $amendment = ; // Amendment | 
-$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+$conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->amendment($nhsNumber, $amendment, $correlationId);
+    $api_instance->amendment($nhsNumber, $amendment, $conversationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->amendment: ', $e->getMessage(), PHP_EOL;
 }
@@ -1875,10 +1883,10 @@ use WWW::OPenAPIClient::PatientsApi;
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $nhsNumber = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
-my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
+my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->amendment(nhsNumber => $nhsNumber, amendment => $amendment, correlationId => $correlationId);
+    $api_instance->amendment(nhsNumber => $nhsNumber, amendment => $amendment, conversationId => $conversationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->amendment: $@\n";
@@ -1896,11 +1904,11 @@ from pprint import pprint
 api_instance = openapi_client.PatientsApi()
 nhsNumber = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 amendment =  # Amendment | 
-correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Amend patient details (Amendment transaction)
-    api_instance.amendment(nhsNumber, amendment, correlationId=correlationId)
+    api_instance.amendment(nhsNumber, amendment, conversationId=conversationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->amendment: %s\n" % e)</code></pre>
                             </div>
@@ -1911,10 +1919,10 @@ except ApiException as e:
 pub fn main() {
     let nhsNumber = 9000000009; // String
     let amendment = ; // Amendment
-    let correlationId = correlationId_example; // String
+    let conversationId = conversationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.amendment(nhsNumber, amendment, correlationId, &context).wait();
+    let result = client.amendment(nhsNumber, amendment, conversationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1966,21 +1974,23 @@ The patient&#39;s NHS Number. The primary identifier of a patient, unique within
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                  <tr><td style="width:150px;">CorrelationId</td>
-<td>
+                                <tr>
+                                    <td style="width:150px;">ConversationId</td>
+                                    <td>
 
 
-    <div id="d2e199_amendment_correlationId">
-        <div class="json-schema-view">
-            <div class="primitive">
+                                        <div id="d2e199_amendment_conversationId">
+                                            <div class="json-schema-view">
+                                                <div class="primitive">
                 <span class="type">
                     String
                 </span>
 
-                    <div class="inner description marked">
-(Optional) a unique identifier to trace this request in logs and databases
-                    </div>
-            </div>
+                                                    <div class="inner description marked">
+                                                        (Optional) a unique identifier to trace this request in logs and
+                                                        databases
+                                                    </div>
+                                                </div>
         </div>
     </div>
 </td>
@@ -2064,10 +2074,13 @@ $(document).ready(function() {
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -2108,8 +2121,8 @@ $(document).ready(function() {
                                         var schemaWrapper = {
   "description" : "The request could not be processed and forwarded to NHAIS",
   "headers" : {
-    "CorrelationId" : {
-      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+    "ConversationId" : {
+      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
       "style" : "simple",
       "explode" : false,
       "schema" : {
@@ -2162,10 +2175,13 @@ $(document).ready(function() {
                                               <th>Description</th>
                                           </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -2260,9 +2276,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.deduction(parameters, correlationId);
+            apiInstance.deduction(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2280,9 +2296,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.deduction(parameters, correlationId);
+            apiInstance.deduction(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2296,13 +2312,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-deduction-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Deduct a patient (Deduction transaction)
 [apiInstance deductionWith:parameters
-    correlationId:correlationId
+    conversationId:conversationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2317,7 +2333,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
-  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+  'conversationId': conversationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
 };
 
 var callback = function(error, data, response) {
@@ -2350,12 +2366,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
-            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
+            var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Deduct a patient (Deduction transaction)
-                apiInstance.deduction(parameters, correlationId);
+                apiInstance.deduction(parameters, conversationId);
             }
             catch (Exception e)
             {
@@ -2373,10 +2389,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
-$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+$conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->deduction($parameters, $correlationId);
+    $api_instance->deduction($parameters, $conversationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->deduction: ', $e->getMessage(), PHP_EOL;
 }
@@ -2390,10 +2406,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
-my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
+my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->deduction(parameters => $parameters, correlationId => $correlationId);
+    $api_instance->deduction(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->deduction: $@\n";
@@ -2410,11 +2426,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
-correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Deduct a patient (Deduction transaction)
-    api_instance.deduction(parameters, correlationId=correlationId)
+    api_instance.deduction(parameters, conversationId=conversationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->deduction: %s\n" % e)</code></pre>
                             </div>
@@ -2424,10 +2440,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
-    let correlationId = correlationId_example; // String
+    let conversationId = conversationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.deduction(parameters, correlationId, &context).wait();
+    let result = client.deduction(parameters, conversationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2449,21 +2465,23 @@ pub fn main() {
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                  <tr><td style="width:150px;">CorrelationId</td>
-<td>
+                                <tr>
+                                    <td style="width:150px;">ConversationId</td>
+                                    <td>
 
 
-    <div id="d2e199_deduction_correlationId">
-        <div class="json-schema-view">
-            <div class="primitive">
+                                        <div id="d2e199_deduction_conversationId">
+                                            <div class="json-schema-view">
+                                                <div class="primitive">
                 <span class="type">
                     String
                 </span>
 
-                    <div class="inner description marked">
-(Optional) a unique identifier to trace this request in logs and databases
-                    </div>
-            </div>
+                                                    <div class="inner description marked">
+                                                        (Optional) a unique identifier to trace this request in logs and
+                                                        databases
+                                                    </div>
+                                                </div>
         </div>
     </div>
 </td>
@@ -2547,10 +2565,13 @@ $(document).ready(function() {
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -2591,8 +2612,8 @@ $(document).ready(function() {
                                         var schemaWrapper = {
   "description" : "The request could not be processed and forwarded to NHAIS",
   "headers" : {
-    "CorrelationId" : {
-      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+    "ConversationId" : {
+      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
       "style" : "simple",
       "explode" : false,
       "schema" : {
@@ -2645,10 +2666,13 @@ $(document).ready(function() {
                                               <th>Description</th>
                                           </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -2743,9 +2767,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.removal(parameters, correlationId);
+            apiInstance.removal(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2763,9 +2787,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
-        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+        String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.removal(parameters, correlationId);
+            apiInstance.removal(parameters, conversationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2779,13 +2803,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-removal-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Removal (Out of Area)
 [apiInstance removalWith:parameters
-    correlationId:correlationId
+    conversationId:conversationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2800,7 +2824,7 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
-  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+  'conversationId': conversationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
 };
 
 var callback = function(error, data, response) {
@@ -2833,12 +2857,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
-            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
+            var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Removal (Out of Area)
-                apiInstance.removal(parameters, correlationId);
+                apiInstance.removal(parameters, conversationId);
             }
             catch (Exception e)
             {
@@ -2856,10 +2880,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
-$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+$conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->removal($parameters, $correlationId);
+    $api_instance->removal($parameters, $conversationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->removal: ', $e->getMessage(), PHP_EOL;
 }
@@ -2873,10 +2897,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
-my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
+my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->removal(parameters => $parameters, correlationId => $correlationId);
+    $api_instance->removal(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->removal: $@\n";
@@ -2893,11 +2917,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
-correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Removal (Out of Area)
-    api_instance.removal(parameters, correlationId=correlationId)
+    api_instance.removal(parameters, conversationId=conversationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->removal: %s\n" % e)</code></pre>
                             </div>
@@ -2907,10 +2931,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
-    let correlationId = correlationId_example; // String
+    let conversationId = conversationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.removal(parameters, correlationId, &context).wait();
+    let result = client.removal(parameters, conversationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2932,21 +2956,23 @@ pub fn main() {
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                  <tr><td style="width:150px;">CorrelationId</td>
-<td>
+                                <tr>
+                                    <td style="width:150px;">ConversationId</td>
+                                    <td>
 
 
-    <div id="d2e199_removal_correlationId">
-        <div class="json-schema-view">
-            <div class="primitive">
+                                        <div id="d2e199_removal_conversationId">
+                                            <div class="json-schema-view">
+                                                <div class="primitive">
                 <span class="type">
                     String
                 </span>
 
-                    <div class="inner description marked">
-(Optional) a unique identifier to trace this request in logs and databases
-                    </div>
-            </div>
+                                                    <div class="inner description marked">
+                                                        (Optional) a unique identifier to trace this request in logs and
+                                                        databases
+                                                    </div>
+                                                </div>
         </div>
     </div>
 </td>
@@ -3030,10 +3056,13 @@ $(document).ready(function() {
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>
@@ -3074,8 +3103,8 @@ $(document).ready(function() {
                                         var schemaWrapper = {
   "description" : "The request could not be processed and forwarded to NHAIS",
   "headers" : {
-    "CorrelationId" : {
-      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+    "ConversationId" : {
+      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
       "style" : "simple",
       "explode" : false,
       "schema" : {
@@ -3120,10 +3149,13 @@ $(document).ready(function() {
                                               <th>Description</th>
                                           </tr>
                                               <tr>
-                                                  <td>CorrelationId</td>
+                                                  <td>ConversationId</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                                  <td>If a ConversationId request header is provided this will be the
+                                                      same value. Otherwise this is the ConversationId generated for the
+                                                      request.
+                                                  </td>
                                               </tr>
                                       </table>
                                   </div>

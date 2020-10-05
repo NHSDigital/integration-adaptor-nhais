@@ -7,16 +7,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshApiConnectionException;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
-import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundQueueService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MeshServiceTest {
@@ -29,6 +36,9 @@ class MeshServiceTest {
 
     @Mock
     private MeshMailBoxScheduler meshMailBoxScheduler;
+
+    @Mock
+    private ConversationIdService conversationIdService;
 
     private final long scanDelayInSeconds = 2L;
     private final long scanIntervalInMilliseconds = 6000L;
@@ -50,6 +60,7 @@ class MeshServiceTest {
         meshService = new MeshService(meshClient,
             inboundQueueService,
             meshMailBoxScheduler,
+            conversationIdService,
             scanDelayInSeconds,
             scanIntervalInMilliseconds,
             pollingCycleMaximumDurationInSeconds);

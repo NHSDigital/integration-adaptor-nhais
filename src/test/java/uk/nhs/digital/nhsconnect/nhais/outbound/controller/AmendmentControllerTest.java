@@ -7,17 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.outbound.jsonpatch.AmendmentController;
-import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
-import uk.nhs.digital.nhsconnect.nhais.outbound.jsonpatch.JsonPatchToEdifactService;
+import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
+import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
+import uk.nhs.digital.nhsconnect.nhais.outbound.jsonpatch.AmendmentController;
+import uk.nhs.digital.nhsconnect.nhais.outbound.jsonpatch.JsonPatchToEdifactService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import java.nio.file.Files;
 import java.util.UUID;
@@ -47,6 +49,9 @@ public class AmendmentControllerTest {
 
     @MockBean
     private ObjectMapper objectMapper;
+
+    @SpyBean
+    private ConversationIdService conversationIdService;
 
     @MockBean
     private FhirParser fhirParser;
