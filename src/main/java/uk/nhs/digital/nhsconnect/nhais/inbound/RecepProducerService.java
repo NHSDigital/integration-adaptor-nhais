@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepBeginningOfMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepHeader;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepMessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.RecepNationalHealthBody;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceInterchangeRecep;
@@ -53,7 +53,7 @@ public class RecepProducerService {
         var beginningOfMessage = new RecepBeginningOfMessage();
         segments.add(beginningOfMessage);
         segments.add(mapToNameAndAddress(receivedInterchangeFromHa));
-        var translationDateTime = mapToTranslationDateTime();
+        var translationDateTime = emptyRecepTimestamp();
         segments.add(translationDateTime);
         segments.addAll(mapToReferenceMessageReceps(receivedInterchangeFromHa));
         segments.add(mapToReferenceInterchange(receivedInterchangeFromHa));
@@ -78,7 +78,7 @@ public class RecepProducerService {
             .collect(Collectors.toList());
     }
 
-    private void setTimestamps(RecepHeader recepInterchangeHeader, RecepBeginningOfMessage recepBeginningOfMessage, DateTimePeriod recepTranslationDateTime) {
+    private void setTimestamps(RecepHeader recepInterchangeHeader, RecepBeginningOfMessage recepBeginningOfMessage, RecepMessageDateTime recepTranslationDateTime) {
         var currentTimestamp = timestampService.getCurrentTimestamp();
         recepInterchangeHeader.setTranslationTime(currentTimestamp);
         recepBeginningOfMessage.setTimestamp(currentTimestamp);
@@ -108,8 +108,8 @@ public class RecepProducerService {
         return new InterchangeTrailer(receivedInterchangeFromHa.getInterchangeTrailer().getNumberOfMessages());
     }
 
-    private DateTimePeriod mapToTranslationDateTime() {
-        return new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP);
+    private RecepMessageDateTime emptyRecepTimestamp() {
+        return new RecepMessageDateTime();
     }
 
     private RecepHeader mapToInterchangeHeader(Interchange interchange) {

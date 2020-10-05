@@ -4,6 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.DeductionDateMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.DeductionReasonCodeMapper;
@@ -11,12 +17,6 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.FreeTextMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.GpNameAndAddressMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PartyQualifierMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonNameMapper;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.FhirToEdifactTranslator;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.acceptance.OptionalInputValidator;
 
@@ -51,7 +51,7 @@ public class DeductionTranslator implements FhirToEdifactTranslator {
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new RegistrationMessageDateTime()),
             //RFF+950
             mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.DEDUCTION)),
             //S01

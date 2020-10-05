@@ -5,6 +5,8 @@ logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
+  pattern:
+    console: "-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} CorrelationId=%X{CorrelationId} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"
 
 management:
   endpoints:
@@ -38,7 +40,7 @@ nhais:
     ttl: ${NHAIS_MONGO_TTL:PT60S}
     cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh:
-    mailboxId: ${NHAIS_MESH_MAILBOX_ID:fake_mailboxId} #defaults below are used by fake-mesh
+    mailboxId: ${NHAIS_MESH_MAILBOX_ID:gp_mailbox} #defaults below are used by fake-mesh
     mailboxPassword: ${NHAIS_MESH_MAILBOX_PASSWORD:password}
     sharedKey: ${NHAIS_MESH_SHARED_KEY:SharedKey}
     host: ${NHAIS_MESH_HOST:https://localhost:8829/messageexchange/} #local fake-mesh default endpoint
@@ -126,15 +128,15 @@ nhais:
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
     subCAcert: ${NHAIS_MESH_SUB_CA:}
-    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=fake_mailboxId
-      TES5=fake_mailboxId
-      YY21=fake_mailboxId
-      KC01=fake_mailboxId
-      WHI5=fake_mailboxId
-      SO01=fake_mailboxId
-      UNY5=fake_mailboxId}
-    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:1000}
-    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:2}
+    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=nhais_mailbox
+      TES5=nhais_mailbox
+      YY21=nhais_mailbox
+      KC01=nhais_mailbox
+      WHI5=nhais_mailbox
+      SO01=nhais_mailbox
+      UNY5=nhais_mailbox}
+    wakeupIntervalInMilliseconds: ${NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS:500}
+    pollingCycleMinimumIntervalInSeconds: ${NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS:1}
     pollingCycleDurationInSeconds: ${NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS:1}
   scheduler:
     enabled: ${NHAIS_SCHEDULER_ENABLED:false}

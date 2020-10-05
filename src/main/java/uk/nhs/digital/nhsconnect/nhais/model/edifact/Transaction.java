@@ -5,8 +5,6 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class Transaction extends Section {
     @Getter(lazy = true)
@@ -62,11 +60,6 @@ public class Transaction extends Section {
 
     public Transaction(List<String> segments) {
         super(segments);
-    }
-
-    @Override
-    protected Stream<Supplier<? extends Segment>> getSegmentsToValidate() {
-        return Stream.empty();
     }
 
     @Override

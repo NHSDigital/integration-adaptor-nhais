@@ -45,9 +45,9 @@ public class RecepMessage {
             .orElseThrow();
     }
 
-    public DateTimePeriod getDateTimePeriod() {
-        return extractSegments(DateTimePeriod.KEY)
-            .map(DateTimePeriod::fromString)
+    public RecepMessageDateTime getTranslationTimestamp() {
+        return extractSegments(RegistrationMessageDateTime.KEY)
+            .map(RecepMessageDateTime::fromString)
             .findFirst()
             .orElseThrow();
     }

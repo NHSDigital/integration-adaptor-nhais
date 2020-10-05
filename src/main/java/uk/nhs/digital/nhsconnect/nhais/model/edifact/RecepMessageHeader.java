@@ -19,7 +19,7 @@ public class RecepMessageHeader extends Segment {
     @Override
     public String getValue() {
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-        return formattedSequenceNumber + "+FHSREG:0:1:FH";
+        return formattedSequenceNumber + "+RECEP:0:2:FH";
     }
 
     @Override

@@ -3,14 +3,12 @@ package uk.nhs.digital.nhsconnect.nhais.outbound.mapper;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceDate;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AcceptanceDateMapperTest {
 
@@ -22,12 +20,12 @@ class AcceptanceDateMapperTest {
             .setValue(new StringType("2020-06-05"));
 
         var acceptanceDateMapper = new AcceptanceDateMapper();
-        DateTimePeriod dateTimePeriod = acceptanceDateMapper.map(parameters);
+        var acceptanceDate = acceptanceDateMapper.map(parameters);
 
-        var expectedInstant = LocalDate.parse("2020-06-05").atStartOfDay(ZoneOffset.UTC).toInstant();
-        var expectedDateTimePeriod = new DateTimePeriod(expectedInstant, DateTimePeriod.TypeAndFormat.ACCEPTANCE_DATE);
+        var expectedDate = LocalDate.parse("2020-06-05");
+        var expectedAcceptanceDate = new AcceptanceDate(expectedDate);
 
-        assertEquals(expectedDateTimePeriod, dateTimePeriod);
+        assertEquals(expectedAcceptanceDate, acceptanceDate);
     }
 
 }

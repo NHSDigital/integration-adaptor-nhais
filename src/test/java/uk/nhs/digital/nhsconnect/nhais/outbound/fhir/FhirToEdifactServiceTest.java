@@ -9,20 +9,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.MDC;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.NameAndAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
+import uk.nhs.digital.nhsconnect.nhais.outbound.CorrelationIdFilter;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.FhirToEdifactSegmentTranslator;
@@ -52,6 +54,7 @@ public class FhirToEdifactServiceTest {
     private static final Long SIS = 45L;
     private static final Long SMS = 56L;
     private static final Long TN = 5174L;
+    private static final String CORRELATION_ID = "asdf1234";
 
     @Mock
     private OutboundStateRepository outboundStateRepository;
@@ -87,11 +90,12 @@ public class FhirToEdifactServiceTest {
         when(fhirToEdifactSegmentTranslator.createMessageSegments(any(), any())).thenReturn(Arrays.asList(
             new BeginningOfMessage(),
             new NameAndAddress(HA_CIPHER, NameAndAddress.QualifierAndCode.FHS),
-            new DateTimePeriod(expectedTimestamp, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP),
+            new RegistrationMessageDateTime().setTimestamp(expectedTimestamp),
             new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE),
             new SegmentGroup(1),
             new ReferenceTransactionNumber()
         ));
+        MDC.put(CorrelationIdFilter.KEY, CORRELATION_ID);
     }
 
     @Test
@@ -105,16 +109,17 @@ public class FhirToEdifactServiceTest {
         verify(sequenceService).generateTransactionNumber(GP_TRADING_PARTNER_CODE);
         verify(timestampService).getCurrentTimestamp();
 
-        OutboundState expected = new OutboundState();
-        expected.setWorkflowId(WorkflowId.REGISTRATION);
-        expected.setRecipient(HA_TRADING_PARTNER_CODE);
-        expected.setSender(GP_TRADING_PARTNER_CODE);
-        expected.setInterchangeSequence(SIS);
-        expected.setMessageSequence(SMS);
-        expected.setTransactionNumber(TN);
-        expected.setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE);
-        expected.setTranslationTimestamp(expectedTimestamp);
-        expected.setOperationId(OPERATION_ID);
+        OutboundState expected = new OutboundState()
+            .setWorkflowId(WorkflowId.REGISTRATION)
+            .setRecipient(HA_TRADING_PARTNER_CODE)
+            .setSender(GP_TRADING_PARTNER_CODE)
+            .setInterchangeSequence(SIS)
+            .setMessageSequence(SMS)
+            .setTransactionNumber(TN)
+            .setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)
+            .setTranslationTimestamp(expectedTimestamp)
+            .setOperationId(OPERATION_ID)
+            .setCorrelationId(CORRELATION_ID);
         verify(outboundStateRepository).save(expected);
     }
 

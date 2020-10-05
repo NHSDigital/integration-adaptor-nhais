@@ -8,7 +8,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
-import uk.nhs.digital.nhsconnect.nhais.inbound.MeshServiceBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @Slf4j
 @DirtiesContext
-public class MeshClientIntegrationTest extends MeshServiceBaseTest {
+public class MeshClientIntegrationTest extends IntegrationBaseTest {
 
     private static final String RECIPIENT = "XX11";
     private static final String CONTENT = "test_message";
@@ -52,9 +52,9 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     @Autowired
     private MeshHttpClientBuilder meshHttpClientBuilder;
 
-    @AfterEach
-    void tearDown() {
-        clearMeshMailbox();
+    @BeforeEach
+    void beforeEach() {
+        clearMeshMailboxes();
     }
 
     @Test
@@ -68,7 +68,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     void When_CallingMeshGetMessageEndpoint_Then_MessageIsReturned() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        InboundMeshMessage meshMessage = meshClient.getEdifactMessage(testMessageId.getMessageID());
+        InboundMeshMessage meshMessage = nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID());
         assertThat(meshMessage.getContent()).isEqualTo(CONTENT);
         assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
     }
@@ -77,7 +77,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     void When_CallingGetMessageWithLargeContentAndWrongWorkflowId_Then_MeshWorkflowUnknownExceptionIsThrown() {
         MeshMessageId testMessageId = sendLargeMessageWithWrongWorkflowId();
 
-        assertThatThrownBy(() -> meshClient.getEdifactMessage(testMessageId.getMessageID()))
+        assertThatThrownBy(() -> nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID()))
             .isInstanceOf(MeshWorkflowUnknownException.class)
             .hasMessageContaining("NOT_NHAIS");
     }
@@ -109,7 +109,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     void When_CallingMeshAcknowledgeEndpoint_Then_NoExceptionIsThrown() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        assertThatCode(() -> meshClient.acknowledgeMessage(testMessageId.getMessageID()))
+        assertThatCode(() -> nhaisMeshClient.acknowledgeMessage(testMessageId.getMessageID()))
             .doesNotThrowAnyException();
     }
 
@@ -122,7 +122,7 @@ public class MeshClientIntegrationTest extends MeshServiceBaseTest {
     void When_PollingFromMeshAfterSendingMsg_Then_ListWithMsgIdIsReturned() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        assertThat(meshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
+        assertThat(nhaisMeshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
     }
 
     @Test

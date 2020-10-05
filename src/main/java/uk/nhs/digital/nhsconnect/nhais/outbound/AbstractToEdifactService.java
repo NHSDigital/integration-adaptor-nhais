@@ -1,16 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageTrailer;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
+@Slf4j
 public abstract class AbstractToEdifactService<T extends CommonTranslationItems> {
 
     protected final SequenceService sequenceService;
@@ -45,6 +48,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
         generateSequenceNumbers(translationItems);
         setOperationId(translationItems);
         recordOutboundState(translationItems);
+        LOGGER.info("Recorded outbound state for transaction with OperationId: {}", translationItems.getOperationId());
         addSequenceNumbersToSegments(translationItems);
         return translateInterchange(translationItems);
     }
@@ -83,6 +87,8 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             sequenceService.generateMessageSequence(translationItems.getSender(), translationItems.getRecipient()));
         translationItems.setTransactionNumber(
             sequenceService.generateTransactionNumber(translationItems.getSender()));
+        LOGGER.info("Generated sequence numbers SIS={} SMS={} TN={} for sender={} and recipient={}", translationItems.getSendInterchangeSequence(),
+            translationItems.getSendMessageSequence(), translationItems.getTransactionNumber(), translationItems.getSender(), translationItems.getRecipient());
     }
 
     protected void setOperationId(T translationItems) {
@@ -94,14 +100,13 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setRecipient(translationItems.getRecipient())
             .setSender(translationItems.getSender())
-
             .setInterchangeSequence(translationItems.getSendInterchangeSequence())
             .setMessageSequence(translationItems.getSendMessageSequence())
             .setTransactionNumber(translationItems.getTransactionNumber())
-
-                .setTransactionType(translationItems.getTransactionType())
-                .setTranslationTimestamp(translationItems.getTranslationTimestamp())
-                .setOperationId(translationItems.getOperationId());
+            .setTransactionType(translationItems.getTransactionType())
+            .setTranslationTimestamp(translationItems.getTranslationTimestamp())
+            .setOperationId(translationItems.getOperationId())
+            .setCorrelationId(MDC.get(CorrelationIdFilter.KEY));
         outboundStateRepository.save(outboundState);
     }
 
@@ -122,11 +127,9 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             } else if (segment instanceof ReferenceTransactionNumber) {
                 ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
                 referenceTransactionNumber.setTransactionNumber(translationItems.getTransactionNumber());
-            } else if (segment instanceof DateTimePeriod) {
-                DateTimePeriod dateTimePeriod = (DateTimePeriod) segment;
-                if (dateTimePeriod.getTypeAndFormat().equals(DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)) {
-                    dateTimePeriod.setTimestamp(translationItems.getTranslationTimestamp());
-                }
+            } else if (segment instanceof RegistrationMessageDateTime) {
+                RegistrationMessageDateTime registrationMessageDateTime = (RegistrationMessageDateTime) segment;
+                registrationMessageDateTime.setTimestamp(translationItems.getTranslationTimestamp());
             }
         }
     }

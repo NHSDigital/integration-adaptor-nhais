@@ -1,11 +1,10 @@
 package uk.nhs.digital.nhsconnect.nhais.container;
 
-import java.nio.file.Path;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
+
+import java.nio.file.Path;
 
 @Slf4j
 public class FakeMeshContainer extends GenericContainer<FakeMeshContainer> {

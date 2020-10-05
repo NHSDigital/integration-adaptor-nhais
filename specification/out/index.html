@@ -1187,8 +1187,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.acceptance(parameters);
+            apiInstance.acceptance(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1206,8 +1207,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.acceptance(parameters);
+            apiInstance.acceptance(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#acceptance");
             e.printStackTrace();
@@ -1221,11 +1223,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-acceptance-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
+String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Accept a new patient (Acceptance transaction)
 [apiInstance acceptanceWith:parameters
+    correlationId:correlationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1239,6 +1243,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
+var opts = {
+  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1247,7 +1254,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.acceptance(parameters, callback);
+api.acceptance(parameters, opts, callback);
 </code></pre>
                             </div>
 
@@ -1270,11 +1277,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
+            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Accept a new patient (Acceptance transaction)
-                apiInstance.acceptance(parameters);
+                apiInstance.acceptance(parameters, correlationId);
             }
             catch (Exception e)
             {
@@ -1292,9 +1300,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
+$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->acceptance($parameters);
+    $api_instance->acceptance($parameters, $correlationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->acceptance: ', $e->getMessage(), PHP_EOL;
 }
@@ -1308,9 +1317,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
+my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->acceptance(parameters => $parameters);
+    $api_instance->acceptance(parameters => $parameters, correlationId => $correlationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->acceptance: $@\n";
@@ -1327,10 +1337,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
+correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Accept a new patient (Acceptance transaction)
-    api_instance.acceptance(parameters)
+    api_instance.acceptance(parameters, correlationId=correlationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->acceptance: %s\n" % e)</code></pre>
                             </div>
@@ -1340,9 +1351,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
+    let correlationId = correlationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.acceptance(parameters, &context).wait();
+    let result = client.acceptance(parameters, correlationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1358,6 +1370,33 @@ pub fn main() {
                           <h2>Parameters</h2>
 
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">CorrelationId</td>
+<td>
+
+
+    <div id="d2e199_acceptance_correlationId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+(Optional) a unique identifier to trace this request in logs and databases
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                             <div class="methodsubtabletitle">Body parameters</div>
                             <table id="methodsubtable">
@@ -1434,41 +1473,60 @@ $(document).ready(function() {
                                                   <td></td>
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
                                       </table>
                                   </div>
                             </div>
-                            <h3 id="examples-Patients-acceptance-title-400"></h3>
-                            <p id="examples-Patients-acceptance-description-400" class="marked"></p>
+                            <h3 id="examples-Patients-acceptance-title-default"></h3>
+                            <p id="examples-Patients-acceptance-description-default" class="marked"></p>
                             <script>
-                              var responsePatients400_description = `Client error.`;
-                              var responsePatients400_description_break = responsePatients400_description.indexOf('\n');
-                              if (responsePatients400_description_break == -1) {
-                                $("#examples-Patients-acceptance-title-400").text("Status: 400 - " + responsePatients400_description);
+                              var responsePatientsdefault_description = `The request could not be processed and forwarded to NHAIS`;
+                              var responsePatientsdefault_description_break = responsePatientsdefault_description.indexOf('\n');
+                              if (responsePatientsdefault_description_break == -1) {
+                                $("#examples-Patients-acceptance-title-default").text("Status: default - " + responsePatientsdefault_description);
                               } else {
-                                $("#examples-Patients-acceptance-title-400").text("Status: 400 - " + responsePatients400_description.substring(0, responsePatients400_description_break));
-                                $("#examples-Patients-acceptance-description-400").html(responsePatients400_description.substring(responsePatients400_description_break));
+                                $("#examples-Patients-acceptance-title-default").text("Status: default - " + responsePatientsdefault_description.substring(0, responsePatientsdefault_description_break));
+                                $("#examples-Patients-acceptance-description-default").html(responsePatientsdefault_description.substring(responsePatientsdefault_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Patients-acceptance-400" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Patients-acceptance-default" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-acceptance-400-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Patients-acceptance-default-schema">Schema</a>
                                 </li>
 
 
 
+                                <li class="">
+                                  <a data-toggle="tab" href="#responses-acceptance-default-headers">Headers</a>
+                                </li>
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Patients-acceptance-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-acceptance-400-schema">
-                                  <div id="responses-Patients-acceptance-schema-400" class="exampleStyle">
+                            <div class="tab-content" id="responses-Patients-acceptance-default-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Patients-acceptance-default-schema">
+                                  <div id="responses-Patients-acceptance-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Client error.",
+  "description" : "The request could not be processed and forwarded to NHAIS",
+  "headers" : {
+    "CorrelationId" : {
+      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+      "style" : "simple",
+      "explode" : false,
+      "schema" : {
+        "type" : "string"
+      }
+    }
+  },
   "content" : {
     "application/fhir+json" : {
       "schema" : {
@@ -1496,15 +1554,31 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-acceptance-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-acceptance-schema-400');
+                                        $('#responses-Patients-acceptance-default-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Patients-acceptance-schema-default');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Patients-acceptance-400-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Patients-acceptance-default-schema-data' type='hidden' value=''></input>
                                 </div>
+                                  <div class="tab-pane" id="responses-acceptance-default-headers">
+                                      <table>
+                                          <tr>
+                                              <th width="150px">Name</th>
+                                              <th width="100px">Type</th>
+                                              <th width="100px">Format</th>
+                                              <th>Description</th>
+                                          </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
+                                      </table>
+                                  </div>
                             </div>
                         </article>
                       </div>
@@ -1664,8 +1738,9 @@ public class PatientsApiExample {
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.amendment(nhsNumber, amendment);
+            apiInstance.amendment(nhsNumber, amendment, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1684,8 +1759,9 @@ public class PatientsApiExample {
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.amendment(nhsNumber, amendment);
+            apiInstance.amendment(nhsNumber, amendment, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#amendment");
             e.printStackTrace();
@@ -1700,12 +1776,14 @@ public class PatientsApiExample {
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *nhsNumber = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 Amendment *amendment = ; // 
+String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
 [apiInstance amendmentWith:nhsNumber
     amendment:amendment
+    correlationId:correlationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -1720,6 +1798,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var nhsNumber = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var amendment = ; // {Amendment} 
+var opts = {
+  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1728,7 +1809,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.amendment(nhsNumber, amendment, callback);
+api.amendment(nhsNumber, amendment, opts, callback);
 </code></pre>
                             </div>
 
@@ -1752,11 +1833,12 @@ namespace Example
             var apiInstance = new PatientsApi();
             var nhsNumber = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var amendment = new Amendment(); // Amendment | 
+            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Amend patient details (Amendment transaction)
-                apiInstance.amendment(nhsNumber, amendment);
+                apiInstance.amendment(nhsNumber, amendment, correlationId);
             }
             catch (Exception e)
             {
@@ -1775,9 +1857,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $amendment = ; // Amendment | 
+$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->amendment($nhsNumber, $amendment);
+    $api_instance->amendment($nhsNumber, $amendment, $correlationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->amendment: ', $e->getMessage(), PHP_EOL;
 }
@@ -1792,9 +1875,10 @@ use WWW::OPenAPIClient::PatientsApi;
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $nhsNumber = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
+my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->amendment(nhsNumber => $nhsNumber, amendment => $amendment);
+    $api_instance->amendment(nhsNumber => $nhsNumber, amendment => $amendment, correlationId => $correlationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->amendment: $@\n";
@@ -1812,10 +1896,11 @@ from pprint import pprint
 api_instance = openapi_client.PatientsApi()
 nhsNumber = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 amendment =  # Amendment | 
+correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Amend patient details (Amendment transaction)
-    api_instance.amendment(nhsNumber, amendment)
+    api_instance.amendment(nhsNumber, amendment, correlationId=correlationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->amendment: %s\n" % e)</code></pre>
                             </div>
@@ -1826,9 +1911,10 @@ except ApiException as e:
 pub fn main() {
     let nhsNumber = 9000000009; // String
     let amendment = ; // Amendment
+    let correlationId = correlationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.amendment(nhsNumber, amendment, &context).wait();
+    let result = client.amendment(nhsNumber, amendment, correlationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -1874,6 +1960,33 @@ The patient&#39;s NHS Number. The primary identifier of a patient, unique within
 
                             </table>
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">CorrelationId</td>
+<td>
+
+
+    <div id="d2e199_amendment_correlationId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+(Optional) a unique identifier to trace this request in logs and databases
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                             <div class="methodsubtabletitle">Body parameters</div>
                             <table id="methodsubtable">
@@ -1950,45 +2063,72 @@ $(document).ready(function() {
                                                   <td></td>
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
                                       </table>
                                   </div>
                             </div>
-                            <h3 id="examples-Patients-amendment-title-400"></h3>
-                            <p id="examples-Patients-amendment-description-400" class="marked"></p>
+                            <h3 id="examples-Patients-amendment-title-default"></h3>
+                            <p id="examples-Patients-amendment-description-default" class="marked"></p>
                             <script>
-                              var responsePatients400_description = `Client error.`;
-                              var responsePatients400_description_break = responsePatients400_description.indexOf('\n');
-                              if (responsePatients400_description_break == -1) {
-                                $("#examples-Patients-amendment-title-400").text("Status: 400 - " + responsePatients400_description);
+                              var responsePatientsdefault_description = `The request could not be processed and forwarded to NHAIS`;
+                              var responsePatientsdefault_description_break = responsePatientsdefault_description.indexOf('\n');
+                              if (responsePatientsdefault_description_break == -1) {
+                                $("#examples-Patients-amendment-title-default").text("Status: default - " + responsePatientsdefault_description);
                               } else {
-                                $("#examples-Patients-amendment-title-400").text("Status: 400 - " + responsePatients400_description.substring(0, responsePatients400_description_break));
-                                $("#examples-Patients-amendment-description-400").html(responsePatients400_description.substring(responsePatients400_description_break));
+                                $("#examples-Patients-amendment-title-default").text("Status: default - " + responsePatientsdefault_description.substring(0, responsePatientsdefault_description_break));
+                                $("#examples-Patients-amendment-description-default").html(responsePatientsdefault_description.substring(responsePatientsdefault_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Patients-amendment-400" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Patients-amendment-default" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-amendment-400-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Patients-amendment-default-schema">Schema</a>
                                 </li>
 
 
 
+                                <li class="">
+                                  <a data-toggle="tab" href="#responses-amendment-default-headers">Headers</a>
+                                </li>
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Patients-amendment-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-amendment-400-schema">
-                                  <div id="responses-Patients-amendment-schema-400" class="exampleStyle">
+                            <div class="tab-content" id="responses-Patients-amendment-default-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Patients-amendment-default-schema">
+                                  <div id="responses-Patients-amendment-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Client error.",
+  "description" : "The request could not be processed and forwarded to NHAIS",
+  "headers" : {
+    "CorrelationId" : {
+      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+      "style" : "simple",
+      "explode" : false,
+      "schema" : {
+        "type" : "string"
+      }
+    }
+  },
   "content" : {
     "application/fhir+json" : {
       "schema" : {
         "$ref" : "#/components/schemas/OperationOutcome"
+      },
+      "examples" : {
+        "bad-request" : {
+          "summary" : "The request payload is invalid",
+          "value" : {
+            "$ref" : "components/examples/responses/400-bad-request.json"
+          }
+        }
       }
     }
   }
@@ -2004,15 +2144,31 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-amendment-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-amendment-schema-400');
+                                        $('#responses-Patients-amendment-default-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Patients-amendment-schema-default');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Patients-amendment-400-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Patients-amendment-default-schema-data' type='hidden' value=''></input>
                                 </div>
+                                  <div class="tab-pane" id="responses-amendment-default-headers">
+                                      <table>
+                                          <tr>
+                                              <th width="150px">Name</th>
+                                              <th width="100px">Type</th>
+                                              <th width="100px">Format</th>
+                                              <th>Description</th>
+                                          </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
+                                      </table>
+                                  </div>
                             </div>
                         </article>
                       </div>
@@ -2104,8 +2260,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.deduction(parameters);
+            apiInstance.deduction(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2123,8 +2280,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.deduction(parameters);
+            apiInstance.deduction(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#deduction");
             e.printStackTrace();
@@ -2138,11 +2296,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-deduction-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
+String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Deduct a patient (Deduction transaction)
 [apiInstance deductionWith:parameters
+    correlationId:correlationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2156,6 +2316,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
+var opts = {
+  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -2164,7 +2327,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.deduction(parameters, callback);
+api.deduction(parameters, opts, callback);
 </code></pre>
                             </div>
 
@@ -2187,11 +2350,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
+            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Deduct a patient (Deduction transaction)
-                apiInstance.deduction(parameters);
+                apiInstance.deduction(parameters, correlationId);
             }
             catch (Exception e)
             {
@@ -2209,9 +2373,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
+$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->deduction($parameters);
+    $api_instance->deduction($parameters, $correlationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->deduction: ', $e->getMessage(), PHP_EOL;
 }
@@ -2225,9 +2390,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
+my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->deduction(parameters => $parameters);
+    $api_instance->deduction(parameters => $parameters, correlationId => $correlationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->deduction: $@\n";
@@ -2244,10 +2410,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
+correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Deduct a patient (Deduction transaction)
-    api_instance.deduction(parameters)
+    api_instance.deduction(parameters, correlationId=correlationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->deduction: %s\n" % e)</code></pre>
                             </div>
@@ -2257,9 +2424,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
+    let correlationId = correlationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.deduction(parameters, &context).wait();
+    let result = client.deduction(parameters, correlationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2275,6 +2443,33 @@ pub fn main() {
                           <h2>Parameters</h2>
 
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">CorrelationId</td>
+<td>
+
+
+    <div id="d2e199_deduction_correlationId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+(Optional) a unique identifier to trace this request in logs and databases
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                             <div class="methodsubtabletitle">Body parameters</div>
                             <table id="methodsubtable">
@@ -2351,45 +2546,72 @@ $(document).ready(function() {
                                                   <td></td>
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
                                       </table>
                                   </div>
                             </div>
-                            <h3 id="examples-Patients-deduction-title-400"></h3>
-                            <p id="examples-Patients-deduction-description-400" class="marked"></p>
+                            <h3 id="examples-Patients-deduction-title-default"></h3>
+                            <p id="examples-Patients-deduction-description-default" class="marked"></p>
                             <script>
-                              var responsePatients400_description = `Bad Request - The request could not be processed and forwarded to NHAIS`;
-                              var responsePatients400_description_break = responsePatients400_description.indexOf('\n');
-                              if (responsePatients400_description_break == -1) {
-                                $("#examples-Patients-deduction-title-400").text("Status: 400 - " + responsePatients400_description);
+                              var responsePatientsdefault_description = `The request could not be processed and forwarded to NHAIS`;
+                              var responsePatientsdefault_description_break = responsePatientsdefault_description.indexOf('\n');
+                              if (responsePatientsdefault_description_break == -1) {
+                                $("#examples-Patients-deduction-title-default").text("Status: default - " + responsePatientsdefault_description);
                               } else {
-                                $("#examples-Patients-deduction-title-400").text("Status: 400 - " + responsePatients400_description.substring(0, responsePatients400_description_break));
-                                $("#examples-Patients-deduction-description-400").html(responsePatients400_description.substring(responsePatients400_description_break));
+                                $("#examples-Patients-deduction-title-default").text("Status: default - " + responsePatientsdefault_description.substring(0, responsePatientsdefault_description_break));
+                                $("#examples-Patients-deduction-description-default").html(responsePatientsdefault_description.substring(responsePatientsdefault_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Patients-deduction-400" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Patients-deduction-default" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-deduction-400-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Patients-deduction-default-schema">Schema</a>
                                 </li>
 
 
 
+                                <li class="">
+                                  <a data-toggle="tab" href="#responses-deduction-default-headers">Headers</a>
+                                </li>
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Patients-deduction-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-deduction-400-schema">
-                                  <div id="responses-Patients-deduction-schema-400" class="exampleStyle">
+                            <div class="tab-content" id="responses-Patients-deduction-default-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Patients-deduction-default-schema">
+                                  <div id="responses-Patients-deduction-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Bad Request - The request could not be processed and forwarded to NHAIS",
+  "description" : "The request could not be processed and forwarded to NHAIS",
+  "headers" : {
+    "CorrelationId" : {
+      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+      "style" : "simple",
+      "explode" : false,
+      "schema" : {
+        "type" : "string"
+      }
+    }
+  },
   "content" : {
     "application/fhir+json" : {
       "schema" : {
         "$ref" : "#/components/schemas/OperationOutcome"
+      },
+      "examples" : {
+        "bad-request" : {
+          "summary" : "The request payload is invalid",
+          "value" : {
+            "$ref" : "components/examples/responses/400-bad-request.json"
+          }
+        }
       }
     }
   }
@@ -2405,15 +2627,31 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-deduction-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-deduction-schema-400');
+                                        $('#responses-Patients-deduction-default-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Patients-deduction-schema-default');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Patients-deduction-400-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Patients-deduction-default-schema-data' type='hidden' value=''></input>
                                 </div>
+                                  <div class="tab-pane" id="responses-deduction-default-headers">
+                                      <table>
+                                          <tr>
+                                              <th width="150px">Name</th>
+                                              <th width="100px">Type</th>
+                                              <th width="100px">Format</th>
+                                              <th>Description</th>
+                                          </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
+                                      </table>
+                                  </div>
                             </div>
                         </article>
                       </div>
@@ -2505,8 +2743,9 @@ public class PatientsApiExample {
         
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.removal(parameters);
+            apiInstance.removal(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2524,8 +2763,9 @@ public class PatientsApiExample {
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
+        String correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
         try {
-            apiInstance.removal(parameters);
+            apiInstance.removal(parameters, correlationId);
         } catch (ApiException e) {
             System.err.println("Exception when calling PatientsApi#removal");
             e.printStackTrace();
@@ -2539,11 +2779,13 @@ public class PatientsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Patients-removal-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
+String *correlationId = correlationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Removal (Out of Area)
 [apiInstance removalWith:parameters
+    correlationId:correlationId
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2557,6 +2799,9 @@ PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
+var opts = {
+  'correlationId': correlationId_example // {String} (Optional) a unique identifier to trace this request in logs and databases
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -2565,7 +2810,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.removal(parameters, callback);
+api.removal(parameters, opts, callback);
 </code></pre>
                             </div>
 
@@ -2588,11 +2833,12 @@ namespace Example
             
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
+            var correlationId = correlationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
             try
             {
                 // Removal (Out of Area)
-                apiInstance.removal(parameters);
+                apiInstance.removal(parameters, correlationId);
             }
             catch (Exception e)
             {
@@ -2610,9 +2856,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
+$correlationId = correlationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
 
 try {
-    $api_instance->removal($parameters);
+    $api_instance->removal($parameters, $correlationId);
 } catch (Exception $e) {
     echo 'Exception when calling PatientsApi->removal: ', $e->getMessage(), PHP_EOL;
 }
@@ -2626,9 +2873,10 @@ use WWW::OPenAPIClient::PatientsApi;
 
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
+my $correlationId = correlationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
 eval { 
-    $api_instance->removal(parameters => $parameters);
+    $api_instance->removal(parameters => $parameters, correlationId => $correlationId);
 };
 if ($@) {
     warn "Exception when calling PatientsApi->removal: $@\n";
@@ -2645,10 +2893,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
+correlationId = correlationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 try: 
     # Removal (Out of Area)
-    api_instance.removal(parameters)
+    api_instance.removal(parameters, correlationId=correlationId)
 except ApiException as e:
     print("Exception when calling PatientsApi->removal: %s\n" % e)</code></pre>
                             </div>
@@ -2658,9 +2907,10 @@ except ApiException as e:
 
 pub fn main() {
     let parameters = ; // Parameters
+    let correlationId = correlationId_example; // String
 
     let mut context = PatientsApi::Context::default();
-    let result = client.removal(parameters, &context).wait();
+    let result = client.removal(parameters, correlationId, &context).wait();
     println!("{:?}", result);
 
 }
@@ -2676,6 +2926,33 @@ pub fn main() {
                           <h2>Parameters</h2>
 
 
+                            <div class="methodsubtabletitle">Header parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                  <tr><td style="width:150px;">CorrelationId</td>
+<td>
+
+
+    <div id="d2e199_removal_correlationId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+(Optional) a unique identifier to trace this request in logs and databases
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                             <div class="methodsubtabletitle">Body parameters</div>
                             <table id="methodsubtable">
@@ -2752,41 +3029,60 @@ $(document).ready(function() {
                                                   <td></td>
                                                   <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
                                               </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
                                       </table>
                                   </div>
                             </div>
-                            <h3 id="examples-Patients-removal-title-400"></h3>
-                            <p id="examples-Patients-removal-description-400" class="marked"></p>
+                            <h3 id="examples-Patients-removal-title-default"></h3>
+                            <p id="examples-Patients-removal-description-default" class="marked"></p>
                             <script>
-                              var responsePatients400_description = `Bad Request - The request could not be processed and forwarded to NHAIS`;
-                              var responsePatients400_description_break = responsePatients400_description.indexOf('\n');
-                              if (responsePatients400_description_break == -1) {
-                                $("#examples-Patients-removal-title-400").text("Status: 400 - " + responsePatients400_description);
+                              var responsePatientsdefault_description = `The request could not be processed and forwarded to NHAIS`;
+                              var responsePatientsdefault_description_break = responsePatientsdefault_description.indexOf('\n');
+                              if (responsePatientsdefault_description_break == -1) {
+                                $("#examples-Patients-removal-title-default").text("Status: default - " + responsePatientsdefault_description);
                               } else {
-                                $("#examples-Patients-removal-title-400").text("Status: 400 - " + responsePatients400_description.substring(0, responsePatients400_description_break));
-                                $("#examples-Patients-removal-description-400").html(responsePatients400_description.substring(responsePatients400_description_break));
+                                $("#examples-Patients-removal-title-default").text("Status: default - " + responsePatientsdefault_description.substring(0, responsePatientsdefault_description_break));
+                                $("#examples-Patients-removal-description-default").html(responsePatientsdefault_description.substring(responsePatientsdefault_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Patients-removal-400" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Patients-removal-default" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Patients-removal-400-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Patients-removal-default-schema">Schema</a>
                                 </li>
 
 
 
+                                <li class="">
+                                  <a data-toggle="tab" href="#responses-removal-default-headers">Headers</a>
+                                </li>
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Patients-removal-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Patients-removal-400-schema">
-                                  <div id="responses-Patients-removal-schema-400" class="exampleStyle">
+                            <div class="tab-content" id="responses-Patients-removal-default-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Patients-removal-default-schema">
+                                  <div id="responses-Patients-removal-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Bad Request - The request could not be processed and forwarded to NHAIS",
+  "description" : "The request could not be processed and forwarded to NHAIS",
+  "headers" : {
+    "CorrelationId" : {
+      "description" : "If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.",
+      "style" : "simple",
+      "explode" : false,
+      "schema" : {
+        "type" : "string"
+      }
+    }
+  },
   "content" : {
     "application/fhir+json" : {
       "schema" : {
@@ -2806,15 +3102,31 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Patients-removal-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Patients-removal-schema-400');
+                                        $('#responses-Patients-removal-default-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Patients-removal-schema-default');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Patients-removal-400-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Patients-removal-default-schema-data' type='hidden' value=''></input>
                                 </div>
+                                  <div class="tab-pane" id="responses-removal-default-headers">
+                                      <table>
+                                          <tr>
+                                              <th width="150px">Name</th>
+                                              <th width="100px">Type</th>
+                                              <th width="100px">Format</th>
+                                              <th>Description</th>
+                                          </tr>
+                                              <tr>
+                                                  <td>CorrelationId</td>
+                                                  <td>String</td>
+                                                  <td></td>
+                                                  <td>If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.</td>
+                                              </tr>
+                                      </table>
+                                  </div>
                             </div>
                         </article>
                       </div>

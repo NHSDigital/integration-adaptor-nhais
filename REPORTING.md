@@ -174,7 +174,8 @@ To generate a report on outbound transactions for which no RECEP has been receiv
                 {sndr: '<sender>'},
                 {recip: '<recipient>'},
                 {translationTimestamp: {$gt: ISODate('<from_timestamp>'), $lt: ISODate('<to_timestamp>')}},
-                {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+                {workflowId: 'REGISTRATION'},
+                {"recep": {"$exists":false}}
             ]
         }
     )
@@ -197,8 +198,9 @@ Report on interchanges that have not received RECEP from `2020-01-01` to `2020-0
             $and: [
                 {sndr: 'TES5'},
                 {recip: 'XX1'},
+                {workflowId: 'REGISTRATION'},
                 {translationTimestamp: {$gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z')}},
-                {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+                {recep: {"$exists":false}}
             ]
         }
     )
@@ -208,8 +210,9 @@ Report on interchanges that have not received RECEP from `2020-01-01` to `2020-0
     db.getCollection('outboundState').find(
         {   
             $and: [
+                {workflowId: 'REGISTRATION'},
                 {translationTimestamp: {$gt: ISODate('2020-01-01 00:00:00.000Z'), $lt: ISODate('2020-02-01 00:00:00.000Z')}},
-                {$or: [{"recepCode": {"$exists":false}}, {"recepCode": null}, {"recepDateTime": {"$exists":false}}, {"recepDateTime" :null}]}
+                {recep: {"$exists":false}}
             ]
         }
     )

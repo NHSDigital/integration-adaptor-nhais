@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshMailBoxScheduler;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
@@ -20,16 +21,18 @@ import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 
+/**
+ * Reads test data from /inbound_uat_data. The EDIFACT .dat files are sent to the MESH mailbox where the adaptor receives
+ * inbound transactions. The test waits for the transaction to be processed and compares the FHIR published to the GP
+ * System Inbound Queue to the .json file having the name name as the .dat.
+ */
 @ExtendWith(IntegrationTestsExtension.class)
 @DirtiesContext
-public class InboundMeshServiceUAT extends MeshServiceBaseTest {
+public class InboundUserAcceptanceTest extends IntegrationBaseTest {
     @Autowired
     private FhirParser fhirParser;
 
@@ -39,24 +42,15 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     @Autowired
     private MeshMailBoxScheduler meshMailBoxScheduler;
 
-    private boolean schedulerConfigured;
-
     @BeforeEach
-    void setUp() {
+    void beforeEach() {
+        clearMeshMailboxes();
+        clearGpSystemInboundQueue();
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "true"); //enable scheduling
-        if (!schedulerConfigured) { // do configuration only once per test run
-            meshMailBoxScheduler.hasTimePassed(0); //First run creates collection in MongoDb
-            await().atMost(10, SECONDS)
-                .pollDelay(500, TimeUnit.MILLISECONDS)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> assertThat(meshMailBoxScheduler.hasTimePassed(0)).isTrue()); //wait till it's done
-            schedulerConfigured = true;
-        }
     }
 
     @AfterEach
     void tearDown() {
-        clearMeshMailbox();
         System.setProperty("NHAIS_SCHEDULER_ENABLED", "false");
     }
 
@@ -66,15 +60,13 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
         var recipient = new EdifactParser().parse(testData.getEdifact())
             .getInterchangeHeader().getRecipient();
 
-        // send EDIFACT to MESH mailbox
-        meshClient.sendEdifactMessage(OutboundMeshMessage.create(
+        // Acting as an NHAIS system, send EDIFACT to adaptor's MESH mailbox
+        nhaisMeshClient.sendEdifactMessage(OutboundMeshMessage.create(
             recipient, WorkflowId.REGISTRATION, testData.getEdifact(), null, null));
 
         var expectedTransactionType = category.split("/")[0];
 
-        // fetch FHIR from "gp inbound queue"
-        var gpSystemInboundQueueMessage = getGpSystemInboundQueueMessage();
-        System.setProperty("NHAIS_SCHEDULER_ENABLED", "false");
+        Message gpSystemInboundQueueMessage = getGpSystemInboundQueueMessageWithCloseQuarterWorkaround(category);
 
         if (category.equals("close_quarter_notification/close-quarter-notification")) {
             verifyThatCloseQuarterNotificationIsNotPresentOnGpSystemInboundQueue(gpSystemInboundQueueMessage);
@@ -88,6 +80,17 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
             assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
         }
         assertOutboundRecepMessage(testData.getRecep());
+    }
+
+    private Message getGpSystemInboundQueueMessageWithCloseQuarterWorkaround(String category) {
+        if (category.equals("close_quarter_notification/close-quarter-notification")) {
+            // there should be no inbound gp system message for close quarter
+            // fetch without the helper and waitFor since we expect this to be null so only need to try once
+            return jmsTemplate.receive(gpSystemInboundQueueName);
+        } else {
+            // use the helper method that includes a more robust waitFor
+            return getGpSystemInboundQueueMessage();
+        }
     }
 
     private void verifyThatCloseQuarterNotificationIsNotPresentOnGpSystemInboundQueue(Message gpSystemInboundQueueMessage) {
@@ -113,11 +116,12 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     }
 
     private void assertOutboundRecepMessage(String recep) {
+        // Acting as an NHAIS system, receive and validate the RECEP returned by the adaptor
         List<String> messageIds = waitFor(() -> {
-            List<String> inboxMessageIds = meshClient.getInboxMessageIds();
+            List<String> inboxMessageIds = nhaisMeshClient.getInboxMessageIds();
             return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
         } );
-        var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
+        var meshMessage = nhaisMeshClient.getEdifactMessage(messageIds.get(0));
 
         Interchange expectedRecep = edifactParser.parse(recep);
         Interchange actualRecep = edifactParser.parse(meshMessage.getContent());
@@ -134,11 +138,11 @@ public class InboundMeshServiceUAT extends MeshServiceBaseTest {
     private List<String> filterTimestampedSegments(Interchange recep) {
         List<String> edifactSegments = recep.getMessages().get(0).getEdifactSegments();
         assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("BGM+")));
-        assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("DTM+137")));
+        assertThat(edifactSegments).anySatisfy(segment -> assertThat(segment.startsWith("DTM+815")));
 
         return edifactSegments.stream()
             .filter(segment -> !segment.startsWith("BGM+"))
-            .filter(segment -> !segment.startsWith("DTM+137"))
+            .filter(segment -> !segment.startsWith("DTM+815"))
             .collect(Collectors.toList());
     }
 }

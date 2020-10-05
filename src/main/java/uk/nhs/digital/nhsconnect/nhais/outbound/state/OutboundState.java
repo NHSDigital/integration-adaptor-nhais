@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.outbound.state;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.slf4j.MDC;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -13,6 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.outbound.CorrelationIdFilter;
 
 import java.time.Instant;
 
@@ -42,13 +44,13 @@ public class OutboundState implements TimeToLive {
     private String sender;
     @Field(name = "recip")
     private String recipient;
-    private ReferenceMessageRecep.RecepCode recepCode;
-    private Instant recepDateTime;
+    private Recep recep;
+    private String correlationId;
 
     public static OutboundState fromRecep(Message message) {
         var interchangeHeader = message.getInterchange().getInterchangeHeader();
         var messageHeader = message.getMessageHeader();
-        var dateTimePeriod = message.getTranslationDateTime();
+        var translationTimestamp = interchangeHeader.getTranslationTime();
 
         return new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
@@ -56,6 +58,16 @@ public class OutboundState implements TimeToLive {
             .setMessageSequence(messageHeader.getSequenceNumber())
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
-            .setTranslationTimestamp(dateTimePeriod.getTimestamp());
+            .setTranslationTimestamp(translationTimestamp)
+            .setCorrelationId(MDC.get(CorrelationIdFilter.KEY));
+    }
+
+    @Data
+    @Document
+    public static class Recep {
+        private ReferenceMessageRecep.RecepCode code;
+        private Instant translationTimestamp;
+        private Instant processedTimestamp;
+        private Long interchangeSequence;
     }
 }

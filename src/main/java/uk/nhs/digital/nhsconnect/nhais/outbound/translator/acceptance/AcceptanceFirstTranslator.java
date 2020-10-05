@@ -4,6 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.RegistrationMessageDateTime;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
+import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.AcceptanceCodeMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.AcceptanceDateMapper;
@@ -19,12 +25,6 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonPlaceOfBirthMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonPreviousNameMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.PersonSexMapper;
 import uk.nhs.digital.nhsconnect.nhais.outbound.mapper.ResidentialInstituteNameAndAddressMapper;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.DateTimePeriod;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
-import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.FhirToEdifactTranslator;
 
 import java.util.List;
@@ -73,7 +73,7 @@ public class AcceptanceFirstTranslator implements FhirToEdifactTranslator {
             //NAD+FHS
             partyQualifierMapper,
             //DTM+137
-            mapSegment(new DateTimePeriod(null, DateTimePeriod.TypeAndFormat.TRANSLATION_TIMESTAMP)),
+            mapSegment(new RegistrationMessageDateTime()),
             //RFF+950
             mapSegment(new ReferenceTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)),
             //S01

@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import com.google.common.collect.Comparators;
 import com.google.common.collect.Streams;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
@@ -29,12 +28,7 @@ public class EdifactParser {
 
     public Interchange parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));
-
-        var interchange = parseInterchange(allEdifactSegments);
-
-        validateInterchange(interchange);
-
-        return interchange;
+        return parseInterchange(allEdifactSegments);
     }
 
     private Interchange parseInterchange(List<String> allEdifactSegments) {
@@ -151,14 +145,4 @@ public class EdifactParser {
         return indexes;
     }
 
-    private void validateInterchange(Interchange interchange) {
-        List<ToEdifactParsingException> exceptions = interchange.validate();
-        String errorList = exceptions.stream()
-            .map(Exception::getMessage)
-            .collect(Collectors.joining(", "));
-
-        if (StringUtils.isNotEmpty(errorList)) {
-            throw new ToEdifactParsingException(errorList);
-        }
-    }
 }

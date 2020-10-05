@@ -1,17 +1,18 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -27,10 +28,15 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * Tests the processing of a REGISTRATION interchange containing multiple messages and transactions by publishing it
+ * onto the inbound MESH message queue. This bypasses the MESH polling loop / MESH Client / MESH API.
+ */
 @DirtiesContext
-public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest {
+public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
 
     private static final String SENDER = "XX11";
     private static final String RECIPIENT = "TES5";
@@ -55,16 +61,17 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     private static final String TRANSACTION_4_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_4);
     private static final String TRANSACTION_5_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_5);
     private static final String TRANSACTION_6_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_6);
-    private static final Instant MESSAGE_TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(1992, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
+    private static final Instant INTERCHANGE_TRANSLATION_TIMESTAMP = ZonedDateTime
+        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
         .toInstant();
 
-    private static final Instant RECEP_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 0, 0, TimestampService.UKZone)
         .toInstant();
-    private static final String ISO_RECEP_SEND_TIMESTAMP = new TimestampService().formatInISO(RECEP_TIMESTAMP);
+    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
 
     @MockBean
     private TimestampService timestampService;
+
     @Value("classpath:edifact/multi_transaction.1.dat")
     private Resource interchange;
     @Value("classpath:edifact/multi_transaction.1.fhir.TN-1.json")
@@ -84,14 +91,10 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
 
     @BeforeEach
     void setUp() {
-        when(timestampService.getCurrentTimestamp()).thenReturn(RECEP_TIMESTAMP);
-        when(timestampService.formatInISO(RECEP_TIMESTAMP)).thenReturn(ISO_RECEP_SEND_TIMESTAMP);
-    }
-
-    @AfterEach
-    void tearDown() {
-        clearInboundQueue();
-        clearMeshMailbox();
+        when(timestampService.getCurrentTimestamp()).thenReturn(GENERATED_TIMESTAMP);
+        when(timestampService.formatInISO(GENERATED_TIMESTAMP)).thenReturn(ISO_GENERATED_TIMESTAMP);
+        clearGpSystemInboundQueue();
+        clearMeshMailboxes();
     }
 
     @Test
@@ -105,10 +108,9 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
         var inboundStates = waitFor(this::getAllInboundStates);
 
         assertInboundStates(softly, inboundStates);
-
         assertGpSystemInboundQueueMessages(softly);
-
         assertOutboundRecepMessage(softly);
+        assertOutboundState(softly);
     }
 
     private List<InboundState> getAllInboundStates() {
@@ -134,12 +136,14 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        List<String> messageIds = meshClient.getInboxMessageIds();
-        var meshMessage = meshClient.getEdifactMessage(messageIds.get(0));
+
+        var meshMessage = waitForMeshMessage(nhaisMeshClient);
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        //TODO: other assertions on recep message
+
+        // timestamp is not set in mesh message payload for outbound RECEP
+        softly.assertThat(meshMessage.getMessageSentTimestamp()).isNull();
     }
 
     private void assertGpSystemInboundQueueMessages(SoftAssertions softly) throws JMSException, IOException {
@@ -210,7 +214,25 @@ public class InboundMeshServiceMultiTransactionTest extends MeshServiceBaseTest 
             .setRecipient(RECIPIENT)
             .setTransactionType(expectedTransactionType)
             .setTransactionNumber(expectedTN)
-            .setTranslationTimestamp(MESSAGE_TRANSLATION_TIMESTAMP);
+            .setTranslationTimestamp(INTERCHANGE_TRANSLATION_TIMESTAMP)
+            .setProcessedTimestamp(GENERATED_TIMESTAMP);
+
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
+    }
+
+    private void assertOutboundState(SoftAssertions softly) {
+        waitForCondition(() -> outboundStateRepository.findAll().iterator().hasNext());
+        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+
+        assertThat(outboundStates).hasSize(1);
+        var outboundState = outboundStates.iterator().next();
+        var expected = new OutboundState()
+            .setInterchangeSequence(1L)
+            .setMessageSequence(1L)
+            .setRecipient(SENDER)
+            .setSender(RECIPIENT)
+            .setWorkflowId(WorkflowId.RECEP)
+            .setTranslationTimestamp(GENERATED_TIMESTAMP);
+        softly.assertThat(outboundState).isEqualToIgnoringGivenFields(expected, "id");
     }
 }

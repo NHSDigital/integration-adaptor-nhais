@@ -29,7 +29,9 @@ public class PersonOldAddressTest {
 
         var personOldAddress = PersonOldAddress.builder()
             .addressLine1("MOORSIDE FARM")
+            .addressLine2(null)
             .addressLine3("ST PAULS CRAY")
+            .addressLine4("")
             .addressLine5("KENT")
             .build();
 

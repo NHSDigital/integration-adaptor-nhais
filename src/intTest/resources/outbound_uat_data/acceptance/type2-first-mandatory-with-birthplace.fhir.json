@@ -2,7 +2,7 @@
   "parameter": [
     {
       "name": "gpTradingPartnerCode",
-      "valueString": "TES6"
+      "valueString": "TES5"
     },
     {
       "name": "acceptanceCode",
@@ -23,7 +23,7 @@
           "identifier": [
             {
               "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
-              "value": "YY2"
+              "value": "XX1"
             }
           ]
         },
