@@ -28,10 +28,6 @@ sourceSets {
 		compileClasspath += sourceSets.main.output
 		runtimeClasspath += sourceSets.main.output
 	}
-
-	pcrmTest {
-		// doesn't use sources from main
-	}
 }
 
 configurations {
@@ -45,10 +41,6 @@ configurations {
 	recepResponderImplementation.extendsFrom implementation
 	recepResponderImplementation.extendsFrom testImplementation
 	recepResponderRuntimeOnly.extendsFrom runtimeOnly
-
-	pcrmTestImplementation.extendsFrom implementation
-	pcrmTestImplementation.extendsFrom testImplementation
-	pcrmTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {
@@ -107,17 +99,6 @@ task integrationTest(type: Test) {
 
 		testClassesDirs = sourceSets.intTest.output.classesDirs
 		classpath = sourceSets.intTest.runtimeClasspath
-		shouldRunAfter test
-	}
-}
-
-task pcrmTest(type: Test) {
-	useJUnitPlatform() {
-		description = 'Runs PCRM integration tests.'
-		group = 'verification'
-
-		testClassesDirs = sourceSets.pcrmTest.output.classesDirs
-		classpath = sourceSets.pcrmTest.runtimeClasspath
 		shouldRunAfter test
 	}
 }
