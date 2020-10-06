@@ -13,6 +13,8 @@ import uk.nhs.digital.nhsconnect.nhais.inbound.RecepConsumerService;
 import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumer;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
+import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -34,6 +36,8 @@ public class InboundQueueService {
     private final TimestampService timestampService;
 
     private final JmsTemplate jmsTemplate;
+
+    private final ConversationIdService conversationIdService;
 
     @Value("${nhais.amqp.meshInboundQueueName}")
     private String meshInboundQueueName;
@@ -64,9 +68,13 @@ public class InboundQueueService {
     }
 
     @SneakyThrows
-    public void publish(InboundMeshMessage message) {
-        message.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
-        jmsTemplate.send(meshInboundQueueName, session -> session.createTextMessage(serializeMeshMessage(message)));
+    public void publish(InboundMeshMessage messageContent) {
+        messageContent.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
+        jmsTemplate.send(meshInboundQueueName, session -> {
+            var message = session.createTextMessage(serializeMeshMessage(messageContent));
+            message.setStringProperty(JmsHeaders.CONVERSATION_ID, conversationIdService.getCurrentConversationId());
+            return message;
+        });
     }
 
     @SneakyThrows

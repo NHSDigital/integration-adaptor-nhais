@@ -84,6 +84,9 @@ class MeshServiceTest {
         verify(meshClient).getEdifactMessage(MESSAGE_ID2);
         verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID2);
+
+        verify(conversationIdService, times(2)).applyRandomConversationId();
+        verify(conversationIdService, times(2)).resetConversationId();
     }
 
     @Test
@@ -103,6 +106,9 @@ class MeshServiceTest {
         verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
         verifyNoMoreInteractions(meshClient, inboundQueueService); // second message not downloaded and published
+
+        verify(conversationIdService).applyRandomConversationId();
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
@@ -117,6 +123,8 @@ class MeshServiceTest {
         verify(meshClient, times(0)).getEdifactMessage(any());
         verify(inboundQueueService, times(0)).publish(any());
         verify(meshClient, times(0)).acknowledgeMessage(any());
+
+        verifyNoInteractions(conversationIdService);
     }
 
     @Test
@@ -132,6 +140,9 @@ class MeshServiceTest {
         verify(meshClient).getEdifactMessage(ERROR_MESSAGE_ID);
         verify(inboundQueueService, times(0)).publish(any());
         verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID1);
+
+        verify(conversationIdService).applyRandomConversationId();
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
@@ -149,6 +160,9 @@ class MeshServiceTest {
         verify(meshClient).getEdifactMessage(MESSAGE_ID1);
         verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
+
+        verify(conversationIdService, times(2)).applyRandomConversationId();
+        verify(conversationIdService, times(2)).resetConversationId();
     }
 
     @Test
@@ -173,6 +187,9 @@ class MeshServiceTest {
         verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient).acknowledgeMessage(ERROR_MESSAGE_ID);
         verify(meshClient).acknowledgeMessage(MESSAGE_ID1);
+
+        verify(conversationIdService, times(2)).applyRandomConversationId();
+        verify(conversationIdService, times(2)).resetConversationId();
     }
 
     @Test
@@ -189,6 +206,9 @@ class MeshServiceTest {
         verify(meshClient).getEdifactMessage(MESSAGE_ID1);
         verify(inboundQueueService).publish(meshMessage1);
         verify(meshClient, times(0)).acknowledgeMessage(MESSAGE_ID1);
+
+        verify(conversationIdService).applyRandomConversationId();
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
@@ -200,6 +220,7 @@ class MeshServiceTest {
 
         verifyNoInteractions(meshClient);
         verifyNoInteractions(inboundQueueService);
+        verifyNoInteractions(conversationIdService);
     }
 
     @Test
