@@ -37,7 +37,7 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
-    ttl: ${NHAIS_MONGO_TTL:PT60S}
+    ttl: ${NHAIS_MONGO_TTL:PT87600H} # long duration (10 years) because the timestamps used in tests are hardcoded. prevent deletion of data during tests
     cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:gp_mailbox} #defaults below are used by fake-mesh
