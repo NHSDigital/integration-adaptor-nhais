@@ -89,6 +89,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     @Value("classpath:edifact/multi_transaction.1.recep.dat")
     private Resource recep;
 
+    private String previousConversationId;
+
     @BeforeEach
     void setUp() {
         when(timestampService.getCurrentTimestamp()).thenReturn(GENERATED_TIMESTAMP);
@@ -107,8 +109,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
 
         var inboundStates = waitFor(this::getAllInboundStates);
 
-        assertInboundStates(softly, inboundStates);
         assertGpSystemInboundQueueMessages(softly);
+        assertInboundStates(softly, inboundStates);
         assertOutboundRecepMessage(softly);
         assertOutboundState(softly);
     }
@@ -172,6 +174,13 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
         String expectedOperationId,
         Resource expectedFhir) throws JMSException, IOException {
 
+        // all transactions come from the same interchange and use the same conversation id
+        String conversationId = message.getStringProperty("ConversationId");
+        if(previousConversationId == null) {
+            previousConversationId = conversationId;
+        }
+        softly.assertThat(conversationId).isEqualTo(previousConversationId);
+
         softly.assertThat(message.getStringProperty("OperationId"))
             .isEqualTo(expectedOperationId);
         softly.assertThat(message.getStringProperty("TransactionType"))
@@ -205,6 +214,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
         Long expectedTN,
         ReferenceTransactionType.Inbound expectedTransactionType) {
 
+        // must assert inbound state after the message so previousConversationId is populated
         var expectedInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setOperationId(expectedOperationId)
@@ -215,7 +225,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
             .setTransactionType(expectedTransactionType)
             .setTransactionNumber(expectedTN)
             .setTranslationTimestamp(INTERCHANGE_TRANSLATION_TIMESTAMP)
-            .setProcessedTimestamp(GENERATED_TIMESTAMP);
+            .setProcessedTimestamp(GENERATED_TIMESTAMP)
+            .setConversationId(previousConversationId);
 
         softly.assertThat(inboundStates).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

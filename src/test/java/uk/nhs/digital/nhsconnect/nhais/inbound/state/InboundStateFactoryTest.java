@@ -15,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.MessageHeader;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionNumber;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
@@ -39,6 +40,8 @@ public class InboundStateFactoryTest {
     private static final long MESSAGE_SEQUENCE = 234L;
     private static final long TRANSACTION_NUMBER = 345L;
     private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
+    private static final String CONVERSATION_ID = "ABCD1234";
+
     public static final InboundState EXPECTED_RECEP_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.RECEP)
         .setSender(SENDER)
@@ -46,7 +49,9 @@ public class InboundStateFactoryTest {
         .setInterchangeSequence(INTERCHANGE_SEQUENCE)
         .setMessageSequence(MESSAGE_SEQUENCE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
-        .setProcessedTimestamp(PROCESSED_TIMESTAMP);
+        .setProcessedTimestamp(PROCESSED_TIMESTAMP)
+        .setConversationId(CONVERSATION_ID);
+
     private static final InboundState EXPECTED_INTERCHANGE_INBOUND_STATE = new InboundState()
         .setWorkflowId(WorkflowId.REGISTRATION)
         .setOperationId(OPERATION_ID)
@@ -57,9 +62,14 @@ public class InboundStateFactoryTest {
         .setTransactionNumber(TRANSACTION_NUMBER)
         .setTransactionType(TRANSACTION_TYPE)
         .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
-        .setProcessedTimestamp(PROCESSED_TIMESTAMP);
+        .setProcessedTimestamp(PROCESSED_TIMESTAMP)
+        .setConversationId(CONVERSATION_ID);
+
     @Mock
     TimestampService timestampService;
+
+    @Mock
+    ConversationIdService conversationIdService;
 
     @InjectMocks
     InboundStateFactory inboundStateFactory;
@@ -78,6 +88,7 @@ public class InboundStateFactoryTest {
         when(TRANSACTION.getMessage()).thenReturn(MESSAGE);
 
         when(timestampService.getCurrentTimestamp()).thenReturn(PROCESSED_TIMESTAMP);
+        when(conversationIdService.getCurrentConversationId()).thenReturn(CONVERSATION_ID);
     }
 
     @Test

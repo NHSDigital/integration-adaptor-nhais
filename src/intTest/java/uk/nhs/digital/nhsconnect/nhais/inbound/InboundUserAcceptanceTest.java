@@ -42,6 +42,8 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
     @Autowired
     private MeshMailBoxScheduler meshMailBoxScheduler;
 
+    private String previousConversationId;
+
     @BeforeEach
     void beforeEach() {
         clearMeshMailboxes();
@@ -113,6 +115,10 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
     private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {
         String transactionType = gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.TRANSACTION_TYPE);
         assertThat(transactionType).isEqualTo(expectedTransactionType);
+        String actualConversationId = gpSystemInboundQueueMessage.getStringProperty(JmsHeaders.CONVERSATION_ID);
+        assertThat(actualConversationId).matches("[A-F0-9]{32}");
+        assertThat(actualConversationId).isNotEqualTo(previousConversationId);
+        previousConversationId = actualConversationId;
     }
 
     private void assertOutboundRecepMessage(String recep) {
