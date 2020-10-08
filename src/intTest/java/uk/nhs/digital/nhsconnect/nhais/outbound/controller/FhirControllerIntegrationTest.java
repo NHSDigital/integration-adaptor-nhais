@@ -142,17 +142,23 @@ public class FhirControllerIntegrationTest {
     @Test
     void whenDeductionInvalidJsonStructure_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionInvalidJsonStructure.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
-            .andExpect(status().isBadRequest());
-        //TODO 2020-07-30: to check the OperationOutcome when in NIAD-184 error status ir properly handled
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Required request body is missing");
     }
 
     @Test
     void whenRemovalInvalidJsonStructure_thenReturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalInvalidJsonStructure.getFile().toPath()));
-        mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
-            .andExpect(status().isBadRequest());
-        //TODO 2020-07-30: to check the OperationOutcome when in NIAD-184 error status ir properly handled
+        MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Required request body is missing");
     }
 
     @Test

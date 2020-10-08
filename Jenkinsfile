@@ -111,12 +111,6 @@ pipeline {
                         } //script
                     } //steps
                 } //stage
-                stage('Run integration tests') {
-                    steps {
-                        echo 'TODO run integration tests'
-                        echo 'TODO archive test results'
-                    }
-                 } //stage
             } //stages
         }
 
