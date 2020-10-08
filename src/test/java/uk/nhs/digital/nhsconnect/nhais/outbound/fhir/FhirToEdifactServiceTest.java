@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.MDC;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
@@ -24,11 +23,11 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.SegmentGroup;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.GeneralPractitionerIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ManagingOrganizationIdentifier;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.NhsIdentifier;
-import uk.nhs.digital.nhsconnect.nhais.outbound.CorrelationIdFilter;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.FhirToEdifactSegmentTranslator;
 import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
@@ -54,7 +53,7 @@ public class FhirToEdifactServiceTest {
     private static final Long SIS = 45L;
     private static final Long SMS = 56L;
     private static final Long TN = 5174L;
-    private static final String CORRELATION_ID = "asdf1234";
+    private static final String CONVERSATION_ID = "asdf1234";
 
     @Mock
     private OutboundStateRepository outboundStateRepository;
@@ -70,6 +69,9 @@ public class FhirToEdifactServiceTest {
 
     @Mock
     private MeshCypherDecoder meshCypherDecoder;
+
+    @Mock
+    private ConversationIdService conversationIdService;
 
     @InjectMocks
     private FhirToEdifactService fhirToEdifactService;
@@ -95,7 +97,7 @@ public class FhirToEdifactServiceTest {
             new SegmentGroup(1),
             new ReferenceTransactionNumber()
         ));
-        MDC.put(CorrelationIdFilter.KEY, CORRELATION_ID);
+        when(conversationIdService.getCurrentConversationId()).thenReturn(CONVERSATION_ID);
     }
 
     @Test
@@ -119,7 +121,7 @@ public class FhirToEdifactServiceTest {
             .setTransactionType(ReferenceTransactionType.Outbound.ACCEPTANCE)
             .setTranslationTimestamp(expectedTimestamp)
             .setOperationId(OPERATION_ID)
-            .setCorrelationId(CORRELATION_ID);
+            .setConversationId(CONVERSATION_ID);
         verify(outboundStateRepository).save(expected);
     }
 

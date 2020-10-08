@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,8 @@ public class MeshService {
 
     private final MeshMailBoxScheduler meshMailBoxScheduler;
 
+    private final ConversationIdService conversationIdService;
+
     private final long pollingCycleMinimumIntervalInSeconds;
 
     private final long wakeupIntervalInMilliseconds;
@@ -33,12 +36,14 @@ public class MeshService {
     public MeshService(MeshClient meshClient,
                        InboundQueueService inboundQueueService,
                        MeshMailBoxScheduler meshMailBoxScheduler,
+                       ConversationIdService conversationIdService,
                        @Value("${nhais.mesh.pollingCycleMinimumIntervalInSeconds}") long pollingCycleMinimumIntervalInSeconds,
                        @Value("${nhais.mesh.wakeupIntervalInMilliseconds}") long wakeupIntervalInMilliseconds,
                        @Value("${nhais.mesh.pollingCycleDurationInSeconds}") long pollingCycleDurationInSeconds) {
         this.meshClient = meshClient;
         this.inboundQueueService = inboundQueueService;
         this.meshMailBoxScheduler = meshMailBoxScheduler;
+        this.conversationIdService = conversationIdService;
         this.pollingCycleMinimumIntervalInSeconds = pollingCycleMinimumIntervalInSeconds;
         this.wakeupIntervalInMilliseconds = wakeupIntervalInMilliseconds;
         this.pollingCycleDurationInSeconds = pollingCycleDurationInSeconds;
@@ -88,17 +93,21 @@ public class MeshService {
 
     private void processSingleMessage(String messageId) {
         try {
-            LOGGER.debug("Downloading message id {}", messageId);
+            conversationIdService.applyRandomConversationId();
+            LOGGER.debug("Downloading MeshMessageId={}", messageId);
             InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
-            LOGGER.debug("Publishing content of message id {} to inbound mesh MQ", messageId);
+            LOGGER.debug("Publishing content of MeshMessageId={} to inbound mesh MQ", messageId);
             inboundQueueService.publish(meshMessage);
-            LOGGER.debug("Acknowledging message id {} on MESH API", messageId);
+            LOGGER.debug("Acknowledging MeshMessageId={} on MESH API", messageId);
             meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
+            LOGGER.info("Downloaded, published, and acknowledged MeshMessageId={} for inbound processing", meshMessage.getMeshMessageId());
         } catch (MeshWorkflowUnknownException ex) {
-            LOGGER.warn("Message id {} has an unsupported workflow id {} and has been left in the inbox.", messageId, ex.getWorkflowId());
+            LOGGER.warn("MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.", messageId, ex.getWorkflowId());
         } catch (Exception ex) {
-            LOGGER.error("Error during reading of MESH message. Message id: {}", messageId, ex);
+            LOGGER.error("Error during reading of MESH message. MeshMessageId={}", messageId, ex);
             // skip message with error and attempt to download the next one
+        } finally {
+            conversationIdService.resetConversationId();
         }
     }
 

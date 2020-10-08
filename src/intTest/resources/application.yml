@@ -6,7 +6,7 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     uk.nhs.digital.nhsconnect.nhais: ${NHAIS_LOGGING_LEVEL:DEBUG}
   pattern:
-    console: "-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} CorrelationId=%X{CorrelationId} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"
+    console: "-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} ConversationId=%X{ConversationId} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"
 
 management:
   endpoints:
@@ -37,7 +37,7 @@ nhais:
     password: ${NHAIS_MONGO_PASSWORD:}
     options: ${NHAIS_MONGO_OPTIONS:}
     autoIndexCreation: ${NHAIS_MONGO_AUTO_INDEX_CREATION:true}
-    ttl: ${NHAIS_MONGO_TTL:PT60S}
+    ttl: ${NHAIS_MONGO_TTL:PT87600H} # long duration (10 years) because the timestamps used in tests are hardcoded. prevent deletion of data during tests
     cosmosDbEnabled: ${NHAIS_COSMOS_DB_ENABLED:false}
   mesh:
     mailboxId: ${NHAIS_MESH_MAILBOX_ID:gp_mailbox} #defaults below are used by fake-mesh

@@ -2,7 +2,6 @@ package uk.nhs.digital.nhsconnect.nhais.outbound;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
@@ -18,6 +17,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -33,6 +33,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
     protected final TimestampService timestampService;
     protected final OutboundStateRepository outboundStateRepository;
     protected final MeshCypherDecoder meshCypherDecoder;
+    protected final ConversationIdService conversationIdService;
 
     protected abstract List<Segment> createMessageSegments(T translationItems);
 
@@ -106,7 +107,7 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             .setTransactionType(translationItems.getTransactionType())
             .setTranslationTimestamp(translationItems.getTranslationTimestamp())
             .setOperationId(translationItems.getOperationId())
-            .setCorrelationId(MDC.get(CorrelationIdFilter.KEY));
+            .setConversationId(conversationIdService.getCurrentConversationId());
         outboundStateRepository.save(outboundState);
     }
 

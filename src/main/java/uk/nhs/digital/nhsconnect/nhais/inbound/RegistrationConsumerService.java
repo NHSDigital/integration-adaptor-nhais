@@ -21,6 +21,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
+import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateFactory;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
@@ -37,6 +38,7 @@ public class RegistrationConsumerService implements RegistrationConsumer {
     private final InboundStateRepository inboundStateRepository;
     private final InboundStateFactory inboundStateFactory;
     private final OutboundStateRepository outboundStateRepository;
+    private final OutboundStateFactory outboundStateFactory;
     private final OutboundQueueService outboundQueueService;
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
@@ -91,7 +93,7 @@ public class RegistrationConsumerService implements RegistrationConsumer {
         if (recep.getMessages().size() != 1) {
             throw new EdifactValidationException("Recep should have a 1 message");
         }
-        return OutboundState.fromRecep(recep.getMessages().get(0));
+        return outboundStateFactory.fromRecep(recep.getMessages().get(0));
     }
 
     private OutboundMeshMessage prepareRecepOutboundMessage(String recepEdifact, Interchange recep) {

@@ -116,7 +116,7 @@ paths:
       summary: Deduct a patient (Deduction transaction)
       parameters:
         - in: header
-          name: CorrelationId
+          name: ConversationId
           required: false
           description: (Optional) a unique identifier to trace this request in logs and databases
           schema:
@@ -138,15 +138,15 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
         default:
           description: The request could not be processed and forwarded to NHAIS
           headers:
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
           content:
@@ -202,7 +202,7 @@ paths:
       summary: Removal (Out of Area)
       parameters:
         - in: header
-          name: CorrelationId
+          name: ConversationId
           required: false
           description: (Optional) a unique identifier to trace this request in logs and databases
           schema:
@@ -224,15 +224,15 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
         default:
           description: The request could not be processed and forwarded to NHAIS
           headers:
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
           content:
@@ -353,7 +353,7 @@ paths:
       summary: Accept a new patient (Acceptance transaction)
       parameters:
         - in: header
-          name: CorrelationId
+          name: ConversationId
           required: false
           description: (Optional) a unique identifier to trace this request in logs and databases
           schema:
@@ -376,15 +376,15 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
         default:
           description: The request could not be processed and forwarded to NHAIS
           headers:
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
           content:
@@ -509,7 +509,7 @@ paths:
       summary: Amend patient details (Amendment transaction)
       parameters:
         - in: header
-          name: CorrelationId
+          name: ConversationId
           required: false
           description: (Optional) a unique identifier to trace this request in logs and databases
           schema:
@@ -534,15 +534,15 @@ paths:
               schema:
                 type: string
               description: The unique identifier for the operation MUST be retained to match to the inbound reply
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
         default:
           description: The request could not be processed and forwarded to NHAIS
           headers:
-            CorrelationId:
-              description: If a CorrelationId request header is provided this will be the same value. Otherwise this is the CorrelationId generated for the request.
+            ConversationId:
+              description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
                 type: string
           content:

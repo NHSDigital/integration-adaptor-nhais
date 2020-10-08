@@ -14,6 +14,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.TranslationItems;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.outbound.translator.amendment.AmendmentToEdifactTranslator;
 import uk.nhs.digital.nhsconnect.nhais.sequence.SequenceService;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.util.List;
@@ -29,9 +30,10 @@ public class JsonPatchToEdifactService extends AbstractToEdifactService<JsonPatc
         TimestampService timestampService,
         OutboundStateRepository outboundStateRepository,
         AmendmentToEdifactTranslator amendmentTranslator,
-        MeshCypherDecoder meshCypherDecoder) {
+        MeshCypherDecoder meshCypherDecoder,
+        ConversationIdService conversationIdService) {
 
-        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder);
+        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder, conversationIdService);
         this.amendmentTranslator = amendmentTranslator;
     }
 
