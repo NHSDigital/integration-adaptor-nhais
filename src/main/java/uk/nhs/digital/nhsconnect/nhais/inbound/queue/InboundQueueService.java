@@ -10,7 +10,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.RecepConsumerService;
-import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumer;
+import uk.nhs.digital.nhsconnect.nhais.inbound.RegistrationConsumerService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
@@ -27,7 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InboundQueueService {
 
-    private final RegistrationConsumer registrationConsumerService;
+    private final RegistrationConsumerService registrationConsumerService;
 
     private final RecepConsumerService recepConsumerService;
 
@@ -44,13 +44,13 @@ public class InboundQueueService {
 
     @JmsListener(destination = "${nhais.amqp.meshInboundQueueName}")
     public void receive(Message message) throws IOException, JMSException {
-        LOGGER.debug("Received message: {}", message);
         try {
+            setLoggingConversationId(message);
             String body = JmsReader.readMessage(message);
             LOGGER.debug("Received message body: {}", body);
             InboundMeshMessage meshMessage = objectMapper.readValue(body, InboundMeshMessage.class);
-            LOGGER.debug("Decoded message: {}", meshMessage);
-            // TODO: get the conversation id and attach to logger?
+            LOGGER.info("Processing MeshMessageId={} with MeshWorkflowId={}",
+                meshMessage.getMeshMessageId(), meshMessage.getWorkflowId());
 
             if (WorkflowId.REGISTRATION.equals(meshMessage.getWorkflowId())) {
                 registrationConsumerService.handleRegistration(meshMessage);
@@ -61,9 +61,12 @@ public class InboundQueueService {
             }
 
             message.acknowledge();
+            LOGGER.info("Completed processing MeshMessageId={}", meshMessage.getMeshMessageId());
         } catch (Exception e) {
             LOGGER.error("Error while processing mesh inbound queue message", e);
             throw e; //message will be sent to DLQ after few unsuccessful redeliveries
+        } finally {
+            conversationIdService.resetConversationId();
         }
     }
 
@@ -80,5 +83,13 @@ public class InboundQueueService {
     @SneakyThrows
     private String serializeMeshMessage(InboundMeshMessage meshMessage) {
         return objectMapper.writeValueAsString(meshMessage);
+    }
+
+    private void setLoggingConversationId(Message message) {
+        try {
+            conversationIdService.applyConversationId(message.getStringProperty(JmsHeaders.CONVERSATION_ID));
+        } catch (JMSException e) {
+            LOGGER.error("Unable to read header " + JmsHeaders.CONVERSATION_ID + " from message", e);
+        }
     }
 }

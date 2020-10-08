@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RegistrationConsumerService implements RegistrationConsumer {
+public class RegistrationConsumerService {
 
     private final InboundGpSystemService inboundGpSystemService;
     private final InboundStateRepository inboundStateRepository;
@@ -44,12 +44,12 @@ public class RegistrationConsumerService implements RegistrationConsumer {
     private final EdifactParser edifactParser;
     private final InboundEdifactTransactionHandler inboundEdifactTransactionService;
 
-    @Override
     public void handleRegistration(InboundMeshMessage meshMessage) {
-        LOGGER.debug("Received Registration message: {}", meshMessage);
         Interchange interchange = edifactParser.parse(meshMessage.getContent());
+        logInterchangeReceived(interchange);
 
         var transactionsToProcess = filterOutDuplicates(interchange);
+        LOGGER.info("Interchange contains {} new transactions", transactionsToProcess.size());
 
         var inboundStateRecords = prepareInboundStateRecords(transactionsToProcess);
         var supplierQueueDataToSend = prepareSupplierQueueDataToSend(transactionsToProcess);
@@ -59,16 +59,22 @@ public class RegistrationConsumerService implements RegistrationConsumer {
         var recepOutboundState = prepareRecepOutboundState(recep);
         var recepOutboundMessage = prepareRecepOutboundMessage(recepEdifact, recep);
 
-        Streams.zip(inboundStateRecords.stream(), supplierQueueDataToSend.stream(), Pair::of)
-            .forEach(pair -> {
-                if (!isCloseQuarterNotification(pair.getRight())) {
-                    inboundGpSystemService.publishToSupplierQueue(pair.getRight());
-                }
-                inboundStateRepository.save(pair.getLeft());
-            });
+        Streams.forEachPair(inboundStateRecords.stream(), supplierQueueDataToSend.stream(),
+            this::publishMessageAndRecordInboundState);
 
         outboundQueueService.publish(recepOutboundMessage);
         outboundStateRepository.save(recepOutboundState);
+        logRecepSentFor(interchange);
+    }
+
+    private void publishMessageAndRecordInboundState(InboundState inboundState, InboundGpSystemService.DataToSend dataToSend) {
+        if (isCloseQuarterNotification(dataToSend)) {
+            LOGGER.info("Skipping publish to GP System Queue for Close Quarter Notification TN={}", inboundState.getTransactionNumber());
+        } else {
+            inboundGpSystemService.publishToSupplierQueue(dataToSend);
+        }
+        inboundStateRepository.save(inboundState);
+        LOGGER.info("Completed processing TN={} OperationId={}", inboundState.getTransactionNumber(), inboundState.getOperationId());
     }
 
     private boolean isCloseQuarterNotification(InboundGpSystemService.DataToSend dataToSend) {
@@ -120,17 +126,43 @@ public class RegistrationConsumerService implements RegistrationConsumer {
     private List<InboundGpSystemService.DataToSend> prepareSupplierQueueDataToSend(List<Transaction> transactions) {
         return transactions.stream()
             .map(transaction -> {
-                LOGGER.debug("Handling transaction: {}", transaction);
                 var dataToSend = inboundEdifactTransactionService.translate(transaction);
                 LOGGER.debug("Converted registration message into {}", dataToSend.getContent());
                 var operationId = OperationId.buildOperationId(
                     transaction.getMessage().getInterchange().getInterchangeHeader().getRecipient(),
                     transaction.getReferenceTransactionNumber().getTransactionNumber());
-                LOGGER.debug("Generated operation id: {}", operationId);
+                logTransactionReceived(transaction, operationId);
                 return dataToSend
                     .setOperationId(operationId)
                     .setTransactionType(transaction.getMessage().getReferenceTransactionType().getTransactionType());
             }).collect(Collectors.toList());
+    }
+
+    private void logInterchangeReceived(Interchange interchange) {
+        if(LOGGER.isInfoEnabled()) {
+            var interchangeHeader = interchange.getInterchangeHeader();
+            LOGGER.info("Translating EDIFACT interchange from Sender={} to Recipient={} with RIS={} containing {} messages",
+                interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber(),
+                interchange.getMessages().size());
+        }
+    }
+
+    private void logRecepSentFor(Interchange interchange) {
+        if(LOGGER.isInfoEnabled()) {
+            var interchangeHeader = interchange.getInterchangeHeader();
+            LOGGER.info("Published for async send to MESH a RECEP for the interchange from Sender={} to Recipient={} with RIS={}",
+                interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber());
+        }
+    }
+
+    private void logTransactionReceived(Transaction transaction, String operationId) {
+        if(LOGGER.isInfoEnabled()) {
+            var message = transaction.getMessage();
+            var type = transaction.getMessage().getReferenceTransactionType().getTransactionType().getAbbreviation();
+            LOGGER.info("Translating EDIFACT transaction TN={} OperationId={} of message Type={} RMS={}",
+                transaction.getReferenceTransactionNumber().getTransactionNumber(), operationId,
+                type, message.getMessageHeader().getSequenceNumber());
+        }
     }
 
     private List<InboundState> prepareInboundStateRecords(List<Transaction> transactions) {
