@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -35,6 +36,9 @@ public class InboundGpSystemServiceTest {
     @Mock
     private TextMessage textMessage;
 
+    @Mock
+    private ConversationIdService conversationIdService;
+
     @InjectMocks
     private InboundGpSystemService inboundGpSystemService;
 
@@ -54,6 +58,7 @@ public class InboundGpSystemServiceTest {
 
         String serializedData = "some_serialized_data";
         when(serializer.serialize(parameters)).thenReturn(serializedData);
+        when(conversationIdService.getCurrentConversationId()).thenReturn("ABC123");
 
         inboundGpSystemService.publishToSupplierQueue(dataToSend);
 
@@ -66,7 +71,8 @@ public class InboundGpSystemServiceTest {
         messageCreatorArgumentCaptor.getValue().createMessage(session);
 
         verify(session).createTextMessage(eq(serializedData));
-        verify(textMessage).setStringProperty(eq("OperationId"), eq(operationId));
-        verify(textMessage).setStringProperty(eq("TransactionType"), eq(transactionType.name().toLowerCase()));
+        verify(textMessage).setStringProperty("OperationId", operationId);
+        verify(textMessage).setStringProperty("TransactionType", transactionType.name().toLowerCase());
+        verify(textMessage).setStringProperty("ConversationId", "ABC123");
     }
 }

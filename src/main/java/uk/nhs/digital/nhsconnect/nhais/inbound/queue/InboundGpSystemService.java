@@ -11,6 +11,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentBody;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 @Component
@@ -20,6 +21,7 @@ public class InboundGpSystemService {
 
     private final ObjectSerializer serializer;
     private final JmsTemplate jmsTemplate;
+    private final ConversationIdService conversationIdService;
 
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
     private String gpSystemInboundQueueName;
@@ -32,6 +34,7 @@ public class InboundGpSystemService {
             var message = session.createTextMessage(jsonMessage);
             message.setStringProperty(JmsHeaders.OPERATION_ID, dataToSend.getOperationId());
             message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, dataToSend.getTransactionType().name().toLowerCase());
+            message.setStringProperty(JmsHeaders.CONVERSATION_ID, conversationIdService.getCurrentConversationId());
             return message;
         });
         LOGGER.debug("Published message to inbound gp system queue");

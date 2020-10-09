@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
@@ -14,6 +15,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceMessageRecep;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.io.IOException;
@@ -43,6 +45,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
         .toInstant();
     // Mongo only supports millis precision
     private static final Instant PROCESSED_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final String CONVERSATION_ID = "ABC123";
 
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
@@ -50,9 +53,13 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     @MockBean
     private TimestampService timestampService;
 
+    @MockBean
+    private ConversationIdService conversationIdService;
+
     @BeforeEach
     void setUp() {
         when(timestampService.getCurrentTimestamp()).thenReturn(PROCESSED_TIMESTAMP);
+        when(conversationIdService.getCurrentConversationId()).thenReturn(CONVERSATION_ID);
         clearGpSystemInboundQueue();
         clearMeshMailboxes();
     }
@@ -110,7 +117,8 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
             .setSender(SENDER)
             .setRecipient(RECIPIENT)
             .setTranslationTimestamp(TRANSLATION_TIMESTAMP)
-            .setProcessedTimestamp(PROCESSED_TIMESTAMP);
+            .setProcessedTimestamp(PROCESSED_TIMESTAMP)
+            .setConversationId(CONVERSATION_ID);
 
         softly.assertThat(inboundState).isEqualToIgnoringGivenFields(expectedInboundState, "id");
     }

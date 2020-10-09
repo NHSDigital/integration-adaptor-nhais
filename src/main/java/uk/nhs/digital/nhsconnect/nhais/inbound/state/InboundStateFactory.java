@@ -7,6 +7,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
+import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
@@ -15,6 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 public class InboundStateFactory {
 
     private final TimestampService timestampService;
+    private final ConversationIdService conversationIdService;
 
     public InboundState fromTransaction(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
@@ -36,7 +38,8 @@ public class InboundStateFactory {
             .setTransactionNumber(transactionNumber)
             .setTransactionType((ReferenceTransactionType.Inbound) referenceTransactionType.getTransactionType())
             .setTranslationTimestamp(translationTimestamp)
-            .setProcessedTimestamp(processedTimestamp);
+            .setProcessedTimestamp(processedTimestamp)
+            .setConversationId(conversationIdService.getCurrentConversationId());
     }
 
     public InboundState fromRecep(Message recep) {
@@ -52,7 +55,8 @@ public class InboundStateFactory {
             .setSender(interchangeHeader.getSender())
             .setRecipient(interchangeHeader.getRecipient())
             .setTranslationTimestamp(translationTimestamp)
-            .setProcessedTimestamp(processedTimestamp);
+            .setProcessedTimestamp(processedTimestamp)
+            .setConversationId(conversationIdService.getCurrentConversationId());
     }
 
 }

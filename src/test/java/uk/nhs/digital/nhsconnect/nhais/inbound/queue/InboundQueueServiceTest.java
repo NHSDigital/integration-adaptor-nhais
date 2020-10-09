@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound.queue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -41,6 +42,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class InboundQueueServiceTest {
 
+    public static final String CONVERSATION_ID = "CONV123";
+
     @Mock
     private RegistrationConsumerService registrationConsumerService;
 
@@ -71,6 +74,7 @@ public class InboundQueueServiceTest {
     @Test
     public void when_receive_registrationMessage_then_handledByRegistrationConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
+        when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
         inboundQueueService.receive(message);
 
@@ -78,21 +82,27 @@ public class InboundQueueServiceTest {
         expectedMeshMessage.setWorkflowId(WorkflowId.REGISTRATION);
         verify(registrationConsumerService).handleRegistration(expectedMeshMessage);
         verify(message).acknowledge();
+        verify(conversationIdService).applyConversationId(CONVERSATION_ID);
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
     public void when_receive_registrationMessage_registrationConsumerServiceThrowsException_noAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
+        when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
         doThrow(RuntimeException.class).when(registrationConsumerService).handleRegistration(any(MeshMessage.class));
 
         assertThrows(RuntimeException.class, () -> inboundQueueService.receive(message));
 
         verify(message, times(0)).acknowledge();
+        verify(conversationIdService).applyConversationId(CONVERSATION_ID);
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
     public void when_receive_recepMessage_handledByRecepConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
+        when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
         inboundQueueService.receive(message);
 
@@ -100,26 +110,34 @@ public class InboundQueueServiceTest {
         expectedMeshMessage.setWorkflowId(WorkflowId.RECEP);
         verify(recepConsumerService).handleRecep(expectedMeshMessage);
         verify(message).acknowledge();
+        verify(conversationIdService).applyConversationId(CONVERSATION_ID);
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
     public void when_receive_registrationMessage_recepConsumerServiceThrowsException_noAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
+        when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
         doThrow(RuntimeException.class).when(recepConsumerService).handleRecep(any(MeshMessage.class));
 
         assertThrows(RuntimeException.class, () -> inboundQueueService.receive(message));
 
         verify(message, times(0)).acknowledge();
+        verify(conversationIdService).applyConversationId(CONVERSATION_ID);
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
     public void when_receive_unknownWorkflow_throwsUnknownWorkflowException_noAck() throws Exception{
         when(message.getBody(String.class)).thenReturn("{}");
+        when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
         assertThrows(UnknownWorkflowException.class, () -> inboundQueueService.receive(message));
 
         verifyNoInteractions(recepConsumerService, registrationConsumerService);
         verify(message, times(0)).acknowledge();
+        verify(conversationIdService).applyConversationId(CONVERSATION_ID);
+        verify(conversationIdService).resetConversationId();
     }
 
     @Test
@@ -128,8 +146,6 @@ public class InboundQueueServiceTest {
         when(timestampService.getCurrentTimestamp()).thenReturn(now);
         final var messageSentTimestamp = "2020-06-12T14:15:16Z";
         when(timestampService.formatInISO(now)).thenReturn(messageSentTimestamp);
-        final var conversationId = "CONV123";
-        when(conversationIdService.getCurrentConversationId()).thenReturn(conversationId);
 
         InboundMeshMessage inboundMeshMessage = InboundMeshMessage.create(WorkflowId.REGISTRATION, "ASDF", null, "ID123");
 
@@ -144,10 +160,11 @@ public class InboundQueueServiceTest {
         TextMessage textMessage = mock(TextMessage.class);
         // should not return a testMessage unless timestamp was set to expected value
         when(jmsSession.createTextMessage(expectedStringMessage)).thenReturn(textMessage);
+        when(conversationIdService.getCurrentConversationId()).thenReturn(CONVERSATION_ID);
 
         var actualTextMessage = messageCreator.createMessage(jmsSession);
         assertThat(actualTextMessage).isSameAs(textMessage);
-        verify(textMessage).setStringProperty(JmsHeaders.CONVERSATION_ID, conversationId);
+        verify(textMessage).setStringProperty(JmsHeaders.CONVERSATION_ID, CONVERSATION_ID);
 
 
     }

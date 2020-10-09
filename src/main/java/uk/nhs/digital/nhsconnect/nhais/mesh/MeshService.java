@@ -100,7 +100,7 @@ public class MeshService {
             inboundQueueService.publish(meshMessage);
             LOGGER.debug("Acknowledging MeshMessageId={} on MESH API", messageId);
             meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
-            LOGGER.info("Downloaded, published, and acknowledged MeshMessageId={} for inbound processing", meshMessage.getMeshMessageId());
+            LOGGER.info("Published MeshMessageId={} for inbound processing", meshMessage.getMeshMessageId());
         } catch (MeshWorkflowUnknownException ex) {
             LOGGER.warn("MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.", messageId, ex.getWorkflowId());
         } catch (Exception ex) {

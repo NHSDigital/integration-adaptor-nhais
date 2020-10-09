@@ -41,4 +41,5 @@ public class InboundState implements TimeToLive {
     private Instant translationTimestamp;
     private ReferenceTransactionType.Inbound transactionType;
     private Instant processedTimestamp;
+    private String conversationId;
 }
