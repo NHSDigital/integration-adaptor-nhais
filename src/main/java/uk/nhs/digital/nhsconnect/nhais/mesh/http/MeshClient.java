@@ -64,9 +64,11 @@ public class MeshClient {
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
+                    String content = EntityUtils.toString(response.getEntity()); // safe to get content in case of error
                     throw new MeshApiConnectionException("Couldn't send MESH message.",
                         HttpStatus.ACCEPTED,
-                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()),
+                        content);
                 }
                 MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response, loggingName);
                 LOGGER.info("Successfully sent transaction OperationId={} to MeshMailboxId={} in MeshMessageId={}",
@@ -86,9 +88,10 @@ public class MeshClient {
                 logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
                     String content = EntityUtils.toString(response.getEntity()); // safe to get content in case of error
-                    throw new MeshApiConnectionException("Couldn't download MeshMessageId=" + messageId + "\n" + content,
+                    throw new MeshApiConnectionException("Couldn't download MeshMessageId=" + messageId,
                         HttpStatus.OK,
-                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()),
+                        content);
                 }
                 var meshMessage = new MeshMessage();
                 /* Get the workflowId before extracting the message body. An exception is thrown if the workflowId is
