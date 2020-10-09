@@ -79,13 +79,15 @@ public class MeshClient {
     @SneakyThrows
     public InboundMeshMessage getEdifactMessage(String messageId) {
         final var loggingName = "Download message";
+        final String content;
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.getMessage(messageId);
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
+                content = EntityUtils.toString(response.getEntity());
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-                    throw new MeshApiConnectionException("Couldn't download MESH message using id: " + messageId,
+                    throw new MeshApiConnectionException("Couldn't download MeshMessageId=" + messageId + "\n" + content,
                         HttpStatus.OK,
                         HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
                 }
@@ -94,7 +96,7 @@ public class MeshClient {
                 unsupported causing that message to be skipped. Messages for unsupported workflows might be very large
                 (up to 100mb) so we want to avoid reading the content into a String if not needed. */
                 meshMessage.setWorkflowId(WorkflowId.fromString(response.getHeaders("Mex-WorkflowID")[0].getValue()));
-                meshMessage.setContent(EntityUtils.toString(response.getEntity()));
+                meshMessage.setContent(content);
                 LOGGER.debug("MESH '{}' response content: {}", loggingName, meshMessage.getContent());
                 meshMessage.setMeshMessageId(messageId);
                 return meshMessage;
