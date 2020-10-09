@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshApiConnectionException;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith({SpringExtension.class, IntegrationTestsExtension.class})
@@ -128,5 +130,23 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     @Test
     void When_Authenticating_Then_NoExceptionThrown() {
         assertThatCode(() -> meshClient.authenticate()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void When_downloadMessageThatDoesNotExist_then_throwException() {
+        assertThatExceptionOfType(MeshApiConnectionException.class).isThrownBy(
+            () -> meshClient.getEdifactMessage("thisisaninvalidmessageid1234567890")
+        );
+    }
+
+    @Test
+    void When_downloadMessageThatIsGone_then_throwException() {
+        MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        var messageId = testMessageId.getMessageID();
+        nhaisMeshClient.acknowledgeMessage(messageId);
+
+        assertThatExceptionOfType(MeshApiConnectionException.class).isThrownBy(
+            () -> meshClient.getEdifactMessage(messageId)
+        );
     }
 }
