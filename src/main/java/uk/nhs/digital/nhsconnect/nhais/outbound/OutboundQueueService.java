@@ -63,7 +63,7 @@ public class OutboundQueueService {
             meshClient.authenticate();
             meshClient.sendEdifactMessage(outboundMeshMessage);
         } catch (Exception e) {
-            LOGGER.error("Error while processing mesh inbound queue message", e);
+            LOGGER.error("Error while processing mesh outbound queue message", e);
             throw e; // rethrow so message will be sent to DLQ after a few unsuccessful deliveries
         } finally {
             conversationIdService.resetConversationId();
