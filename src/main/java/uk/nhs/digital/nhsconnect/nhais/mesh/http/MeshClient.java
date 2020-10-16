@@ -8,6 +8,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -23,6 +24,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,7 +61,10 @@ public class MeshClient {
         LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
-            request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
+            String contentString = outboundMeshMessage.getContent();
+            byte[] contentBytes = contentString.getBytes(StandardCharsets.UTF_8);
+            request.setEntity(new ByteArrayEntity(contentBytes));
+            request.setHeader("ContentType", "application/octet");
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
