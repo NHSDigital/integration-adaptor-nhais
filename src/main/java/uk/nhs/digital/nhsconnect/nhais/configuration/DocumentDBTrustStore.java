@@ -20,21 +20,21 @@ import java.security.cert.X509Certificate;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AwsTrustStore {
+public class DocumentDBTrustStore {
 
     private final AmazonS3 s3Client;
 
     @SneakyThrows
     public void addToDefault(String trustStorePath, String trustStorePassword) {
         final X509TrustManager defaultTrustManager = getDefaultTrustManager();
-        final X509TrustManager awsTrustManager = getAwsTrustManager(new AmazonS3URI(trustStorePath), trustStorePassword);
-        X509TrustManager combinedTrustManager = new CombinedTrustManager(awsTrustManager, defaultTrustManager);
+        final X509TrustManager documentDbTrustManager = getDocumentDbTrustManager(new AmazonS3URI(trustStorePath), trustStorePassword);
+        X509TrustManager combinedTrustManager = new CombinedTrustManager(documentDbTrustManager, defaultTrustManager);
 
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, new TrustManager[]
             {
                 combinedTrustManager
-            },null);
+            }, null);
         SSLContext.setDefault(sslContext);
     }
 
@@ -52,18 +52,16 @@ public class AwsTrustStore {
     }
 
     @SneakyThrows
-    private X509TrustManager getAwsTrustManager(AmazonS3URI s3URI, String trustStorePassword) {
+    private X509TrustManager getDocumentDbTrustManager(AmazonS3URI s3URI, String trustStorePassword) {
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init((KeyStore) null); // Using null here initialises the TMF with the default trust store.
 
         try (var s3Object = s3Client.getObject(new GetObjectRequest(s3URI.getBucket(), s3URI.getKey()));
              var content = s3Object.getObjectContent()) {
-            KeyStore awsKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            awsKeyStore.load(content, trustStorePassword.toCharArray());
+            KeyStore documentDbKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            documentDbKeyStore.load(content, trustStorePassword.toCharArray());
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(awsKeyStore);
-        } catch (Exception e) {
-            throw e;
+            trustManagerFactory.init(documentDbKeyStore);
         }
 
         for (TrustManager tm : trustManagerFactory.getTrustManagers()) {

@@ -6,6 +6,7 @@ import com.mongodb.MongoClientSettings;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +54,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     private boolean documentDbTls;
 
     @Autowired
-    private AwsTrustStore awsTrustStore;
+    private DocumentDBTrustStore documentDBTrustStore;
 
     @Override
     public String getDatabaseName() {
@@ -76,13 +77,13 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         LOGGER.info("Creating a connection string for mongo client settings...");
         if (!Strings.isNullOrEmpty(host)) {
             if (documentDbTls) {
-                configureTls();
+                configureCustomDocumentDbTrustStore();
             }
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
         } else if (!Strings.isNullOrEmpty(uri)) {
             if (documentDbTls) {
-                configureTls();
+                configureCustomDocumentDbTrustStore();
             }
             LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
             return uri;
@@ -92,9 +93,11 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
         }
     }
 
-    private void configureTls() {
-        LOGGER.info("TLS for DocumentDB enabled. Adding AWS trust store to default.");
-        awsTrustStore.addToDefault(trustStorePath, trustStorePassword);
+    private void configureCustomDocumentDbTrustStore() {
+        if (StringUtils.isNotBlank(trustStorePath)) {
+            LOGGER.info("TLS for DocumentDB enabled. Adding custom TrustStore to default.");
+            documentDBTrustStore.addToDefault(trustStorePath, trustStorePassword);
+        }
     }
 
     private String createConnectionStringFromProperties() {
