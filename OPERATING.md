@@ -216,9 +216,11 @@ This option should only be used for local tests as this might create a vulnerabi
 Use of DocumentDB TLS requires java trust store to be provided manually. Instructions on how to create trust store can be found here: 
 [Connect to Document DB programmatically](https://docs.aws.amazon.com/documentdb/latest/developerguide/connect_programmatically.html#connect_programmatically-tls_enabled) 
 
-To configure custom trust store with AWS CA certificates set the `NHAIS_MONGO_TRUST_STORE_PATH` to runtime-accessible S3 path with the JKS file.
-Additionally set the `NHAIS_MONGO_TRUST_STORE_PASSWORD` to trust store password
-   
+To configure custom trust store with AWS CA certificates set the `NHAIS_MONGO_TRUST_STORE_PATH` 
+with a runtime-accessible S3 URL with the JKS file (Example: s3://my-bucket/my-trust-store.jks). 
+The AWS resource running the adaptor must have sufficient permission to read this s3 object.
+Additionally, set the `NHAIS_MONGO_TRUST_STORE_PASSWORD` to trust store password
+
 
 # MESH Requirements
 
