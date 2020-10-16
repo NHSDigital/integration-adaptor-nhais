@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class DocumentDBTrustStore {
+public class CustomTrustStore {
 
     private final AmazonS3 s3Client;
 

@@ -6,8 +6,6 @@ import com.mongodb.MongoClientSettings;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -47,15 +45,6 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private boolean cosmosDbEnabled;
 
-    private String trustStorePath;
-
-    private String trustStorePassword;
-
-    private boolean documentDbTls;
-
-    @Autowired
-    private DocumentDBTrustStore documentDBTrustStore;
-
     @Override
     public String getDatabaseName() {
         return this.database;
@@ -76,27 +65,14 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     private String createConnectionString() {
         LOGGER.info("Creating a connection string for mongo client settings...");
         if (!Strings.isNullOrEmpty(host)) {
-            if (documentDbTls) {
-                configureCustomDocumentDbTrustStore();
-            }
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
         } else if (!Strings.isNullOrEmpty(uri)) {
-            if (documentDbTls) {
-                configureCustomDocumentDbTrustStore();
-            }
             LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
             return uri;
         } else {
             LOGGER.error("Mongodb must be configured using a connection string or individual properties. Both uri and host are null or empty");
             throw new RuntimeException("Missing mongodb connection string and/or properties");
-        }
-    }
-
-    private void configureCustomDocumentDbTrustStore() {
-        if (StringUtils.isNotBlank(trustStorePath)) {
-            LOGGER.info("TLS for DocumentDB enabled. Adding custom TrustStore to default.");
-            documentDBTrustStore.addToDefault(trustStorePath, trustStorePassword);
         }
     }
 

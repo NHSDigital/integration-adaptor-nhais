@@ -184,8 +184,7 @@ These optional properties configure a trust store with private CA certificates. 
 
 | Environment Variable                | Default       | Description 
 | ------------------------------------|---------------|-------------
-| NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED  | false         | (Optional) Enables TLS configuration for AWS DocumentDB
-| NHAIS_MONGO_TRUST_STORE_PATH        |               | (Optional) Path to trust store (used only in local/dev)
+| NHAIS_MONGO_TRUST_STORE_PATH        |               | (Optional) S3 path to trust store JKS
 | NHAIS_MONGO_TRUST_STORE_PASSWORD    |               | (Optional) Password used to access trust store
 
 ## MESH API

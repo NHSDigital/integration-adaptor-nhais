@@ -208,7 +208,6 @@ The impact is that documents in Cosmos may live slightly longer than those store
 AWS DocumentDB uses a private CA certificate and therefore requires a custom keystore to manage the CA certificates effectively.
 
 To use TLS, it has to be enabled in the DocumentDB instance with the Mongo connection string containing the `tls=true`. 
-Additionally, the environment variable `NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED` must be set to true. 
 For more information on TLS configuration in MongoDB see [TLS options for Mongo connection string](https://docs.mongodb.com/manual/reference/connection-string/#tls-options).
 
 SSH tunneling might require adding the connection string option: `tlsAllowInvalidHostnames=true` (as CA would try to resolve localhost as hostname).
@@ -217,20 +216,8 @@ This option should only be used for local tests as this might create a vulnerabi
 Use of DocumentDB TLS requires java trust store to be provided manually. Instructions on how to create trust store can be found here: 
 [Connect to Document DB programmatically](https://docs.aws.amazon.com/documentdb/latest/developerguide/connect_programmatically.html#connect_programmatically-tls_enabled) 
 
-There are two ways to configure trust store depending on how the adaptor is ran:
-1. Gradle run
-   
-   Set absolute path to trust store file in `NHAIS_MONGO_TRUST_STORE_PATH` environment variable.
-   
-2. Docker
-
-   Create folder `truststore` where docker-compose.yml file is. Then place trust store file inside this folder.
-   Build docker image using `docker-compose build nhais`. As docker creates image it copies all files from `./truststore/` folder 
-   (it uses relative path from `docker-compose.yml` file) to docker image filesystem as `/truststore/`
-   Next step is to specify trust store filename using `NHAIS_MONGO_TRUST_STORE_PATH` environment variable in docker-compose.yml file. 
-   It has to be prepended with `/truststore/` (ex. `NHAIS_MONGO_TRUST_STORE_PATH=/truststore/aws-docdb-truststore.jks`).
-   
-Both options require `NHAIS_MONGO_DOCUMENTDB_TLS_ENABLED` to be set to true and `NHAIS_MONGO_TRUST_STORE_PASSWORD` set to trust store password
+To configure custom trust store with AWS CA certificates set the `NHAIS_MONGO_TRUST_STORE_PATH` to runtime-accessible S3 path with the JKS file.
+Additionally set the `NHAIS_MONGO_TRUST_STORE_PASSWORD` to trust store password
    
 
 # MESH Requirements
