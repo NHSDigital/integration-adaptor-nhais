@@ -6,6 +6,7 @@ import com.mongodb.MongoClientSettings;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -51,6 +52,9 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private boolean documentDbTls;
 
+    @Autowired
+    private AwsTrustStore awsTrustStore;
+
     @Override
     public String getDatabaseName() {
         return this.database;
@@ -90,7 +94,7 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private void configureTls() {
         LOGGER.info("TLS for DocumentDB enabled. Adding AWS trust store to default.");
-        AwsTrustStore.addToDefault(trustStorePath, trustStorePassword);
+        awsTrustStore.addToDefault(trustStorePath, trustStorePassword);
     }
 
     private String createConnectionStringFromProperties() {
