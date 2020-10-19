@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -23,6 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @Slf4j
+@DependsOn({"appInitializer"}) // so that custom TrustStore is loaded before DB connection is initilized
 public class NhaisMongoClientConfiguration extends AbstractMongoClientConfiguration {
 
     private String database;
@@ -45,12 +47,6 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
 
     private boolean cosmosDbEnabled;
 
-    private String trustStorePath;
-
-    private String trustStorePassword;
-
-    private boolean documentDbTls;
-
     @Override
     public String getDatabaseName() {
         return this.database;
@@ -71,26 +67,15 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
     private String createConnectionString() {
         LOGGER.info("Creating a connection string for mongo client settings...");
         if (!Strings.isNullOrEmpty(host)) {
-            if (documentDbTls) {
-                configureTls();
-            }
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
         } else if (!Strings.isNullOrEmpty(uri)) {
-            if (documentDbTls) {
-                configureTls();
-            }
             LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
             return uri;
         } else {
             LOGGER.error("Mongodb must be configured using a connection string or individual properties. Both uri and host are null or empty");
             throw new RuntimeException("Missing mongodb connection string and/or properties");
         }
-    }
-
-    private void configureTls() {
-        LOGGER.info("TLS for DocumentDB enabled. Adding AWS trust store to default.");
-        AwsTrustStore.addToDefault(trustStorePath, trustStorePassword);
     }
 
     private String createConnectionStringFromProperties() {
