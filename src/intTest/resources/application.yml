@@ -19,6 +19,8 @@ management:
     mongo:
       enabled: true
 nhais:
+  trustStorePath:
+  trustStorePassword:
   amqp:
     brokers: ${NHAIS_AMQP_BROKERS:amqp://localhost:5672}
     meshOutboundQueueName: ${NHAIS_MESH_OUTBOUND_QUEUE_NAME:nhais_mesh_outbound}

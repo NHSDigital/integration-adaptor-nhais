@@ -1,35 +1,46 @@
 package uk.nhs.digital.nhsconnect.nhais.configuration;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3URI;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-public class AwsTrustStore {
+@Component
+@Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class CustomTrustStore {
+
+    private final AmazonS3 s3Client;
 
     @SneakyThrows
-    public static void addToDefault(String trustStorePath, String trustStorePassword) {
+    public void addToDefault(String trustStorePath, String trustStorePassword) {
         final X509TrustManager defaultTrustManager = getDefaultTrustManager();
-        final X509TrustManager awsTrustManager = getAwsTrustManager(trustStorePath, trustStorePassword);
-        X509TrustManager combinedTrustManager = new CombinedTrustManager(awsTrustManager, defaultTrustManager);
+        final X509TrustManager customTrustManager = getCustomDbTrustManager(new AmazonS3URI(trustStorePath), trustStorePassword);
+        X509TrustManager combinedTrustManager = new CombinedTrustManager(customTrustManager, defaultTrustManager);
 
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, new TrustManager[]
             {
                 combinedTrustManager
-            },null);
+            }, null);
+        LOGGER.info("Overriding default TrustStore with combined one");
         SSLContext.setDefault(sslContext);
     }
 
     @SneakyThrows
-    private static X509TrustManager getDefaultTrustManager() {
+    private X509TrustManager getDefaultTrustManager() {
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init((KeyStore) null); // Using null here initialises the TMF with the default trust store.
 
@@ -42,15 +53,17 @@ public class AwsTrustStore {
     }
 
     @SneakyThrows
-    private static X509TrustManager getAwsTrustManager(String trustStorePath, String trustStorePassword) {
+    private X509TrustManager getCustomDbTrustManager(AmazonS3URI s3URI, String trustStorePassword) {
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init((KeyStore) null); // Using null here initialises the TMF with the default trust store.
 
-        try (FileInputStream myKeys = new FileInputStream(trustStorePath)) {
-            KeyStore awsKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            awsKeyStore.load(myKeys, trustStorePassword.toCharArray());
+        LOGGER.info("Loading custom KeyStore from '{}'", s3URI.toString());
+        try (var s3Object = s3Client.getObject(new GetObjectRequest(s3URI.getBucket(), s3URI.getKey()));
+             var content = s3Object.getObjectContent()) {
+            KeyStore customKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            customKeyStore.load(content, trustStorePassword.toCharArray());
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(awsKeyStore);
+            trustManagerFactory.init(customKeyStore);
         }
 
         for (TrustManager tm : trustManagerFactory.getTrustManagers()) {
