@@ -64,7 +64,6 @@ public class MeshClient {
             String contentString = outboundMeshMessage.getContent();
             byte[] contentBytes = contentString.getBytes(StandardCharsets.UTF_8);
             request.setEntity(new ByteArrayEntity(contentBytes));
-            request.setHeader("ContentType", "application/octet");
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
