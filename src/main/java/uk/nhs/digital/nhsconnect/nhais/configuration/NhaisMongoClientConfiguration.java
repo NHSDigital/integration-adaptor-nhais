@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
@@ -23,6 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @Slf4j
+@DependsOn({"appInitializer"}) // so that custom TrustStore is loaded before DB connection is initilized
 public class NhaisMongoClientConfiguration extends AbstractMongoClientConfiguration {
 
     private String database;

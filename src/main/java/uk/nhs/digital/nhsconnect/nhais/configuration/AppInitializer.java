@@ -7,7 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(value = "appInitializer")
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppInitializer implements InitializingBean {
