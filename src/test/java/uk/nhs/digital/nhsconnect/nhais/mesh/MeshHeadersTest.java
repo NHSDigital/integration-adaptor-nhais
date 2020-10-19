@@ -53,7 +53,7 @@ class MeshHeadersTest {
             softly.assertThat(getHeaderValue(headers, "Mex-FileName")).isEqualTo("edifact.dat");
             softly.assertThat(getHeaderValue(headers, "Mex-MessageType")).isEqualTo("DATA");
             softly.assertThat(getHeaderValue(headers, "Mex-Content-Compressed")).isEqualTo("N");
-            softly.assertThat(getHeaderValue(headers, "Content-Type")).isEqualTo("application/octet");
+            softly.assertThat(getHeaderValue(headers, "Content-Type")).isEqualTo("application/octet-stream");
         });
     }
 
