@@ -17,6 +17,7 @@ public class AppInitializer implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        LOGGER.info("Running app initializer");
         if (StringUtils.isNotBlank(appConfiguration.getTrustStorePath())) {
             LOGGER.info("Adding custom TrustStore to default one");
             customTrustStore.addToDefault(
