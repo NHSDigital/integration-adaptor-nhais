@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class AppConfiguration {
 
-    private String trustStorePath;
+    private String trustStoreUrl;
     private String trustStorePassword;
 
     @Bean

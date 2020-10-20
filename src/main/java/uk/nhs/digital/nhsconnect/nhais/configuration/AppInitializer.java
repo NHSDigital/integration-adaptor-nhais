@@ -18,10 +18,10 @@ public class AppInitializer implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         LOGGER.info("Running app initializer");
-        if (StringUtils.isNotBlank(appConfiguration.getTrustStorePath())) {
+        if (StringUtils.isNotBlank(appConfiguration.getTrustStoreUrl())) {
             LOGGER.info("Adding custom TrustStore to default one");
             customTrustStore.addToDefault(
-                appConfiguration.getTrustStorePath(), appConfiguration.getTrustStorePassword());
+                appConfiguration.getTrustStoreUrl(), appConfiguration.getTrustStorePassword());
         }
     }
 }
