@@ -184,8 +184,8 @@ These optional properties configure a trust store with private CA certificates. 
 
 | Environment Variable                | Default       | Description 
 | ------------------------------------|---------------|-------------
-| NHAIS_MONGO_TRUST_STORE_PATH        |               | (Optional) URL of the trust store JKS. The only scheme currently supported is `s3://`
-| NHAIS_MONGO_TRUST_STORE_PASSWORD    |               | (Optional) Password used to access trust store
+| NHAIS_SSL_TRUST_STORE_URL           |               | (Optional) URL of the trust store JKS. The only scheme currently supported is `s3://`
+| NHAIS_SSL_TRUST_STORE_PASSWORD      |               | (Optional) Password used to access the trust store
 
 ## MESH API
 

@@ -15,8 +15,8 @@ services:
       - NHAIS_AMQP_BROKERS=amqp://activemq:5672
       - NHAIS_MESH_OUTBOUND_QUEUE_NAME=nhais_mesh_outbound
       - NHAIS_MONGO_URI=mongodb://mongodb:27017
-      - NHAIS_MONGO_TRUST_STORE_PATH=
-      - NHAIS_MONGO_TRUST_STORE_PASSWORD=
+      - NHAIS_SSL_TRUST_STORE_URL=
+      - NHAIS_SSL_TRUST_STORE_PASSWORD=
       - NHAIS_MONGO_TTL=P30D
       - NHAIS_COSMOS_DB_ENABLED=false
       - NHAIS_MESH_MAILBOX_ID=gp_mailbox
