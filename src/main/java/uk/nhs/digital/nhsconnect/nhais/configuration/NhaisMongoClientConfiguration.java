@@ -24,7 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @Slf4j
-@DependsOn({"appInitializer"}) // so that custom TrustStore is loaded before DB connection is initilized
+@DependsOn({"appInitializer"}) // so that custom TrustStore is loaded before DB connection is initialized
 public class NhaisMongoClientConfiguration extends AbstractMongoClientConfiguration {
 
     private String database;
