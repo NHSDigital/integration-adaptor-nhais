@@ -38,7 +38,9 @@ class MeshHeadersTest {
             "Mex-To",
             "Mex-WorkflowID",
             "Mex-FileName",
-            "Mex-MessageType");
+            "Mex-MessageType",
+            "Mex-Content-Compressed",
+            "Content-Type");
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(getHeaderValue(headers, "Mex-ClientVersion")).isNotBlank();
@@ -50,6 +52,8 @@ class MeshHeadersTest {
             softly.assertThat(getHeaderValue(headers, "Mex-WorkflowID")).isEqualTo("NHAIS_REG");
             softly.assertThat(getHeaderValue(headers, "Mex-FileName")).isEqualTo("edifact.dat");
             softly.assertThat(getHeaderValue(headers, "Mex-MessageType")).isEqualTo("DATA");
+            softly.assertThat(getHeaderValue(headers, "Mex-Content-Compressed")).isEqualTo("N");
+            softly.assertThat(getHeaderValue(headers, "Content-Type")).isEqualTo("application/octet-stream");
         });
     }
 

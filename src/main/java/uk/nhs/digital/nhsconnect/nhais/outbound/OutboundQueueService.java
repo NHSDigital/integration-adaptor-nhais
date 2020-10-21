@@ -62,10 +62,8 @@ public class OutboundQueueService {
             LOGGER.debug("Parsed message into object: {}", outboundMeshMessage);
             meshClient.authenticate();
             meshClient.sendEdifactMessage(outboundMeshMessage);
-        } catch (Exception e) {
-            LOGGER.error("Error while processing mesh inbound queue message", e);
-            throw e; // rethrow so message will be sent to DLQ after a few unsuccessful deliveries
         } finally {
+            // Let exceptions throw and be handled by default or configured JMS Listener error handler
             conversationIdService.resetConversationId();
         }
     }
