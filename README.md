@@ -236,13 +236,6 @@ Only one instance of the adaptor runs the polling cycle at any given time to pre
 `NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS` prevents one polling cycle from overrunning into the next time interval.
 This value must always be less than `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS`.
 
-| Environment Variable             | Default                   | Description 
-| ---------------------------------|---------------------------|-------------
-| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
-| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
-
-For local test scripts see [mesh/README.md](/mesh/README.md)
-
 ## Operating
 
 Refer to [OPERATING.md](OPERATING.md) for tip about how to operate the adaptor in the production environment.
@@ -369,6 +362,10 @@ To view messages in the ActiveMQ Web Console:
 * Click Queues tab
 * Select desired queue
 * Select a message ID to display information of message 
+
+#### MESH API
+
+A `mesh.sh` bash script exists for testing or debugging MESH. For more information see: [mesh/README.md](/mesh/README.md)
 
 #### Fake MESH
 
