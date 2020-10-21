@@ -203,7 +203,7 @@ Configure the MESH API connection using the following environment variables:
 | NHAIS_MESH_ENDPOINT_CERT         |                           | The content of the PEM-formatted client endpoint certificate
 | NHAIS_MESH_ENDPOINT_PRIVATE_KEY  |                           | The content of the PEM-formatted client private key
 | NHAIS_MESH_SUB_CA                |                           | The content of the PEM-formatted certificate of the issuing Sub CA. Empty if NHAIS_MESH_CERT_VALIDATION is false
-| NHAIS_MESH_CYPHER_TO_MAILBOX     |                           | (1) The mapping between each HA Trading Partner Code (HA Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per lines and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392"
+| NHAIS_MESH_CYPHER_TO_MAILBOX     |                           | (1) The mapping between each HA Trading Partner Code (HA Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per line and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392"
 | NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
 
 (1) For every "Destination HA Cipher" used in outbound API requests there MUST be a corresponding "HA Link Code" mapped 
