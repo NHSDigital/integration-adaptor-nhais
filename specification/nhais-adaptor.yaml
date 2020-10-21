@@ -63,6 +63,32 @@ info:
           "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
         }
 
+    ## Terminology
+
+    This specification follows the terminology used in Chapter 3 of the GP System Specification to describe the data
+    items. The are some data items that are referred to by different names both within the specification and across the
+    NHS estate. This section aims to disambiguate some of these synonymous names.
+
+    ### GP Code
+
+    The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
+
+    > The GMC national GP code and the HA locally-defined GP code MUST both be sent, in the format GMC national GP code
+    concatenated with a comma (,) concatenated with the HA local GP code.
+
+    _GP System Specification 4.3.7_
+
+    The "GMC national GP Code" is also referred to as the "GMC National code" or simply the "GMC Code".
+
+    The "HA local GP code" is also referred to as the "Local GP code" or "local code". Elsewhere in the NHS estate this
+    value may be referred to as the "Partnership Code", "Practice Code", or most confusingly the "GP Code". If a
+    practice is assigned different values for any of these then the operator of the NHAIS system should be consulated
+    to determine which to use.
+
+    ### GP Trading Partner Code
+
+    The GP Trading Partner Code is a four-character code used in the interchange header of the EDIFACT messages.
+
   contact:
     name: National Integration Adaptors API Support
     url: 'https://github.com/nhsconnect/integration-adaptor-nhais'

@@ -18,6 +18,7 @@ This document contains requirements and tips for operation the adaptor in a prod
 **Using Azure Service Bus**
 
 * The ASB must use [MaxDeliveryCount and dead-lettering](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues#exceeding-maxdeliverycount)
+* Azure Service Bus may require some parameters as part of the URL configuration. For example: `NHAIS_AMQP_BROKERS=amqps://<NAME>.servicebus.windows.net/;SharedAccessKeyName=<KEY NAME>;SharedAccessKey=<KEY VALUE>`
 
 # Mongodb Database Requirements
 
@@ -92,7 +93,7 @@ Properties:
   * `code`: Should always be `SUCCESS` as NHAIS systems no longer send negative RECEPs
   * `translationTimestamp`: The timestamp, as reported in the inbound EDIFACT interchange, when the NHAIS system produced the RECEP
   * `processedTimestamp`: The timestamp when the adaptor processed the RECEP message
-  * `interchangeSequence`: The Receive Interchange Sequence (RIS) of the interchange in which the RECEP was sent
+  * `interchangeSequence`: The Receive Interchange Sequence (RIS) of the interchange in which the RECEP was received
 
 Example:
 
