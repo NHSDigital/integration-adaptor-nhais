@@ -987,8 +987,8 @@ ul.nav-tabs {
 <li>Request a Removal for a patient who has moved out of area</li>
 <li>Request a Deduction for a supported reason</li>
 </ul>
-<p>The GP Links - NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.</p>
-<p>The API is based on the <a href="https://github.com/NHSDigital/personal-demographics-service-api">Personal Demographics Service API</a></p>
+<p>The GP Links - NHAIS Adaptor does not store any patient demographic data and does not support GET operations.</p>
+<p>The API is loosely based on the <a href="https://github.com/NHSDigital/personal-demographics-service-api">Personal Demographics Service API</a></p>
 <p><strong>PLEASE NOTE</strong> - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
 adequate validation is performed against ALL data items. There is no data validation or transformation performed by
 this adaptor for ANY transaction type.</p>
@@ -996,8 +996,8 @@ this adaptor for ANY transaction type.</p>
 <p>This API is <a href="https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest">RESTful</a>.</p>
 <p>It also conforms to the <a href="https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir">FHIR</a> global standard for health care data exchange.
 Specifically, it is aligned with <a href="https://digital.nhs.uk/services/fhir-uk-core">FHIR UK Core</a>, which is built on FHIR Release 4.</p>
-<p>You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
-In particular:</p>
+<p>You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific
+rules. In particular:</p>
 <ul>
 <li>resource names are capitalised and singular, for example the <code>/Patient</code> not <code>/patients</code></li>
 <li>array names are singular, for example <code>line</code> not <code>lines</code> for address lines</li>
@@ -1023,6 +1023,31 @@ following characters must be escaped (preceded) by a question mark: <code>' + : 
   &quot;valueString&quot;: &quot;PATIENT?'S ?+ 1 ?: PATIENTS??&quot;
 }
 </code></pre>
+<h2>Terminology</h2>
+<p>This specification follows the terminology used in Chapter 3 of the GP System Specification to describe the data
+items. Some data items that are referred to by different names both within the specification and across the
+NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
+of terminology.</p>
+<h4>GP Code</h4>
+<p>The GP Code is sometimes called the &quot;Patient's Responsible GP Code&quot;. The GP Code is a combination of two values:</p>
+<blockquote>
+<p>The GMC national GP code and the HA locally-defined GP code MUST both be sent, in the format GMC national GP code
+concatenated with a comma (,) concatenated with the HA local GP code.</p>
+</blockquote>
+<p><em>Source: GP System Specification 4.3.7</em></p>
+<p>The &quot;GMC national GP Code&quot; is also referred to as the &quot;GMC National code&quot; or simply the &quot;GMC Code&quot;.</p>
+<p>The &quot;HA local GP code&quot; is also referred to as the &quot;HA locally-defined GP code&quot;, &quot;Local GP code&quot; or &quot;local code&quot;.
+Elsewhere in the NHS estate this value may be referred to as the &quot;Partnership Code&quot;, &quot;Practice Code&quot;, or most
+confusingly the &quot;GP Code&quot;. If a practice is assigned different values for any of these then the operator of the
+NHAIS system should be consulted to determine which to use.</p>
+<h4>GP Trading Partner Code</h4>
+<p>The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
+of the EDIFACT messages. This may also be referred to as the &quot;GP Link Code&quot;.</p>
+<h4>Destination HA Cipher</h4>
+<p>The identifier of the NHAIS instance which is the patient's managing organisation. The identifier is comprised of two
+or three uppercase letters. In some contexts it is referred as simply &quot;Cipher&quot;.</p>
+<p>The cipher is related to the &quot;HA Link Code&quot;: the four-character codes used to configure the environment variable
+NHAIS_MESH_CYPHER_TO_MAILBOX.</p>
 
             </div>
           </div>
