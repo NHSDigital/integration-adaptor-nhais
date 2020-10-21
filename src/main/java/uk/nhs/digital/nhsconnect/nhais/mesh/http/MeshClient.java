@@ -171,9 +171,10 @@ public class MeshClient {
 
     @SneakyThrows
     private void logResponse(String type, HttpResponse response) {
+        // log as INFO - these are useful for normal operation to trace requests and error reports
+        LOGGER.info("MESH '{}' response status line: {}", type, response.getStatusLine());
+        LOGGER.info("MESH '{}' response headers: {}", type, response.getAllHeaders());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("MESH '{}' response status line: {}", type, response.getStatusLine());
-            LOGGER.debug("MESH '{}' response headers: {}", type, response.getAllHeaders());
             if (response.getEntity() != null) {
                 var entity = response.getEntity();
                 LOGGER.debug("MESH '{}' response content encoding: {}, content type: {}, content length: {}", type, entity.getContentEncoding(), entity.getContentType(), entity.getContentLength());
