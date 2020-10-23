@@ -386,3 +386,14 @@ Check your imports and ensure you're using JUnit5 `org.junit.jupiter.api.*` clas
 #### Application repeatedly throws exceptions
 
 ActiveMQ has not been configured with dead-lettering. You must purge all invalid messages from the queues.
+
+#### Integration Tests: Can not connect to Ryuk at localhost:32779
+
+An optional component (Ryuk) of the [Testcontainers](https://www.testcontainers.org/) framework used for integration tests
+fails to start on some developer workstations. It is possible to disable this component with an environment variable:
+
+    TESTCONTAINERS_RYUK_DISABLED=true
+    
+Note: This variable must not be set when the tests run automatically as part of a pipeline. Ryuk guarantees container
+cleanup up after each test (even if the test crashes) and disabling it could lead to a resource leak in the build 
+environment.
