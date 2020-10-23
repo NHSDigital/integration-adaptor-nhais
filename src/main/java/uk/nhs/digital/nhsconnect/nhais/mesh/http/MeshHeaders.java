@@ -31,7 +31,9 @@ public class MeshHeaders {
             new BasicHeader("Mex-To", recipient),
             new BasicHeader("Mex-WorkflowID", workflowId.getWorkflowId()),
             new BasicHeader("Mex-FileName", "edifact.dat"),
-            new BasicHeader("Mex-MessageType", "DATA"));
+            new BasicHeader("Mex-MessageType", "DATA"),
+            new BasicHeader("Mex-Content-Compressed", "N"),
+            new BasicHeader("Content-Type", "application/octet-stream"));
         return Stream.concat(Arrays.stream(createMinimalHeaders()), sendHeaders.stream())
             .toArray(Header[]::new);
     }

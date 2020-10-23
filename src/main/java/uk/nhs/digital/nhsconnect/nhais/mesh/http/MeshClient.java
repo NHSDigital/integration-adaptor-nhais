@@ -8,6 +8,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -23,6 +24,7 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,14 +61,18 @@ public class MeshClient {
         LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
-            request.setEntity(new StringEntity(outboundMeshMessage.getContent()));
+            String contentString = outboundMeshMessage.getContent();
+            byte[] contentBytes = contentString.getBytes(StandardCharsets.UTF_8);
+            request.setEntity(new ByteArrayEntity(contentBytes));
             logRequest(loggingName, request);
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.ACCEPTED.value()) {
+                    String content = EntityUtils.toString(response.getEntity()); // safe to get content in case of error
                     throw new MeshApiConnectionException("Couldn't send MESH message.",
                         HttpStatus.ACCEPTED,
-                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()),
+                        content);
                 }
                 MeshMessageId meshMessageId = parseInto(MeshMessageId.class, response, loggingName);
                 LOGGER.info("Successfully sent transaction OperationId={} to MeshMailboxId={} in MeshMessageId={}",
@@ -85,9 +91,11 @@ public class MeshClient {
             try (CloseableHttpResponse response = client.execute(request)) {
                 logResponse(loggingName, response);
                 if (response.getStatusLine().getStatusCode() != HttpStatus.OK.value()) {
-                    throw new MeshApiConnectionException("Couldn't download MESH message using id: " + messageId,
+                    String content = EntityUtils.toString(response.getEntity()); // safe to get content in case of error
+                    throw new MeshApiConnectionException("Couldn't download MeshMessageId=" + messageId,
                         HttpStatus.OK,
-                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+                        HttpStatus.valueOf(response.getStatusLine().getStatusCode()),
+                        content);
                 }
                 var meshMessage = new MeshMessage();
                 /* Get the workflowId before extracting the message body. An exception is thrown if the workflowId is
@@ -163,9 +171,10 @@ public class MeshClient {
 
     @SneakyThrows
     private void logResponse(String type, HttpResponse response) {
+        // log as INFO - these are useful for normal operation to trace requests and error reports
+        LOGGER.info("MESH '{}' response status line: {}", type, response.getStatusLine());
+        LOGGER.info("MESH '{}' response headers: {}", type, response.getAllHeaders());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("MESH '{}' response status line: {}", type, response.getStatusLine());
-            LOGGER.debug("MESH '{}' response headers: {}", type, response.getAllHeaders());
             if (response.getEntity() != null) {
                 var entity = response.getEntity();
                 LOGGER.debug("MESH '{}' response content encoding: {}, content type: {}, content length: {}", type, entity.getContentEncoding(), entity.getContentType(), entity.getContentLength());
