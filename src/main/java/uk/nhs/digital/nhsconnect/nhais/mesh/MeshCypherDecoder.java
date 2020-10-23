@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 @Component
 public class MeshCypherDecoder {
-    @Value("${nhais.mesh.cypherToMailbox}")
-    private final String cypherToMailbox;
+    @Value("${nhais.mesh.recipientToMailboxIdMappings}")
+    private final String recipientToMailboxIdMappings;
 
     @Autowired
-    public MeshCypherDecoder(@Value("${nhais.mesh.cypherToMailbox}") String cypherToMailbox) {
-        this.cypherToMailbox = cypherToMailbox;
+    public MeshCypherDecoder(@Value("${nhais.mesh.recipientToMailboxIdMappings}") String recipientToMailboxIdMappings) {
+        this.recipientToMailboxIdMappings = recipientToMailboxIdMappings;
     }
 
     public String getRecipientMailbox(OutboundMeshMessage outboundMeshMessage) {
@@ -37,7 +37,7 @@ public class MeshCypherDecoder {
     }
 
     private Map<String, String> createMappings() {
-        return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
+        return Stream.of(recipientToMailboxIdMappings.replaceAll(" ", "\n").split("\n"))
             .map(row -> row.split("="))
             .peek(this::validateMappings)
             .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
