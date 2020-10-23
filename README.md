@@ -209,7 +209,7 @@ Configure the MESH API connection using the following environment variables:
 (1) The three-character "Destination HA Cipher" required for each outbound API request uniquely identifies that patient's 
 managing organisation. Each managing organisation also has a four-character "HA Trading Partner Code" (HA Link Code) uniquely
 identifying that patient's managing organisation for the purpose of EDIFACT messaging. Finally, each "HA Trading Partner Code"
-is assigned a MESH Mailbox ID: the address to which the EDIFACT files for a given recipient are sent. The mappings between
+is assigned a MESH Mailbox ID: the mailbox to which the EDIFACT files for a given recipient are sent. The mappings between
 organisations' "HA Trading Partner Codes" and their MESH Mailbox IDs are controlled by this variable. Note: A "Destination HA Cipher" 
 can usually be converted into a "HA Link Code" by appending 1 or 01 to create the four-character code. If in doubt consult 
 with the operator of the NHAIS instance for the correct value.
