@@ -17,7 +17,7 @@ values of these variables are different for the RECEP responder to prevent it fr
 `NHAIS_MESH_INBOUND_QUEUE_NAME` is used to process the RECEP messages.
 * `NHAIS_MONGO_DATABASE_NAME` **MUST** be different from the value used by the NHAIS adaptor.
 * `NHAIS_MESH_MAILBOX_ID` must be the ID of the mailbox that the adaptor sends outbound messages to
-* `NHAIS_MESH_CYPHER_TO_MAILBOX` must use the mailbox ID where the adaptor receives inbound messages. There must be
+* `NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS` must use the mailbox ID where the adaptor receives inbound messages. There must be
 a mapping for every GP Trading Partner code used in the tests.
 
 The `src/recepResponder/resources/application.yml` contains defaults for testing locally.

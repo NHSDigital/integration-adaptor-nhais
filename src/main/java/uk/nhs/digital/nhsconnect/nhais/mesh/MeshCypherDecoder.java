@@ -32,7 +32,7 @@ public class MeshCypherDecoder {
     public void validateRecipient(String recipient) {
         Map<String, String> mappings = createMappings();
         if (!mappings.containsKey(recipient)) {
-            throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);
+            throw new MeshRecipientUnknownException("No MESH Mailbox id is configured for recipient: " + recipient);
         }
     }
 
@@ -45,7 +45,7 @@ public class MeshCypherDecoder {
 
     private void validateMappings(String[] rows) {
         if (rows.length < 2) {
-            throw new MeshRecipientUnknownException("NHAIS_MESH_CYPHER_TO_MAILBOX env var doesn't contain valid recipient to mailbox mapping");
+            throw new MeshRecipientUnknownException("NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS env var doesn't contain valid recipient to mailbox mapping");
         }
     }
 }

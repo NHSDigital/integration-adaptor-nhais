@@ -97,7 +97,7 @@ info:
       identifier is comprised of two or three uppercase letters. In some contexts it is referred simply as "Cipher".
 
       The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
-        NHAIS_MESH_CYPHER_TO_MAILBOX. Refer to the instructions for configuring this variable for more details.
+        NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
 
   contact:
     name: National Integration Adaptors API Support

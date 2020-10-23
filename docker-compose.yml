@@ -106,7 +106,7 @@ services:
           +yLvICQmVjHWsNWD3uuT3gEGdeKDIzEnovXUmqhQE7N/YDupTv5hkh8hMKl12XGs
           3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
           -----END RSA PRIVATE KEY-----
-      - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=nhais_mailbox
+      - NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS=XX11=nhais_mailbox
         TES5=nhais_mailbox
         YY21=nhais_mailbox
         KC01=nhais_mailbox
@@ -158,7 +158,7 @@ services:
       - NHAIS_MONGO_DATABASE_NAME=nhais_responder
       - NHAIS_MESH_MAILBOX_ID=nhais_mailbox
       - NHAIS_MESH_HOST=https://fake-mesh:8829/messageexchange/
-      - NHAIS_MESH_CYPHER_TO_MAILBOX=XX11=gp_mailbox
+      - NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS=XX11=gp_mailbox
         TES5=gp_mailbox
         YY21=gp_mailbox
         KC01=gp_mailbox
