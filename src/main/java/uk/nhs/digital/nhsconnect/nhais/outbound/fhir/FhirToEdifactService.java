@@ -6,7 +6,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
+import uk.nhs.digital.nhsconnect.nhais.mesh.RecipientMailboxIdMappings;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Segment;
@@ -36,8 +36,8 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
                                 TimestampService timestampService,
                                 ConversationIdService conversationIdService,
                                 FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator,
-                                MeshCypherDecoder meshCypherDecoder) {
-        super(sequenceService, timestampService, outboundStateRepository, meshCypherDecoder, conversationIdService);
+                                RecipientMailboxIdMappings recipientMailboxIdMappings) {
+        super(sequenceService, timestampService, outboundStateRepository, recipientMailboxIdMappings, conversationIdService);
         this.fhirToEdifactSegmentTranslator = fhirToEdifactSegmentTranslator;
     }
 

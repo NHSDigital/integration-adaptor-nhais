@@ -15,7 +15,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
+import uk.nhs.digital.nhsconnect.nhais.mesh.RecipientMailboxIdMappings;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHeaders;
@@ -31,8 +31,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -69,7 +67,7 @@ public abstract class IntegrationBaseTest {
     @Autowired
     protected MeshConfig meshConfig;
     @Autowired
-    private MeshCypherDecoder meshCypherDecoder;
+    private RecipientMailboxIdMappings recipientMailboxIdMappings;
     @Autowired
     private MeshHeaders meshHeaders;
     @Autowired
@@ -184,10 +182,10 @@ public abstract class IntegrationBaseTest {
     @SneakyThrows
     private MeshClient buildMeshClientForNhaisMailbox() {
         // getting this from config is
-        String nhaisMailboxId = meshCypherDecoder.getRecipientMailbox(new MeshMessage().setHaTradingPartnerCode("XX11"));
+        String nhaisMailboxId = recipientMailboxIdMappings.getRecipientMailboxId(new MeshMessage().setHaTradingPartnerCode("XX11"));
         String gpMailboxId = meshConfig.getMailboxId();
-        MeshCypherDecoder mockMeshCypherDecoder = mock(MeshCypherDecoder.class);
-        when(mockMeshCypherDecoder.getRecipientMailbox(any(OutboundMeshMessage.class))).thenReturn(gpMailboxId);
+        RecipientMailboxIdMappings mockRecipientMailboxIdMappings = mock(RecipientMailboxIdMappings.class);
+        when(mockRecipientMailboxIdMappings.getRecipientMailboxId(any(OutboundMeshMessage.class))).thenReturn(gpMailboxId);
         // getters perform a transformation
         String endpointCert = (String) FieldUtils.readField(meshConfig, "endpointCert", true);
         String endpointPrivateKey = (String) FieldUtils.readField(meshConfig, "endpointPrivateKey", true);
@@ -197,6 +195,6 @@ public abstract class IntegrationBaseTest {
             endpointPrivateKey, subCaCert);
         MeshHeaders meshHeaders = new MeshHeaders(nhaisMailboxConfig);
         MeshRequests meshRequests = new MeshRequests(nhaisMailboxConfig, meshHeaders);
-        return new MeshClient(meshRequests, mockMeshCypherDecoder, meshHttpClientBuilder);
+        return new MeshClient(meshRequests, mockRecipientMailboxIdMappings, meshHttpClientBuilder);
     }
 }

@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class MeshCypherDecoder {
+public class RecipientMailboxIdMappings {
     @Value("${nhais.mesh.recipientToMailboxIdMappings}")
     private final String recipientToMailboxIdMappings;
 
     @Autowired
-    public MeshCypherDecoder(@Value("${nhais.mesh.recipientToMailboxIdMappings}") String recipientToMailboxIdMappings) {
+    public RecipientMailboxIdMappings(@Value("${nhais.mesh.recipientToMailboxIdMappings}") String recipientToMailboxIdMappings) {
         this.recipientToMailboxIdMappings = recipientToMailboxIdMappings;
     }
 
-    public String getRecipientMailbox(OutboundMeshMessage outboundMeshMessage) {
+    public String getRecipientMailboxId(OutboundMeshMessage outboundMeshMessage) {
         Map<String, String> mappings = createMappings();
         String recipient = outboundMeshMessage.getHaTradingPartnerCode();
         if (!mappings.containsKey(recipient)) {

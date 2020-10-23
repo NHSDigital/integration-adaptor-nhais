@@ -168,7 +168,7 @@ public class FhirControllerIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Couldn't decode recipient: ABCD1");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("ABCD1");
     }
 
 }
