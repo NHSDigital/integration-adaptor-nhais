@@ -211,7 +211,7 @@ managing organisation. Each managing organisation also has a four-character "HA 
 identifying that patient's managing organisation for the purpose of EDIFACT messaging. Finally, each "HA Trading Partner Code"
 is assigned a MESH Mailbox ID: the address to which the EDIFACT files for a given recipient are sent. The mappings between
 organisations' "HA Trading Partner Codes" and their MESH Mailbox IDs are controlled by this variable. Note: A "Destination HA Cipher" 
-can usually be converted into a "HA Link Code" by appending 0 or 01 to create the four-character code. If in doubt consult 
+can usually be converted into a "HA Link Code" by appending 1 or 01 to create the four-character code. If in doubt consult 
 with the operator of the NHAIS instance for the correct value.
 
 The following three variables control how often the adaptor performs a MESH polling cycle. During a polling cycle the 
