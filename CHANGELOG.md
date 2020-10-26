@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2020-10-26
+
+- Added a workaround for an NHAIS issue where the DTM segment contains a timestamp is the past. The adaptor now reads its
+ translationTimestamp from the interchange header.
+- Encapsulate outboundState recep fields in sub-document. Updated the documentation for reporting on missing RECEPs. No
+ data migration in place; to generate reports on pre-1.4.0 records follow the instructions from version 1.3.1.
+- The inboundState and outboundState.recep documents now contain a 'processedTimestamp' as a record of when the adaptor 
+ received and processed the transaction.
+- Adds a ConversationId header to outbound API requests, inbound GP system message queue, related internal queues, 
+ and database documents. Logs related to processing that transaction include the ConversationId value.
+- Replaced an embedded trust store with the capability to download a trust store (Java Keystore) at start-up when 
+ operating the adaptor requires non-public CA certificates. Presently only downloads from AWS S3 are supported. The 
+ use-case is for AWS Documentdb.
+- Added additional logging and MESH request headers to meet compliance criteria for the MESH API.
+- Added a terminology section to the OpenAPI document to disambiguate some confusing names of GP and HA identifiers.
+- Renamed the NHAIS_MESH_CYPHER_TO_MAILBOX environment variable to NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Added more
+ detailed documentation about how this variable should be set.
+- Added a tip to the OPERATING.md document about configuring the adaptor to use Azure Service Bus
+
 ## [1.3.1] - 2020-09-24
 
 - [Issue #244](https://github.com/nhsconnect/integration-adaptor-nhais/issues/244) Documentation added about preserving 
