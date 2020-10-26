@@ -3,7 +3,7 @@
 export NHAIS_LOGGING_LEVEL=DEBUG
 
 export NHAIS_MESH_MAILBOX_ID=gp_mailbox
-export NHAIS_MESH_CYPHER_TO_MAILBOX="XX11=nhais_mailbox
+export NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS="XX11=nhais_mailbox
 TES5=nhais_mailbox
 YY21=nhais_mailbox"
 
