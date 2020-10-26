@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  nhais:
+    image: nhsdev/nia-nhais-adaptor:1.4.0
+    ports:
+      - "80:8080"
+    environment:
+      - NHAIS_AMQP_BROKERS=amqp://activemq:5672
+      - NHAIS_MONGO_URI=mongodb://mongodb:27017
+      - NHAIS_LOGGING_LEVEL
+      - NHAIS_MESH_MAILBOX_ID
+      - NHAIS_MESH_MAILBOX_PASSWORD
+      - NHAIS_MESH_SHARED_KEY
+      - NHAIS_MESH_HOST
+      - NHAIS_MESH_ENDPOINT_CERT
+      - NHAIS_MESH_ENDPOINT_PRIVATE_KEY
+      - NHAIS_MESH_CYPHER_TO_MAILBOX
+      - NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS
+      - NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS
+      - NHAIS_MESH_CERT_VALIDATION
+      - NHAIS_MESH_SUB_CA
+  activemq:
+    build:
+      context: ../../activemq
+    ports:
+      - "8161:8161"
+      - "5672:5672"
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+  fake-mesh:
+    image: nhsdev/fake-mesh:0.1.6
+    ports:
+      - "8829:8829"
