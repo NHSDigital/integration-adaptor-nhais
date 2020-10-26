@@ -50,7 +50,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     @Autowired
     private MeshRequests meshRequests;
     @Autowired
-    private MeshCypherDecoder meshCypherDecoder;
+    private RecipientMailboxIdMappings recipientMailboxIdMappings;
     @Autowired
     private MeshHttpClientBuilder meshHttpClientBuilder;
 
@@ -87,7 +87,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     @SneakyThrows
     private MeshMessageId sendLargeMessageWithWrongWorkflowId() {
         OutboundMeshMessage messageForMappingMailboxId = new MeshMessage().setHaTradingPartnerCode("XX11");
-        var recipientMailbox = meshCypherDecoder.getRecipientMailbox(messageForMappingMailboxId);
+        var recipientMailbox = recipientMailboxIdMappings.getRecipientMailboxId(messageForMappingMailboxId);
 
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, WorkflowId.REGISTRATION);

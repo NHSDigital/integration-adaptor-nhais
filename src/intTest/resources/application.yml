@@ -130,7 +130,7 @@ nhais:
       3WJ4bVSmp3MOQ2EF4zrAl4fXEd4lS3JxKtzbHFbSogAmPFnuP8wIDWTDgfEq
       -----END RSA PRIVATE KEY-----}
     subCAcert: ${NHAIS_MESH_SUB_CA:}
-    cypherToMailbox: ${NHAIS_MESH_CYPHER_TO_MAILBOX:XX11=nhais_mailbox
+    recipientToMailboxIdMappings: ${NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS:XX11=nhais_mailbox
       TES5=nhais_mailbox
       YY21=nhais_mailbox
       KC01=nhais_mailbox

@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.GpTradingPartnerCode;
 import uk.nhs.digital.nhsconnect.nhais.inbound.fhir.PatientParameter;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
+import uk.nhs.digital.nhsconnect.nhais.mesh.RecipientMailboxIdMappings;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.BeginningOfMessage;
@@ -68,7 +68,7 @@ public class FhirToEdifactServiceTest {
     private FhirToEdifactSegmentTranslator fhirToEdifactSegmentTranslator;
 
     @Mock
-    private MeshCypherDecoder meshCypherDecoder;
+    private RecipientMailboxIdMappings recipientMailboxIdMappings;
 
     @Mock
     private ConversationIdService conversationIdService;
@@ -80,7 +80,7 @@ public class FhirToEdifactServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        doNothing().when(meshCypherDecoder).validateRecipient(any());
+        doNothing().when(recipientMailboxIdMappings).validateRecipient(any());
         when(sequenceService.generateMessageSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SMS);
         when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionNumber(GP_TRADING_PARTNER_CODE)).thenReturn(TN);

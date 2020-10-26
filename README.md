@@ -189,7 +189,9 @@ These optional properties configure a trust store with private CA certificates. 
 
 ## MESH API
 
-MESH configuration is done using environment variables:
+### MESH API Connection Configuration
+
+Configure the MESH API connection using the following environment variables:
 
 | Environment Variable             | Default                   | Description 
 | ---------------------------------|---------------------------|-------------
@@ -201,8 +203,16 @@ MESH configuration is done using environment variables:
 | NHAIS_MESH_ENDPOINT_CERT         |                           | The content of the PEM-formatted client endpoint certificate
 | NHAIS_MESH_ENDPOINT_PRIVATE_KEY  |                           | The content of the PEM-formatted client private key
 | NHAIS_MESH_SUB_CA                |                           | The content of the PEM-formatted certificate of the issuing Sub CA. Empty if NHAIS_MESH_CERT_VALIDATION is false
-| NHAIS_MESH_CYPHER_TO_MAILBOX     |                           | The mapping between each HA Trading Partner Code (Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per lines and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392"
+| NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS |                   | (1) The mapping between each recipient HA Trading Partner Code (HA Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per line and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392"
 | NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
+
+(1) The three-character "Destination HA Cipher" required for each outbound API request uniquely identifies that patient's 
+managing organisation. Each managing organisation also has a four-character "HA Trading Partner Code" (HA Link Code) uniquely
+identifying that patient's managing organisation for the purpose of EDIFACT messaging. Finally, each "HA Trading Partner Code"
+is assigned a MESH Mailbox ID: the mailbox to which the EDIFACT files for a given recipient are sent. The mappings between
+organisations' "HA Trading Partner Codes" and their MESH Mailbox IDs are controlled by this variable. Note: A "Destination HA Cipher" 
+can usually be converted into a "HA Link Code" by appending 1 or 01 to create the four-character code. If in doubt consult 
+with the operator of the NHAIS instance for the correct value.
 
 The following three variables control how often the adaptor performs a MESH polling cycle. During a polling cycle the 
 adaptor will download and acknowledge up to "the first 500 messages" (a MESH API limit).
@@ -228,13 +238,6 @@ is the sum of these two values.
 Only one instance of the adaptor runs the polling cycle at any given time to prevent duplicate processing. The value
 `NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS` prevents one polling cycle from overrunning into the next time interval.
 This value must always be less than `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS`.
-
-| Environment Variable             | Default                   | Description 
-| ---------------------------------|---------------------------|-------------
-| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS | 60000          | Polling frequency (in milliseconds) to obtain database lock
-| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300                    | Maximum frequency for checking for and downloading new MESH messages
-
-For local test scripts see [mesh/README.md](/mesh/README.md)
 
 ## Operating
 
@@ -363,6 +366,10 @@ To view messages in the ActiveMQ Web Console:
 * Select desired queue
 * Select a message ID to display information of message 
 
+#### MESH API
+
+A `mesh.sh` bash script exists for testing or debugging MESH. For more information see: [mesh/README.md](/mesh/README.md)
+
 #### Fake MESH
 
 A mock implementation of the MESH API is available for local development. The latest version is in Github at
@@ -382,3 +389,14 @@ Check your imports and ensure you're using JUnit5 `org.junit.jupiter.api.*` clas
 #### Application repeatedly throws exceptions
 
 ActiveMQ has not been configured with dead-lettering. You must purge all invalid messages from the queues.
+
+#### Integration Tests: "Can not connect to Ryuk at localhost:32779"
+
+An optional component (Ryuk) of the [Testcontainers](https://www.testcontainers.org/) framework used for integration tests
+fails to start on some developer workstations. It is possible to disable this component with an environment variable:
+
+    TESTCONTAINERS_RYUK_DISABLED=true
+    
+Note: This variable must not be set when the tests run automatically as part of a pipeline. Ryuk guarantees container
+cleanup up after each test (even if the test crashes) and disabling it could lead to a resource leak in the build 
+environment.

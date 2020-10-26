@@ -6,62 +6,98 @@ info:
   version: "0.1.0"
   title: GP Links - NHAIS Adaptor (FHIR) API
   description: |
-    ## Overview
-    Use this API to access the GP Links - NHAIS Adaptor API
+      ## Overview
+      Use this API to access the GP Links - NHAIS Adaptor API
 
-    You can:
-    * Accept a new patient
-    * Amend an existing patient's demographics
-    * Request a Removal for a patient who has moved out of area
-    * Request a Deduction for a supported reason
+      You can:
+        * Accept a new patient
+        * Amend an existing patient's demographics
+        * Request a Removal for a patient who has moved out of area
+        * Request a Deduction for a supported reason
 
-    The GP Links - NHAIS Adaptor does not store any patient demograpic data and no GET operations are supported.
+      The GP Links - NHAIS Adaptor does not store any patient demographic data and does not support GET operations.
 
-    The API is based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
+      The API is loosely based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
 
-    **PLEASE NOTE** - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
-    adequate validation is performed against ALL data items. There is no data validation or transformation performed by
-    this adaptor for ANY transaction type.
+      **PLEASE NOTE** - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
+      adequate validation is performed against ALL data items. There is no data validation or transformation performed by
+      this adaptor for ANY transaction type.
 
-    ## Technology
-    This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest).
+      ## Technology
+      This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest).
 
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange.
-    Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
+      It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange.
+      Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
-    You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
-    In particular:
-    - resource names are capitalised and singular, for example the `/Patient` not `/patients`
-    - array names are singular, for example `line` not `lines` for address lines
-    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-    - data items related to an operation rather than the resource are represented as `Parameter`s
+      You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific
+      rules. In particular:
+        - resource names are capitalised and singular, for example the `/Patient` not `/patients`
+        - array names are singular, for example `line` not `lines` for address lines
+        - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+        - data items related to an operation rather than the resource are represented as `Parameter`s
 
-    ## Example Requests
+      ## Example Requests
 
-    A number of example requests are available as part of the adaptor's user acceptance tests.
+      A number of example requests are available as part of the adaptor's user acceptance tests.
 
-    The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
-    of the README explains these examples in further detail.
+      The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
+      of the README explains these examples in further detail.
 
-    ## Permitted Characters for Data Items
+      ## Permitted Characters for Data Items
 
-    Where the adaptor API represents a data item as a string the GP System **MUST** supply a value that complies
-    with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
-    specification. For "free text" fields Chapter 3 refers to Appendix K.
+      Where the adaptor API represents a data item as a string the GP System **MUST** supply a value that complies
+      with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
+      specification. For "free text" fields Chapter 3 refers to Appendix K.
 
-    There are four characters which must be given special treatment. If used within a string-typed data item the
-    following characters must be escaped (preceded) by a question mark: `' + : ?`
+      There are four characters which must be given special treatment. If used within a string-typed data item the
+      following characters must be escaped (preceded) by a question mark: `' + : ?`
 
-    For example, to represent the GP Note
+      For example, to represent the GP Note
 
-        PATIENT'S + 1 : PATIENTS?
+          PATIENT'S + 1 : PATIENTS?
 
-    the JSON request to the adaptor would include the parameter
+      the JSON request to the adaptor would include the parameter
 
-        {
-          "name": "freeText",
-          "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
-        }
+          {
+            "name": "freeText",
+            "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
+          }
+
+      ## Terminology
+
+      This specification follows the terminology used in Chapter 3 of the GP System Specification to describe the data
+      items. Some data items that are referred to by different names both within the specification and across the
+      NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
+      of terminology.
+
+      #### GP Code
+
+      The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
+
+      > The GMC national GP code and the HA locally-defined GP code MUST both be sent, in the format GMC national GP code
+      concatenated with a comma (,) concatenated with the HA local GP code.
+
+      _Source: GP System Specification 4.3.7_
+
+      The "GMC national GP Code" is also referred to as the "GMC National code" or simply the "GMC Code".
+
+      The "HA local GP code" is also referred to as the "HA locally-defined GP code", "Local GP code" or "local code".
+      Elsewhere in the NHS estate this value may be referred to as the "Partnership Code", "Practice Code", or most
+      confusingly the "GP Code". If a practice is assigned different values for any of these then the operator of the
+      NHAIS system should be consulted to determine which to use.
+
+      #### GP Trading Partner Code
+
+      The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
+      of the EDIFACT messages. This may also be referred to as the "GP Link Code".
+
+      #### Destination HA Cipher
+
+      The "Destination HA Cipher" is the identifier of the NHAIS instance of the patient's managing organisation. The
+      identifier is comprised of two or three uppercase letters. In some contexts it is referred simply as "Cipher".
+
+      The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
+        NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
 
   contact:
     name: National Integration Adaptors API Support

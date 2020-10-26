@@ -15,7 +15,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.nhsconnect.nhais.mesh.MeshCypherDecoder;
+import uk.nhs.digital.nhsconnect.nhais.mesh.RecipientMailboxIdMappings;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessageId;
@@ -34,7 +34,7 @@ import java.util.List;
 public class MeshClient {
 
     private final MeshRequests meshRequests;
-    private final MeshCypherDecoder meshCypherDecoder;
+    private final RecipientMailboxIdMappings recipientMailboxIdMappings;
     private final MeshHttpClientBuilder meshHttpClientBuilder;
 
     @SneakyThrows
@@ -57,7 +57,7 @@ public class MeshClient {
     @SneakyThrows
     public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
         final var loggingName = "Send a message";
-        String recipientMailbox = meshCypherDecoder.getRecipientMailbox(outboundMeshMessage);
+        String recipientMailbox = recipientMailboxIdMappings.getRecipientMailboxId(outboundMeshMessage);
         LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());

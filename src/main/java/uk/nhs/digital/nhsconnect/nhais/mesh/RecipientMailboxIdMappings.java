@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class MeshCypherDecoder {
-    @Value("${nhais.mesh.cypherToMailbox}")
-    private final String cypherToMailbox;
+public class RecipientMailboxIdMappings {
+    @Value("${nhais.mesh.recipientToMailboxIdMappings}")
+    private final String recipientToMailboxIdMappings;
 
     @Autowired
-    public MeshCypherDecoder(@Value("${nhais.mesh.cypherToMailbox}") String cypherToMailbox) {
-        this.cypherToMailbox = cypherToMailbox;
+    public RecipientMailboxIdMappings(@Value("${nhais.mesh.recipientToMailboxIdMappings}") String recipientToMailboxIdMappings) {
+        this.recipientToMailboxIdMappings = recipientToMailboxIdMappings;
     }
 
-    public String getRecipientMailbox(OutboundMeshMessage outboundMeshMessage) {
+    public String getRecipientMailboxId(OutboundMeshMessage outboundMeshMessage) {
         Map<String, String> mappings = createMappings();
         String recipient = outboundMeshMessage.getHaTradingPartnerCode();
         if (!mappings.containsKey(recipient)) {
@@ -32,12 +32,12 @@ public class MeshCypherDecoder {
     public void validateRecipient(String recipient) {
         Map<String, String> mappings = createMappings();
         if (!mappings.containsKey(recipient)) {
-            throw new MeshRecipientUnknownException("Couldn't decode recipient: " + recipient);
+            throw new MeshRecipientUnknownException("No MESH Mailbox id is configured for recipient: " + recipient);
         }
     }
 
     private Map<String, String> createMappings() {
-        return Stream.of(cypherToMailbox.replaceAll(" ", "\n").split("\n"))
+        return Stream.of(recipientToMailboxIdMappings.replaceAll(" ", "\n").split("\n"))
             .map(row -> row.split("="))
             .peek(this::validateMappings)
             .collect(Collectors.toMap(row -> row[0].strip(), row -> row[1].strip()));
@@ -45,7 +45,7 @@ public class MeshCypherDecoder {
 
     private void validateMappings(String[] rows) {
         if (rows.length < 2) {
-            throw new MeshRecipientUnknownException("NHAIS_MESH_CYPHER_TO_MAILBOX env var doesn't contain valid recipient to mailbox mapping");
+            throw new MeshRecipientUnknownException("NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS env var doesn't contain valid recipient to mailbox mapping");
         }
     }
 }
