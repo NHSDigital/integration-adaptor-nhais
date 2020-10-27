@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.configuration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3URI;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,11 @@ import java.security.cert.X509Certificate;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@NoArgsConstructor
 public class CustomTrustStore {
 
-    private final AmazonS3 s3Client;
+    @Autowired(required = false)
+    private AmazonS3 s3Client;
 
     @SneakyThrows
     public void addToDefault(String trustStorePath, String trustStorePassword) {

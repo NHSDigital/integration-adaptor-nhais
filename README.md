@@ -179,7 +179,8 @@ Option 2: If `NHAIS_MONGO_HOST` is undefined then the adaptor uses the connectio
 
 **Trust Store Configuration**
 
-These optional properties configure a trust store with private CA certificates. See 
+These optional properties configure a trust store with private CA certificates. This trust store does not replace Java's
+default trust store. At runtime the application adds these additional certificates to the default trust store. See 
 [OPERATING.md - AWS DocumentDB TLS configuration](OPERATING.md#AWS DocumentDB TLS configuration) for more information.
 
 | Environment Variable                | Default       | Description 
