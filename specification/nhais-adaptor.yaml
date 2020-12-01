@@ -99,6 +99,15 @@ info:
       The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
         NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
 
+      ## Operation Id
+
+      The adaptor includes in the response header of every successful request an OperationId value. The OperationId
+      is generated from the GP Trading Partner Code and the Transaction Number. The series of OperationId values for a
+      given GP Trading Partner Code repeats every 10,000,000 transactions.
+
+      The GP MUST retain the OperationId from Acceptance transactions to match inbound Approvals and Rejections. The GP
+      System SHOULD retain the OperationId for all other transactions.
+
   contact:
     name: National Integration Adaptors API Support
     url: 'https://github.com/nhsconnect/integration-adaptor-nhais'
@@ -144,11 +153,6 @@ paths:
         | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
         | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
 
-        ## Operation Id
-
-        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
-        to match against the asynchronous reply from NHAIS
-
       summary: Deduct a patient (Deduction transaction)
       parameters:
         - in: header
@@ -173,7 +177,7 @@ paths:
             operationid:
               schema:
                 type: string
-              description: The unique identifier for the operation MUST be retained to match to the inbound reply
+              description: This identifier for the operation SHOULD be retained for logging and tracing
             ConversationId:
               description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
@@ -230,11 +234,6 @@ paths:
         | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
         | Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
 
-        ## Operation Id
-
-        When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
-        to match against the asynchronous reply from NHAIS
-
       summary: Removal (Out of Area)
       parameters:
         - in: header
@@ -259,7 +258,7 @@ paths:
             operationid:
               schema:
                 type: string
-              description: The unique identifier for the operation MUST be retained to match to the inbound reply
+              description: This identifier for the operation SHOULD be retained for logging and tracing
             ConversationId:
               description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
@@ -382,10 +381,6 @@ paths:
         | Date of Entry into the UK             | Parameter     | dateOfUkEntry                            | valueString              | ISO 8601 Date                         |                                                                                                     |
         | Date Patient left the UK              | Parameter     | dateOfUkExit                             | valueString              | ISO 8601 Date                         |                                                                                                     |
 
-        ## Operation Id
-        When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
-        to match against the asynchronous reply from NHAIS
-
       summary: Accept a new patient (Acceptance transaction)
       parameters:
         - in: header
@@ -411,7 +406,7 @@ paths:
             operationid:
               schema:
                 type: string
-              description: The unique identifier for the operation MUST be retained to match to the inbound reply
+              description: This identifier for the operation MUST be retained to match the inbound reply
             ConversationId:
               description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
@@ -537,11 +532,6 @@ paths:
 
         (3) Use JSON null for blank address lines. Either the "House Name" or the "Number/Road Name" MUST be present.
 
-        ## Operation Id
-
-        An amendment request will produce an operation id in the response headers. Amendments do not solicit replies
-        as such and further amendments from NHAIS will not reference this operation id.
-
       summary: Amend patient details (Amendment transaction)
       parameters:
         - in: header
@@ -569,7 +559,7 @@ paths:
             operationid:
               schema:
                 type: string
-              description: The unique identifier for the operation MUST be retained to match to the inbound reply
+              description: This identifier for the operation SHOULD be retained for logging and tracing
             ConversationId:
               description: If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.
               schema:
