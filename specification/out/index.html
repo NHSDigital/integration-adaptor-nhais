@@ -155,6 +155,31 @@ h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify"
       //Convert elements with "marked" class to markdown
       processMarked();
     });
+
+    function findNode(id, currentNode) {
+        return (Object.keys(currentNode)[0] === id) ? currentNode : findNodeInChildren(id, currentNode);
+    }
+
+    function findNodeInChildren(id, currentNode) {
+        for (let prop in currentNode) {
+            if (currentNode.hasOwnProperty(prop)) {
+                let currentChild = currentNode[prop];
+                if (id === prop) {
+                    return currentChild;
+                } else {
+                    // Search in the current child
+                    if (typeof (currentChild) === 'object') {
+                        let result = findNode(id, currentChild);
+                        if (result !== false) {
+                            return result;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
   </script>
   <style type="text/css">
     @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
@@ -1048,6 +1073,12 @@ of the EDIFACT messages. This may also be referred to as the &quot;GP Link Code&
 identifier is comprised of two or three uppercase letters. In some contexts it is referred simply as &quot;Cipher&quot;.</p>
 <p>The cipher is related to the &quot;HA Link Code&quot;: the four-character codes used to configure the environment variable
 NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.</p>
+<h2>Operation Id</h2>
+<p>The adaptor includes in the response header of every successful request an OperationId value. The OperationId
+is generated from the GP Trading Partner Code and the Transaction Number. The series of OperationId values for a
+given GP Trading Partner Code repeats every 10,000,000 transactions.</p>
+<p>The GP MUST retain the OperationId from Acceptance transactions to match inbound Approvals and Rejections. The GP
+System SHOULD retain the OperationId for all other transactions.</p>
 
             </div>
           </div>
@@ -1167,10 +1198,6 @@ Parameter or Patient resource will be ignored.
 | Previous HA Cipher                    | Parameter     | previousHaCipher                         | valueString              |                                       |                                                                                                     |
 | Date of Entry into the UK             | Parameter     | dateOfUkEntry                            | valueString              | ISO 8601 Date                         |                                                                                                     |
 | Date Patient left the UK              | Parameter     | dateOfUkExit                             | valueString              | ISO 8601 Date                         |                                                                                                     |
-
-## Operation Id
-When you submit an amendment an operation id will be included in the response. This operation id MUST be retained
-to match against the asynchronous reply from NHAIS
 </p>
                         <p></p>
                         <br />
@@ -1434,8 +1461,21 @@ pub fn main() {
 <p class="marked">[HL7 FHIR R4 Parameters Resource](https://www.hl7.org/fhir/parameters.html)</p>
 <script>
 $(document).ready(function() {
-  var schemaWrapper = ;
-  var schema = schemaWrapper.schema;
+  var schemaWrapper = {
+  "description" : "[HL7 FHIR R4 Parameters Resource](https://www.hl7.org/fhir/parameters.html)",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Parameters"
+      }
+    }
+  },
+  "required" : true
+};
+  var schema = findNode('schema', schemaWrapper).schema;
+  if (!schema) {
+      schema = schemaWrapper.schema;
+  }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
   } else {
@@ -1496,7 +1536,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
+                                                  <td>This identifier for the operation MUST be retained to match the inbound reply</td>
                                               </tr>
                                               <tr>
                                                   <td>ConversationId</td>
@@ -1568,9 +1608,14 @@ $(document).ready(function() {
     }
   }
 };
-                                        var schema = schemaWrapper.schema;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                            schema = schemaWrapper.schema;
+                                        }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
                                           schemaWrapper.definitions = Object.assign({}, defs);
                                           $RefParser.dereference(schemaWrapper).catch(function(err) {
@@ -1716,11 +1761,6 @@ Three fields are deprecated and not supported by the adaptor:
 (2) The &#x60;value&#x60; of the patch must be the entire extension including &#x60;url&#x60; and &#x60;valueString&#x60; properties.
 
 (3) Use JSON null for blank address lines. Either the &quot;House Name&quot; or the &quot;Number/Road Name&quot; MUST be present.
-
-## Operation Id
-
-An amendment request will produce an operation id in the response headers. Amendments do not solicit replies
-as such and further amendments from NHAIS will not reference this operation id.
 </p>
                         <p></p>
                         <br />
@@ -2024,8 +2064,20 @@ The patient&#39;s NHS Number. The primary identifier of a patient, unique within
 <p class="marked"></p>
 <script>
 $(document).ready(function() {
-  var schemaWrapper = ;
-  var schema = schemaWrapper.schema;
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Amendment"
+      }
+    }
+  },
+  "required" : true
+};
+  var schema = findNode('schema', schemaWrapper).schema;
+  if (!schema) {
+      schema = schemaWrapper.schema;
+  }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
   } else {
@@ -2086,7 +2138,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
+                                                  <td>This identifier for the operation SHOULD be retained for logging and tracing</td>
                                               </tr>
                                               <tr>
                                                   <td>ConversationId</td>
@@ -2158,9 +2210,14 @@ $(document).ready(function() {
     }
   }
 };
-                                        var schema = schemaWrapper.schema;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                            schema = schemaWrapper.schema;
+                                        }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
                                           schemaWrapper.definitions = Object.assign({}, defs);
                                           $RefParser.dereference(schemaWrapper).catch(function(err) {
@@ -2239,11 +2296,6 @@ https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
 | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
 | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
-
-## Operation Id
-
-When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
-to match against the asynchronous reply from NHAIS
 </p>
                         <p></p>
                         <br />
@@ -2507,8 +2559,20 @@ pub fn main() {
 <p class="marked"></p>
 <script>
 $(document).ready(function() {
-  var schemaWrapper = ;
-  var schema = schemaWrapper.schema;
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Parameters"
+      }
+    }
+  },
+  "required" : true
+};
+  var schema = findNode('schema', schemaWrapper).schema;
+  if (!schema) {
+      schema = schemaWrapper.schema;
+  }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
   } else {
@@ -2569,7 +2633,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
+                                                  <td>This identifier for the operation SHOULD be retained for logging and tracing</td>
                                               </tr>
                                               <tr>
                                                   <td>ConversationId</td>
@@ -2641,9 +2705,14 @@ $(document).ready(function() {
     }
   }
 };
-                                        var schema = schemaWrapper.schema;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                            schema = schemaWrapper.schema;
+                                        }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
                                           schemaWrapper.definitions = Object.assign({}, defs);
                                           $RefParser.dereference(schemaWrapper).catch(function(err) {
@@ -2722,11 +2791,6 @@ https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
 | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
 | Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
-
-## Operation Id
-
-When you submit an amendment an operation id will be included in the response headers. This operation id MUST be retained
-to match against the asynchronous reply from NHAIS
 </p>
                         <p></p>
                         <br />
@@ -2990,8 +3054,20 @@ pub fn main() {
 <p class="marked"></p>
 <script>
 $(document).ready(function() {
-  var schemaWrapper = ;
-  var schema = schemaWrapper.schema;
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Parameters"
+      }
+    }
+  },
+  "required" : true
+};
+  var schema = findNode('schema', schemaWrapper).schema;
+  if (!schema) {
+      schema = schemaWrapper.schema;
+  }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
   } else {
@@ -3052,7 +3128,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>The unique identifier for the operation MUST be retained to match to the inbound reply</td>
+                                                  <td>This identifier for the operation SHOULD be retained for logging and tracing</td>
                                               </tr>
                                               <tr>
                                                   <td>ConversationId</td>
@@ -3116,9 +3192,14 @@ $(document).ready(function() {
     }
   }
 };
-                                        var schema = schemaWrapper.schema;
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                            schema = schemaWrapper.schema;
+                                        }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
                                           schemaWrapper.definitions = Object.assign({}, defs);
                                           $RefParser.dereference(schemaWrapper).catch(function(err) {
@@ -4897,8 +4978,7 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
 </script>
 
   <script>
-    var schemaWrapper = {};
-    schemaWrapper.definitions = Object.assign({}, defs);
+    var schemaWrapper = { "components": { "schemas" : defs}};
     defsParser = new $RefParser();
     defsParser.dereference(schemaWrapper).catch(function(err) {
       console.log(err);

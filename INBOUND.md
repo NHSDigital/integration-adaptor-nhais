@@ -3,14 +3,18 @@
 ## Queue
 
 The name of the inbound GP system message queue is configurable using an environment variable (see [README](./README.md)).
-All inbound (HA->GP) messages are published to this same queue. The message types can be differentiated using a header.
+The adaptor publishes all inbound (HA->GP) messages to this queue. A header value differentiates the types of transaction.
 
-## Message Header
+## Message Headers
 
 | Header Name     | Description 
 |-----------------|---
-| OperationId     | Unique identifier for the message. If the message is a reply to the previous outbound transaction then this id will match the OperationId returned by that outbound request.
+| OperationId     | The OperationId is generated from the GP or HA Trading Partner Code and the Transaction Number. 
 | TransactionType | The type of transaction represented by the message. See 'Supported Transaction Types' below.
+
+(*) The series of OperationId values for a Trading Partner Code repeats every 10,000,000 transactions. The GP MUST 
+use the OperationId to match inbound Approvals and Rejections. The GP System SHOULD retain the OperationId for all 
+other transactions. See "Transaction Matching" section below for more details.
 
 ### Transaction Types
 
@@ -23,6 +27,13 @@ All inbound (HA->GP) messages are published to this same queue. The message type
 | fp69_prior_notification      | FHIR      | FP69 Prior Notification
 | fp69_flag_removal            | FHIR      | FP69 Flag Removal
 | amendment                    | JSONPatch | Amendment
+
+## Transaction Matching
+
+The GP System Specification (Chapter 3) describes how to match, when applicable, inbound transactions to outbound 
+transactions. GP Systems using the NHAIS Adaptor also follow this process with a single exception: For Approval and 
+Rejection (Wrong HA) transactions where the specification states "GP System Transaction Number" the OperationId should 
+be used instead.
 
 ## Messages with FHIR Data Type
 
@@ -213,3 +224,5 @@ extension with "valueString" JSON value of null. The path will always be `/exten
 (1) The value will be the entire extension object and the path will always be /extension/0. Use the value of "url" to match the extension.
 
 (2) Use JSON null for blank address lines. Either the "House Name" or the "Number/Road Name" MUST be present.
+
+
