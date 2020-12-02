@@ -55,9 +55,9 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     private static final ReferenceTransactionType.Inbound MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.DEDUCTION;
     private static final ReferenceTransactionType.Inbound MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
     private static final ReferenceTransactionType.Inbound MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
-    private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_1);
-    private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_2);
-    private static final String TRANSACTION_3_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_3);
+    private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_1);
+    private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_2);
+    private static final String TRANSACTION_3_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_3);
     private static final String TRANSACTION_4_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_4);
     private static final String TRANSACTION_5_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_5);
     private static final String TRANSACTION_6_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_6);

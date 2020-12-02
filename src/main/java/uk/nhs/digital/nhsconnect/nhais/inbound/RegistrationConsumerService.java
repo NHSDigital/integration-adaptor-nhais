@@ -43,6 +43,7 @@ public class RegistrationConsumerService {
     private final RecepProducerService recepProducerService;
     private final EdifactParser edifactParser;
     private final InboundEdifactTransactionHandler inboundEdifactTransactionService;
+    private final InboundOperationIdService inboundOperationIdService;
 
     public void handleRegistration(InboundMeshMessage meshMessage) {
         Interchange interchange = edifactParser.parse(meshMessage.getContent());
@@ -128,9 +129,7 @@ public class RegistrationConsumerService {
             .map(transaction -> {
                 var dataToSend = inboundEdifactTransactionService.translate(transaction);
                 LOGGER.debug("Converted registration message into {}", dataToSend.getContent());
-                var operationId = OperationId.buildOperationId(
-                    transaction.getMessage().getInterchange().getInterchangeHeader().getRecipient(),
-                    transaction.getReferenceTransactionNumber().getTransactionNumber());
+                var operationId = inboundOperationIdService.createOperationIdForTransaction(transaction);
                 logTransactionReceived(transaction, operationId);
                 return dataToSend
                     .setOperationId(operationId)

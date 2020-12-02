@@ -3,6 +3,7 @@ package uk.nhs.digital.nhsconnect.nhais.inbound.state;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.nhs.digital.nhsconnect.nhais.inbound.InboundOperationIdService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Message;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
@@ -17,6 +18,7 @@ public class InboundStateFactory {
 
     private final TimestampService timestampService;
     private final ConversationIdService conversationIdService;
+    private final InboundOperationIdService inboundOperationIdService;
 
     public InboundState fromTransaction(Transaction transaction) {
         var interchangeHeader = transaction.getMessage().getInterchange().getInterchangeHeader();
@@ -30,7 +32,7 @@ public class InboundStateFactory {
 
         return new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
-            .setOperationId(OperationId.buildOperationId(recipient, transactionNumber))
+            .setOperationId(inboundOperationIdService.createOperationIdForTransaction(transaction))
             .setSender(interchangeHeader.getSender())
             .setRecipient(recipient)
             .setInterchangeSequence(interchangeHeader.getSequenceNumber())
