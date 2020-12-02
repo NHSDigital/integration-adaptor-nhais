@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.nhs.digital.nhsconnect.nhais.inbound.InboundOperationIdService;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.WorkflowId;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Interchange;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.InterchangeHeader;
@@ -71,6 +72,9 @@ public class InboundStateFactoryTest {
     @Mock
     ConversationIdService conversationIdService;
 
+    @Mock
+    InboundOperationIdService inboundOperationIdService;
+
     @InjectMocks
     InboundStateFactory inboundStateFactory;
 
@@ -93,6 +97,7 @@ public class InboundStateFactoryTest {
 
     @Test
     void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
+        when(inboundOperationIdService.createOperationIdForTransaction(TRANSACTION)).thenReturn(OPERATION_ID);
         var inboundStateFromInterchange = inboundStateFactory.fromTransaction(TRANSACTION);
         assertThat(inboundStateFromInterchange).isEqualTo(EXPECTED_INTERCHANGE_INBOUND_STATE);
     }
