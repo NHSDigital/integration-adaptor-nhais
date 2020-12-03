@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2020-12-02
+
+- Fixed a bug (NIAD-778) that would produce duplicate operation ids when the GP and HA transaction numbers intersect
+- Fixed documentation issues [263](https://github.com/nhsconnect/integration-adaptor-nhais/issues/263) and
+  [264](https://github.com/nhsconnect/integration-adaptor-nhais/issues/264) about OperationId and when it is used to 
+  match inbound transactions
+
 ## [1.4.0] - 2020-10-26
 
 - Added a workaround for an NHAIS issue where the DTM segment contains a timestamp is the past. The adaptor now reads its
