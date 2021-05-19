@@ -309,11 +309,14 @@ paths:
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-        Three fields are DEPRECATED and not supported by the adaptor:
+        The following fields are DEPRECATED and not supported by the adaptor:
 
         * RPP Mileage
         * Blocked Route/Special District Marker
         * Walking Units
+        * Date of Enlistment (Joining)
+        * Date of Enlistment (Leaving)
+        * Service Dependant Marker
 
         REQUIRED - If any of these data items are not provided or are blank then the adaptor will produce a 400 error
         OPTIONAL - These data items may be included if available
@@ -340,13 +343,10 @@ paths:
         | Title                                 | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Sex                                   | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Date of Birth                         | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
-        | Present Address excluding Postcode    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Present Address - Postcode            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | Address excluding Postcode            | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Address - Postcode                    | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Place of Birth                        | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Drugs Dispensed Marker                | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
-        | RPP Mileage                           | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
-        | Blocked Route/Special District Marker | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
-        | Walking Units                         | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
         | Residential Institute Code            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | GP Notes (Free Text)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Previous Address - 5 fields           | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
@@ -361,12 +361,12 @@ paths:
 
         | Data Item                             | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links    | Notes                                                                                               |
         |---------------------------------------|---------------|------------------------------------------|--------------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------|
-        | Transaction Type                      | N/A           | N/A                                      | N/A                      | N/A                                | Usage of the $nhais.acceptance operation on the Patient resource indicates the transaction type
+        | Transaction Type                      | N/A           | N/A                                      | N/A                      | N/A                                   | Usage of the $nhais.acceptance operation on the Patient resource indicates the transaction type
         | GP Code (Patient's Responsible GP)    | Patient       | /generalPractitioner/0/identifier/value  |                          | See GP System Specification 4.3.7     |                                                                                                     |
         | GP Trading Partner Code               | Parameter     | gpTradingPartnerCode                     | valueString              |                                       |                                                                                                     |
         | Destination HA Cipher                 | Patient       | /managingOrganization/identifier/0/value |                          |                                       |                                                                                                     |
-        | Transaction Date and Time             | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
-        | Transaction Number                    | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | Transaction Date and Time             | N/A           | N/A                                      | N/A                      | N/A                                   | Managed by the adaptor
+        | Transaction Number                    | N/A           | N/A                                      | N/A                      | N/A                                   | Managed by the adaptor
         | Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                       |                                                                                                     |
         | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                       |                                                                                                     |
         | Surname                               | Patient       | /name/0/family                           |                          |                                       |                                                                                                     |
@@ -505,9 +505,6 @@ paths:
         | New Address - County                      | OPTIONAL   | YES      |
         | New Address - Postcode                    | OPTIONAL   | YES      |
         | New Drugs Dispensed Marker                | OPTIONAL   | YES (2)  |
-        | New RPP Mileage                           | DEPRECATED | n/a      |
-        | New Blocked Route/Special District Marker | DEPRECATED | n/a      |
-        | New Walking Units                         | DEPRECATED | n/a      |
         | New Residential Institute Code            | OPTIONAL   | YES (3)  |
         | GP Notes                                  | OPTIONAL   | n/a      |
 
