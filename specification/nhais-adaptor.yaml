@@ -94,7 +94,8 @@ info:
       #### Destination HA Cipher
 
       The "Destination HA Cipher" is the identifier of the NHAIS instance of the patient's managing organisation. The
-      identifier is comprised of two or three uppercase letters. In some contexts it is referred simply as "Cipher".
+      identifier is comprised of two or three uppercase letters. It is also called the "Patient's Responsible HA" or
+      simply referred to as "Cipher".
 
       The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
         NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
@@ -143,15 +144,20 @@ paths:
 
         ## FHIR Field Mappings
 
-        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                      |
-        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|--------------------------------------------|
-        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                            |
-        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                            |
-        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
-        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                                            |
-        | Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
-        | Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
-        | GP Notes                | Parameter     | freeText                                 | valueString              |                                    |                                            |
+        GP Links Specification Chapter 3.11.4 lists data fields and their requirements for out-going deduction requests.
+
+        | Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                                      |
+        |---------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|--------------------------------------------|
+        | Transaction Type          | N/A           | N/A                                      | N/A                      | N/A                                | Usage of the $nhais.deduction operation on the Patient resource indicates the transaction type
+        | GP Code                   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                                            |
+        | GP Trading Partner Code   | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                                            |
+        | Destinaton HA Cipher      | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                                            |
+        | Transaction Date and Time | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | Transaction Number        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | NHS Number                | Patient       | /identifier/0/value                      |                          |                                    |                                            |
+        | Date of Deduction         | Parameter     | dateOfDeduction                          | valueString              | ISO 8601 Date                      |                                            |
+        | Reason for Deduction      | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
+        | GP Notes                  | Parameter     | freeText                                 | valueString              |                                    |                                            |
 
       summary: Deduct a patient (Deduction transaction)
       parameters:
@@ -226,13 +232,18 @@ paths:
 
         ## FHIR Field Mappings
 
-        | Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
-        |-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
-        | GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |                               |
-        | GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |                               |
-        | Destinaton HA Cipher    | Patient       | /managingOrganization/identifier/0/value |                          |                                    |                               |
-        | NHS Number              | Patient       | /identifier/0/value                      |                          |                                    |                               |
-        | Reason for Removal      | Parameter     | freeText                                 | valueString              |                                    |                               |
+        GP Links Specification Chapter 3.9.4 lists data fields and their requirements for out-going removal transactions.
+
+        | Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes                         |
+        |---------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------------------------------|
+        | Transaction Type          | N/A           | N/A                                      | N/A                      | N/A                                | Usage of the $nhais.removal operation on the Patient resource indicates the transaction type
+        | GP Code                   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    |
+        | GP Trading Partner Code   | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |
+        | Destinaton HA Cipher      | Patient       | /managingOrganization/identifier/0/value |                          |                                    |
+        | Transaction Date and Time | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | Transaction Number        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | NHS Number                | Patient       | /identifier/0/value                      |                          |                                    |
+        | Reason for Removal        | Parameter     | freeText                                 | valueString              |                                    |
 
       summary: Removal (Out of Area)
       parameters:
@@ -279,9 +290,6 @@ paths:
       description: |
         ## Status
 
-        **Version 0.1.0**: Only data items marked REQUIRED are supported for translation to EDIFACT. Optional data items
-        are accepted by the API but not translated into EDIFACT.
-
         ## Overview
         Use this endpoint to send an Acceptance to NHAIS.
 
@@ -317,12 +325,12 @@ paths:
 
         | Data Item                             | Type 1 - Birth | Type 2 - First | Type 3 - Transfer In | Type 4 - Immigrant |
         |---------------------------------------|----------------|----------------|----------------------|--------------------|
-        | Acceptance Date                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Date of Acceptance                    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Type                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Acceptance Code                       | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Patient's Responsible GP              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | GP Code (Patient's Responsible GP)    | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | GP Trading Partner Code               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
-        | Patient's Responsible HA              | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
+        | Destionation HA Cipher                | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | NHS Number                            | REQUIRED       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Surname                               | REQUIRED       | REQUIRED       | REQUIRED             | REQUIRED           |
         | Previous Surname                      | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
@@ -340,46 +348,58 @@ paths:
         | Blocked Route/Special District Marker | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
         | Walking Units                         | DEPRECATED     | DEPRECATED     | DEPRECATED           | DEPRECATED         |
         | Residential Institute Code            | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
-        | Free Text (GP Notes)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
+        | GP Notes (Free Text)                  | OPTIONAL       | OPTIONAL       | OPTIONAL             | OPTIONAL           |
         | Previous Address - 5 fields           | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
         | Previous GP Name                      | NOT REQUIRED   | NOT REQUIRED   | REQUIRED             | OPTIONAL           |
         | Previous HA Cipher                    | NOT REQUIRED   | NOT REQUIRED   | OPTIONAL             | OPTIONAL           |
-        | Date of Entry into the UK             | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | REQUIRED           |
-        | Date Patient left the UK              | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | OPTIONAL           |
+        | Date of Entry into UK                 | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | REQUIRED           |
+        | Date of Exit from UK                  | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | OPTIONAL           |
 
         ## FHIR Field Mappings
 
+        GP Links Specification Chapter 3.3.4 lists data fields and their requirements for out-going acceptance transactions.
+
         | Data Item                             | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links    | Notes                                                                                               |
         |---------------------------------------|---------------|------------------------------------------|--------------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------|
-        | Acceptance Date                       | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                         |                                                                                                     |
-        | Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                       |                                                                                                     |
-        | Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                       |                                                                                                     |
-        | Patient's Responsible GP - GMC Code   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                       |                                                                                                     |
+        | Transaction Type                      | N/A           | N/A                                      | N/A                      | N/A                                | Usage of the $nhais.acceptance operation on the Patient resource indicates the transaction type
+        | GP Code (Patient's Responsible GP)    | Patient       | /generalPractitioner/0/identifier/value  |                          | See GP System Specification 4.3.7     |                                                                                                     |
         | GP Trading Partner Code               | Parameter     | gpTradingPartnerCode                     | valueString              |                                       |                                                                                                     |
-        | Patient's Responsible HA              | Patient       | /managingOrganization/identifier/0/value |                          |                                       |                                                                                                     |
+        | Destination HA Cipher                 | Patient       | /managingOrganization/identifier/0/value |                          |                                       |                                                                                                     |
+        | Transaction Date and Time             | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | Transaction Number                    | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+        | Acceptance Type                       | Parameter     | acceptanceType                           | valueString              |                                       |                                                                                                     |
         | NHS Number                            | Patient       | /identifier/0/value                      |                          |                                       |                                                                                                     |
         | Surname                               | Patient       | /name/0/family                           |                          |                                       |                                                                                                     |
-        | Previous Surname                      | Patient       | /name/1/family                           |                          |                                       |                                                                                                     |
         | First Forename                        | Patient       | /name/0/given/0                          |                          |                                       |                                                                                                     |
         | Second Forename                       | Patient       | /name/0/given/1                          |                          |                                       |                                                                                                     |
         | Other Forenames                       | Patient       | /name/0/given/2                          |                          |                                       |                                                                                                     |
+        | Previous Surname                      | Patient       | /name/1/family                           |                          |                                       |                                                                                                     |
         | Title                                 | Patient       | /name/0/prefix/0                         |                          |                                       |                                                                                                     |
         | Sex                                   | Patient       | /gender                                  |                          | male/female/unknown/other             |                                                                                                     |
         | Date of Birth                         | Patient       | /birthDate                               |                          | ISO 8601 Date                         |                                                                                                     |
-        | Present Address excluding Postcode    | Patient       | /address/0/line/0-4                      |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
-        | Present Address - Postcode            | Patient       | /address/0/postalCode                    |                          |                                       |                                                                                                     |
-        | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                       | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
+        | Address - House Name                  | Patient       | /address/0/line/0                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
+        | Address - Number / Road Name          | Patient       | /address/0/line/1                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
+        | Address - Locality                    | Patient       | /address/0/line/2                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
+        | Address - Post Town                   | Patient       | /address/0/line/3                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
+        | Address - County                      | Patient       | /address/0/line/4                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
+        | Address - Postcode                    | Patient       | /address/0/postalCode                    |                          |                                       |                                                                                                     |
         | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                            | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker"     |
-        | RPP Mileage                           | N/A           |                                          |                          |                                       |                                                                                                     |
-        | Blocked Route/Special District Marker | N/A           |                                          |                          |                                       |                                                                                                     |
-        | Walking Units                         | N/A           |                                          |                          |                                       |                                                                                                     |
+        | RPP Mileage                           | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Blocked Route/Special District Marker | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Walking Units                         | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
         | Residential Institute Code            | Patient       | /extension/0/valueString                 |                          |                                       | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode" |
-        | Free Text (GP Notes)                  | Parameter     | freeText                                 | valueString              |                                       |                                                                                                     |
+        | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                       | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
+        | Date of Acceptance                    | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                         |                                                                                                     |
+        | Date of Entry into UK                 | Parameter     | dateOfUkEntry                            | valueString              | ISO 8601 Date                         |                                                                                                     |
+        | Date of Exit from UK                  | Parameter     | dateOfUkExit                             | valueString              | ISO 8601 Date                         |                                                                                                     |
         | Previous Address - 5 fields           | Patient       | /address/1/line/0-4                      |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
         | Previous GP Name                      | Parameter     | previousGpName                           | valueString              |                                       |                                                                                                     |
         | Previous HA Cipher                    | Parameter     | previousHaCipher                         | valueString              |                                       |                                                                                                     |
-        | Date of Entry into the UK             | Parameter     | dateOfUkEntry                            | valueString              | ISO 8601 Date                         |                                                                                                     |
-        | Date Patient left the UK              | Parameter     | dateOfUkExit                             | valueString              | ISO 8601 Date                         |                                                                                                     |
+        | Date of Enlistment (Joining)          | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Date of Enlistment (Leaving)          | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Service Dependant Marker              | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                       |                                                                                                     |
+        | GP Notes (Free Text)                  | Parameter     | freeText                                 | valueString              |                                       |                                                                                                     |
 
       summary: Accept a new patient (Acceptance transaction)
       parameters:
@@ -499,32 +519,38 @@ paths:
 
         ## FHIR / JSONPatch Field Mappings
 
-        | Data Item                             | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                                    |
-        |---------------------------------------|----------------------|------------------------------------------|--------------------------------------------|--------------------------------------------------------------------------|
-        | Existing GP Code                      | gpCode               |                                          |                                            |                                                                          |
-        | GP Trading Partner Code               | gpTradingPartnerCode |                                          |                                            |                                                                          |
-        | Destination HA Cipher                 | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance      |
-        | NHS Number                            | nhsNumber            |                                          |                                            |                                                                          |
-        | New Surname                           |                      | /name/0/family                           |                                            |                                                                          |
-        | New Previous Surname                  |                      | /name/1/family                           |                                            |                                                                          |
-        | New First Forename                    |                      | /name/0/given/0 For remove: name/0/given |                                            | Forenames cannot be erased individually                                  |
-        | New Second Forename                   |                      | /name/0/given/1 For remove: name/0/given |                                            | Forenames cannot be erased individually                                  |
-        | New Other Forenames                   |                      | /name/0/given/2 For remove: name/0/given |                                            | Forenames cannot be erased individually                                  |
-        | New Title                             |                      | /name/0/prefix/0                         |                                            |                                                                          |
-        | New Sex                               |                      | /gender                                  | male/female/unknown/other                  |                                                                          |
-        | New Date of Birth                     |                      | /birthDate                               | ISO 8601 Date                              |                                                                          |
-        | New Address - House Name              |                      | /address/0/line/0                        | (3)                                        | If any address line is changed then patches for all 5 lines are required |
-        | New Address - Number/Road Name        |                      | /address/0/line/1                        | (3)                                        | If any address line is changed then patches for all 5 lines are required |
-        | New Address - Locality                |                      | /address/0/line/2                        | (3)                                        | If any address line is changed then patches for all 5 lines are required |
-        | New Address - Post Town               |                      | /address/0/line/3                        | (3)                                        | If any address line is changed then patches for all 5 lines are required |
-        | New Address - County                  |                      | /address/0/line/4                        | (3)                                        | If any address line is changed then patches for all 5 lines are required |
-        | New Address - Postcode                |                      | /address/0/postalCode                    |                                            |                                                                          |
-        | Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                      |
-        | RPP Mileage                           | N/A                  |                                          |                                            |                                                                          |
-        | Blocked Route/Special District Marker | N/A                  |                                          |                                            |                                                                          |
-        | Walking Units                         | N/A                  |                                          |                                            |                                                                          |
-        | Residential Institute Code            |                      | /extension/0                             | (2)                                        | The value 'null' erases the Residential Institute Code                   |
-        | GP Notes                              | freeText             |                                          |                                            |                                                                          |
+        GP Links Specification Chapter 3.5.4 lists data fields and their requirements for out-going manually
+        entered amendments.
+
+        | Data Field                                | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                                    |
+        |-------------------------------------------|----------------------|------------------------------------------|--------------------------------------------|--------------------------------------------------------------------------|
+        | Transaction Type                          | N/A                  | N/A                                      |                                            | Usage of the FHIR PATCH operation on the Patient resource indicates the transaction type
+        | Existing GP Code                          | gpCode               |                                          |                                            |
+        | GP Trading Partner Code                   | gpTradingPartnerCode |                                          |                                            |
+        | Destination HA Cipher                     | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance
+        | Transaction Date and Time                 | N/A                  | N/A                                      |                                            | Managed by the adaptor
+        | Transaction Number                        | N/A                  | N/A                                      |                                            | Managed by the adaptor
+        | NHS Number                                | nhsNumber            |                                          |                                            |
+        | New Surname                               |                      | /name/0/family                           |                                            |
+        | New First Forename                        |                      | /name/0/given/0 For remove: name/0/given |                                            | Forenames cannot be erased individually
+        | New Second Forename                       |                      | /name/0/given/1 For remove: name/0/given |                                            | Forenames cannot be erased individually
+        | New Other Forenames                       |                      | /name/0/given/2 For remove: name/0/given |                                            | Forenames cannot be erased individually
+        | New Previous Surname                      |                      | /name/1/family                           |                                            |
+        | New Title                                 |                      | /name/0/prefix/0                         |                                            |
+        | New Sex                                   |                      | /gender                                  | male/female/unknown/other                  |
+        | New Date of Birth                         |                      | /birthDate                               | ISO 8601 Date                              |
+        | New Address - House Name                  |                      | /address/0/line/0                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
+        | New Address - Number/Road Name            |                      | /address/0/line/1                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
+        | New Address - Locality                    |                      | /address/0/line/2                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
+        | New Address - Post Town                   |                      | /address/0/line/3                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
+        | New Address - County                      |                      | /address/0/line/4                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
+        | New Address - Postcode                    |                      | /address/0/postalCode                    |                                            |
+        | New Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker
+        | New RPP Mileage                           | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
+        | New Blocked Route/Special District Marker | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
+        | Walking Units                             | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
+        | Residential Institute Code                |                      | /extension/0                             | (2)                                        | The value 'null' erases the Residential Institute Code                   |
+        | GP Notes                                  | freeText             |                                          |                                            |
 
         (1) The `value` of the patch must be the entire extension including `url` and `valueBoolean` properties.
 
