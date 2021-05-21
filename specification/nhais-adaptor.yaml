@@ -309,7 +309,7 @@ paths:
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-        The following fields are DEPRECATED and not supported by the adaptor:
+        The following fields are OBSOLETE and not supported by the adaptor:
 
         * RPP Mileage
         * Blocked Route/Special District Marker
@@ -320,7 +320,7 @@ paths:
 
         REQUIRED - If any of these data items are not provided or are blank then the adaptor will produce a 400 error
         OPTIONAL - These data items may be included if available
-        DEPRECATED - The adaptor provides no FHIR representation for these items and it is not possible to include them
+        OBSOLETE - The adaptor provides no FHIR representation for these items and it is not possible to include them
         NOT REQUIRED - These data items are will be ignored if provided
 
         Any other values not listed in the tables below and provided in the request that are valid for a FHIR R4
@@ -354,6 +354,12 @@ paths:
         | Previous HA Cipher                    | NOT REQUIRED   | NOT REQUIRED   | OPTIONAL             | OPTIONAL           |
         | Date of Entry into UK                 | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | REQUIRED           |
         | Date of Exit from UK                  | NOT REQUIRED   | NOT REQUIRED   | NOT REQUIRED         | OPTIONAL           |
+        | RPP Mileage                           | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
+        | Blocked Route/Special District Marker | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
+        | Walking Units                         | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
+        | Date of Enlistment (Joining)          | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
+        | Date of Enlistment (Leaving)          | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
+        | Service Dependant Marker              | OBSOLETE       | OBSOLETE       | OBSOLETE             | OBSOLETE           |
 
         ## FHIR Field Mappings
 
@@ -384,9 +390,9 @@ paths:
         | Address - County                      | Patient       | /address/0/line/4                        |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
         | Address - Postcode                    | Patient       | /address/0/postalCode                    |                          |                                       |                                                                                                     |
         | Drugs Dispensed Marker                | Patient       | /extension/0/valueBoolean                |                          | true/false                            | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker"     |
-        | RPP Mileage                           | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
-        | Blocked Route/Special District Marker | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
-        | Walking Units                         | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | RPP Mileage                           | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
+        | Blocked Route/Special District Marker | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
+        | Walking Units                         | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
         | Residential Institute Code            | Patient       | /extension/0/valueString                 |                          |                                       | "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-ResidentialInstituteCode" |
         | Place of Birth                        | Patient       | /extension/0/valueString                 |                          |                                       | "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"                                 |
         | Date of Acceptance                    | Parameter     | acceptanceDate                           | valueString              | ISO 8601 Date                         |                                                                                                     |
@@ -395,9 +401,9 @@ paths:
         | Previous Address - 5 fields           | Patient       | /address/1/line/0-4                      |                          | Use JSON null for blank address lines | All 5 lines required but some may be null                                                           |
         | Previous GP Name                      | Parameter     | previousGpName                           | valueString              |                                       |                                                                                                     |
         | Previous HA Cipher                    | Parameter     | previousHaCipher                         | valueString              |                                       |                                                                                                     |
-        | Date of Enlistment (Joining)          | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
-        | Date of Enlistment (Leaving)          | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
-        | Service Dependant Marker              | N/A           | N/A                                      | N/A                      | N/A                                   | Deprecated data fields are not mapped
+        | Date of Enlistment (Joining)          | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
+        | Date of Enlistment (Leaving)          | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
+        | Service Dependant Marker              | N/A           | N/A                                      | N/A                      | N/A                                   | Obsolete data fields are not mapped
         | Acceptance Code                       | Parameter     | acceptanceCode                           | valueString              |                                       |                                                                                                     |
         | GP Notes (Free Text)                  | Parameter     | freeText                                 | valueString              |                                       |                                                                                                     |
 
@@ -478,7 +484,7 @@ paths:
 
         https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
 
-        Three fields are deprecated and not supported by the adaptor:
+        Three fields are obsolete and not supported by the adaptor:
 
         * RPP Mileage
         * Blocked Route/Special District Marker
@@ -543,9 +549,9 @@ paths:
         | New Address - County                      |                      | /address/0/line/4                        | (3)                                        | If any address line is changed then patches for all 5 lines are required
         | New Address - Postcode                    |                      | /address/0/postalCode                    |                                            |
         | New Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker
-        | New RPP Mileage                           | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
-        | New Blocked Route/Special District Marker | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
-        | Walking Units                             | N/A                  | N/A                                      |                                            | Deprecated data fields are not mapped
+        | New RPP Mileage                           | N/A                  | N/A                                      |                                            | Obsolete data fields are not mapped
+        | New Blocked Route/Special District Marker | N/A                  | N/A                                      |                                            | Obsolete data fields are not mapped
+        | Walking Units                             | N/A                  | N/A                                      |                                            | Obsolete data fields are not mapped
         | Residential Institute Code                |                      | /extension/0                             | (2)                                        | The value 'null' erases the Residential Institute Code                   |
         | GP Notes                                  | freeText             |                                          |                                            |
 

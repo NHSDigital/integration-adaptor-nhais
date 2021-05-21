@@ -193,6 +193,12 @@ amendments with two exceptions:
 * NHAIS may provide a new NHS number
 * NHAIS never provides free text notes
 
+The following fields are OBSOLETE and not supported by the adaptor:
+
+* New RPP Mileage
+* New Blocked Route/Special District Marker
+* New Walking Units
+
 | GP Links Data Item                        | Amendment  | Erasable |
 |-------------------------------------------|------------|----------|
 | Existing GP Code                          | REQUIRED   | n/a      |
@@ -215,9 +221,9 @@ amendments with two exceptions:
 | New Address - County                      | OPTIONAL   | YES      |
 | New Address - Postcode                    | OPTIONAL   | YES      |
 | New Drugs Dispensed Marker                | OPTIONAL   | YES (2)  |
-| New RPP Mileage                           | DEPRECATED | n/a      |
-| New Blocked Route/Special District Marker | DEPRECATED | n/a      |
-| New Walking Units                         | DEPRECATED | n/a      |
+| New RPP Mileage                           | OBSOLETE   | n/a      |
+| New Blocked Route/Special District Marker | OBSOLETE   | n/a      |
+| New Walking Units                         | OBSOLETE   | n/a      |
 | New Residential Institute Code            | OPTIONAL   | YES (3)  |
 
 (1) Forenames cannot be erased individually. The entire group of forenames will be erased with a remove operation on
@@ -229,24 +235,18 @@ extension with the "valueBoolean" value of false. The path will always be `/exte
 (3) The Residential Institute Code is considered "erased" the adaptor provides a replace operation for the entire 
 extension with "valueString" JSON value of null. The path will always be `/extension/0`.
 
-The following fields are obsolete and not supported by the adaptor:
-
-* New RPP Mileage
-* New Blocked Route/Special District Marker
-* New Walking Units
-
 #### Data Item Mappings for Amendment
 
 GP Links Specification Chapter 3.13.4 lists data fields and their requirements for in-coming amendment transactions.
 
 | Data Item                                 | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
 |-------------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
-| Transaction Type                          | N/A           | N/A                                      | N/A                      | N/A                                | See "TransactionType" message header
+| Transaction Type                          | N/A                  | N/A                                      | N/A                                        | See "TransactionType" message header
 | Existing GP Code                          | gpCode               |                                          |                                            |                                                                     |
 | GP Trading Partner Code                   | gpTradingPartnerCode |                                          |                                            |                                                                     |
 | Sending HA Cipher                         | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
-| Transaction Date and Time                 | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
-| Transaction Number                        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| Transaction Date and Time                 | N/A                  | N/A                                      | N/A                                        | Managed by the adaptor
+| Transaction Number                        | N/A                  | N/A                                      | N/A                                        | Managed by the adaptor and abstracted by the OperationId message header
 | Existing NHS Number                       | nhsNumber            |                                          |                                            |                                                                     |
 | Amended NHS Number                        |                      | /identifier/0/value                      |                                            |                                                                     |
 | New Surname                               |                      | /name/0/family                           |                                            |                                                                     |
@@ -264,9 +264,9 @@ GP Links Specification Chapter 3.13.4 lists data fields and their requirements f
 | New Address - County                      |                      | /address/0/line/4                        | (2)                                        |                                                                     |
 | New Address - Postcode                    |                      | /address/0/postalCode                    |                                            |                                                                     |
 | New Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                 |
-| New RPP Mileage                           | N/A                  |                                          |                                            |                                                                     |
-| New Blocked Route/Special District Marker | N/A                  |                                          |                                            |                                                                     |
-| New Walking Units                         | N/A                  |                                          |                                            |                                                                     |
+| New RPP Mileage                           | N/A                  |                                          |                                            | Obsolete data fields are not mapped
+| New Blocked Route/Special District Marker | N/A                  |                                          |                                            | Obsolete data fields are not mapped
+| New Walking Units                         | N/A                  |                                          |                                            | Obsolete data fields are not mapped
 | New Residential Institute Code            |                      | /extension/0                             | (1)                                        | The value 'null' erases the Residential Institute Code              |
 
 (1) The value will be the entire extension object and the path will always be /extension/0. Use the value of "url" to match the extension.
