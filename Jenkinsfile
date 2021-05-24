@@ -129,9 +129,17 @@ void runSonarQubeAnalysis() {
     sh label: 'Running SonarQube analysis', script: "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_TOKEN}"
 }
 
+String tfEnv(String tfEnvRepo="https://github.com/tfutils/tfenv.git", String tfEnvPath="~/.tfenv") {
+  sh(label: "Get tfenv" ,  script: "git clone ${tfEnvRepo} ${tfEnvPath}", returnStatus: true)
+  sh(label: "Install TF",  script: "${tfEnvPath}/bin/tfenv install"     , returnStatus: true)
+  return "${tfEnvPath}/bin/terraform"
+}
+
+
 int terraformInit(String tfStateBucket, String project, String environment, String component, String region) {
+  String terraformBinPath = tfEnv()
   println("Terraform Init for Environment: ${environment} Component: ${component} in region: ${region} using bucket: ${tfStateBucket}")
-  String command = "terraform init -backend-config='bucket=${tfStateBucket}' -backend-config='region=${region}' -backend-config='key=${project}-${environment}-${component}.tfstate' -input=false -no-color"
+  String command = "${terraformBinPath} init -backend-config='bucket=${tfStateBucket}' -backend-config='region=${region}' -backend-config='key=${project}-${environment}-${component}.tfstate' -input=false -no-color"
   dir("components/${component}") {
     return( sh( label: "Terraform Init", script: command, returnStatus: true))
   } // dir
@@ -151,7 +159,7 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     // Get the secret variables for global
     String secretsFile = "etc/secrets.tfvars"
     writeVariablesToFile(secretsFile,getAllSecretsForEnvironment(environment,"nia",region))
-
+    String terraformBinPath = tfEnv()
     List<String> variableFilesList = [
       "-var-file=../../etc/global.tfvars",
       "-var-file=../../etc/${region}_${environment}.tfvars",
@@ -159,7 +167,7 @@ int terraform(String action, String tfStateBucket, String project, String enviro
     ]
     if (action == "apply"|| action == "destroy") {parametersList.add("-auto-approve")}
     List<String> variablesList=variablesMap.collect { key, value -> "-var ${key}=${value}" }
-    String command = "terraform ${action} ${variableFilesList.join(" ")} ${parametersList.join(" ")} ${variablesList.join(" ")} "
+    String command = "${terraformBinPath} ${action} ${variableFilesList.join(" ")} ${parametersList.join(" ")} ${variablesList.join(" ")} "
     dir("components/${component}") {
       return sh(label:"Terraform: "+action, script: command, returnStatus: true)
     } // dir
