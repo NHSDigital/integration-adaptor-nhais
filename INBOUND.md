@@ -28,6 +28,13 @@ other transactions. See "Transaction Matching" section below for more details.
 | fp69_flag_removal            | FHIR      | FP69 Flag Removal
 | amendment                    | JSONPatch | Amendment
 
+Some transaction types are [obsolete](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation) and 
+not supported by the adaptor:
+
+* MRF and MRS (Medical Records) transactions
+* Close of quarter notification
+* Reconciliation (upload/download) transactions
+
 ## Transaction Matching
 
 The GP System Specification (Chapter 3) describes how to match, when applicable, inbound transactions to outbound 
@@ -50,8 +57,8 @@ BLANK - the value is not used by this transaction type
 | Data Item                                    | Approval | Rejection | FP69 Prior Notification | FP69 Flag Removal | Deduction | Deduction Request Rejection |
 |----------------------------------------------|----------|-----------|-------------------------|-------------------|-----------|-----------------------------|
 | GP Trading Partner Code                      | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
-| Patient's Responsible GP (GP Code)           | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
-| Patient's Responsible HA (Sending HA Cipher) | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| GP Code (Patient's Responsible GP)           | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
+| Sending HA Cipher (Patient's Responsible HA) | REQUIRED | REQUIRED  | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
 | NHS Number                                   | OPTIONAL |           | REQUIRED                | REQUIRED          | REQUIRED  | REQUIRED                    |
 | Rejection Details (Free Text)                |          | OPTIONAL  |                         |                   |           |                             |
 | Surname                                      |          |           | REQUIRED                |                   |           |                             |
@@ -74,51 +81,76 @@ BLANK - the value is not used by this transaction type
 
 ### Approval
 
-| Data Item                | FHIR Resource | Patient JSON Pointer or Parameter Name  | Parameter Value Property | Format, if different from GP Links | Notes                                                                                   |
-|--------------------------|---------------|-----------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------|
-| GP Trading Partner Code  | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
-| Patient's Responsible GP | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
-| Patient's Responsible HA | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
-| NHS Number               | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
+GP Links Specification Chapter 3.16.3 lists data fields and their requirements for in-coming approval transactions.
+
+| Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name  | Parameter Value Property | Format, if different from GP Links | Notes                                                                                   |
+|---------------------------|---------------|-----------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------|
+| Transaction Type          | N/A           | N/A                                     | N/A                      | N/A                                | See "TransactionType" message header
+| GP Trading Partner Code   | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
+| GP Code                   | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
+| Transaction Date and Time | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number        | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| NHS Number                | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
 
 ### Rejection (Wrong HA)
 
-| Data Item                | FHIR Resource | Patient JSON Pointer or Parameter Name  | Parameter Value Property | Format, if different from GP Links | Notes                                                                                   |
-|--------------------------|---------------|-----------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------|
-| GP Trading Partner Code  | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
-| Patient's Responsible GP | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
-| Patient's Responsible HA | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
-| Rejection Details        | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
+GP Links Specification Chapter 3.15.4 lists data fields and their requirements for in-coming approval transactions.
+
+| Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name  | Parameter Value Property | Format, if different from GP Links | Notes                                                                                   |
+|---------------------------|---------------|-----------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------|
+| Transaction Type          | N/A           | N/A                                     | N/A                      | N/A                                | See "TransactionType" message header
+| GP Trading Partner Code   | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
+| GP Code                   | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
+| Transaction Date and Time | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number        | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| Rejection Details         | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
 
 ### Deduction
 
-| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
-|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
-| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
-| Date of Deduction       | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
-| Reason for Deduction    | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
-| New HA Cipher           | Parameter     | newHaCipher                              | valueString              |                                    |       |
+GP Links Specification Chapter 3.14.4 lists data fields and their requirements for in-coming deduction transactions.
+
+| Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|---------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| Transaction Type          | N/A           | N/A                                      | N/A                      | N/A                                | See "TransactionType" message header
+| GP Code                   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
+| GP Trading Partner Code   | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| Transaction Date and Time | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| NHS Number                | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
+| Date of Deduction         | Parameter     | dateOfDeduction                          | valueString              |                                    |       |
+| Reason for Deduction      | Parameter     | deductionReasonCode                      | valueString              |                                    | Refer to Chapter 3 / Appendix G for possible values
+| New HA Cipher             | Parameter     | newHaCipher                              | valueString              |                                    |       |
 
 ### Deduction Request Rejection
 
-| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
-|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
-| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
-| Free Text               | Parameter     | freeText                                 | valueString              |                                    |       |
+GP Links Specification Chapter 3.23.4 lists data fields and their requirements for in-coming deduction request rejection transactions.
+
+| Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|---------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| Transaction Type          | N/A           | N/A                                      | N/A                      | N/A                                | See "TransactionType" message header
+| GP Code                   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
+| GP Trading Partner Code   | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| Transaction Date and Time | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| NHS Number                | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
+| Free Text                 | Parameter     | freeText                                 | valueString              |                                    |       |
 
 ### FP69 Prior Notification
 
+GP Links Specification Chapter 3.23.4 lists data fields and their requirements for in-coming FP69 prior notification transactions.
+
 | Data Item                    | FHIR Resource | Patient JSON Pointer or Parameter Name  | Parameter Value Property | Format, if different from GP Links | Notes                                                                                   |
 |------------------------------|---------------|-----------------------------------------|--------------------------|------------------------------------|-----------------------------------------------------------------------------------------|
+| Transaction Type             | N/A           | N/A                                      | N/A                      | N/A                                | See "TransactionType" message header
+| GP Code                      | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
 | GP Trading Partner Code      | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
-| Patient's Responsible GP     | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
-| Patient's Responsible HA     | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
+| Sending HA Cipher            | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
+| Transaction Date and Time    | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number           | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
 | NHS Number                   | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
 | Surname                      | Patient       | /name/0/family                          |                          |                                    |                                                                                         |
 | First Given Forename         | Patient       | /name/0/given/0                         |                          |                                    |                                                                                         |
@@ -132,17 +164,22 @@ BLANK - the value is not used by this transaction type
 | Address - County             | Patient       | /address/0/line/4                       |                          |                                    |                                                                                         |
 | Address - Postcode           | Patient       | /address/0/postalCode                   |                          |                                    |                                                                                         |
 | FP69 Expiry Date             | Parameters    | fp69ExpiryDate                          | valueString              | ISO 8601 Date                      |                                                                                         |
-| FP69 Reason Code             | Parameters    | fp69ReasonCode                          | valueString              |                                    |                                                                                         |
+| Reason Code                  | Parameters    | fp69ReasonCode                          | valueString              |                                    |                                                                                         |
 | HA Notes (Free Text)         | Parameters    | freeText                                | valueString              |                                    |                                                                                         |
 
 ### FP69 Flag Removal
 
-| Data Item               | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
-|-------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
-| GP Code                 | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
-| GP Trading Partner Code | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
-| Sending HA Cipher       | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
-| NHS Number              | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
+GP Links Specification Chapter 3.22.4 lists data fields and their requirements for in-coming FP69 flag removal transactions.
+
+| Data Item                 | FHIR Resource | Patient JSON Pointer or Parameter Name   | Parameter Value Property | Format, if different from GP Links | Notes |
+|---------------------------|---------------|------------------------------------------|--------------------------|------------------------------------|-------|
+| Transaction Type          | N/A           | N/A                                      | N/A                      | N/A                                | See "TransactionType" message header
+| GP Code                   | Patient       | /generalPractitioner/0/identifier/value  |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"
+| GP Trading Partner Code   | Parameter     | gpTradingPartnerCode                     | valueString              |                                    |       |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/0/value |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation"
+| Transaction Date and Time | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor
+| Transaction Number        | N/A           | N/A                                      | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
+| NHS Number                | Patient       | /identifier/0/value                      |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"
 
 ## Messages with JSONPatch Data Type
 
@@ -155,6 +192,12 @@ amendments with two exceptions:
 
 * NHAIS may provide a new NHS number
 * NHAIS never provides free text notes
+
+The following fields are OBSOLETE and not supported by the adaptor:
+
+* New RPP Mileage
+* New Blocked Route/Special District Marker
+* New Walking Units
 
 | GP Links Data Item                        | Amendment  | Erasable |
 |-------------------------------------------|------------|----------|
@@ -178,9 +221,9 @@ amendments with two exceptions:
 | New Address - County                      | OPTIONAL   | YES      |
 | New Address - Postcode                    | OPTIONAL   | YES      |
 | New Drugs Dispensed Marker                | OPTIONAL   | YES (2)  |
-| New RPP Mileage                           | DEPRECATED | n/a      |
-| New Blocked Route/Special District Marker | DEPRECATED | n/a      |
-| New Walking Units                         | DEPRECATED | n/a      |
+| New RPP Mileage                           | OBSOLETE   | n/a      |
+| New Blocked Route/Special District Marker | OBSOLETE   | n/a      |
+| New Walking Units                         | OBSOLETE   | n/a      |
 | New Residential Institute Code            | OPTIONAL   | YES (3)  |
 
 (1) Forenames cannot be erased individually. The entire group of forenames will be erased with a remove operation on
@@ -194,32 +237,37 @@ extension with "valueString" JSON value of null. The path will always be `/exten
 
 #### Data Item Mappings for Amendment
 
-| Data Item                             | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
-|---------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
-| Existing GP Code                      | gpCode               |                                          |                                            |                                                                     |
-| GP Trading Partner Code               | gpTradingPartnerCode |                                          |                                            |                                                                     |
-| Destination HA Cipher                 | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
-| NHS Number                            | nhsNumber            |                                          |                                            |                                                                     |
-| Amended NHS Number                    |                      | /identifier/0/value                      |                                            |                                                                     |
-| New Surname                           |                      | /name/0/family                           |                                            |                                                                     |
-| New Previous Surname                  |                      | /name/1/family                           |                                            |                                                                     |
-| New First Forename                    |                      | /name/0/given/0 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
-| New Second Forename                   |                      | /name/0/given/1 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
-| New Other Forenames                   |                      | /name/0/given/2 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
-| New Title                             |                      | /name/0/prefix/0                         |                                            |                                                                     |
-| New Sex                               |                      | /gender                                  | male/female/unknown/other                  |                                                                     |
-| New Date of Birth                     |                      | /birthDate                               | ISO 8601 Date                              |                                                                     |
-| New Address - House Name              |                      | /address/0/line/0                        | (2)                                        |                                                                     |
-| New Address - Number/Road Name        |                      | /address/0/line/1                        | (2)                                        |                                                                     |
-| New Address - Locality                |                      | /address/0/line/2                        | (2)                                        |                                                                     |
-| New Address - Post Town               |                      | /address/0/line/3                        |                                            |                                                                     |
-| New Address - County                  |                      | /address/0/line/4                        | (2)                                        |                                                                     |
-| New Address - Postcode                |                      | /address/0/postalCode                    |                                            |                                                                     |
-| Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                 |
-| RPP Mileage                           | N/A                  |                                          |                                            |                                                                     |
-| Blocked Route/Special District Marker | N/A                  |                                          |                                            |                                                                     |
-| Walking Units                         | N/A                  |                                          |                                            |                                                                     |
-| Residential Institute Code            |                      | /extension/0                             | (1)                                        | The value 'null' erases the Residential Institute Code              |
+GP Links Specification Chapter 3.13.4 lists data fields and their requirements for in-coming amendment transactions.
+
+| Data Item                                 | Property Name        | JSONPatch "path" value                   | "value" format, if different from GP Links | Notes                                                               |
+|-------------------------------------------|----------------------|------------------------------------------|--------------------------------------------|---------------------------------------------------------------------|
+| Transaction Type                          | N/A                  | N/A                                      | N/A                                        | See "TransactionType" message header
+| Existing GP Code                          | gpCode               |                                          |                                            |                                                                     |
+| GP Trading Partner Code                   | gpTradingPartnerCode |                                          |                                            |                                                                     |
+| Sending HA Cipher                         | healthcarePartyCode  |                                          |                                            | Same value as the managing organisation identifier in an acceptance |
+| Transaction Date and Time                 | N/A                  | N/A                                      | N/A                                        | Managed by the adaptor
+| Transaction Number                        | N/A                  | N/A                                      | N/A                                        | Managed by the adaptor and abstracted by the OperationId message header
+| Existing NHS Number                       | nhsNumber            |                                          |                                            |                                                                     |
+| Amended NHS Number                        |                      | /identifier/0/value                      |                                            |                                                                     |
+| New Surname                               |                      | /name/0/family                           |                                            |                                                                     |
+| New First Forename                        |                      | /name/0/given/0 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Second Forename                       |                      | /name/0/given/1 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Other Forenames                       |                      | /name/0/given/2 For remove: name/0/given |                                            | If erased, all forenames will be erased as a group                  |
+| New Previous Surname                      |                      | /name/1/family                           |                                            |                                                                     |
+| New Title                                 |                      | /name/0/prefix/0                         |                                            |                                                                     |
+| New Sex                                   |                      | /gender                                  | male/female/unknown/other                  |                                                                     |
+| New Date of Birth                         |                      | /birthDate                               | ISO 8601 Date                              |                                                                     |
+| New Address - House Name                  |                      | /address/0/line/0                        | (2)                                        |                                                                     |
+| New Address - Number/Road Name            |                      | /address/0/line/1                        | (2)                                        |                                                                     |
+| New Address - Locality                    |                      | /address/0/line/2                        | (2)                                        |                                                                     |
+| New Address - Post Town                   |                      | /address/0/line/3                        |                                            |                                                                     |
+| New Address - County                      |                      | /address/0/line/4                        | (2)                                        |                                                                     |
+| New Address - Postcode                    |                      | /address/0/postalCode                    |                                            |                                                                     |
+| New Drugs Dispensed Marker                |                      | /extension/0                             | (1)                                        | The value 'false' erases the Drugs Dispensed Marker                 |
+| New RPP Mileage                           | N/A                  |                                          |                                            | Obsolete data fields are not mapped
+| New Blocked Route/Special District Marker | N/A                  |                                          |                                            | Obsolete data fields are not mapped
+| New Walking Units                         | N/A                  |                                          |                                            | Obsolete data fields are not mapped
+| New Residential Institute Code            |                      | /extension/0                             | (1)                                        | The value 'null' erases the Residential Institute Code              |
 
 (1) The value will be the entire extension object and the path will always be /extension/0. Use the value of "url" to match the extension.
 
