@@ -87,6 +87,11 @@ pipeline {
             }
             stages {
                 stage('Deploy using Terraform') {
+                    when {
+                        //Stage disabled until NIAD-2110 is fixed
+                        //expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+                        expression { false }
+                    }
                     steps {
                         script {
                             String tfCodeBranch  = "develop"

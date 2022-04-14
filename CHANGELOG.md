@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+## [1.4.2] - 2022-04-14
+- Hotfix for Spring vulnerability CVE-2022-22965
+- 
 ## [1.4.1] - 2020-12-02
 
 - Fixed a bug (NIAD-778) that would produce duplicate operation ids when the GP and HA transaction numbers intersect
