@@ -44,19 +44,19 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
-	implementation 'com.heroku.sdk:env-keystore:1.1.4'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.13'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.5.13'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.13'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+	implementation 'com.heroku.sdk:env-keystore:1.1.5'
 
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:4.2.0'
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:4.2.0'
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:4.2.0'
-	implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.4.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.4.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.4.0'
+	implementation 'com.google.guava:guava:30.0-jre'
 	implementation 'org.springframework:spring-jms:5.2.6.RELEASE'
 	implementation 'org.apache.qpid:qpid-jms-client:0.51.0'
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.880'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.1034'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
@@ -65,11 +65,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	testImplementation('org.springframework.boot:spring-boot-starter-test:2.5.13') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-    testImplementation "org.testcontainers:testcontainers:1.14.2"
+    testImplementation "org.testcontainers:testcontainers:1.16.1"
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.0.3'
     testImplementation("org.assertj:assertj-core:3.16.1")
 }
