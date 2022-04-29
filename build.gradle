@@ -1,5 +1,5 @@
 plugins {
-	id "org.springframework.boot" version "2.5.12"
+	id "org.springframework.boot" version "2.5.13"
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
 	id "io.freefair.lombok" version "5.1.0"
@@ -44,9 +44,9 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.13'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.5.13'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.13'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	implementation 'com.heroku.sdk:env-keystore:1.1.5'
 
@@ -65,7 +65,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	testImplementation('org.springframework.boot:spring-boot-starter-test:2.5.13') {
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
