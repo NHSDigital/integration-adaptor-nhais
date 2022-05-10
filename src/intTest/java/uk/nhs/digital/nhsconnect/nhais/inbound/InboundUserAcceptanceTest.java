@@ -79,7 +79,7 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
             // assert transaction type in JMS header is correct
             assertMessageHeaders(gpSystemInboundQueueMessage, expectedTransactionType);
             // assert output body is correct
-            assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
+            assertMessageBody(gpSystemInboundQueueMessage.toString().replaceAll("\\s+",""), testData.getJson().replaceAll("\\s+",""));
         }
         assertOutboundRecepMessage(testData.getRecep());
     }
@@ -104,12 +104,11 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, "fp69_prior_notification");
         // assert output body is correct
-        assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
+        assertMessageBody(gpSystemInboundQueueMessage.toString().replaceAll("\\s+",""), testData.getJson().replaceAll("\\s+",""));
     }
 
-    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedBody) throws JMSException {
-        var body = parseTextMessage(gpSystemInboundQueueMessage);
-        assertThat(body).isEqualTo(expectedBody);
+    private void assertMessageBody(String gpSystemInboundQueueMessage, String expectedBody) throws JMSException {
+        assertThat(gpSystemInboundQueueMessage).isEqualTo(expectedBody);
     }
 
     private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {
