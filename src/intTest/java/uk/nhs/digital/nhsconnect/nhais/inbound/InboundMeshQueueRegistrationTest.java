@@ -88,8 +88,8 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
 
     private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException {
         var message = getGpSystemInboundQueueMessage();
-        var content = parseTextMessage(message);
-        var expectedContent = new String(Files.readAllBytes(fhir.getFile().toPath()));
+        var content = parseTextMessage(message).replaceAll("\\s+","");
+        var expectedContent = new String(Files.readAllBytes(fhir.getFile().toPath())).replaceAll("\\s+","");
 
         softly.assertThat(message.getStringProperty("OperationId")).isEqualTo(OPERATION_ID);
         softly.assertThat(message.getStringProperty("TransactionType")).isEqualTo(TRANSACTION_TYPE.name().toLowerCase());

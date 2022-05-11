@@ -80,7 +80,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
     @Test
@@ -91,7 +91,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+                .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
 
@@ -103,7 +103,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+                .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
     @Test
@@ -114,7 +114,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
     @Test
@@ -125,7 +125,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains("Unable to parse JSON resource as a Parameters: [element=\"valueString\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
     @Test

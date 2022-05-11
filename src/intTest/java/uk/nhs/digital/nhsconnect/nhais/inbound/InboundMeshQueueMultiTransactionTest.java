@@ -185,8 +185,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
             .isEqualTo(expectedOperationId);
         softly.assertThat(message.getStringProperty("TransactionType"))
             .isEqualTo(expectedTransactionType.name().toLowerCase());
-        softly.assertThat(parseTextMessage(message))
-            .isEqualTo(new String(Files.readAllBytes(expectedFhir.getFile().toPath())));
+        softly.assertThat(parseTextMessage(message).replaceAll("\\s+",""))
+            .isEqualTo(new String(Files.readAllBytes(expectedFhir.getFile().toPath())).replaceAll("\\s+",""));
     }
 
     private void assertInboundStates(SoftAssertions softly, List<InboundState> inboundStates) {
