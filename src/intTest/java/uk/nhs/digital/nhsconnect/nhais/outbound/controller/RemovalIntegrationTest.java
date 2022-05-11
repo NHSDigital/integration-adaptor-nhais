@@ -89,7 +89,7 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: [element=\"value\"] Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: [element=\"value\"] Invalid attribute value \"\": Attribute value must not be empty (\"\")");
     }
 
 
