@@ -68,3 +68,39 @@ There are shell scripts in each of the release version folders that provide exam
 ```bash
 $ docker-compose down
 ```
+
+## OpenTest Setup
+
+To use OpenTest environment, please first follow the 'Before you start' section at the following url to register
+for access to OpenTest
+
+```
+https://digital.nhs.uk/services/path-to-live-environments/opentest-environment
+```
+
+You will then receive an email with required details to connect to the environment. Populate `export-env-vars.sh` 
+created earlier with the provided details.  If `NHAIS_MESH_SHARED_KEY` is not provided in the email, the default for 
+this value is `BackBone`.
+
+# Windows OpenTest VPN
+
+Windows should support TAP and allow you to use the OpenVPN client.
+
+1. Download the Legacy version of the OpenVPN client from: `https://openvpn.net/client/client-connect-vpn-for-windows/`.
+2. In the received instructions, a `.ovpn` will be attached to the email.  Download this file and import it.
+3. Clicking connect should then allow access to the OpenTest environment.
+
+# MacOS OpenTest VPN
+
+This is more complicated as Mac Os BigSur and later versions do not allow TAP to be used, which is required for 
+OpenTest.  It is possible to use an alternative client to connect, with a little configuration.
+
+1. Download the latest stable release of the TunnelBlick OpenVpn Client from: `https://tunnelblick.net/downloads.html`. 
+2. Once installed, the VPN client will automatically start and the icon will appear in the running apps area.
+3. use the following instruction to install Kexts which allows us to use TAP (please note this requires a restart): `https://tunnelblick.net/cKextsInstallation.html#intel-big-sur`.
+4. Download the OpenVPN configuration file (.ovpn) attached to the received setup email.
+5. Drag and drop the downloaded .ovpn file onto the taskbar icon for TunnelBlick.
+6. Click connect in the window which appears.
+
+*NOTE*: Occasionally the client will drop and docker logs for the NHAIS adapter will display errors that is temporarily 
+unable to access the the requested URL.  In this case, you will need to disconnect and reconnect the VPN client.

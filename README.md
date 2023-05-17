@@ -401,3 +401,11 @@ fails to start on some developer workstations. It is possible to disable this co
 Note: This variable must not be set when the tests run automatically as part of a pipeline. Ryuk guarantees container
 cleanup up after each test (even if the test crashes) and disabling it could lead to a resource leak in the build 
 environment.
+
+#### Integration Tests: Error thrown with "Alpine:3.5"
+
+The integration tests use the [Testcontainers](https://www.testcontainers.org/) framework and in some cases may fail to
+run due to an error with being able to access a docker image for alpine:3.5.  If you encounter this error, you will
+need to run the following to download a copy of the image before running the tests:
+
+    Docker pull alpine:3.5
