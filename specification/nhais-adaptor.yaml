@@ -70,6 +70,14 @@ info:
       NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
       of terminology.
 
+      #### NHS Number
+    
+      All patients must have an NHS Number and ___only__ "full GMS” registered patients should generate GP Links 
+      transactions. 
+    
+      > Temporary registrations should never be sent to NHAIS as accidental registrations could cause data quality
+      issues with the NHS.
+
       #### GP Code
 
       The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
