@@ -122,10 +122,7 @@ info:
       identifier is comprised of two or three uppercase letters. It is also called the "Patient's Responsible HA" or
       simply referred to as "Cipher".
 
-      > The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
-       NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
-
-      A full list of the available "HA Cipher" codes is available from the 
+      A full list of the available "Destination HA Cipher" codes is available from the 
       [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library).
       As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
       this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
