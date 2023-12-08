@@ -127,7 +127,9 @@ info:
 
       A full list of the available "HA Cipher" codes is available from the 
       [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library).
-      As this list is definitive and will not change before NHAIS is retired a copy has been stored as 
+      As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
+      this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
+    
       ## Operation Id
 
       The adaptor includes in the response header of every successful request an OperationId value. The OperationId
