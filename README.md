@@ -374,11 +374,11 @@ A `mesh.sh` bash script exists for testing or debugging MESH. For more informati
 #### Fake MESH
 
 A mock implementation of the MESH API is available for local development. The latest version is in GitHub at
-[mattd-kainos/fake-mesh](https://github.com/jamespic/fake-mesh). _It is a fork of [jamespic/fake-mesh](https://github.com/jamespic/fake-mesh).
+[mattd-kainos/fake-mesh](https://github.com/mattd-kainos/fake-mesh). _It is a fork of [jamespic/fake-mesh](https://github.com/jamespic/fake-mesh).
 
 The [nhsdev Docker Hub](https://hub.docker.com/repository/docker/nhsdev/fake-mesh) hosts released fake-mesh images.
 
-### Common Issuesx
+### Common Issues
 
 #### My test won't run
 

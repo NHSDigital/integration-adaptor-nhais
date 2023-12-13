@@ -123,7 +123,9 @@ info:
       simply referred to as "Cipher".
 
       A full list of the available "Destination HA Cipher" codes is available from the 
-      [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library).
+      [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library), in 
+      the document labelled 
+      [Appendix D](https://digital.nhs.uk/binaries/content/assets/website-assets/services/nhais/app-d.doc').
       As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
       this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
     
