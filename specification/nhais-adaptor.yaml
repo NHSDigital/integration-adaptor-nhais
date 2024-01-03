@@ -70,6 +70,14 @@ info:
       NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
       of terminology.
 
+      #### NHS Number
+    
+      All patients must have an NHS Number and ___only__ "full GMS” registered patients should generate GP Links 
+      transactions. 
+    
+      > Temporary registrations should never be sent to NHAIS as accidental registrations could cause data quality
+      issues with the NHS.
+
       #### GP Code
 
       The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
@@ -85,21 +93,42 @@ info:
       Elsewhere in the NHS estate this value may be referred to as the "Partnership Code", "Practice Code", or most
       confusingly the "GP Code". If a practice is assigned different values for any of these then the operator of the
       NHAIS system should be consulted to determine which to use.
+    
+      > This is not the same the as the practice ODS code, and will be provided with by PCSE at the point that the link 
+      is established. This is a Local Code of PCSE’s choosing.
 
       #### GP Trading Partner Code
 
       The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
       of the EDIFACT messages. This may also be referred to as the "GP Link Code".
-
+    
+      > For English Practices, the supplier will be provided with this by PCSE (Primary Care Support England, Capita),
+      the organisation that operates the 82 English NHAIS systems (+ the DMS NHAIS system), at the point that the link 
+      is established. 
+      This is a Local Code of PCSE’s choosing (3 alphas and a 5).
+    
+      #### Managing Organisation
+    
+      This is the Link Code of the NHAIS system, in the same way as GP Trading Partner Code is the Link Code for 
+      the GP system (3 alphas and a 5).  This is the NHAIS System Cipher with either 1 or “01” on the end 
+      – e.g. BE (Berkshire) is BE01, SHE (Sheffield) is SHE1. 
+    
+      > A 2 character Cipher has “01” on the end. 
+      > A 3 character Cipher has “1” on the end.
+    
       #### Destination HA Cipher
 
       The "Destination HA Cipher" is the identifier of the NHAIS instance of the patient's managing organisation. The
       identifier is comprised of two or three uppercase letters. It is also called the "Patient's Responsible HA" or
       simply referred to as "Cipher".
 
-      The cipher is related to the "HA Link Code": the four-character codes used to configure the environment variable
-        NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.
-
+      A full list of the available "Destination HA Cipher" codes is available from the 
+      [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library), in 
+      the document labelled 
+      [Appendix D](https://digital.nhs.uk/binaries/content/assets/website-assets/services/nhais/app-d.doc').
+      As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
+      this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
+    
       ## Operation Id
 
       The adaptor includes in the response header of every successful request an OperationId value. The OperationId

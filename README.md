@@ -24,25 +24,25 @@ patient demographic data. The GP Links - NHAIS Adaptor supports the following tr
 
 Outbound (GP -> HA)
 
-| Abbreviation | Description 
-|--------------|-------------
-| ACG          | Acceptance transaction  
-| AMG          | Amendment transaction  
-| REG          | Removal (Out of Area) transaction  
-| DER          | Deduction Request transaction  
+| Abbreviation | Description                       |
+|--------------|-----------------------------------|
+| ACG          | Acceptance transaction            |
+| AMG          | Amendment transaction             |
+| REG          | Removal (Out of Area) transaction |
+| DER          | Deduction Request transaction     |
 
 Inbound (HA -> GP)
 
-| Abbreviation | Description 
-|--------------|-------------
-| AMF          | Amendment transaction  
-| DEF          | Deduction transaction  
-| APF          | Approval transaction  
-| REF          | Rejection (Wrong HA) transaction  
-| FPN          | FP69 Prior Notification transaction – Section 3.21  
-| FFR          | FP69 Flag Removal transaction  
-| DRR          | Deduction Request Rejection transaction  
-| CQN*         | Close Quarter Notification (chapter 3.20, Chapter 3 page 154) (may be considered optional)
+| Abbreviation | Description                                                                                 |
+|--------------|---------------------------------------------------------------------------------------------|
+| AMF          | Amendment transaction                                                                       | 
+| DEF          | Deduction transaction                                                                       |
+| APF          | Approval transaction                                                                        |
+| REF          | Rejection (Wrong HA) transaction                                                            | 
+| FPN          | FP69 Prior Notification transaction – Section 3.21                                          | 
+| FFR          | FP69 Flag Removal transaction                                                               |
+| DRR          | Deduction Request Rejection transaction                                                     |
+| CQN*         | Close Quarter Notification (chapter 3.20, Chapter 3 page 154) (may be considered optional)  |
 
 \* The adaptor acknowledges Close Quarter Notifications but does not forward them to the GP System.
 
@@ -132,22 +132,22 @@ Variables without a default value and not marked optional are *MUST* be defined 
 
 ### General Configuration Options
 
-| Environment Variable               | Default                   | Description 
-| -----------------------------------|---------------------------|-------------
-| NHAIS_OUTBOUND_SERVER_PORT         | 80                        | The port on which the outbound FHIR REST API and management endpoints will run
-| NHAIS_LOGGING_LEVEL                | INFO                      | Application logging level. One of: DEBUG, INFO, WARN, ERROR. The level DEBUG **MUST NOT** be used when handling live patient data.
+| Environment Variable       | Default | Description                                                                                                                       |
+|----------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_OUTBOUND_SERVER_PORT | 80      | The port on which the outbound FHIR REST API and management endpoints will run                                                    |
+| NHAIS_LOGGING_LEVEL        | INFO    | Application logging level.One of: DEBUG, INFO, WARN, ERROR. The level DEBUG **MUST NOT** be used when handling live patient data. |
 
 ### Message Queue Configuration Options
 
-| Environment Variable               | Default                   | Description 
-| -----------------------------------|---------------------------|-------------
-| NHAIS_AMQP_BROKERS                 | amqp://localhost:5672     | A comma-separated list of URLs to AMQP brokers (*)
-| NHAIS_MESH_OUTBOUND_QUEUE_NAME     | nhais_mesh_outbound       | The name of the outbound (to MESH) message queue
-| NHAIS_MESH_INBOUND_QUEUE_NAME      | nhais_mesh_inbound        | The name of the inbound (from MESH) message queue
-| NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME | nhais_gp_system_inbound   | The name of the inbound (to GP System) message queue
-| NHAIS_AMQP_USERNAME                |                           | (Optional) username for the AMQP server
-| NHAIS_AMQP_PASSWORD                |                           | (Optional) password for the AMQP server
-| NHAIS_AMQP_MAX_REDELIVERIES        | 3                         | The number of times an message will be retried to be delivered to consumer. After exhausting all retires, it will be put on DLQ.<queue_name> dead letter queue
+| Environment Variable               | Default                 | Description                                                                                                                                                    |
+|------------------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_AMQP_BROKERS                 | amqp://localhost:5672   | A comma-separated list of URLs to AMQP brokers (*)                                                                                                             |
+| NHAIS_MESH_OUTBOUND_QUEUE_NAME     | nhais_mesh_outbound     | The name of the outbound (to MESH) message queue                                                                                                               |
+| NHAIS_MESH_INBOUND_QUEUE_NAME      | nhais_mesh_inbound      | The name of the inbound (from MESH) message queue                                                                                                              |
+| NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME | nhais_gp_system_inbound | The name of the inbound (to GP System) message queue                                                                                                           |
+| NHAIS_AMQP_USERNAME                |                         | (Optional) username for the AMQP server                                                                                                                        |
+| NHAIS_AMQP_PASSWORD                |                         | (Optional) password for the AMQP server                                                                                                                        |
+| NHAIS_AMQP_MAX_REDELIVERIES        | 3                       | The number of times an message will be retried to be delivered to consumer. After exhausting all retires, it will be put on DLQ.<queue_name> dead letter queue |
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
@@ -159,34 +159,34 @@ environments.
 
 Option 1: If `NHAIS_MONGO_HOST` is defined then the adaptor forms a connection string from the following properties:
 
-| Environment Variable             | Default | Description 
-| ---------------------------------|---------|-------------
-| NHAIS_MONGO_DATABASE_NAME        | nhais   | Database name for Mongo
-| NHAIS_MONGO_HOST                 |         | Mongodb host
-| NHAIS_MONGO_PORT                 |         | Mongodb port
-| NHAIS_MONGO_USERNAME             |         | (Optional) Mongodb username. If set then password must also be set.
-| NHAIS_MONGO_PASSWORD             |         | (Optional) Mongodb password
-| NHAIS_MONGO_OPTIONS              |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?
-| NHAIS_MONGO_TTL                  | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations)
-| NHAIS_COSMOS_DB_ENABLED          | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB
+| Environment Variable      | Default | Description                                                                                                                                                   |
+|---------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_MONGO_DATABASE_NAME | nhais   | Database name for Mongo                                                                                                                                       |
+| NHAIS_MONGO_HOST          |         | Mongodb host                                                                                                                                                  |
+| NHAIS_MONGO_PORT          |         | Mongodb port                                                                                                                                                  |
+| NHAIS_MONGO_USERNAME      |         | (Optional) Mongodb username. If set then password must also be set.                                                                                           |
+| NHAIS_MONGO_PASSWORD      |         | (Optional) Mongodb password                                                                                                                                   |
+| NHAIS_MONGO_OPTIONS       |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?                                                                       |
+| NHAIS_MONGO_TTL           | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |
+| NHAIS_COSMOS_DB_ENABLED   | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB                                                                |
 
 Option 2: If `NHAIS_MONGO_HOST` is undefined then the adaptor uses the connection string provided:
 
-| Environment Variable             | Default                   | Description 
-| ---------------------------------|---------------------------|-------------
-| NHAIS_MONGO_DATABASE_NAME        | nhais                     | Database name for Mongo
-| NHAIS_MONGO_URI                  | mongodb://localhost:27017 | Mongodb connection string
+| Environment Variable      | Default                   | Description               |
+|---------------------------|---------------------------|---------------------------|
+| NHAIS_MONGO_DATABASE_NAME | nhais                     | Database name for Mongo   |
+| NHAIS_MONGO_URI           | mongodb://localhost:27017 | Mongodb connection string |
 
 **Trust Store Configuration**
 
 These optional properties configure a trust store with private CA certificates. This trust store does not replace Java's
 default trust store. At runtime the application adds these additional certificates to the default trust store. See 
-[OPERATING.md - AWS DocumentDB TLS configuration](OPERATING.md#AWS DocumentDB TLS configuration) for more information.
+[OPERATING.md - AWS DocumentDB TLS configuration](OPERATING.md#aws-documentdb-tls-configuration) for more information.
 
-| Environment Variable                | Default       | Description 
-| ------------------------------------|---------------|-------------
-| NHAIS_SSL_TRUST_STORE_URL           |               | (Optional) URL of the trust store JKS. The only scheme currently supported is `s3://`
-| NHAIS_SSL_TRUST_STORE_PASSWORD      |               | (Optional) Password used to access the trust store
+| Environment Variable           | Default | Description                                                                           |
+|--------------------------------|---------|---------------------------------------------------------------------------------------|
+| NHAIS_SSL_TRUST_STORE_URL      |         | (Optional) URL of the trust store JKS. The only scheme currently supported is `s3://` |
+| NHAIS_SSL_TRUST_STORE_PASSWORD |         | (Optional) Password used to access the trust store                                    |
 
 ## MESH API
 
@@ -194,18 +194,18 @@ default trust store. At runtime the application adds these additional certificat
 
 Configure the MESH API connection using the following environment variables:
 
-| Environment Variable             | Default                   | Description 
-| ---------------------------------|---------------------------|-------------
-| NHAIS_MESH_MAILBOX_ID            |                           | The mailbox id used by the adaptor to send and receive messages. This is the sender of outbound messages and the mailbox where inbound messages are received.
-| NHAIS_MESH_MAILBOX_PASSWORD      |                           | The password for NHAIS_MESH_MAILBOX_ID
-| NHAIS_MESH_SHARED_KEY            |                           | A shared key used to generate auth token and provided by MESH operator (OpenTest, PTL, etc)
-| NHAIS_MESH_HOST                  |                           | The **Complete URL** with trailing slash of the MESH service. For example: https://msg.int.spine2.ncrs.nhs.uk/messageexchange/
-| NHAIS_MESH_CERT_VALIDATION       | true                      | "false" to disable certificate validation of SSL connections
-| NHAIS_MESH_ENDPOINT_CERT         |                           | The content of the PEM-formatted client endpoint certificate
-| NHAIS_MESH_ENDPOINT_PRIVATE_KEY  |                           | The content of the PEM-formatted client private key
-| NHAIS_MESH_SUB_CA                |                           | The content of the PEM-formatted certificate of the issuing Sub CA. Empty if NHAIS_MESH_CERT_VALIDATION is false
-| NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS |                   | (1) The mapping between each recipient HA Trading Partner Code (HA Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per line and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392"
-| NHAIS_SCHEDULER_ENABLED          | true                      | Enables/disables automatic MESH message downloads
+| Environment Variable                     | Default | Description                                                                                                                                                                                                                                                     | 
+|------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_MESH_MAILBOX_ID                    |         | The mailbox id used by the adaptor to send and receive messages. This is the sender of outbound messages and the mailbox where inbound messages are received.                                                                                                   |
+| NHAIS_MESH_MAILBOX_PASSWORD              |         | The password for NHAIS_MESH_MAILBOX_ID                                                                                                                                                                                                                          |
+| NHAIS_MESH_SHARED_KEY                    |         | A shared key used to generate auth token and provided by MESH operator (OpenTest, PTL, etc)                                                                                                                                                                     |
+| NHAIS_MESH_HOST                          |         | The **Complete URL** with trailing slash of the MESH service. For example: https://msg.int.spine2.ncrs.nhs.uk/messageexchange/                                                                                                                                  |
+| NHAIS_MESH_CERT_VALIDATION               | true    | "false" to disable certificate validation of SSL connections                                                                                                                                                                                                    |
+| NHAIS_MESH_ENDPOINT_CERT                 |         | The content of the PEM-formatted client endpoint certificate                                                                                                                                                                                                    |
+| NHAIS_MESH_ENDPOINT_PRIVATE_KEY          |         | The content of the PEM-formatted client private key                                                                                                                                                                                                             |
+| NHAIS_MESH_SUB_CA                        |         | The content of the PEM-formatted certificate of the issuing Sub CA. Empty if NHAIS_MESH_CERT_VALIDATION is false                                                                                                                                                |
+| NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS |         | (1) The mapping between each recipient HA Trading Partner Code (HA Link Code) to its corresponding MESH Mailbox ID mapping. There is one mapping per line and an equals sign (=) separates the code and mailbox id. For example: "COD1=A6840385\nHA01=A0047392" |
+| NHAIS_SCHEDULER_ENABLED                  | true    | Enables/disables automatic MESH message downloads                                                                                                                                                                                                               |
 
 (1) The three-character "Destination HA Cipher" required for each outbound API request uniquely identifies that patient's 
 managing organisation. Each managing organisation also has a four-character "HA Trading Partner Code" (HA Link Code) uniquely
@@ -223,11 +223,11 @@ downloaded and acknowledged by some other means in a timely manner. The adaptor 
 ids leaving them in the inbox. If more than 500 "other" messages accumulate the adaptor wil no longer receive new 
 inbound GP Links messages.
 
-| Environment Variable                                 | Default | Description 
-| -----------------------------------------------------|---------|-------------
-| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS    | 60000   | The time period (in milliseconds) between when each adaptor instance "wakes up" and attempts to obtain the lock to start a polling cycle
-| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300     | The minimum time period (in seconds) between MESH polling cycles
-| NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS         | 285     | The duration (in seconds) fo the MESH polling cycle
+| Environment Variable                                 | Default | Description                                                                                                                              | 
+|------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_MESH_CLIENT_WAKEUP_INTERVAL_IN_MILLISECONDS    | 60000   | The time period (in milliseconds) between when each adaptor instance "wakes up" and attempts to obtain the lock to start a polling cycle |
+| NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS | 300     | The minimum time period (in seconds) between MESH polling cycles                                                                         |
+| NHAIS_MESH_POLLING_CYCLE_DURATION_IN_SECONDS         | 285     | The duration (in seconds) fo the MESH polling cycle                                                                                      |
 
 The MESH API specifies that a MESH mailbox should be checked "a maximum of once every five minutes". The variable 
 `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_IN_SECONDS` controls how often the adaptor will check its mailbox for new 
@@ -298,7 +298,7 @@ Navigate to: IntegrationAdaptorNhaisApplication -> right click -> Run
     
 **Inside multiple containers, behind a load balancer**
 
-Docker Compose allows running multiple instances behind a nginx load balancer in using round robin routing.
+Docker Compose allows running multiple instances behind a nginx load balancer in using round-robin routing.
 
     export BUILD_TAG=latest
     docker-compose build nhais
@@ -306,7 +306,7 @@ Docker Compose allows running multiple instances behind a nginx load balancer in
 
 This command will start three instances of the adaptor behind a load balancer on port 8080
 
-To change the scale number while all services are running run the same "up" command with new scale value and then 
+To change the scale number while all services are running, run the same "up" command with new scale value and then 
 restart the load balancer container (so it will become aware of instance count change).
 
 ### Running Tests
@@ -342,7 +342,7 @@ See [NFR_TESTING.md](./NFR_TESTING.md)
 
 **WARNING**: The specific components are out of date but how they relate to external dependencies is generally correct.
 
-![Adaptor Component Diagram](/documentation/nhais_diagram_plus_key.jpeg)
+![Adaptor Component Diagram](./documentation/nhais_diagram_plus_key.jpeg)
 
 #### Mongo DB
 
@@ -373,8 +373,8 @@ A `mesh.sh` bash script exists for testing or debugging MESH. For more informati
 
 #### Fake MESH
 
-A mock implementation of the MESH API is available for local development. The latest version is in Github at
-[mattd-kainos/fake-mesh](https://github.com/jamespic/fake-mesh). _It is a fork of [jamespic/fake-mesh](https://github.com/jamespic/fake-mesh)._
+A mock implementation of the MESH API is available for local development. The latest version is in GitHub at
+[mattd-kainos/fake-mesh](https://github.com/mattd-kainos/fake-mesh). _It is a fork of [jamespic/fake-mesh](https://github.com/jamespic/fake-mesh).
 
 The [nhsdev Docker Hub](https://hub.docker.com/repository/docker/nhsdev/fake-mesh) hosts released fake-mesh images.
 
@@ -401,3 +401,11 @@ fails to start on some developer workstations. It is possible to disable this co
 Note: This variable must not be set when the tests run automatically as part of a pipeline. Ryuk guarantees container
 cleanup up after each test (even if the test crashes) and disabling it could lead to a resource leak in the build 
 environment.
+
+#### Integration Tests: Error thrown with "Alpine:3.5"
+
+The integration tests use the [Testcontainers](https://www.testcontainers.org/) framework and in some cases may fail to
+run due to an error with being able to access a docker image for alpine:3.5.  If you encounter this error, you will
+need to run the following to download a copy of the image before running the tests:
+
+    Docker pull alpine:3.5

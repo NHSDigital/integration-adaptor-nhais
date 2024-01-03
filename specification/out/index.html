@@ -157,29 +157,34 @@ h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify"
     });
 
     function findNode(id, currentNode) {
-        return (Object.keys(currentNode)[0] === id) ? currentNode : findNodeInChildren(id, currentNode);
-    }
+        var currentChild,
+            result;
 
-    function findNodeInChildren(id, currentNode) {
-        for (let prop in currentNode) {
-            if (currentNode.hasOwnProperty(prop)) {
-                let currentChild = currentNode[prop];
-                if (id === prop) {
-                    return currentChild;
-                } else {
-                    // Search in the current child
-                    if (typeof (currentChild) === 'object') {
-                        let result = findNode(id, currentChild);
-                        if (result !== false) {
-                            return result;
+        if ( Object.keys(currentNode)[0] == id) {
+            return currentNode;
+        } else {
+            // Use a for loop instead of forEach to avoid nested functions
+            // Otherwise "return" will not work properly
+            for(var propt in currentNode){
+                if (currentNode.hasOwnProperty(propt)) {
+                    currentChild = currentNode[propt]
+                    if (id == propt) {
+                        return currentChild;
+                    } else {
+                        // Search in the current child
+                        if (typeof(currentChild) === 'object') {
+                            result = findNode(id, currentChild);
+                            if (result != false) {
+                                return result;
+                            }
                         }
                     }
                 }
             }
+            // The node has not been found and we have no more options
+           return false;
         }
-        return false;
     }
-
   </script>
   <style type="text/css">
     @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
@@ -761,7 +766,7 @@ ul.nav-tabs {
 .json-schema-view.collapsed .description, .json-schema-view.collapsed .property, json-schema-view.collapsed .description, json-schema-view.collapsed .property {
   display: none
 }
-.json-schema-view.collapsed .closeing.brace, json-schema-view.collapsed .closeing.brace {
+.json-schema-view.collapsed .closing.brace, json-schema-view.collapsed .closing.brace {
   display: inline-block
 }
 .json-schema-view.collapsed .toggle-handle, json-schema-view.collapsed .toggle-handle {
@@ -826,7 +831,7 @@ ul.nav-tabs {
 .json-schema-view.json-schema-view-dark.collapsed .description, .json-schema-view.json-schema-view-dark.collapsed .property, json-schema-view[json-schema-view-dark].collapsed .description, json-schema-view[json-schema-view-dark].collapsed .property {
   display: none
 }
-.json-schema-view.json-schema-view-dark.collapsed .closeing.brace, json-schema-view[json-schema-view-dark].collapsed .closeing.brace {
+.json-schema-view.json-schema-view-dark.collapsed .closing.brace, json-schema-view[json-schema-view-dark].collapsed .closing.brace {
   display: inline-block
 }
 .json-schema-view.json-schema-view-dark.collapsed .toggle-handle, json-schema-view[json-schema-view-dark].collapsed .toggle-handle {
@@ -862,14 +867,15 @@ ul.nav-tabs {
     "patches" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/Amendment_patches"
+        "$ref" : "#/components/schemas/Amendment_patches_inner"
       }
     }
   },
   "description" : "Amendment request."
 };
-    defs["Amendment_patches"] = {
+    defs["Amendment_patches_inner"] = {
   "required" : [ "op", "path" ],
+  "type" : "object",
   "properties" : {
     "op" : {
       "type" : "string",
@@ -916,14 +922,15 @@ ul.nav-tabs {
       "type" : "array",
       "description" : "List of issues that have occurred.",
       "items" : {
-        "$ref" : "#/components/schemas/OperationOutcome_issue"
+        "$ref" : "#/components/schemas/OperationOutcome_issue_inner"
       }
     }
   },
   "description" : "Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission)."
 };
-    defs["OperationOutcome_issue"] = {
+    defs["OperationOutcome_issue_inner"] = {
   "required" : [ "code", "severity" ],
+  "type" : "object",
   "properties" : {
     "severity" : {
       "type" : "string",
@@ -1053,6 +1060,13 @@ following characters must be escaped (preceded) by a question mark: <code>' + : 
 items. Some data items that are referred to by different names both within the specification and across the
 NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
 of terminology.</p>
+<h4>NHS Number</h4>
+<p>All patients must have an NHS Number and _<strong>only</strong> &quot;full GMS” registered patients should generate GP Links
+transactions.</p>
+<blockquote>
+<p>Temporary registrations should never be sent to NHAIS as accidental registrations could cause data quality
+issues with the NHS.</p>
+</blockquote>
 <h4>GP Code</h4>
 <p>The GP Code is sometimes called the &quot;Patient's Responsible GP Code&quot;. The GP Code is a combination of two values:</p>
 <blockquote>
@@ -1065,15 +1079,37 @@ concatenated with a comma (,) concatenated with the HA local GP code.</p>
 Elsewhere in the NHS estate this value may be referred to as the &quot;Partnership Code&quot;, &quot;Practice Code&quot;, or most
 confusingly the &quot;GP Code&quot;. If a practice is assigned different values for any of these then the operator of the
 NHAIS system should be consulted to determine which to use.</p>
+<blockquote>
+<p>This is not the same the as the practice ODS code, and will be provided with by PCSE at the point that the link
+is established. This is a Local Code of PCSE’s choosing.</p>
+</blockquote>
 <h4>GP Trading Partner Code</h4>
 <p>The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
 of the EDIFACT messages. This may also be referred to as the &quot;GP Link Code&quot;.</p>
+<blockquote>
+<p>For English Practices, the supplier will be provided with this by PCSE (Primary Care Support England, Capita),
+the organisation that operates the 82 English NHAIS systems (+ the DMS NHAIS system), at the point that the link
+is established.
+This is a Local Code of PCSE’s choosing (3 alphas and a 5).</p>
+</blockquote>
+<h4>Managing Organisation</h4>
+<p>This is the Link Code of the NHAIS system, in the same way as GP Trading Partner Code is the Link Code for
+the GP system (3 alphas and a 5).  This is the NHAIS System Cipher with either 1 or “01” on the end
+– e.g. BE (Berkshire) is BE01, SHE (Sheffield) is SHE1.</p>
+<blockquote>
+<p>A 2 character Cipher has “01” on the end.
+A 3 character Cipher has “1” on the end.</p>
+</blockquote>
 <h4>Destination HA Cipher</h4>
 <p>The &quot;Destination HA Cipher&quot; is the identifier of the NHAIS instance of the patient's managing organisation. The
 identifier is comprised of two or three uppercase letters. It is also called the &quot;Patient's Responsible HA&quot; or
 simply referred to as &quot;Cipher&quot;.</p>
-<p>The cipher is related to the &quot;HA Link Code&quot;: the four-character codes used to configure the environment variable
-NHAIS_MESH_RECIPIENT_MAILBOX_ID_MAPPINGS. Refer to the instructions for configuring this variable for more details.</p>
+<p>A full list of the available &quot;Destination HA Cipher&quot; codes is available from the
+<a href="https://digital.nhs.uk/services/nhais/nhais-developer-document-library">NHAIS Developer Document Library</a>, in
+the document labelled
+<a href="https://digital.nhs.uk/binaries/content/assets/website-assets/services/nhais/app-d.doc'">Appendix D</a>.
+As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to
+this documentation <a href="./appendix-1-ha-ciphers.md">Appendix 1 - HA Ciphers</a></p>
 <h2>Operation Id</h2>
 <p>The adaptor includes in the response header of every successful request an OperationId value. The OperationId
 is generated from the GP Trading Partner Code and the Transaction Number. The series of OperationId values for a
@@ -1224,6 +1260,7 @@ GP Links Specification Chapter 3.3.4 lists data fields and their requirements fo
                         <ul class="nav nav-tabs nav-tabs-examples">
                           <li class="active"><a href="#examples-Patients-acceptance-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Patients-acceptance-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Patients-acceptance-0-dart">Dart</a></li>
                           <li class=""><a href="#examples-Patients-acceptance-0-android">Android</a></li>
                           <!--<li class=""><a href="#examples-Patients-acceptance-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Patients-acceptance-0-objc">Obj-C</a></li>
@@ -1238,7 +1275,14 @@ GP Links Specification Chapter 3.3.4 lists data fields and their requirements fo
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-acceptance-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/$nhais.acceptance"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
+ -H "Accept: application/fhir+json" \
+ -H "Content-Type: application/json" \
+ "https://localhost/fhir/Patient/$nhais.acceptance" \
+ -d '{
+  &quot;parameter&quot; : [ &quot;{}&quot;, &quot;{}&quot; ]
+}'
+</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-acceptance-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -1250,12 +1294,13 @@ import java.io.File;
 import java.util.*;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
-        
+
+        // Create an instance of the API class
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.acceptance(parameters, conversationId);
         } catch (ApiException e) {
@@ -1267,15 +1312,33 @@ public class PatientsApiExample {
 </code></pre>
                           </div>
 
+                          <div class="tab-pane" id="examples-Patients-acceptance-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final Parameters parameters = new Parameters(); // Parameters | 
+final String conversationId = new String(); // String | (Optional) a unique identifier to trace this request in logs and databases
+
+try {
+    final result = await api_instance.acceptance(parameters, conversationId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->acceptance: $e\n');
+}
+
+</code></pre>
+                          </div>
+
                           <div class="tab-pane" id="examples-Patients-acceptance-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.PatientsApi;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.acceptance(parameters, conversationId);
         } catch (ApiException e) {
@@ -1290,25 +1353,28 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-acceptance-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+                              <pre class="prettyprint"><code class="language-cpp">
 
+// Create an instance of the API class
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
+Parameters *parameters = ; // 
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 // Accept a new patient (Acceptance transaction)
 [apiInstance acceptanceWith:parameters
     conversationId:conversationId
               completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
 </code></pre>
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-acceptance-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
+// Create an instance of the API class
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
@@ -1342,18 +1408,16 @@ namespace Example
     {
         public void main()
         {
-            
+
+            // Create an instance of the API class
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
             var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
-            try
-            {
+            try {
                 // Accept a new patient (Acceptance transaction)
                 apiInstance.acceptance(parameters, conversationId);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Debug.Print("Exception when calling PatientsApi.acceptance: " + e.Message );
             }
         }
@@ -1366,6 +1430,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
 $conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
@@ -1383,11 +1448,12 @@ try {
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
+# Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
 my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
-eval { 
+eval {
     $api_instance->acceptance(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
@@ -1402,12 +1468,12 @@ import openapi_client
 from openapi_client.rest import ApiException
 from pprint import pprint
 
-# create an instance of the API class
+# Create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
 conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
-try: 
+try:
     # Accept a new patient (Acceptance transaction)
     api_instance.acceptance(parameters, conversationId=conversationId)
 except ApiException as e:
@@ -1423,8 +1489,8 @@ pub fn main() {
 
     let mut context = PatientsApi::Context::default();
     let result = client.acceptance(parameters, conversationId, &context).wait();
-    println!("{:?}", result);
 
+    println!("{:?}", result);
 }
 </code></pre>
                             </div>
@@ -1488,9 +1554,10 @@ $(document).ready(function() {
   },
   "required" : true
 };
-  var schema = findNode('schema', schemaWrapper).schema;
+
+  var schema = findNode('schema',schemaWrapper).schema;
   if (!schema) {
-      schema = schemaWrapper.schema;
+    schema = schemaWrapper.schema;
   }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
@@ -1552,7 +1619,7 @@ $(document).ready(function() {
                                                   <td>operationid</td>
                                                   <td>String</td>
                                                   <td></td>
-                                                  <td>This identifier for the operation MUST be retained to match the inbound reply</td>
+                                                  <td>This identifier for the operation SHOULD be retained for logging and tracing</td>
                                               </tr>
                                               <tr>
                                                   <td>ConversationId</td>
@@ -1596,40 +1663,18 @@ $(document).ready(function() {
                                   <div id="responses-Patients-acceptance-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "The request could not be processed and forwarded to NHAIS",
-  "headers" : {
-    "ConversationId" : {
-      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
-      "style" : "simple",
-      "explode" : false,
-      "schema" : {
-        "type" : "string"
-      }
-    }
-  },
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      },
-      "examples" : {
-        "bad-request" : {
-          "summary" : "The request payload is invalid",
-          "value" : {
-            "$ref" : "components/examples/responses/400-bad-request.json"
-          }
-        }
-      }
-    }
-  }
-};
+                                        var schemaWrapper = ;
                                         var schema = findNode('schema',schemaWrapper).schema;
                                         if (!schema) {
-                                            schema = schemaWrapper.schema;
+                                          schema = schemaWrapper.schema;
                                         }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
                                         } else if (schema.items != null && schema.items.$ref != null) {
                                             schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
@@ -1790,6 +1835,7 @@ entered amendments.
                         <ul class="nav nav-tabs nav-tabs-examples">
                           <li class="active"><a href="#examples-Patients-amendment-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Patients-amendment-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Patients-amendment-0-dart">Dart</a></li>
                           <li class=""><a href="#examples-Patients-amendment-0-android">Android</a></li>
                           <!--<li class=""><a href="#examples-Patients-amendment-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Patients-amendment-0-objc">Obj-C</a></li>
@@ -1804,7 +1850,27 @@ entered amendments.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-amendment-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH "https://localhost/fhir/Patient/{nhsNumber}"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PATCH \
+ -H "Accept: application/fhir+json" \
+ -H "Content-Type: application/json" \
+ "https://localhost/fhir/Patient/{nhsNumber}" \
+ -d '{
+  &quot;destinationHaCipher&quot; : &quot;destinationHaCipher&quot;,
+  &quot;gpTradingPartnerCode&quot; : &quot;gpTradingPartnerCode&quot;,
+  &quot;freeText&quot; : &quot;freeText&quot;,
+  &quot;patches&quot; : [ {
+    &quot;op&quot; : &quot;remove&quot;,
+    &quot;path&quot; : &quot;path&quot;,
+    &quot;value&quot; : &quot;value&quot;
+  }, {
+    &quot;op&quot; : &quot;remove&quot;,
+    &quot;path&quot; : &quot;path&quot;,
+    &quot;value&quot; : &quot;value&quot;
+  } ],
+  &quot;gpCode&quot; : &quot;gpCode&quot;,
+  &quot;nhsNumber&quot; : &quot;nhsNumber&quot;
+}'
+</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-amendment-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -1816,13 +1882,14 @@ import java.io.File;
 import java.util.*;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
-        
+
+        // Create an instance of the API class
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.amendment(nhsNumber, amendment, conversationId);
         } catch (ApiException e) {
@@ -1834,16 +1901,35 @@ public class PatientsApiExample {
 </code></pre>
                           </div>
 
+                          <div class="tab-pane" id="examples-Patients-amendment-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String nhsNumber = new String(); // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
+final Amendment amendment = new Amendment(); // Amendment | 
+final String conversationId = new String(); // String | (Optional) a unique identifier to trace this request in logs and databases
+
+try {
+    final result = await api_instance.amendment(nhsNumber, amendment, conversationId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->amendment: $e\n');
+}
+
+</code></pre>
+                          </div>
+
                           <div class="tab-pane" id="examples-Patients-amendment-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.PatientsApi;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         String nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
         Amendment amendment = ; // Amendment | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.amendment(nhsNumber, amendment, conversationId);
         } catch (ApiException e) {
@@ -1858,27 +1944,30 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-amendment-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *nhsNumber = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+PatientsApi *apiInstance = [[PatientsApi alloc] init];
+String *nhsNumber = 9000000009; // The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 Amendment *amendment = ; // 
 String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
-
-PatientsApi *apiInstance = [[PatientsApi alloc] init];
 
 // Amend patient details (Amendment transaction)
 [apiInstance amendmentWith:nhsNumber
     amendment:amendment
     conversationId:conversationId
               completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
 </code></pre>
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-amendment-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
+// Create an instance of the API class
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var nhsNumber = 9000000009; // {String} The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 var amendment = ; // {Amendment} 
@@ -1913,19 +2002,17 @@ namespace Example
     {
         public void main()
         {
-            
+
+            // Create an instance of the API class
             var apiInstance = new PatientsApi();
             var nhsNumber = 9000000009;  // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
             var amendment = new Amendment(); // Amendment | 
             var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
-            try
-            {
+            try {
                 // Amend patient details (Amendment transaction)
                 apiInstance.amendment(nhsNumber, amendment, conversationId);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Debug.Print("Exception when calling PatientsApi.amendment: " + e.Message );
             }
         }
@@ -1938,6 +2025,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $nhsNumber = 9000000009; // String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 $amendment = ; // Amendment | 
@@ -1956,12 +2044,13 @@ try {
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
+# Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $nhsNumber = 9000000009; # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp).
 my $amendment = WWW::OPenAPIClient::Object::Amendment->new(); # Amendment | 
 my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
-eval { 
+eval {
     $api_instance->amendment(nhsNumber => $nhsNumber, amendment => $amendment, conversationId => $conversationId);
 };
 if ($@) {
@@ -1976,13 +2065,13 @@ import openapi_client
 from openapi_client.rest import ApiException
 from pprint import pprint
 
-# create an instance of the API class
+# Create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 nhsNumber = 9000000009 # String | The patient's NHS Number. The primary identifier of a patient, unique within NHS England and Wales. Always 10 digits and must be a [valid NHS Number](https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp). (default to null)
 amendment =  # Amendment | 
 conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
-try: 
+try:
     # Amend patient details (Amendment transaction)
     api_instance.amendment(nhsNumber, amendment, conversationId=conversationId)
 except ApiException as e:
@@ -1999,8 +2088,8 @@ pub fn main() {
 
     let mut context = PatientsApi::Context::default();
     let result = client.amendment(nhsNumber, amendment, conversationId, &context).wait();
-    println!("{:?}", result);
 
+    println!("{:?}", result);
 }
 </code></pre>
                             </div>
@@ -2093,9 +2182,10 @@ $(document).ready(function() {
   },
   "required" : true
 };
-  var schema = findNode('schema', schemaWrapper).schema;
+
+  var schema = findNode('schema',schemaWrapper).schema;
   if (!schema) {
-      schema = schemaWrapper.schema;
+    schema = schemaWrapper.schema;
   }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
@@ -2201,40 +2291,18 @@ $(document).ready(function() {
                                   <div id="responses-Patients-amendment-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "The request could not be processed and forwarded to NHAIS",
-  "headers" : {
-    "ConversationId" : {
-      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
-      "style" : "simple",
-      "explode" : false,
-      "schema" : {
-        "type" : "string"
-      }
-    }
-  },
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      },
-      "examples" : {
-        "bad-request" : {
-          "summary" : "The request payload is invalid",
-          "value" : {
-            "$ref" : "components/examples/responses/400-bad-request.json"
-          }
-        }
-      }
-    }
-  }
-};
+                                        var schemaWrapper = ;
                                         var schema = findNode('schema',schemaWrapper).schema;
                                         if (!schema) {
-                                            schema = schemaWrapper.schema;
+                                          schema = schemaWrapper.schema;
                                         }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
                                         } else if (schema.items != null && schema.items.$ref != null) {
                                             schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
@@ -2330,6 +2398,7 @@ GP Links Specification Chapter 3.11.4 lists data fields and their requirements f
                         <ul class="nav nav-tabs nav-tabs-examples">
                           <li class="active"><a href="#examples-Patients-deduction-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Patients-deduction-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Patients-deduction-0-dart">Dart</a></li>
                           <li class=""><a href="#examples-Patients-deduction-0-android">Android</a></li>
                           <!--<li class=""><a href="#examples-Patients-deduction-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Patients-deduction-0-objc">Obj-C</a></li>
@@ -2344,7 +2413,14 @@ GP Links Specification Chapter 3.11.4 lists data fields and their requirements f
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-deduction-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/$nhais.deduction"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
+ -H "Accept: application/fhir+json" \
+ -H "Content-Type: application/json" \
+ "https://localhost/fhir/Patient/$nhais.deduction" \
+ -d '{
+  &quot;parameter&quot; : [ &quot;{}&quot;, &quot;{}&quot; ]
+}'
+</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-deduction-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -2356,12 +2432,13 @@ import java.io.File;
 import java.util.*;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
-        
+
+        // Create an instance of the API class
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.deduction(parameters, conversationId);
         } catch (ApiException e) {
@@ -2373,15 +2450,33 @@ public class PatientsApiExample {
 </code></pre>
                           </div>
 
+                          <div class="tab-pane" id="examples-Patients-deduction-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final Parameters parameters = new Parameters(); // Parameters | 
+final String conversationId = new String(); // String | (Optional) a unique identifier to trace this request in logs and databases
+
+try {
+    final result = await api_instance.deduction(parameters, conversationId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->deduction: $e\n');
+}
+
+</code></pre>
+                          </div>
+
                           <div class="tab-pane" id="examples-Patients-deduction-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.PatientsApi;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.deduction(parameters, conversationId);
         } catch (ApiException e) {
@@ -2396,25 +2491,28 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-deduction-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+                              <pre class="prettyprint"><code class="language-cpp">
 
+// Create an instance of the API class
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
+Parameters *parameters = ; // 
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 // Deduct a patient (Deduction transaction)
 [apiInstance deductionWith:parameters
     conversationId:conversationId
               completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
 </code></pre>
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-deduction-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
+// Create an instance of the API class
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
@@ -2448,18 +2546,16 @@ namespace Example
     {
         public void main()
         {
-            
+
+            // Create an instance of the API class
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
             var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
-            try
-            {
+            try {
                 // Deduct a patient (Deduction transaction)
                 apiInstance.deduction(parameters, conversationId);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Debug.Print("Exception when calling PatientsApi.deduction: " + e.Message );
             }
         }
@@ -2472,6 +2568,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
 $conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
@@ -2489,11 +2586,12 @@ try {
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
+# Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
 my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
-eval { 
+eval {
     $api_instance->deduction(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
@@ -2508,12 +2606,12 @@ import openapi_client
 from openapi_client.rest import ApiException
 from pprint import pprint
 
-# create an instance of the API class
+# Create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
 conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
-try: 
+try:
     # Deduct a patient (Deduction transaction)
     api_instance.deduction(parameters, conversationId=conversationId)
 except ApiException as e:
@@ -2529,8 +2627,8 @@ pub fn main() {
 
     let mut context = PatientsApi::Context::default();
     let result = client.deduction(parameters, conversationId, &context).wait();
-    println!("{:?}", result);
 
+    println!("{:?}", result);
 }
 </code></pre>
                             </div>
@@ -2593,9 +2691,10 @@ $(document).ready(function() {
   },
   "required" : true
 };
-  var schema = findNode('schema', schemaWrapper).schema;
+
+  var schema = findNode('schema',schemaWrapper).schema;
   if (!schema) {
-      schema = schemaWrapper.schema;
+    schema = schemaWrapper.schema;
   }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
@@ -2701,40 +2800,18 @@ $(document).ready(function() {
                                   <div id="responses-Patients-deduction-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "The request could not be processed and forwarded to NHAIS",
-  "headers" : {
-    "ConversationId" : {
-      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
-      "style" : "simple",
-      "explode" : false,
-      "schema" : {
-        "type" : "string"
-      }
-    }
-  },
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      },
-      "examples" : {
-        "bad-request" : {
-          "summary" : "The request payload is invalid",
-          "value" : {
-            "$ref" : "components/examples/responses/400-bad-request.json"
-          }
-        }
-      }
-    }
-  }
-};
+                                        var schemaWrapper = ;
                                         var schema = findNode('schema',schemaWrapper).schema;
                                         if (!schema) {
-                                            schema = schemaWrapper.schema;
+                                          schema = schemaWrapper.schema;
                                         }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
                                         } else if (schema.items != null && schema.items.$ref != null) {
                                             schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
@@ -2830,6 +2907,7 @@ GP Links Specification Chapter 3.9.4 lists data fields and their requirements fo
                         <ul class="nav nav-tabs nav-tabs-examples">
                           <li class="active"><a href="#examples-Patients-removal-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Patients-removal-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Patients-removal-0-dart">Dart</a></li>
                           <li class=""><a href="#examples-Patients-removal-0-android">Android</a></li>
                           <!--<li class=""><a href="#examples-Patients-removal-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Patients-removal-0-objc">Obj-C</a></li>
@@ -2844,7 +2922,14 @@ GP Links Specification Chapter 3.9.4 lists data fields and their requirements fo
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Patients-removal-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/fhir/Patient/$nhais.removal"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
+ -H "Accept: application/fhir+json" \
+ -H "Content-Type: application/json" \
+ "https://localhost/fhir/Patient/$nhais.removal" \
+ -d '{
+  &quot;parameter&quot; : [ &quot;{}&quot;, &quot;{}&quot; ]
+}'
+</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Patients-removal-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
@@ -2856,12 +2941,13 @@ import java.io.File;
 import java.util.*;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
-        
+
+        // Create an instance of the API class
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.removal(parameters, conversationId);
         } catch (ApiException e) {
@@ -2873,15 +2959,33 @@ public class PatientsApiExample {
 </code></pre>
                           </div>
 
+                          <div class="tab-pane" id="examples-Patients-removal-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final Parameters parameters = new Parameters(); // Parameters | 
+final String conversationId = new String(); // String | (Optional) a unique identifier to trace this request in logs and databases
+
+try {
+    final result = await api_instance.removal(parameters, conversationId);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->removal: $e\n');
+}
+
+</code></pre>
+                          </div>
+
                           <div class="tab-pane" id="examples-Patients-removal-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.PatientsApi;
 
 public class PatientsApiExample {
-
     public static void main(String[] args) {
         PatientsApi apiInstance = new PatientsApi();
         Parameters parameters = ; // Parameters | 
         String conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
+
         try {
             apiInstance.removal(parameters, conversationId);
         } catch (ApiException e) {
@@ -2896,25 +3000,28 @@ public class PatientsApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Patients-removal-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Parameters *parameters = ; // 
-String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
+                              <pre class="prettyprint"><code class="language-cpp">
 
+// Create an instance of the API class
 PatientsApi *apiInstance = [[PatientsApi alloc] init];
+Parameters *parameters = ; // 
+String *conversationId = conversationId_example; // (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
 // Removal (Out of Area)
 [apiInstance removalWith:parameters
     conversationId:conversationId
               completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
 </code></pre>
                             </div>
 
                             <div class="tab-pane" id="examples-Patients-removal-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var GpLinksNhaisAdaptorFhirApi = require('gp_links_nhais_adaptor__fhir_api');
 
+// Create an instance of the API class
 var api = new GpLinksNhaisAdaptorFhirApi.PatientsApi()
 var parameters = ; // {Parameters} 
 var opts = {
@@ -2948,18 +3055,16 @@ namespace Example
     {
         public void main()
         {
-            
+
+            // Create an instance of the API class
             var apiInstance = new PatientsApi();
             var parameters = new Parameters(); // Parameters | 
             var conversationId = conversationId_example;  // String | (Optional) a unique identifier to trace this request in logs and databases (optional)  (default to null)
 
-            try
-            {
+            try {
                 // Removal (Out of Area)
                 apiInstance.removal(parameters, conversationId);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Debug.Print("Exception when calling PatientsApi.removal: " + e.Message );
             }
         }
@@ -2972,6 +3077,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+// Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\PatientsApi();
 $parameters = ; // Parameters | 
 $conversationId = conversationId_example; // String | (Optional) a unique identifier to trace this request in logs and databases
@@ -2989,11 +3095,12 @@ try {
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::PatientsApi;
 
+# Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::PatientsApi->new();
 my $parameters = WWW::OPenAPIClient::Object::Parameters->new(); # Parameters | 
 my $conversationId = conversationId_example; # String | (Optional) a unique identifier to trace this request in logs and databases
 
-eval { 
+eval {
     $api_instance->removal(parameters => $parameters, conversationId => $conversationId);
 };
 if ($@) {
@@ -3008,12 +3115,12 @@ import openapi_client
 from openapi_client.rest import ApiException
 from pprint import pprint
 
-# create an instance of the API class
+# Create an instance of the API class
 api_instance = openapi_client.PatientsApi()
 parameters =  # Parameters | 
 conversationId = conversationId_example # String | (Optional) a unique identifier to trace this request in logs and databases (optional) (default to null)
 
-try: 
+try:
     # Removal (Out of Area)
     api_instance.removal(parameters, conversationId=conversationId)
 except ApiException as e:
@@ -3029,8 +3136,8 @@ pub fn main() {
 
     let mut context = PatientsApi::Context::default();
     let result = client.removal(parameters, conversationId, &context).wait();
-    println!("{:?}", result);
 
+    println!("{:?}", result);
 }
 </code></pre>
                             </div>
@@ -3093,9 +3200,10 @@ $(document).ready(function() {
   },
   "required" : true
 };
-  var schema = findNode('schema', schemaWrapper).schema;
+
+  var schema = findNode('schema',schemaWrapper).schema;
   if (!schema) {
-      schema = schemaWrapper.schema;
+    schema = schemaWrapper.schema;
   }
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
@@ -3201,32 +3309,18 @@ $(document).ready(function() {
                                   <div id="responses-Patients-removal-schema-default" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "The request could not be processed and forwarded to NHAIS",
-  "headers" : {
-    "ConversationId" : {
-      "description" : "If a ConversationId request header is provided this will be the same value. Otherwise this is the ConversationId generated for the request.",
-      "style" : "simple",
-      "explode" : false,
-      "schema" : {
-        "type" : "string"
-      }
-    }
-  },
-  "content" : {
-    "application/fhir+json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OperationOutcome"
-      }
-    }
-  }
-};
+                                        var schemaWrapper = ;
                                         var schema = findNode('schema',schemaWrapper).schema;
                                         if (!schema) {
-                                            schema = schemaWrapper.schema;
+                                          schema = schemaWrapper.schema;
                                         }
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
                                         } else if (schema.items != null && schema.items.$ref != null) {
                                             schema.items = defsParser.$refs.get(schema.items.$ref);
                                         } else {
@@ -3351,7 +3445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var DATE_STRING_REGEX = /(^\d{1,4}[\.|\\/|-]\d{1,2}[\.|\\/|-]\d{1,4})(\s*(?:0?[1-9]:[0-5]|1(?=[012])\d:[0-5])\d\s*[ap]m)?$/;
 	var PARTIAL_DATE_REGEX = /\d{2}:\d{2}:\d{2} GMT-\d{4}/;
 	var JSON_DATE_REGEX = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
-	// When toggleing, don't animated removal or addition of more than a few items
+	// When toggling, don't animated removal or addition of more than a few items
 	var MAX_ANIMATED_TOGGLE_ITEMS = 10;
 	var requestAnimationFrame = window.requestAnimationFrame || function (cb) { cb(); return 0; };
 	;
@@ -3780,7 +3874,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
+
 	// load the styles
 	var content = __webpack_require__(3);
 	if(typeof content === 'string') content = [[module.id, content, '']];
@@ -3807,11 +3901,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports = module.exports = __webpack_require__(4)();
 	// imports
-	
-	
+
+
 	// module
 	exports.push([module.id, ".json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-row,\n.json-formatter-row a,\n.json-formatter-row a:hover {\n  color: black;\n  text-decoration: none;\n}\n.json-formatter-row .json-formatter-row {\n  margin-left: 1rem;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty {\n  opacity: 0.5;\n  margin-left: 1rem;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty:after {\n  display: none;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-object:after {\n  content: \"No properties\";\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-array:after {\n  content: \"[]\";\n}\n.json-formatter-row .json-formatter-string {\n  color: green;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-row .json-formatter-number {\n  color: blue;\n}\n.json-formatter-row .json-formatter-boolean {\n  color: red;\n}\n.json-formatter-row .json-formatter-null {\n  color: #855A00;\n}\n.json-formatter-row .json-formatter-undefined {\n  color: #ca0b69;\n}\n.json-formatter-row .json-formatter-function {\n  color: #FF20ED;\n}\n.json-formatter-row .json-formatter-date {\n  background-color: rgba(0, 0, 0, 0.05);\n}\n.json-formatter-row .json-formatter-url {\n  text-decoration: underline;\n  color: blue;\n  cursor: pointer;\n}\n.json-formatter-row .json-formatter-bracket {\n  color: blue;\n}\n.json-formatter-row .json-formatter-key {\n  color: #00008B;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-row .json-formatter-constructor-name {\n  cursor: pointer;\n}\n.json-formatter-row .json-formatter-toggler {\n  line-height: 1.2rem;\n  font-size: 0.7rem;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-row .json-formatter-toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"\\25BA\";\n}\n.json-formatter-row > a > .json-formatter-preview-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-row:hover > a > .json-formatter-preview-text {\n  opacity: 0.6;\n}\n.json-formatter-row.json-formatter-open > .json-formatter-toggler-link .json-formatter-toggler:after {\n  transform: rotate(90deg);\n}\n.json-formatter-row.json-formatter-open > .json-formatter-children:after {\n  display: inline-block;\n}\n.json-formatter-row.json-formatter-open > a > .json-formatter-preview-text {\n  display: none;\n}\n.json-formatter-row.json-formatter-open.json-formatter-empty:after {\n  display: block;\n}\n.json-formatter-dark.json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-dark.json-formatter-row,\n.json-formatter-dark.json-formatter-row a,\n.json-formatter-dark.json-formatter-row a:hover {\n  color: white;\n  text-decoration: none;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-row {\n  margin-left: 1rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty {\n  opacity: 0.5;\n  margin-left: 1rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty:after {\n  display: none;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-object:after {\n  content: \"No properties\";\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-array:after {\n  content: \"[]\";\n}\n.json-formatter-dark.json-formatter-row .json-formatter-string {\n  color: #31F031;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-number {\n  color: #66C2FF;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-boolean {\n  color: #EC4242;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-null {\n  color: #EEC97D;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-undefined {\n  color: #ef8fbe;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-function {\n  color: #FD48CB;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-date {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.json-formatter-dark.json-formatter-row .json-formatter-url {\n  text-decoration: underline;\n  color: #027BFF;\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-bracket {\n  color: #9494FF;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-key {\n  color: #23A0DB;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-constructor-name {\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-toggler {\n  line-height: 1.2rem;\n  font-size: 0.7rem;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"\\25BA\";\n}\n.json-formatter-dark.json-formatter-row > a > .json-formatter-preview-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-dark.json-formatter-row:hover > a > .json-formatter-preview-text {\n  opacity: 0.6;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > .json-formatter-toggler-link .json-formatter-toggler:after {\n  transform: rotate(90deg);\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > .json-formatter-children:after {\n  display: inline-block;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > a > .json-formatter-preview-text {\n  display: none;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open.json-formatter-empty:after {\n  display: block;\n}\n", "", {"version":3,"sources":["/./src/style.less","/./src/style.less"],"names":[],"mappings":"AA0GA;EA3FE,uBAAA;CCbD;ADcC;;;EACE,aAAA;EACA,sBAAA;CCVH;ADkGD;EApFI,kBAAA;CCXH;ADeG;EACE,aAAA;EACA,kBAAA;CCbL;ADeK;EAAU,cAAA;CCZf;ADaK;EAAgC,yBAAA;CCVrC;ADWK;EAA+B,cAAA;CCRpC;ADkFD;EArEI,aAAA;EACA,iBAAA;EACA,sBAAA;CCVH;AD6ED;EAjE2B,YAAA;CCT1B;AD0ED;EAhE4B,WAAA;CCP3B;ADuED;EA/DyB,eAAA;CCLxB;ADoED;EA9D8B,eAAA;CCH7B;ADiED;EA7D6B,eAAA;CCD5B;AD8DD;EA5DyB,sCAAA;CCCxB;AD2DD;EA1DI,2BAAA;EACA,YAAA;EACA,gBAAA;CCEH;ADsDD;EArD4B,YAAA;CCE3B;ADmDD;EAnDI,eAAA;EACA,gBAAA;EACA,sBAAA;CCGH;AD8CD;EA9CI,gBAAA;CCGH;AD2CD;EA1CI,oBAAA;EACA,kBAAA;EACA,uBAAA;EACA,aAAA;EACA,gBAAA;EACA,sBAAA;CCEH;ADAG;EACE,sBAAA;EACA,oCAAA;EACA,iBAAA;CCEL;AD8BD;EA1BI,WAAA;EACA,kCAAA;EACA,mBAAA;CCDH;ADGC;EACE,aAAA;CCDH;ADKC;EAEI,yBAAA;CCJL;ADEC;EAKI,sBAAA;CCJL;ADDC;EAQI,cAAA;CCJL;ADMG;EACE,eAAA;CCJL;ADeD;EAhGE,uBAAA;CCoFD;ADnFC;;;EACE,aAAA;EACA,sBAAA;CCuFH;ADMD;EAzFI,kBAAA;CCsFH;ADlFG;EACE,aAAA;EACA,kBAAA;CCoFL;ADlFK;EAAU,cAAA;CCqFf;ADpFK;EAAgC,yBAAA;CCuFrC;ADtFK;EAA+B,cAAA;CCyFpC;ADVD;EA1EI,eAAA;EACA,iBAAA;EACA,sBAAA;CCuFH;ADfD;EAtE2B,eAAA;CCwF1B;ADlBD;EArE4B,eAAA;CC0F3B;ADrBD;EApEyB,eAAA;CC4FxB;ADxBD;EAnE8B,eAAA;CC8F7B;AD3BD;EAlE6B,eAAA;CCgG5B;AD9BD;EAjEyB,4CAAA;CCkGxB;ADjCD;EA/DI,2BAAA;EACA,eAAA;EACA,gBAAA;CCmGH;ADtCD;EA1D4B,eAAA;CCmG3B;ADzCD;EAxDI,eAAA;EACA,gBAAA;EACA,sBAAA;CCoGH;AD9CD;EAnDI,gBAAA;CCoGH;ADjDD;EA/CI,oBAAA;EACA,kBAAA;EACA,uBAAA;EACA,aAAA;EACA,gBAAA;EACA,sBAAA;CCmGH;ADjGG;EACE,sBAAA;EACA,oCAAA;EACA,iBAAA;CCmGL;AD9DD;EA/BI,WAAA;EACA,kCAAA;EACA,mBAAA;CCgGH;AD9FC;EACE,aAAA;CCgGH;AD5FC;EAEI,yBAAA;CC6FL;AD/FC;EAKI,sBAAA;CC6FL;ADlGC;EAQI,cAAA;CC6FL;AD3FG;EACE,eAAA;CC6FL","file":"style.less","sourcesContent":[".theme(\n  @default-color: black,\n  @string-color: green,\n  @number-color: blue,\n  @boolean-color: red,\n  @null-color: #855A00,\n  @undefined-color: rgb(202, 11, 105),\n  @function-color: #FF20ED,\n  @rotate-time: 100ms,\n  @toggler-opacity: 0.6,\n  @toggler-color: #45376F,\n  @bracket-color: blue,\n  @key-color: #00008B,\n  @url-color: blue ){\n\n  font-family: monospace;\n  &, a, a:hover {\n    color: @default-color;\n    text-decoration: none;\n  }\n\n  .json-formatter-row {\n    margin-left: 1rem;\n  }\n\n  .json-formatter-children {\n    &.json-formatter-empty {\n      opacity: 0.5;\n      margin-left: 1rem;\n\n      &:after { display: none; }\n      &.json-formatter-object:after { content: \"No properties\"; }\n      &.json-formatter-array:after { content: \"[]\"; }\n    }\n  }\n\n  .json-formatter-string {\n    color: @string-color;\n    white-space: pre;\n    word-wrap: break-word;\n  }\n  .json-formatter-number { color: @number-color; }\n  .json-formatter-boolean { color: @boolean-color; }\n  .json-formatter-null { color: @null-color; }\n  .json-formatter-undefined { color: @undefined-color; }\n  .json-formatter-function { color: @function-color; }\n  .json-formatter-date { background-color: fade(@default-color, 5%); }\n  .json-formatter-url {\n    text-decoration: underline;\n    color: @url-color;\n    cursor: pointer;\n  }\n\n  .json-formatter-bracket { color: @bracket-color; }\n  .json-formatter-key {\n    color: @key-color;\n    cursor: pointer;\n    padding-right: 0.2rem;\n  }\n  .json-formatter-constructor-name {\n    cursor: pointer;\n  }\n\n  .json-formatter-toggler {\n    line-height: 1.2rem;\n    font-size: 0.7rem;\n    vertical-align: middle;\n    opacity: @toggler-opacity;\n    cursor: pointer;\n    padding-right: 0.2rem;\n\n    &:after {\n      display: inline-block;\n      transition: transform @rotate-time ease-in;\n      content: \"►\";\n    }\n  }\n\n  // Inline preview on hover (optional)\n  > a > .json-formatter-preview-text {\n    opacity: 0;\n    transition: opacity .15s ease-in;\n    font-style: italic;\n  }\n  &:hover > a > .json-formatter-preview-text {\n    opacity: 0.6;\n  }\n\n  // Open state\n  &.json-formatter-open {\n    > .json-formatter-toggler-link .json-formatter-toggler:after{\n      transform: rotate(90deg);\n    }\n    > .json-formatter-children:after {\n      display: inline-block;\n    }\n    > a > .json-formatter-preview-text {\n      display: none;\n    }\n    &.json-formatter-empty:after {\n      display: block;\n    }\n  }\n}\n\n// Default theme\n.json-formatter-row {\n  .theme();\n}\n\n// Dark theme\n.json-formatter-dark.json-formatter-row {\n  .theme(\n    @default-color: white,\n    @string-color: #31F031,\n    @number-color: #66C2FF,\n    @boolean-color: #EC4242,\n    @null-color: #EEC97D,\n    @undefined-color: rgb(239, 143, 190),\n    @function-color: #FD48CB,\n    @rotate-time: 100ms,\n    @toggler-opacity: 0.6,\n    @toggler-color: #45376F,\n    @bracket-color: #9494FF,\n    @key-color: #23A0DB,\n    @url-color: #027BFF);\n}\n",".json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-row,\n.json-formatter-row a,\n.json-formatter-row a:hover {\n  color: black;\n  text-decoration: none;\n}\n.json-formatter-row .json-formatter-row {\n  margin-left: 1rem;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty {\n  opacity: 0.5;\n  margin-left: 1rem;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty:after {\n  display: none;\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-object:after {\n  content: \"No properties\";\n}\n.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-array:after {\n  content: \"[]\";\n}\n.json-formatter-row .json-formatter-string {\n  color: green;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-row .json-formatter-number {\n  color: blue;\n}\n.json-formatter-row .json-formatter-boolean {\n  color: red;\n}\n.json-formatter-row .json-formatter-null {\n  color: #855A00;\n}\n.json-formatter-row .json-formatter-undefined {\n  color: #ca0b69;\n}\n.json-formatter-row .json-formatter-function {\n  color: #FF20ED;\n}\n.json-formatter-row .json-formatter-date {\n  background-color: rgba(0, 0, 0, 0.05);\n}\n.json-formatter-row .json-formatter-url {\n  text-decoration: underline;\n  color: blue;\n  cursor: pointer;\n}\n.json-formatter-row .json-formatter-bracket {\n  color: blue;\n}\n.json-formatter-row .json-formatter-key {\n  color: #00008B;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-row .json-formatter-constructor-name {\n  cursor: pointer;\n}\n.json-formatter-row .json-formatter-toggler {\n  line-height: 1.2rem;\n  font-size: 0.7rem;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-row .json-formatter-toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"►\";\n}\n.json-formatter-row > a > .json-formatter-preview-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-row:hover > a > .json-formatter-preview-text {\n  opacity: 0.6;\n}\n.json-formatter-row.json-formatter-open > .json-formatter-toggler-link .json-formatter-toggler:after {\n  transform: rotate(90deg);\n}\n.json-formatter-row.json-formatter-open > .json-formatter-children:after {\n  display: inline-block;\n}\n.json-formatter-row.json-formatter-open > a > .json-formatter-preview-text {\n  display: none;\n}\n.json-formatter-row.json-formatter-open.json-formatter-empty:after {\n  display: block;\n}\n.json-formatter-dark.json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-dark.json-formatter-row,\n.json-formatter-dark.json-formatter-row a,\n.json-formatter-dark.json-formatter-row a:hover {\n  color: white;\n  text-decoration: none;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-row {\n  margin-left: 1rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty {\n  opacity: 0.5;\n  margin-left: 1rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty:after {\n  display: none;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-object:after {\n  content: \"No properties\";\n}\n.json-formatter-dark.json-formatter-row .json-formatter-children.json-formatter-empty.json-formatter-array:after {\n  content: \"[]\";\n}\n.json-formatter-dark.json-formatter-row .json-formatter-string {\n  color: #31F031;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-number {\n  color: #66C2FF;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-boolean {\n  color: #EC4242;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-null {\n  color: #EEC97D;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-undefined {\n  color: #ef8fbe;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-function {\n  color: #FD48CB;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-date {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.json-formatter-dark.json-formatter-row .json-formatter-url {\n  text-decoration: underline;\n  color: #027BFF;\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-bracket {\n  color: #9494FF;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-key {\n  color: #23A0DB;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-constructor-name {\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-toggler {\n  line-height: 1.2rem;\n  font-size: 0.7rem;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n  padding-right: 0.2rem;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"►\";\n}\n.json-formatter-dark.json-formatter-row > a > .json-formatter-preview-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-dark.json-formatter-row:hover > a > .json-formatter-preview-text {\n  opacity: 0.6;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > .json-formatter-toggler-link .json-formatter-toggler:after {\n  transform: rotate(90deg);\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > .json-formatter-children:after {\n  display: inline-block;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open > a > .json-formatter-preview-text {\n  display: none;\n}\n.json-formatter-dark.json-formatter-row.json-formatter-open.json-formatter-empty:after {\n  display: block;\n}\n"],"sourceRoot":"webpack://"}]);
-	
+
 	// exports
 
 
@@ -3826,7 +3920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// css base code, injected by the css-loader
 	module.exports = function() {
 		var list = [];
-	
+
 		// return the list of modules as css string
 		list.toString = function toString() {
 			var result = [];
@@ -3840,7 +3934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 			return result.join("");
 		};
-	
+
 		// import a list of modules into the list
 		list.i = function(modules, mediaQuery) {
 			if(typeof modules === "string")
@@ -3896,23 +3990,23 @@ return /******/ (function(modules) { // webpackBootstrap
 		singletonElement = null,
 		singletonCounter = 0,
 		styleElementsInsertedAtTop = [];
-	
+
 	module.exports = function(list, options) {
 		if(false) {
 			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
 		}
-	
+
 		options = options || {};
 		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 		// tags it will allow on a page
 		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
+
 		// By default, add <style> tags to the bottom of <head>.
 		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
+
 		var styles = listToStyles(list);
 		addStylesToDom(styles, options);
-	
+
 		return function update(newList) {
 			var mayRemove = [];
 			for(var i = 0; i < styles.length; i++) {
@@ -3935,7 +4029,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		};
 	}
-	
+
 	function addStylesToDom(styles, options) {
 		for(var i = 0; i < styles.length; i++) {
 			var item = styles[i];
@@ -3957,7 +4051,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		}
 	}
-	
+
 	function listToStyles(list) {
 		var styles = [];
 		var newStyles = {};
@@ -3975,7 +4069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 		return styles;
 	}
-	
+
 	function insertStyleElement(options, styleElement) {
 		var head = getHeadElement();
 		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
@@ -3994,7 +4088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
 		}
 	}
-	
+
 	function removeStyleElement(styleElement) {
 		styleElement.parentNode.removeChild(styleElement);
 		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
@@ -4002,24 +4096,24 @@ return /******/ (function(modules) { // webpackBootstrap
 			styleElementsInsertedAtTop.splice(idx, 1);
 		}
 	}
-	
+
 	function createStyleElement(options) {
 		var styleElement = document.createElement("style");
 		styleElement.type = "text/css";
 		insertStyleElement(options, styleElement);
 		return styleElement;
 	}
-	
+
 	function createLinkElement(options) {
 		var linkElement = document.createElement("link");
 		linkElement.rel = "stylesheet";
 		insertStyleElement(options, linkElement);
 		return linkElement;
 	}
-	
+
 	function addStyle(obj, options) {
 		var styleElement, update, remove;
-	
+
 		if (options.singleton) {
 			var styleIndex = singletonCounter++;
 			styleElement = singletonElement || (singletonElement = createStyleElement(options));
@@ -4045,9 +4139,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				removeStyleElement(styleElement);
 			};
 		}
-	
+
 		update(obj);
-	
+
 		return function updateStyle(newObj) {
 			if(newObj) {
 				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
@@ -4058,19 +4152,19 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		};
 	}
-	
+
 	var replaceText = (function () {
 		var textStore = [];
-	
+
 		return function (index, replacement) {
 			textStore[index] = replacement;
 			return textStore.filter(Boolean).join('\n');
 		};
 	})();
-	
+
 	function applyToSingletonTag(styleElement, index, remove, obj) {
 		var css = remove ? "" : obj.css;
-	
+
 		if (styleElement.styleSheet) {
 			styleElement.styleSheet.cssText = replaceText(index, css);
 		} else {
@@ -4084,15 +4178,15 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		}
 	}
-	
+
 	function applyToTag(styleElement, obj) {
 		var css = obj.css;
 		var media = obj.media;
-	
+
 		if(media) {
 			styleElement.setAttribute("media", media)
 		}
-	
+
 		if(styleElement.styleSheet) {
 			styleElement.styleSheet.cssText = css;
 		} else {
@@ -4102,22 +4196,22 @@ return /******/ (function(modules) { // webpackBootstrap
 			styleElement.appendChild(document.createTextNode(css));
 		}
 	}
-	
+
 	function updateLink(linkElement, obj) {
 		var css = obj.css;
 		var sourceMap = obj.sourceMap;
-	
+
 		if(sourceMap) {
             // https://developer.mozilla.org/en/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
 			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
 		}
-	
+
 		var blob = new Blob([css], { type: "text/css" });
-	
+
 		var oldSrc = linkElement.href;
-	
+
 		linkElement.href = URL.createObjectURL(blob);
-	
+
 		if(oldSrc)
 			URL.revokeObjectURL(oldSrc);
 	}
@@ -4372,7 +4466,7 @@ var JSONSchemaView = (function () {
     this.options = options;
     this.isCollapsed = open <= 0;
 
-    // if schema is an empty object which means any JOSN
+    // if schema is an empty object which means any JSON
     this.isAny = typeof schema === 'object' && !Array.isArray(schema) && !Object.keys(schema).filter(function (k) {
       return ['title', 'description'].indexOf(k) === -1;
     }).length;
