@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.outbound.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Parameters;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,7 +118,6 @@ public class FhirControllerTest {
         verify(outboundQueueService).publish(meshMessage);
     }
 
-    @NotNull
     private MeshMessage getMeshMessage() {
         MeshMessage meshMessage = new MeshMessage();
         meshMessage.setContent("EDI");
