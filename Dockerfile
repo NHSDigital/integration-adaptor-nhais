@@ -11,7 +11,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle --no-daemon -b build.gradle bootJar -i --stacktrace
 
-FROM adoptopenjdk/openjdk11-openj9:jre
+FROM eclipse-temurin:11-jre-focal
 
 EXPOSE 8080
 
