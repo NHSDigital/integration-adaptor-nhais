@@ -48,8 +48,8 @@ used by the adaptor cannot be changed.
 
 ### Outbound Sequence Ids
 
-Tracks the sequence numbers used to "link" a GP and to HA using EDIFACT messaging. See 
-"Linking a GP Practice to an NHAIS system" section below for more information.
+Tracks the sequence numbers used to "link" a GP and to HA using EDIFACT messaging.
+See [Linking a GP Practice to an NHAIS system](#linking-a-gp-practice-to-an-nhais-system) section for more information.
 
 Collection Name: `outboundSequenceId`
 
