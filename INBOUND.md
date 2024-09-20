@@ -2,7 +2,8 @@
 
 ## Queue
 
-The name of the inbound GP system message queue is configurable using an environment variable (see [README](./README.md)).
+The name of the inbound GP system message queue is configurable using the [`NHAIS_GP_SYSTEM_INBOUND_QUEUE_NAME`
+environment variable](./README.md#message-queue-configuration-options).
 The adaptor publishes all inbound (HA->GP) messages to this queue. A header value differentiates the types of transaction.
 
 ## Message Headers
