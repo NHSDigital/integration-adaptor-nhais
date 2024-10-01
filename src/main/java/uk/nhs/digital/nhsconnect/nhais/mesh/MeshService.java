@@ -96,11 +96,10 @@ public class MeshService {
             conversationIdService.applyRandomConversationId();
             LOGGER.debug("Downloading MeshMessageId={}", messageId);
             InboundMeshMessage meshMessage = meshClient.getEdifactMessage(messageId);
-            LOGGER.debug("Publishing content of MeshMessageId={} to inbound mesh MQ", messageId);
+            LOGGER.info("Publishing content of MeshMessageId={} to inbound mesh MQ", messageId);
             inboundQueueService.publish(meshMessage);
-            LOGGER.debug("Acknowledging MeshMessageId={} on MESH API", messageId);
             meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
-            LOGGER.info("Published MeshMessageId={} for inbound processing", meshMessage.getMeshMessageId());
+            LOGGER.info("Acknowledged MeshMessageId={} on MESH API", messageId);
         } catch (MeshWorkflowUnknownException ex) {
             LOGGER.warn("MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.", messageId, ex.getWorkflowId());
         } catch (Exception ex) {
