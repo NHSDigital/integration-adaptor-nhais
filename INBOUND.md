@@ -51,8 +51,8 @@ are additional parameters consisting of name/value pairs.
 
 ### Data Items for FHIR Message Types
 
-REQUIRED - NHAIS will always provide this value for the transaction and the adaptor will always translated it FHIR
-OPTIONAL - NHAIS may optionally provide this value for the transaction and the adaptor will translate it to FHIR if provided
+REQUIRED - PCRM/NHAIS will always provide this value for the transaction and the adaptor will always translate it FHIR
+OPTIONAL - PCRM/NHAIS may optionally provide this value for the transaction and the adaptor will translate it to FHIR if provided
 BLANK - the value is not used by this transaction type
 
 | Data Item                                    | Approval | Rejection | FP69 Prior Notification | FP69 Flag Removal | Deduction | Deduction Request Rejection |
@@ -191,8 +191,8 @@ GP Links Specification Chapter 3.22.4 lists data fields and their requirements f
 The inbound Amendment transaction uses a JSONPatch data type instead of FHIR. The format is very similar to outbound 
 amendments with two exceptions:
 
-* NHAIS may provide a new NHS number
-* NHAIS never provides free text notes
+* PCRM/NHAIS may provide a new NHS number
+* PCRM/NHAIS never provides free text notes
 
 The following fields are OBSOLETE and not supported by the adaptor:
 

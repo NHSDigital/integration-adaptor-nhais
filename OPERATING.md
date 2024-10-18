@@ -1,35 +1,37 @@
 # Operating
 
-This document contains requirements and tips for operation the adaptor in a production environment.
+This document contains requirements and tips for operating the adaptor in a production environment.
 
 # AMQP Message Broker Requirements
 
 * The broker must be configured with a limited number of retries and deadletter queues
-* It is the responsibility of the GP supplier to configure adequate monitoring against the deadletter queues that allows ALL undeliverable messages to be investigated fully.
+* It is the responsibility of the GP supplier to configure adequate monitoring against the deadletter queues 
+that allows ALL undeliverable messages to be investigated fully
 * The broker must use persistent queues to avoid loss of data
-* The GP System must persist the relevant transaction data before acknowledging the message from the queue to avoid loss of data
+* The GP System must persist the relevant transaction data before acknowledging the message from the queue to avoid 
+loss of data
 
 **Using AmazonMQ**
 
 * A persistent broker (not in-memory) must be used to avoid data loss.
 * A configuration profile that includes settings for [retry and deadlettering](https://activemq.apache.org/message-redelivery-and-dlq-handling.html) must be applied.
-* AmazonMQ uses the scheme `amqp+ssl://` but this **MUST** be changed the to `amqps://` when configuring the adaptor.
+* AmazonMQ uses the scheme `amqp+ssl://` but this **MUST** be changed to `amqps://` when configuring this adaptor.
 
 **Using Azure Service Bus**
 
 * The ASB must use [MaxDeliveryCount and dead-lettering](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dead-letter-queues#exceeding-maxdeliverycount)
 * Azure Service Bus may require some parameters as part of the URL configuration. For example: `NHAIS_AMQP_BROKERS=amqps://<NAME>.servicebus.windows.net/;SharedAccessKeyName=<KEY NAME>;SharedAccessKey=<KEY VALUE>`
 
-# Mongodb Database Requirements
+# MongoDB Database Requirements
 
-* The NHAIS Adaptor and NHAIS system communications synchronise through a sequence number mechanism
-* The Mongodb database preserves this synchronisation
-* Deleting the mongodb database and/or its collections will break the link with the NHAIS system
-* The database should be used to monitor for any missing transactions. See [REPORTING.md](./REPORTING.md) for details.
+* This GP Links Adaptor and the PCRM/NHAIS system communications are synchronised through a sequence number mechanism
+* The MongoDB database preserves this synchronisation
+* Deleting the MongoDB database and/or its collections will break the link with the PCRM/NHAIS system
+* The database should be used to monitor for any missing transactions. See [REPORTING.md](./REPORTING.md) for details
 
-**Amazon Document DB Tips**
+**Amazon DocumentDB Tips**
 
-In the "Connectivity & security" tab of the cluster a URI is provided to "Connect to this cluster with an application".
+In the "Connectivity & Security" tab of the cluster a URI is provided to "Connect to this cluster with an application".
 Replace <username>:<insertYourPasswordHere> with the actual mongo username and password to be used by the application.
 The value of `NHAIS_MONGO_URI` should be set to this value. Since the URI string contains credentials we recommend 
 managing the entire value as a secured secret.
@@ -38,15 +40,15 @@ The user must have the `readWrite` role or a custom role with specific privilege
 
 **Azure Cosmos DB Tips**
 
-Follow Azure documentation on Cosmos DB's API for MongoDB
+Follow Azure documentation on Cosmos DB's API for MongoDB.
 
 ## Database Collections
 
 The default database name is `nhais` but this can be changed through an environment variable. Each deployment of the
-adaptor MUST have its own database, but multiple database could be hosted by a single cluster. The collection names
+adaptor MUST have its own database, but multiple databases could be hosted on a single cluster. The collection names
 used by the adaptor cannot be changed.
 
-### Outbound Sequence Ids
+### Outbound Sequence IDs
 
 Tracks the sequence numbers used to "link" a GP and to HA using EDIFACT messaging.
 See [Linking a GP Practice to an NHAIS system](#linking-a-gp-practice-to-an-nhais-system) section for more information.
@@ -120,7 +122,7 @@ Example:
 
 ### Inbound State
 
-Records the metadata of inbound transactions received by the adaptor.
+Records the metadata of inbound transactions received by this adaptor.
 
 Collection Name: `inboundState`
 
@@ -134,7 +136,8 @@ Properties:
 * `sndr`: The sender's HA Trading Partner code
 * `recip`: The recipient's GP Trading Partner code
 * `tn`: The EDIFACT transaction number used for this transaction
-* `translationTimestamp`: The timestamp, as reported in the inbound EDIFACT interchange, when the NHAIS system produced the interchange
+* `translationTimestamp`: The timestamp, as reported in the inbound EDIFACT interchange, when the PCRM/NHAIS system 
+produced the interchange
 * `transactionType`: Three-letter abbreviation identifying the type of transaction
 * `processedTimestamp`: The timestamp when the adaptor processed the transaction
 * `conversationId`: The conversation id of the request that initiated this transaction
@@ -184,14 +187,15 @@ Example:
 ## Time-to-live Indexes
 
 The adaptor creates TTL (time to live) indexes on the `outboundState` and `inboundState` collections to automatically 
-remove old documents. The variable `NHAIS_MONGO_TTL` described above controls the duration. There are differences between
-how TTL indexes work between MongoDb and Azure Cosmos DB. When using Cosmos the `NHAIS_COSMOS_DB_ENABLED` flag must be true.
+remove old documents. The variable `NHAIS_MONGO_TTL` described above controls the duration. There are differences 
+between how TTL indexes work between MongoDb and Azure Cosmos DB. When using Cosmos the `NHAIS_COSMOS_DB_ENABLED` flag
+must be true.
 
-**TTL Indexes in MongoDB / AWS Document DB**
+**TTL Indexes in MongoDB / AWS DocumentDB**
 
 The property `translationTimestamp` is indexed. For outbound, this is the timestamp when the adaptor translates FHIR 
-into EDIFACT and is the timestamp enclosed in the EDIFACT interchange sent to NHAIS. For inbound, this is the 
-timestamp enclosed within the EDIFACT interchange received from NHAIS.
+into EDIFACT and is the timestamp enclosed in the EDIFACT interchange sent to PCRM/NHAIS. For inbound, this is the 
+timestamp enclosed within the EDIFACT interchange received from PCRM/NHAIS.
 
 **TTL Indexes in Azure Cosmos DB**
 
@@ -202,19 +206,22 @@ last updated timestamp of the resource". ([Reference](https://docs.microsoft.com
 For outbound, each document is "last updated" when the adaptor processes the inbound RECEP for that transaction. For
 inbound each document is "last updated" after publishing the FHIR message to the inbound GP System message queue.
 
-The impact is that documents in Cosmos may live slightly longer than those stored in Mongo.
+The impact is that documents in Cosmos may live slightly longer than those stored in MongoDB.
 
 ## AWS DocumentDB TLS configuration
 
-AWS DocumentDB uses a private CA certificate and therefore requires a custom keystore to manage the CA certificates effectively.
+AWS DocumentDB uses a private CA certificate and therefore requires a custom keystore to manage the CA certificates 
+effectively.
 
 To use TLS, it has to be enabled in the DocumentDB instance with the Mongo connection string containing the `tls=true`. 
 For more information on TLS configuration in MongoDB see [TLS options for Mongo connection string](https://docs.mongodb.com/manual/reference/connection-string/#tls-options).
 
-SSH tunneling might require adding the connection string option: `tlsAllowInvalidHostnames=true` (as CA would try to resolve localhost as hostname).
+SSH tunneling might require adding the connection string option: `tlsAllowInvalidHostnames=true` (as CA would try to 
+resolve localhost as hostname).
 This option should only be used for local tests as this might create a vulnerability.
 
-Use of DocumentDB TLS requires java trust store to be provided manually. Instructions on how to create trust store can be found here: 
+Use of DocumentDB TLS requires java trust store to be provided manually. Instructions on how to create trust store can 
+be found here: 
 [Connect to Document DB programmatically](https://docs.aws.amazon.com/documentdb/latest/developerguide/connect_programmatically.html#connect_programmatically-tls_enabled) 
 
 To configure custom trust store with AWS CA certificates set the `NHAIS_SSL_TRUST_STORE_URL` 
@@ -225,15 +232,15 @@ Additionally, set the `NHAIS_SSL_TRUST_STORE_PASSWORD` to trust store password
 
 # MESH Requirements
 
-**Note**: The "Development" section of the README refers to a fake-mesh component. fake-mesh is **not** part of the 
-adaptor  solution and should only be used to assist local development.
+**Note**: The "Development" section of the README refers to a fake-mesh component. fake-mesh is **not** part of this 
+adaptor API and should only be used to assist local development.
 
-NHSD manage access to MESH, allocate mailboxes, and provide connection details / credentials.
+[NHS England manage access to MESH](mailto:itoc.supportdesk@nhs.net), allocate mailboxes, and provide connection 
+details / credentials.
 
 # Management Endpoints
 
-[Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready) provides
-three management endpoints:
+[Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready) provides three management endpoints:
 
 * /healthcheck
 * /metrics
@@ -241,7 +248,7 @@ three management endpoints:
 
 # Monitoring GP Links messaging state
 
-There are two Mongo collections recording the state of GP Links transactions:
+There are two MongoDB collections recording the state of GP Links transactions:
 
 - `outboundState` records every transaction sent by the adaptor (GP->HA)
 - `inboundState` records every transaction received by the adaptor (HA->GP)
@@ -274,19 +281,19 @@ Messages published to the adaptor's three AMQP message queues include a Conversa
 
 # Linking a GP Practice to an NHAIS system
 
-The NHAIS Adaptor and NHAIS system communications synchronise through a sequence number mechanism. Linking a GP 
-Practice to an NHAIS system which have never previously exchanged messages requires no additional setup for 
+This GP Links Adaptor and the PCRM/NHAIS system communications are synchronised through a sequence number mechanism. 
+Linking a GP Practice to an PCRM system which have never previously exchanged messages requires no additional setup for 
 synchronisation. All the sequences begin at 1, and the adaptor will start them automatically.
 
 In the case that a new market entrant GP System takes over from an incumbent system the new system must pick up the 
-sequences where the incumbent left off. For every GP/NHAIS link established, the incumbent supplier or NHAIS operator 
+sequences where the incumbent left off. For every GP/PCRM link established, the incumbent supplier or PCRM operator 
 must advise the following:
 
 * Most recently used Send Interchange Sequence (SIS) number, GP -> HA
 * Most recently used Send Message Sequence (SMS) number, GP -> HA
 * Most recently used Transaction Number (TN), GP -> HA
 
-For each GP/NHAIS pair the following documents must be inserted into the `outboundSequenceId` collection of the 
+For each GP/PCRM pair the following documents must be inserted into the `outboundSequenceId` collection of the 
 adaptor's database. The angle-bracketed values must be replaced (including the brackets) with the relevant data items.
 The `_id` property should have the type `String`, and the `sequenceNumber` property should have the type `int32`. Any 
 existing documents with the same `_id` must be replaced.
