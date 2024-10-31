@@ -1,26 +1,46 @@
-# GP Links - NHAIS Adaptor
+# GP Links Adaptor
 
-NHAIS is a system that allows General Practice (GP) Surgeries to keep their patient registration and demographics data 
-in sync with the regional Health Authorities (HA). Since the creation of this service the regional or area health 
-authorities (approx 80) have since been replaced by a fewer number of successor organisations. There is however still a 
-notion of every GP Practice's patient being registered with one of the HAs.
+The GP Links Adaptor _(formerly GP Links NHAIS Adaptor)_ is an API tool to help keep GP surgery patient registration 
+and demographics data in sync with core NHS systems, specifically the 
+[Primary Care Registration Management (PCRM)](https://digital.nhs.uk/services/primary-care-registration-management).
+
+This adaptor was originally built to interact with the NHS NHAIS system, which was replaced by PCRM and 
+[CSMS](https://digital.nhs.uk/services/screening-services/national-cervical-screening) in 2024.
+The NHS NHAIS was system that allowed General Practice (GP) Surgeries to keep their patient registration and 
+demographics data in sync with the regional Health Authorities (HA). Since the creation of this service the regional or
+area health authorities (approx 80) have since been replaced by a fewer number of successor organisations. There is 
+however still a notion of every GP Practice's patient being registered with one of the HAs.
+
+Since the replacement of NHS NHAIS with PCRM, backend processes have been put in place to allow connecting services, 
+such as this API, to continue working seamlessly using NHAIS GP Links
+*([see PCRM documentation](https://digital.nhs.uk/services/primary-care-registration-management#address-updates))*.
 
 See the [Resources](#resources) section for links to the underlying services and standards.
 
+## Service Names
+
+For the purposes of clarity, please note how we will refer to services within this documentation:
+* NHAIS - the previous system replaced by PCRM in 2024
+* PCRM - Patient Records Migration Service
+* PCRM/NHAIS and NHAIS GP Links - The PCRM owned service to manage GP patient registrations and other 
+patient data (using EDIFACT and MESH)
+* GP Links Adaptor - this API, helping to convert between EDIFACT/MESH and FHIR JSON
+
 ## Adaptor Scope
 
-The main objective of  the GP Links - NHAIS  Adaptor is to hide complex legacy standards and instead present a simple 
-and consistent interface aligned to current NHSD national standards. The adaptor removes the requirement for a GP System 
-to handle the complexities of EDIFACT and MESH messaging. To successfully integrate with NHAIS using this adaptor a GP 
-System Supplier **MUST** have a complete understanding of the "HA/GP links registration GP systems specification" except 
-where it directly involves EDIFACT. The specification contains many requirements pertaining to the GP System itself 
-which are out of scope for the adaptor.
+The main objective of the GP Links Adaptor is to hide complex legacy standards and instead present a simple 
+and consistent interface aligned to current NHS England national standards. This adaptor removes the requirement for a 
+GP System to handle the complexities of EDIFACT and MESH messaging. To successfully integrate with PCRM using this 
+adaptor a GP System Supplier **MUST** have a complete understanding of the "HA/GP links registration GP systems 
+specification" except where it directly involves EDIFACT. The specification contains many requirements pertaining to 
+the GP System itself which are out of scope for the adaptor.
 
-The patient registration and demographics portion of NHAIS is called HA/GP Links. NHAIS supports some features in 
-addition to GP Links, but these are out of scope for the GP Links - NHAIS Adaptor project.
+The patient registration and demographics portion of the former NHS NHAIS system was called 
+[HA/GP Links](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation). PCRM may support some 
+features in addition to GP Links, but these are out of scope for the GP Links Adaptor API.
 
 HA/GP Links messaging comprises several types of "transactions" used to update and reconcile patient lists and 
-patient demographic data. The GP Links - NHAIS Adaptor supports the following transaction types:
+patient demographic data. The GP Links Adaptor supports the following transaction types:
 
 Outbound (GP -> HA)
 
@@ -48,15 +68,20 @@ Inbound (HA -> GP)
 
 ## Workflows
 
-Chapter 3 of the GP Links Specification describes each transaction type including workflow and processing diagrams. In 
-this document "OUT-GOING" is the same is Outbound (GP -> HA) and  "IN-COMING" is the same as Inbound (HA -> GP). 
-Transaction names and field names are consistent between the GP Links specification and the adaptor's documentation.
+Chapter 3 of the [GP Links Specification](https://digital.nhs.uk/services/nhais/nhais-developer-document-library) 
+describes each transaction type including workflow and processing diagrams. In this document "OUT-GOING" is the same 
+as Outbound (GP -> HA) and "IN-COMING" is the same as Inbound (HA -> GP). 
+Transaction names and field names are consistent between the GP Links specification and this adaptor's documentation.
 
 ## Adaptor API
 
 ### Outbound (GP -> HA)
 
-The GP System will send outbound messages using a HL7 FHIR R4 REST API: [Outbound (GP -> HA) OpenAPI Specification](specification/nhais-adaptor.yaml)
+The GP System will send outbound messages using a 
+HL7 [FHIR R4](https://en.wikipedia.org/wiki/Fast_Healthcare_Interoperability_Resources) 
+JSON based REST API. 
+
+See: [Outbound (GP -> HA) OpenAPI Specification](specification/nhais-adaptor.yaml).
 
 ### Inbound (HA -> GP)
 
@@ -65,17 +90,18 @@ documentation of the message formats.
 
 ### Examples
 
-Examples of:
+Examples of the following messages are provided as part of this adaptor's User Acceptance Tests:
 
-- outbound requests to the adaptor's API
+- outbound requests to this adaptor's API
 - inbound replies (published to the Inbound Supplier MQ)
 - inbound unsolicited messages (published to the Inbound Supplier MQ)
 
-are provided as part of the adaptor's User Acceptance Tests.
-
 Examples with filenames containing `app-j-` are copied from the _GP SYSTEMS SPECIFICATION - APPENDIX J - SAMPLE 
-REGISTRATION EDIFACT MESSAGES_. Examples with filenames containing `live-` are sanitised copies of recent NHAIS live 
-service transactions. Further synthetic examples round out the test coverage.
+REGISTRATION EDIFACT MESSAGES_.
+
+Examples with filenames containing `live-` are sanitised copies of recent NHAIS live service transactions. 
+
+Further synthetic examples round out the test coverage.
 
 #### Outbound Examples
 
@@ -83,8 +109,8 @@ The [outbound_uat_data](src/intTest/resources/outbound_uat_data) folder contains
 transactions. There is a sub-folder for each transaction type. Within each of those folder are sets of 2-3 files for 
 each example:
 
-* `<example-id>.fhir.json`: The JSON payload sent from the GP System to the Adaptor.
-* `<example-id>.edifact.dat`: The EDIFACT file sent from the adaptor to the NHAIS instance for the request
+* `<example-id>.fhir.json`: The JSON payload sent from the GP System to this adaptor.
+* `<example-id>.edifact.dat`: The EDIFACT file sent from this adaptor to the PCRM/NHAIS instance for the request
 * `<example-id>.notes.txt`: (If provided) a textual description of the transaction
 
 #### Inbound Examples
@@ -94,7 +120,7 @@ The [inbound_uat_data](src/intTest/resources/inbound_uat_data) folder contains e
 files for each example:
                        
 * `<example-id>.fhir.json`: The JSON message published into the Inbound Supplier MQ.
-* `<example-id>.edifact.dat`: The EDIFACT file from an NHAIS instance to the adaptor
+* `<example-id>.edifact.dat`: The EDIFACT file from an PCRM/NHAIS instance to this adaptor
 * `<example-id>.txt`: (If provided) a textual description of the transaction
 * `<example-id>.recep.dat`: The RECEP file sent back to NHAIS in receipt of the inbound transaction. RECEP is not a GP 
 system concern.
@@ -107,7 +133,7 @@ system concern.
 
 **[Guide to NHAIS/GP links documentation](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation)**
 
-The "Guide to NHAIS/GP links documentation" describes how to use the “NHAIS developer document library” (see below) and 
+The "Guide to NHAIS/GP links documentation" describes how to use the "NHAIS developer document library" (see below) and 
 provides updates and clarifications to the original documentation.
 
 **[NHAIS developer document library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library)**
@@ -115,20 +141,20 @@ provides updates and clarifications to the original documentation.
 When this page refers to chapters and sections they are within these documents comprising the “HA/GP links registration 
 GP systems specification”.
 
-Chapters 1-4 describe the requirements for the system including UI requirements for the GP System
+Chapters 1-4 describe the requirements for the system including UI requirements for the GP System.
 
 _Appendix J_ and then _FHS Reg v1.4_ should be read to understand the EDIFACT messaging standard.
 
 **[Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/services/message-exchange-for-social-care-and-health-mesh)**
 
-The adaptor transmits EDIFACT HA/GP Links transactions over MESH. The adaptor uses the MESH REST API.
+This adaptor transmits EDIFACT HA/GP Links transactions over MESH. This adaptor uses the MESH REST API.
 
 ## Configuration
 
-The adaptor reads its configuration from environment variables. The following sections describe the environment variables
+This adaptor reads its configuration from environment variables. The following sections describe the environment variables
  used to configure the adaptor. 
  
-Variables without a default value and not marked optional are *MUST* be defined for the adaptor to run.
+Variables without a default value and not marked optional are *MUST* be defined for this adaptor to run.
 
 ### General Configuration Options
 
@@ -151,13 +177,15 @@ Variables without a default value and not marked optional are *MUST* be defined 
 
 (*) Active/Standby: The first broker in the list always used unless there is an error, in which case the other URLs will be used. At least one URL is required.
 
-### Mongodb Configuration Options
+### MongoDB Configuration Options
 
-The adaptor configuration for mongodb can be configured two ways: using a connection string or providing individual 
-properties. This is to accommodate differences in the capabilities of deployment automation frameworks and varying 
-environments.
+This adaptor's configuration for MongoDB can be configured two ways: 
+* using a connection string or 
+* providing individual properties. 
 
-Option 1: If `NHAIS_MONGO_HOST` is defined then the adaptor forms a connection string from the following properties:
+This is to accommodate differences in the capabilities of deployment automation frameworks and varying environments.
+
+Option 1: If `NHAIS_MONGO_HOST` **is defined** then this adaptor forms a connection string from the following properties:
 
 | Environment Variable      | Default | Description                                                                                                                                                   |
 |---------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -170,7 +198,7 @@ Option 1: If `NHAIS_MONGO_HOST` is defined then the adaptor forms a connection s
 | NHAIS_MONGO_TTL           | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |
 | NHAIS_COSMOS_DB_ENABLED   | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB                                                                |
 
-Option 2: If `NHAIS_MONGO_HOST` is undefined then the adaptor uses the connection string provided:
+Option 2: If `NHAIS_MONGO_HOST` **is undefined** then the adaptor uses the connection string provided:
 
 | Environment Variable      | Default                   | Description               |
 |---------------------------|---------------------------|---------------------------|
@@ -242,13 +270,13 @@ This value must always be less than `NHAIS_MESH_POLLING_CYCLE_MINIMUM_INTERVAL_I
 
 ## Operating
 
-Refer to [OPERATING.md](OPERATING.md) for tip about how to operate the adaptor in the production environment.
+Refer to [OPERATING.md](OPERATING.md) for tip about how to operate this adaptor in the production environment.
 
 ## Development
 
 The following sections provide the necessary information to develop the GP Links - NHAIS adaptor.
 
-The adaptor configuration has sensible defaults for local development. Some overrides might be required where the 
+This adaptor configuration has sensible defaults for local development. Some overrides might be required where the 
 "secure by default" principle takes precedence:
 
 * `NHAIS_MESH_CERT_VALIDATION: "false"` - if using fake-mesh then certificate validation must be disabled
@@ -348,8 +376,8 @@ See [NFR_TESTING.md](./NFR_TESTING.md)
 
 To view data in MongoDB:
 
-* Download [Robo 3T](https://robomongo.org/)
-* Open Robo 3T -> Create new connection with details as below:
+* Download [Studio 3T](https://studio3t.com/download/)
+* Open Studio 3T -> Create new connection with details as below:
   * Type: Direct Connection
   * Name: nhais
   * Address: localhost : 27017
@@ -374,9 +402,10 @@ A `mesh.sh` bash script exists for testing or debugging MESH. For more informati
 #### Fake MESH
 
 A mock implementation of the MESH API is available for local development. The latest version is in GitHub at
-[mattd-kainos/fake-mesh](https://github.com/mattd-kainos/fake-mesh). _It is a fork of [jamespic/fake-mesh](https://github.com/jamespic/fake-mesh).
+[Mesh Sandbox](https://github.com/NHSDigital/mesh-sandbox).
 
-The [nhsdev Docker Hub](https://hub.docker.com/repository/docker/nhsdev/fake-mesh) hosts released fake-mesh images.
+In addition, the [nhsdev Docker Hub](https://hub.docker.com/repository/docker/nhsdev/fake-mesh) hosts released fake-mesh
+images.
 
 ### Common Issues
 

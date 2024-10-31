@@ -1,146 +1,148 @@
 # This is an OpenAPI Specification (https://swagger.io/specification/)
-# for the NHAIS Adaptor API
-# owned by NHS Digital (https://digital.nhs.uk/)
+# for the GP Links Adaptor, formerly the GP Links NHAIS Adaptor
+# owned by NHS England (https://github.com/NHSDigital/integration-adaptor-nhais)
 openapi: "3.0.0"
 info:
   version: "0.1.0"
-  title: GP Links - NHAIS Adaptor (FHIR) API
+  title: GP Links Adaptor
   description: |
-      ## Overview
-      Use this API to access the GP Links - NHAIS Adaptor API
-
-      You can:
-        * Accept a new patient
-        * Amend an existing patient's demographics
-        * Request a Removal for a patient who has moved out of area
-        * Request a Deduction for a supported reason
-
-      The GP Links - NHAIS Adaptor does not store any patient demographic data and does not support GET operations.
-
-      The API is loosely based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
-
-      **PLEASE NOTE** - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
-      adequate validation is performed against ALL data items. There is no data validation or transformation performed by
-      this adaptor for ANY transaction type.
-
-      ## Technology
-      This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest).
-
-      It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange.
-      Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
-
-      You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific
-      rules. In particular:
-        - resource names are capitalised and singular, for example the `/Patient` not `/patients`
-        - array names are singular, for example `line` not `lines` for address lines
-        - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-        - data items related to an operation rather than the resource are represented as `Parameter`s
-
-      ## Example Requests
-
-      A number of example requests are available as part of the adaptor's user acceptance tests.
-
-      The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
-      of the README explains these examples in further detail.
-
-      ## Permitted Characters for Data Items
-
-      Where the adaptor API represents a data item as a string the GP System **MUST** supply a value that complies
-      with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
-      specification. For "free text" fields Chapter 3 refers to Appendix K.
-
-      There are four characters which must be given special treatment. If used within a string-typed data item the
-      following characters must be escaped (preceded) by a question mark: `' + : ?`
-
-      For example, to represent the GP Note
-
-          PATIENT'S + 1 : PATIENTS?
-
-      the JSON request to the adaptor would include the parameter
-
-          {
-            "name": "freeText",
-            "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
-          }
-
-      ## Terminology
-
-      This specification follows the terminology used in Chapter 3 of the GP System Specification to describe the data
-      items. Some data items that are referred to by different names both within the specification and across the
-      NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
-      of terminology.
-
-      #### NHS Number
+    ## Overview
+    The GP Links Adaptor was previously called the GP Links NHAIS Adaptor. In 2024 the NHS NHAIS service was retired and its responsibilities passed to PCRM.
     
-      All patients must have an NHS Number and ___only__ "full GMS” registered patients should generate GP Links 
-      transactions. 
+    With this adaptor you can:
     
-      > Temporary registrations should never be sent to NHAIS as accidental registrations could cause data quality
-      issues with the NHS.
-
-      #### GP Code
-
-      The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
-
-      > The GMC national GP code and the HA locally-defined GP code MUST both be sent, in the format GMC national GP code
-      concatenated with a comma (,) concatenated with the HA local GP code.
-
-      _Source: GP System Specification 4.3.7_
-
-      The "GMC national GP Code" is also referred to as the "GMC National code" or simply the "GMC Code".
-
-      The "HA local GP code" is also referred to as the "HA locally-defined GP code", "Local GP code" or "local code".
-      Elsewhere in the NHS estate this value may be referred to as the "Partnership Code", "Practice Code", or most
-      confusingly the "GP Code". If a practice is assigned different values for any of these then the operator of the
-      NHAIS system should be consulted to determine which to use.
+      * Accept a new patient
+      * Amend an existing patient's demographics
+      * Request a Removal for a patient who has moved out of area
+      * Request a Deduction for a supported reason
     
-      > This is not the same the as the practice ODS code, and will be provided with by PCSE at the point that the link 
-      is established. This is a Local Code of PCSE’s choosing.
-
-      #### GP Trading Partner Code
-
-      The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
-      of the EDIFACT messages. This may also be referred to as the "GP Link Code".
+    The GP Links Adaptor does not store any patient demographic data and does not support GET operations.
     
-      > For English Practices, the supplier will be provided with this by PCSE (Primary Care Support England, Capita),
-      the organisation that operates the 82 English NHAIS systems (+ the DMS NHAIS system), at the point that the link 
-      is established. 
-      This is a Local Code of PCSE’s choosing (3 alphas and a 5).
+    The API is loosely based on the [Personal Demographics Service API](https://github.com/NHSDigital/personal-demographics-service-api)
     
-      #### Managing Organisation
+    **PLEASE NOTE** - It is the responsibility of any GP IT system supplier implementing this adaptor to ensure that
+    adequate validation is performed against ALL data items. There is no data validation or transformation performed by
+    this adaptor for ANY transaction type.
     
-      This is the Link Code of the NHAIS system, in the same way as GP Trading Partner Code is the Link Code for 
-      the GP system (3 alphas and a 5).  This is the NHAIS System Cipher with either 1 or “01” on the end 
-      – e.g. BE (Berkshire) is BE01, SHE (Sheffield) is SHE1. 
+    ## Technology
+    This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest) and expects and responds with JSON data formats.
     
-      > A 2 character Cipher has “01” on the end. 
-      > A 3 character Cipher has “1” on the end.
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange.
+    Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
     
-      #### Destination HA Cipher
-
-      The "Destination HA Cipher" is the identifier of the NHAIS instance of the patient's managing organisation. The
-      identifier is comprised of two or three uppercase letters. It is also called the "Patient's Responsible HA" or
-      simply referred to as "Cipher".
-
-      A full list of the available "Destination HA Cipher" codes is available from the 
-      [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library), in 
-      the document labelled 
-      [Appendix D](https://digital.nhs.uk/binaries/content/assets/website-assets/services/nhais/app-d.doc').
-      As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
-      this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
+    You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific
+    rules. In particular:
+      - resource names are capitalised and singular, for example the `/Patient` not `/patients`
+      - array names are singular, for example `line` not `lines` for address lines
+      - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+      - data items related to an operation rather than the resource are represented as `Parameter`s
     
-      ## Operation Id
-
-      The adaptor includes in the response header of every successful request an OperationId value. The OperationId
-      is generated from the GP Trading Partner Code and the Transaction Number. The series of OperationId values for a
-      given GP Trading Partner Code repeats every 10,000,000 transactions.
-
-      The GP MUST retain the OperationId from Acceptance transactions to match inbound Approvals and Rejections. The GP
-      System SHOULD retain the OperationId for all other transactions.
+    ## Example Requests
+    
+    A number of example requests are available as part of the adaptor's user acceptance tests.
+    
+    The [Examples](https://github.com/nhsconnect/integration-adaptor-nhais/blob/develop/README.md#examples) section
+    of the README explains these examples in further detail.
+    
+    ## Permitted Characters for Data Items
+    
+    Where the adaptor API represents a data item as a string the GP System **MUST** supply a value that complies
+    with the NHAIS GP Links Specification. The requirements for each data item are described by Chapter 3 of the
+    specification. For "free text" fields Chapter 3 refers to Appendix K.
+    
+    There are four characters which must be given special treatment. If used within a string-typed data item the
+    following characters must be escaped (preceded) by a question mark: `' + : ?`
+    
+    For example, to represent the GP Note
+    
+        PATIENT'S + 1 : PATIENTS?
+    
+    the JSON request to the adaptor would include the parameter
+    
+        {
+          "name": "freeText",
+          "valueString": "PATIENT?'S ?+ 1 ?: PATIENTS??"
+        }
+    
+    ## Terminology
+    
+    This specification follows the terminology used in Chapter 3 of the GP System Specification to describe the data
+    items. Some data items that are referred to by different names both within the specification and across the
+    NHS estate. This section aims to disambiguate some of these synonymous names, but it is not an exhaustive glossary
+    of terminology.
+    
+    #### NHS Number
+    
+    All patients must have an NHS Number and ___only__ "full GMS" registered patients should generate GP Links 
+    transactions. 
+    
+    > Temporary registrations should never be sent to NHAIS as accidental registrations could cause data quality
+    issues with the NHS.
+    
+    #### GP Code
+    
+    The GP Code is sometimes called the "Patient's Responsible GP Code". The GP Code is a combination of two values:
+    
+    > The GMC national GP code and the HA locally-defined GP code MUST both be sent, in the format GMC national GP code
+    concatenated with a comma (,) concatenated with the HA local GP code.
+    
+    _Source: GP System Specification 4.3.7_
+    
+    The "GMC national GP Code" is also referred to as the "GMC National code" or simply the "GMC Code".
+    
+    The "HA local GP code" is also referred to as the "HA locally-defined GP code", "Local GP code" or "local code".
+    Elsewhere in the NHS estate this value may be referred to as the "Partnership Code", "Practice Code", or most
+    confusingly the "GP Code". If a practice is assigned different values for any of these then the operator of the
+    NHAIS system should be consulted to determine which to use.
+    
+    > This is not the same the as the practice ODS code, and will be provided with by PCSE at the point that the link 
+    is established. This is a Local Code of PCSE’s choosing.
+    
+    #### GP Trading Partner Code
+    
+    The GP Trading Partner Code is a four-character (uppercase letters and digits) code used in the interchange header
+    of the EDIFACT messages. This may also be referred to as the "GP Link Code".
+    
+    > For English Practices, the supplier will be provided with this by PCSE (Primary Care Support England, Capita),
+    the organisation that operates the 82 English NHAIS systems (+ the DMS NHAIS system), at the point that the link 
+    is established. 
+    This is a Local Code of PCSE’s choosing (3 alphas and a 5).
+    
+    #### Managing Organisation
+    
+    This is the Link Code of the NHAIS system, in the same way as GP Trading Partner Code is the Link Code for 
+    the GP system (3 alphas and a 5).  This is the NHAIS System Cipher with either 1 or “01” on the end 
+    – e.g. BE (Berkshire) is BE01, SHE (Sheffield) is SHE1. 
+    
+    > A 2 character Cipher has “01” on the end. 
+    > A 3 character Cipher has “1” on the end.
+    
+    #### Destination HA Cipher
+    
+    The "Destination HA Cipher" is the identifier of the NHAIS instance of the patient's managing organisation. The
+    identifier is comprised of two or three uppercase letters. It is also called the "Patient's Responsible HA" or
+    simply referred to as "Cipher".
+    
+    A full list of the available "Destination HA Cipher" codes is available from the 
+    [NHAIS Developer Document Library](https://digital.nhs.uk/services/nhais/nhais-developer-document-library), in 
+    the document labelled 
+    [Appendix D](https://digital.nhs.uk/binaries/content/assets/website-assets/services/nhais/app-d.doc').
+    As this list is definitive and will not change before NHAIS is retired,  a copy has been added as an appendix to 
+    this documentation [Appendix 1 - HA Ciphers](./appendix-1-ha-ciphers.md)
+    
+    ## Operation Id
+    
+    The adaptor includes in the response header of every successful request an OperationId value. The OperationId
+    is generated from the GP Trading Partner Code and the Transaction Number. The series of OperationId values for a
+    given GP Trading Partner Code repeats every 10,000,000 transactions.
+    
+    The GP MUST retain the OperationId from Acceptance transactions to match inbound Approvals and Rejections. The GP
+    System SHOULD retain the OperationId for all other transactions.
 
   contact:
     name: National Integration Adaptors API Support
     url: 'https://github.com/nhsconnect/integration-adaptor-nhais'
+    email: niasupport@nhs.net
 servers:
   - url: 'https://localhost'
     description: There are no publicly available services available for testing or integration
