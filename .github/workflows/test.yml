@@ -112,7 +112,7 @@ jobs:
 
       - name: Setup Required Docker Images
         working-directory: ${{ inputs.path }}
-        run: docker-compose up mongodb activemq fake-mesh
+        run: docker compose up mongodb activemq fake-mesh
 
       - name: Execute Integration Tests
         working-directory: ${{ inputs.path }}
