@@ -10,7 +10,7 @@ on:
 
 jobs:
   tests:
-    name: NHAIS Adaptor Tests
+    name: Tests
     uses: ./.github/workflows/test.yml
 #
 #  translator-tests:
