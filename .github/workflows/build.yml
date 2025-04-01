@@ -13,7 +13,6 @@ jobs:
     name: NHAIS Adaptor Tests
     uses: ./.github/workflows/test.yml
     with:
-      name: NHAIS Adaptor
       path: .
     secrets: inherit
 #

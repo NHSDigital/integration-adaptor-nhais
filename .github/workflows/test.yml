@@ -1,10 +1,7 @@
-name: "Test Workflow"
+name: Test Workflow
 on:
   workflow_call:
     inputs:
-      name:
-        required: true
-        type: string
       path:
         required: true
         type: string
@@ -79,7 +76,7 @@ jobs:
 #        run: rm -rf ./artifacts
 
   unit-tests:
-    name: ${{ inputs.name }} Unit Tests
+    name: Unit Tests
 #    needs: [ checkstyle, spotbugs ]
     runs-on: ubuntu-latest
     steps:
@@ -90,7 +87,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 11
-          distribution: 'temurin'
+          distribution: temurin
 
       - name: Execute Unit Tests
         run: ./gradlew test --parallel --build-cache
@@ -106,7 +103,48 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: '${{ inputs.name }} Unit Test Report'
+          name: Unit Test Report
+          path: ./artifacts/**
+          compression-level: 9
+
+      - name: Test Job Summary
+        if: always()
+        uses: test-summary/action@v2
+        with:
+          paths: "${{ inputs.path }}/build/test-results/test/TEST-*.xml"
+
+      - name: Temporary Artifacts Cleanup
+        run: rm -rf ./artifacts
+
+  component-tests:
+    name: Component Tests
+    #    needs: [ checkstyle, spotbugs ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: 11
+          distribution: temurin
+
+      - name: Execute Component Tests
+        run: ./gradlew componentTest --build-cache
+        working-directory: ${{ inputs.path }}
+
+      - name: Collect Artifacts
+        if: always()
+        run: |
+          mkdir -p artifacts
+          cp -r ./${{ inputs.path }}/build/reports ./artifacts
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Component Test Report
           path: ./artifacts/**
           compression-level: 9
 
