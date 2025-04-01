@@ -152,7 +152,7 @@ jobs:
         if: always()
         uses: test-summary/action@v2
         with:
-          paths: "${{ inputs.path }}/build/test-results/test/TEST-*.xml"
+          paths: "${{ inputs.path }}/build/test-results/componentTest/TEST-*.xml"
 
       - name: Temporary Artifacts Cleanup
         run: rm -rf ./artifacts
