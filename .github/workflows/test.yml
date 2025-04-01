@@ -1,10 +1,6 @@
 name: Test Workflow
 on:
   workflow_call:
-    inputs:
-      path:
-        required: true
-        type: string
 
 jobs:
   unit-tests:
@@ -22,13 +18,12 @@ jobs:
 
       - name: Execute Unit Tests
         run: ./gradlew test --parallel --build-cache
-        working-directory: ${{ inputs.path }}
 
       - name: Collect Artifacts
         if: always()
         run: |
           mkdir -p artifacts
-          cp -r ./${{ inputs.path }}/build/reports ./artifacts
+          cp -r ./build/reports ./artifacts
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -42,7 +37,7 @@ jobs:
         if: always()
         uses: test-summary/action@v2
         with:
-          paths: "${{ inputs.path }}/build/test-results/test/TEST-*.xml"
+          paths: ./build/test-results/test/TEST-*.xml
 
       - name: Temporary Artifacts Cleanup
         run: rm -rf ./artifacts
@@ -62,13 +57,12 @@ jobs:
 
       - name: Execute Component Tests
         run: ./gradlew componentTest --build-cache
-        working-directory: ${{ inputs.path }}
 
       - name: Collect Artifacts
         if: always()
         run: |
           mkdir -p artifacts
-          cp -r ./${{ inputs.path }}/build/reports ./artifacts
+          cp -r ./build/reports ./artifacts
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -82,7 +76,7 @@ jobs:
         if: always()
         uses: test-summary/action@v2
         with:
-          paths: "${{ inputs.path }}/build/test-results/componentTest/TEST-*.xml"
+          paths: ./build/test-results/componentTest/TEST-*.xml
 
       - name: Temporary Artifacts Cleanup
         run: rm -rf ./artifacts
@@ -100,22 +94,13 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
-          distribution: 'temurin'
-
-#      - name: Configure AWS Credentials
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_TO_ASSUME }}
-#          role-session-name: gp2gp_github_action_build_workflow
-#          aws-region: ${{ secrets.AWS_REGION }}
+          java-version: 11
+          distribution: temurin
 
       - name: Setup Required Docker Images
-        working-directory: ${{ inputs.path }}
         run: docker compose up mongodb activemq fake-mesh -d
 
       - name: Execute Integration Tests
-        working-directory: ${{ inputs.path }}
         run: ./gradlew integrationTest
 
       - name: Dump Docker Logs
@@ -127,15 +112,14 @@ jobs:
               docker logs "$container" > ./logs/"$container".log
               echo "Logs saved for container: $container"
           done
-        working-directory: ./scripts
         shell: bash
 
       - name: Collect Artifacts
         if: always()
         run: |
           mkdir -p artifacts
-          cp -r ./${{ inputs.path }}/build/reports ./artifacts
-          cp -r ./scripts/logs ./artifacts
+          cp -r ./build/reports ./artifacts
+          cp -r ./logs ./artifacts
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -149,14 +133,13 @@ jobs:
         if: always()
         uses: test-summary/action@v2
         with:
-          paths: "./${{ inputs.path }}/build/test-results/integrationTest/TEST-*.xml"
+          paths: ./build/test-results/integrationTest/TEST-*.xml
 
       - name: Stop Docker Dependencies
         if: always()
         run: |
           docker compose down --rmi=local --remove-orphans
           docker compose rm
-        working-directory: ./docker
 
       - name: Temporary Artifacts Cleanup
         run: rm -rf ./artifacts

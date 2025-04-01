@@ -12,9 +12,6 @@ jobs:
   tests:
     name: NHAIS Adaptor Tests
     uses: ./.github/workflows/test.yml
-    with:
-      path: .
-    secrets: inherit
 #
 #  translator-tests:
 #    name: "GP2GP Translator Tests"
