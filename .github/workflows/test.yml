@@ -111,7 +111,7 @@ jobs:
 #          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup Required Docker Images
-        working-directory: ./docker
+        working-directory: ${{ inputs.path }}
         run: docker-compose up mongodb activemq fake-mesh
 
       - name: Execute Integration Tests
