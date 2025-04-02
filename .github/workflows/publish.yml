@@ -41,7 +41,7 @@ jobs:
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
 
           # Build Image
-          docker build -f ./docker/${{ inputs.directory }}/Dockerfile -t $DOCKER_TAG ${{ inputs.build-context }}
+          docker build -f ./${{ inputs.directory }}/Dockerfile -t $DOCKER_TAG ${{ inputs.build-context }}
 
       - name: Login to AWS ECR
         run: |
