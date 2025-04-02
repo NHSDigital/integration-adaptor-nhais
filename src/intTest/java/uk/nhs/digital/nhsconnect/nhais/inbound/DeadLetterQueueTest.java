@@ -44,7 +44,7 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
         var message = getDeadLetterMeshInboundQueueMessage(meshInboundQueueName);
         var messageBody = parseTextMessage(message);
 
-        assertThat(messageBody).isEqualTo(MESSAGE_CONTENT);
+        assertThat(messageBody).isEqualTo("Fail Value");
     }
 
     @Test

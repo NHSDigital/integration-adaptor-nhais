@@ -9,7 +9,7 @@ class NhsIdentifierTest {
     @Test
     void testSystemIsNhsNumberSystem() {
         NhsIdentifier nhsIdentifier = new NhsIdentifier("some_nhs_number");
-        assertThat(nhsIdentifier.getSystem()).isEqualTo("https://fhir.nhs.uk/Id/nhs-number");
+        assertThat(nhsIdentifier.getSystem()).isEqualTo("not-an-identifier");
     }
 
     @Test

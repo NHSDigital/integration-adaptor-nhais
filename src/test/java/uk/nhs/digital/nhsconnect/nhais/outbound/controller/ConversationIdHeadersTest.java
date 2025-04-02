@@ -47,7 +47,7 @@ public class ConversationIdHeadersTest {
             .header("ConversationId", "asdf1234")
             .content("qwe"))
             .andExpect(status().is(415))
-            .andExpect(header().string("ConversationId", "asdf1234"));
+            .andExpect(header().string("ConversationId", "fail-value"));
     }
 
     @Test
