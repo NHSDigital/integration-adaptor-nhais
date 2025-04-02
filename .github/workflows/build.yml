@@ -41,8 +41,8 @@ jobs:
           echo "Generated the build tag: $BUILD_ID"
           echo "buildId=$BUILD_ID" >> "$GITHUB_OUTPUT"
 
-  publish-docker-images:
-    name: "Publish docker images to ECR"
+  publish-docker-image:
+    name: "Publish docker image to ECR"
     needs: [ generate-build-id ]
 
     uses: ./.github/workflows/publish.yml
@@ -56,7 +56,7 @@ jobs:
   comment:
     if: github.event_name == 'pull_request'
     name: "Create Build ID Comment"
-    needs: [ generate-build-id, publish-docker-images]
+    needs: [ generate-build-id, publish-docker-image]
     continue-on-error: true
     permissions: write-all
     runs-on: [ ubuntu-latest ]

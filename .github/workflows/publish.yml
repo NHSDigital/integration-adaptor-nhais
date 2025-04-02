@@ -16,8 +16,8 @@ on:
         type: string
 
 jobs:
-  build-and-publish-docker-images:
-    name: Build & Publish Docker Images
+  build-and-publish-docker-image:
+    name: Build & Publish Docker Image
     runs-on: ubuntu-latest
     permissions:
       id-token: write
