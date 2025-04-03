@@ -58,11 +58,10 @@ jobs:
     name: "Create Build ID Comment"
     needs: [ generate-build-id, publish-docker-image]
     continue-on-error: true
-    permissions: write-all
-    runs-on: [ ubuntu-latest ]
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v3
         with:
