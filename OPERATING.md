@@ -310,5 +310,5 @@ existing documents with the same `_id` must be replaced.
  
     {
         _id: 'TN-<GP Link (Trading Partner) Code>',
-        sequenceNumber: <Send Message Sequence (SMS) number>
+        sequenceNumber: <Transaction Number (TN)>
     }
