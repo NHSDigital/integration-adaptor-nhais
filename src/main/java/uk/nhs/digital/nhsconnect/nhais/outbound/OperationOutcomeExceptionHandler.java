@@ -41,13 +41,4 @@ public class OperationOutcomeExceptionHandler extends ResponseEntityExceptionHan
         String content = fhirParser.encodeToString(operationOutcome);
         return new ResponseEntity<>(content, headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        LOGGER.error("Creating OperationOutcome response for unhandled exception", ex);
-        headers.put(HttpHeaders.CONTENT_TYPE, singletonList("application/json"));
-        OperationOutcome operationOutcome = OperationOutcomeUtils.createFromMessage(ex.getMessage());
-        String content = fhirParser.encodeToString(operationOutcome);
-        return new ResponseEntity<>(content, headers, status);
-    }
 }
