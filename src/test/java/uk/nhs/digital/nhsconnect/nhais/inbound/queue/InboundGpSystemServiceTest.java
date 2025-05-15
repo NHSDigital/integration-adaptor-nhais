@@ -13,9 +13,9 @@ import org.springframework.jms.core.MessageCreator;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.ReferenceTransactionType;
 import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
-import javax.jms.JMSException;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import jakarta.jms.JMSException;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;

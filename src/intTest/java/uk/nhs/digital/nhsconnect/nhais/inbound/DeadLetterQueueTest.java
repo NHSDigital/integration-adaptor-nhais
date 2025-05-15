@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;

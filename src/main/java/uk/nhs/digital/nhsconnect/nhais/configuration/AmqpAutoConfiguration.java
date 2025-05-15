@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.jms.JndiConnectionFactoryAutoConfi
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import javax.jms.ConnectionFactory;
+import jakarta.jms.ConnectionFactory;
 
 @Configuration
 @AutoConfigureBefore(JmsAutoConfiguration.class)

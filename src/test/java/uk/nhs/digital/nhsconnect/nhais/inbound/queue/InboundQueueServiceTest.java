@@ -21,9 +21,9 @@ import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
-import javax.jms.Message;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import jakarta.jms.Message;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 
 import java.time.Instant;
 
