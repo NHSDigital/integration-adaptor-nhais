@@ -1,0 +1,72 @@
+name: "Build"
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+jobs:
+  tests:
+    name: Tests
+    uses: ./.github/workflows/test.yml
+
+  generate-build-id:
+    name: "Generate Build Id"
+    needs: [ tests ]
+    runs-on: ubuntu-latest
+    outputs:
+      build-id: ${{ steps.generate.outputs.buildId }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - id: generate
+        working-directory: ./scripts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./create_build_id.sh
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          GIT_BRANCH=PR
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+          GIT_BRANCH=main
+          fi
+
+          BUILD_ID=$(./create_build_id.sh $GIT_BRANCH ${{ github.run_number }} ${{ github.sha }})
+          echo "Generated the build tag: $BUILD_ID"
+          echo "buildId=$BUILD_ID" >> "$GITHUB_OUTPUT"
+
+  publish-docker-image:
+    name: "Publish docker image to ECR"
+    needs: [ generate-build-id ]
+
+    uses: ./.github/workflows/publish.yml
+    with:
+      directory: .
+      repository: nhais
+      build-context: .
+      build-id: ${{ needs.generate-build-id.outputs.build-id }}
+    secrets: inherit
+
+  comment:
+    if: github.event_name == 'pull_request'
+    name: "Create Build ID Comment"
+    needs: [ generate-build-id, publish-docker-image]
+    continue-on-error: true
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            Images built and published to ECR using a Build Id of ${{ needs.generate-build-id.outputs.build-id }}
+          comment-tag: images-built
+          mode: upsert
+
