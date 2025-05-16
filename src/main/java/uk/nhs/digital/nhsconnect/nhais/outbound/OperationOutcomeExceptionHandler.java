@@ -5,7 +5,9 @@ import org.hl7.fhir.r4.model.OperationOutcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,5 +42,21 @@ public class OperationOutcomeExceptionHandler extends ResponseEntityExceptionHan
         OperationOutcome operationOutcome = OperationOutcomeUtils.createFromMessage(ex.getMessage());
         String content = fhirParser.encodeToString(operationOutcome);
         return new ResponseEntity<>(content, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+        Exception ex,
+        @Nullable Object body,
+        HttpHeaders headers,
+        HttpStatusCode status,
+        WebRequest request
+    ) {
+        LOGGER.error("Creating OperationOutcome response for unhandled exception", ex);
+        headers.put(HttpHeaders.CONTENT_TYPE, singletonList("application/json"));
+        OperationOutcome operationOutcome = OperationOutcomeUtils.createFromMessage(ex.getMessage());
+        String content = fhirParser.encodeToString(operationOutcome);
+        return new ResponseEntity<>(content, headers, status);
     }
 }
