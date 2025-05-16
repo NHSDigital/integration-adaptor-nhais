@@ -287,7 +287,7 @@ Example: [nhais-env-example.yaml](./nhais-env-example.yaml)
 
 ### Pre-requisites (IntelliJ)
 
-* Install a Java JDK 11. [AdoptOpenJdk](https://adoptopenjdk.net/index.html?variant=openjdk11&jvmVariant=hotspot) is recommended.
+* Install a Java JDK 21. [Temurin](https://adoptium.net/en-GB/temurin/releases/) is recommended.
 * Install [IntelliJ](https://www.jetbrains.com/idea/)
 * Install the [Lombok plugin](https://plugins.jetbrains.com/plugin/6317-lombok)
 * Install [Docker](https://www.docker.com/products/docker-desktop)
@@ -300,9 +300,9 @@ Example: [nhais-env-example.yaml](./nhais-env-example.yaml)
 * Verify the project structure
 
 
-    Project structure -> SDKs -> add new SDK -> select adoptopenjdk-11.jdk/Contents/Home  (or alternative location)
-                      -> Project SDK -> Java 11 (11.0.7)
-                      -> Module SDK -> Java 11 (11.0.7)
+    Project structure -> SDKs -> add new SDK -> select your installed java SDK (21.x.x)
+                      -> Project SDK -> Java 21 (21.x.x)
+                      -> Module SDK -> Java 21 (21.x.x)
 
 ### Start Dependencies
 
