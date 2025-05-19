@@ -169,6 +169,6 @@ public class FhirControllerTest {
         verify(fhirParser).encodeToString(operationOutcomeArgumentCaptor.capture());
         var operationOutcome = operationOutcomeArgumentCaptor.getValue();
 
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).isEqualTo("Content type 'text/plain' not supported");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).isEqualTo("Content-Type 'text/plain' is not supported");
     }
 }

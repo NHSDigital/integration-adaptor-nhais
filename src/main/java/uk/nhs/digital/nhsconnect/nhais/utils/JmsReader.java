@@ -3,8 +3,8 @@ package uk.nhs.digital.nhsconnect.nhais.utils;
 import org.apache.qpid.jms.message.JmsBytesMessage;
 import org.apache.qpid.jms.message.JmsTextMessage;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 
 public class JmsReader {
 

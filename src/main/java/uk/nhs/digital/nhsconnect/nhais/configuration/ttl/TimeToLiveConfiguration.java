@@ -10,7 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.configuration.NhaisMongoClientConfigurati
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Component
 @Slf4j

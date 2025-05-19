@@ -18,8 +18,8 @@ import uk.nhs.digital.nhsconnect.nhais.uat.common.InboundArgumentsProvider;
 import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 import java.util.List;
 import java.util.stream.Collectors;
 

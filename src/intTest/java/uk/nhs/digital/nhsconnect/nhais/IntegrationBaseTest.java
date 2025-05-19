@@ -27,10 +27,10 @@ import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
 import uk.nhs.digital.nhsconnect.nhais.utils.JmsReader;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;

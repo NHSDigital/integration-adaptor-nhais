@@ -16,8 +16,8 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
