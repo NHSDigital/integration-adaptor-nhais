@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.model.fhir;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Parameters;
@@ -14,7 +13,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.AcceptanceType;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class ParametersExtension {
@@ -79,17 +77,13 @@ public class ParametersExtension {
     }
 
     public Optional<String> extractOptionalValue(String name) {
-        return Optional.ofNullable(parameters.getParameter(name))
+        return parameters.getParameter()
+            .stream()
+            .filter(p -> p.getName().equals(name))
+            .findFirst()
+            .map(Parameters.ParametersParameterComponent::getValue)
             .map(StringType.class::cast)
             .map(StringType::getValueAsString);
-    }
-
-    @SneakyThrows
-    public String extractValueOrThrow(String name, Supplier<? extends Throwable> exception) {
-        return Optional.ofNullable(parameters.getParameter(name))
-            .map(StringType.class::cast)
-            .map(StringType::getValueAsString)
-            .orElseThrow(exception);
     }
 
     public int size() {
