@@ -1,11 +1,11 @@
-FROM gradle:8.5-jdk21 as cache
+FROM gradle:jdk21 as cache
 RUN mkdir -p /home/gradle/cache_home
 ENV GRADLE_USER_HOME /home/gradle/cache_home
 COPY build.gradle /home/gradle/src/
 WORKDIR /home/gradle/src
 RUN gradle -b build.gradle clean build -i --stacktrace
 
-FROM gradle:8.5-jdk21 AS build
+FROM gradle:jdk21 AS build
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
