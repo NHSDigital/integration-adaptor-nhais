@@ -60,14 +60,14 @@ public class PersonSex extends Segment {
         FEMALE("2"),
         OTHER("9");
 
-        private final static Map<Enumerations.AdministrativeGender, Gender> FROM_FHIR_MAP = ImmutableMap.of(
+        private static final Map<Enumerations.AdministrativeGender, Gender> FROM_FHIR_MAP = ImmutableMap.of(
             Enumerations.AdministrativeGender.UNKNOWN, Gender.UNKNOWN,
             Enumerations.AdministrativeGender.MALE, Gender.MALE,
             Enumerations.AdministrativeGender.FEMALE, Gender.FEMALE,
             Enumerations.AdministrativeGender.OTHER, Gender.OTHER
         );
 
-        private final static Map<Gender, Enumerations.AdministrativeGender> To_FHIR_MAP = ImmutableMap.of(
+        private static final Map<Gender, Enumerations.AdministrativeGender> To_FHIR_MAP = ImmutableMap.of(
             Gender.UNKNOWN, Enumerations.AdministrativeGender.UNKNOWN,
             Gender.MALE, Enumerations.AdministrativeGender.MALE,
             Gender.FEMALE, Enumerations.AdministrativeGender.FEMALE,
