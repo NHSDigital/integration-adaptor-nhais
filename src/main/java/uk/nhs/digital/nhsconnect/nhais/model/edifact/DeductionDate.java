@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false) @ToString
-public class DeductionDate extends Segment{
+public class DeductionDate extends Segment {
 
     public static final String KEY = "DTM";
     private static final String TYPE_CODE = "961";

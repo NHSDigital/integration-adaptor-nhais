@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
  * example: UNT+18+00000003'
  */
 @Getter @Setter @RequiredArgsConstructor
-public class MessageTrailer extends Segment{
+public class MessageTrailer extends Segment {
 
     public static final String KEY = "UNT";
     private @NonNull Integer numberOfSegments;
@@ -35,10 +35,10 @@ public class MessageTrailer extends Segment{
         if (sequenceNumber == null) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber is required");
         }
-        if (sequenceNumber <= 0){
+        if (sequenceNumber <= 0) {
             throw new EdifactValidationException(getKey() + ": Attribute sequenceNumber must be greater than or equal to zero");
         }
-        if (numberOfSegments <= 1){
+        if (numberOfSegments <= 1) {
             throw new EdifactValidationException(getKey() + ": Attribute numberOfSegments must be greater than or equal to 2");
         }
     }
@@ -49,7 +49,7 @@ public class MessageTrailer extends Segment{
     }
 
     public static MessageTrailer fromString(String edifactString) {
-        if (!edifactString.startsWith(MessageTrailer.KEY)){
+        if (!edifactString.startsWith(MessageTrailer.KEY)) {
             throw new IllegalArgumentException("Can't create " + MessageTrailer.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = Split.byPlus(

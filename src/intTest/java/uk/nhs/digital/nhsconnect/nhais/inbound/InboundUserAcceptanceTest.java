@@ -132,7 +132,7 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         List<String> messageIds = waitFor(() -> {
             List<String> inboxMessageIds = nhaisMeshClient.getInboxMessageIds();
             return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
-        } );
+        });
         var meshMessage = nhaisMeshClient.getEdifactMessage(messageIds.get(0));
 
         Interchange expectedRecep = edifactParser.parse(recep);

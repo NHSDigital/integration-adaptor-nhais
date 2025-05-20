@@ -46,7 +46,7 @@ public class ReferenceTransactionNumber extends Segment {
     }
 
     public static ReferenceTransactionNumber fromString(String edifactString) {
-        if (!edifactString.startsWith(ReferenceTransactionNumber.KEY_QUALIFIER)){
+        if (!edifactString.startsWith(ReferenceTransactionNumber.KEY_QUALIFIER)) {
             throw new IllegalArgumentException(
                 "Can't create "
                     + ReferenceTransactionNumber.class.getSimpleName()

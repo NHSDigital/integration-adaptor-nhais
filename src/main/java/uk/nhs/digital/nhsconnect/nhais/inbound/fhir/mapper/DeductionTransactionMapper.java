@@ -27,19 +27,29 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
         transaction.getPersonName()
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
-            .ifPresentOrElse(nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)),
-                () -> {throw new EdifactValidationException("Missing mandatory patient NHS number");});
+            .ifPresentOrElse(
+                nhsIdentifier -> ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier)),
+                () -> {
+                    throw new EdifactValidationException("Missing mandatory patient NHS number");
+                }
+            );
 
         transaction.getDeductionReasonCode()
             .map(DeductionReasonCode::getCode)
-            .ifPresentOrElse(code -> parameters.addParameter(ParameterNames.DEDUCTION_REASON_CODE, code),
-                () -> {throw new EdifactValidationException("Missing mandatory deduction reason code");});
+            .ifPresentOrElse(
+                code -> parameters.addParameter(ParameterNames.DEDUCTION_REASON_CODE, code),
+                () -> {
+                    throw new EdifactValidationException("Missing mandatory deduction reason code");
+                }
+            );
 
         transaction.getDeductionDate()
             .map(DeductionDate::getDate)
             .ifPresentOrElse(
                 deductionDate -> parameters.addParameter(ParameterNames.DATE_OF_DEDUCTION, deductionDate.format(DATE_TIME_FORMATTER)),
-                () -> {throw new EdifactValidationException("Missing mandatory date of deduction");}
+                () -> {
+                    throw new EdifactValidationException("Missing mandatory date of deduction");
+                }
             );
 
         transaction.getNewHealthAuthorityName()

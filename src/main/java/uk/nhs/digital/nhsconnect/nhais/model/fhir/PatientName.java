@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.StringType;
 
-@DatatypeDef(name="HumanName")
+@DatatypeDef(name = "HumanName")
 @Builder
 public class PatientName extends HumanName {
 

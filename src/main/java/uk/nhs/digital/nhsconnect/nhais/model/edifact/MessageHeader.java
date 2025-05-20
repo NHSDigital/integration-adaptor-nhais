@@ -28,7 +28,7 @@ public class MessageHeader extends Segment {
     @Override
     public String getValue() {
         String formattedSequenceNumber = String.format("%08d", sequenceNumber);
-        return formattedSequenceNumber+"+FHSREG:0:1:FH:FHS001";
+        return formattedSequenceNumber + "+FHSREG:0:1:FH:FHS001";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MessageHeader extends Segment {
     }
 
     public static MessageHeader fromString(String edifactString) {
-        if (!edifactString.startsWith(MessageHeader.KEY)){
+        if (!edifactString.startsWith(MessageHeader.KEY)) {
             throw new IllegalArgumentException("Can't create " + MessageHeader.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = Split.byPlus(edifactString);

@@ -9,7 +9,7 @@ import lombok.Setter;
  * example: BGM+++507'
  */
 @Getter @Setter @RequiredArgsConstructor
-public class BeginningOfMessage extends Segment{
+public class BeginningOfMessage extends Segment {
     @Override
     public String getKey() {
         return "BGM";

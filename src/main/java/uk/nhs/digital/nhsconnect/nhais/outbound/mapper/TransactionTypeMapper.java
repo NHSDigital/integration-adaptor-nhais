@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class TransactionTypeMapper {
 
     public ReferenceTransactionType.Outbound mapTransactionType(String transactionTypeParam) {
-        switch(transactionTypeParam) {
+        switch (transactionTypeParam) {
             case "$nhais.acceptance": return ReferenceTransactionType.Outbound.ACCEPTANCE;
             case "$nhais.removal": return ReferenceTransactionType.Outbound.REMOVAL;
             case "$nhais.deduction": return ReferenceTransactionType.Outbound.DEDUCTION;

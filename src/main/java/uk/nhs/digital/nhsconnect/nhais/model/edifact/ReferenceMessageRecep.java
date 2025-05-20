@@ -49,7 +49,7 @@ public class ReferenceMessageRecep extends Segment {
     }
 
     public static ReferenceMessageRecep fromString(String edifactString) {
-        if (!edifactString.startsWith(KEY_QUALIFIER)){
+        if (!edifactString.startsWith(KEY_QUALIFIER)) {
             throw new IllegalArgumentException("Can't create " + ReferenceMessageRecep.class.getSimpleName() + " from " + edifactString);
         }
         String values = Split.byColon(

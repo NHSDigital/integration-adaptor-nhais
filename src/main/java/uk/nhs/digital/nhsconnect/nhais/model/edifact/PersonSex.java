@@ -48,7 +48,7 @@ public class PersonSex extends Segment {
         if (!edifactString.startsWith(PersonSex.KEY)) {
             throw new IllegalArgumentException("Can't create " + PersonSex.class.getSimpleName() + " from " + edifactString);
         }
-        String[] components = StringUtils.split(edifactString,PLUS_SEPARATOR);
+        String[] components = StringUtils.split(edifactString, PLUS_SEPARATOR);
         return PersonSex.builder()
             .gender(Gender.fromCode(components[1]))
             .build();

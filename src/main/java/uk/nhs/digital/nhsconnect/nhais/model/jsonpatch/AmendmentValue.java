@@ -12,13 +12,13 @@ public interface AmendmentValue {
     String get();
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    static AmendmentValue from(String input){
+    static AmendmentValue from(String input) {
         return new AmendmentSimpleValue(input);
     }
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     static AmendmentValue from(@JsonProperty(value = "url") String url,
                                @JsonProperty(value = "valueBoolean") boolean valueBoolean,
-                               @JsonProperty(value = "valueString") String valueString){
+                               @JsonProperty(value = "valueString") String valueString) {
         switch (url) {
             case DrugsMarkerExtension.URL:
                 return new AmendmentBooleanExtension.DrugsDispensedMarker(valueBoolean);

@@ -22,9 +22,9 @@ public class PersonPlaceOfBirth extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER +
-            PLUS_SEPARATOR +
-            location;
+        return QUALIFIER
+            + PLUS_SEPARATOR
+            + location;
     }
 
     @Override

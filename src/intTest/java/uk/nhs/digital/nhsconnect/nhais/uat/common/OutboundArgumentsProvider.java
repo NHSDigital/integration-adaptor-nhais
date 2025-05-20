@@ -36,8 +36,8 @@ public class OutboundArgumentsProvider extends AbstractArgumentsProvider {
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 es -> TestData.builder()
-                    .edifact(readResource(es.getValue(),EDIFACT_FILE_ENDING))
-                    .json(readResource(es.getValue(),FHIR_FILE_ENDING))
+                    .edifact(readResource(es.getValue(), EDIFACT_FILE_ENDING))
+                    .json(readResource(es.getValue(), FHIR_FILE_ENDING))
                     .build()));
 
         return grouped.entrySet().stream()

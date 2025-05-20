@@ -4,7 +4,7 @@ import ca.uhn.fhir.model.api.annotation.DatatypeDef;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.StringType;
 
-@DatatypeDef(name="Extension")
+@DatatypeDef(name = "Extension")
 public class DrugsMarkerExtension extends Extension {
     public static final String URL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHAIS-DrugsDispensedMarker";
 

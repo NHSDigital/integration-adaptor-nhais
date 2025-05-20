@@ -180,15 +180,14 @@ public class MeshClient {
         LOGGER.info("MESH '{}' response status line: {}", type, response.getStatusLine());
         LOGGER.info("MESH '{}' response headers: {}", type, response.getAllHeaders());
         if (LOGGER.isDebugEnabled() && response.getEntity() != null) {
-                var entity = response.getEntity();
-                LOGGER.debug(
-                    "MESH '{}' response content encoding: {}, content type: {}, content length: {}",
-                    type,
-                    entity.getContentEncoding(),
-                    entity.getContentType(),entity.getContentLength()
-                );
-                // response is usually not "repeatable" so we can only decode it once. Log response content separately.
-            }
-
+            var entity = response.getEntity();
+            LOGGER.debug(
+                "MESH '{}' response content encoding: {}, content type: {}, content length: {}",
+                type,
+                entity.getContentEncoding(),
+                entity.getContentType(), entity.getContentLength()
+            );
+            // response is usually not "repeatable" so we can only decode it once. Log response content separately.
+        }
     }
 }

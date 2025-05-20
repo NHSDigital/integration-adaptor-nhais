@@ -32,7 +32,7 @@ public class MeshAuthorizationToken {
         this(meshConfig, Instant.now(), new Nonce(), new AuthorizationHashGenerator());
     }
 
-    public String getValue(){
+    public String getValue() {
         return String.join(":", data, hash);
     }
 

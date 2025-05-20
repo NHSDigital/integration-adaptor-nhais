@@ -53,7 +53,8 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
         when(conversationIdService.getCurrentConversationId()).thenReturn(conversationId);
         OutboundMeshMessage meshMessage = OutboundMeshMessage.create(
             "XX11",
-            WorkflowId.REGISTRATION, MESSAGE_CONTENT,"2020-01-01T00:00:00Z",
+            WorkflowId.REGISTRATION, MESSAGE_CONTENT,
+            "2020-01-01T00:00:00Z",
             "asdf"
         );
         doThrow(RuntimeException.class).when(meshClient).authenticate();
