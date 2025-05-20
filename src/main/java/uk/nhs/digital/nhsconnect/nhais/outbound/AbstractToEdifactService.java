@@ -64,7 +64,13 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
 
     protected void createSegments(T translationItems) throws FhirValidationException {
         var segments = new ArrayList<Segment>();
-        segments.add(new InterchangeHeader(translationItems.getSender(), translationItems.getRecipient(), translationItems.getTranslationTimestamp()));
+        segments.add(
+            new InterchangeHeader(
+                translationItems.getSender(),
+                translationItems.getRecipient(),
+                translationItems.getTranslationTimestamp()
+            )
+        );
         segments.add(new MessageHeader());
         List<Segment> messageSegments = createMessageSegments(translationItems);
         segments.addAll(messageSegments);
@@ -88,12 +94,20 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
             sequenceService.generateMessageSequence(translationItems.getSender(), translationItems.getRecipient()));
         translationItems.setTransactionNumber(
             sequenceService.generateTransactionNumber(translationItems.getSender()));
-        LOGGER.info("Generated sequence numbers SIS={} SMS={} TN={} for sender={} and recipient={}", translationItems.getSendInterchangeSequence(),
-            translationItems.getSendMessageSequence(), translationItems.getTransactionNumber(), translationItems.getSender(), translationItems.getRecipient());
+        LOGGER.info(
+            "Generated sequence numbers SIS={} SMS={} TN={} for sender={} and recipient={}",
+            translationItems.getSendInterchangeSequence(),
+            translationItems.getSendMessageSequence(),
+            translationItems.getTransactionNumber(),
+            translationItems.getSender(),
+            translationItems.getRecipient()
+        );
     }
 
     protected void setOperationId(T translationItems) {
-        translationItems.setOperationId(OperationId.buildOperationId(translationItems.getSender(), translationItems.getTransactionNumber()));
+        translationItems.setOperationId(
+            OperationId.buildOperationId(translationItems.getSender(), translationItems.getTransactionNumber())
+        );
     }
 
     protected void recordOutboundState(T translationItems) {

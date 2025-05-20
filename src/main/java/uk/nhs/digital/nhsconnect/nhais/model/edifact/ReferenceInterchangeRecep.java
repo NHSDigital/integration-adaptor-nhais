@@ -54,7 +54,12 @@ public class ReferenceInterchangeRecep extends Segment {
 
     public static ReferenceInterchangeRecep fromString(String edifactString) {
         if (!edifactString.startsWith(KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + ReferenceInterchangeRecep.class.getSimpleName() + " from " + edifactString);
+            throw new IllegalArgumentException(
+                "Can't create "
+                    + ReferenceInterchangeRecep.class.getSimpleName()
+                    + " from "
+                    + edifactString
+            );
         }
         String[] keySplit = Split.byPlus(edifactString);
         String[] sequenceWithCodeAndCount = Split.byColon(keySplit[1]);

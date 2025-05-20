@@ -25,11 +25,11 @@ public class PreviousGpName extends Segment {
 
     @Override
     public String getValue() {
-        return PREVIOUS_GP_QUALIFIER +
-            PLUS_SEPARATOR +
-            PLUS_SEPARATOR +
-            PLUS_SEPARATOR +
-            partyName;
+        return PREVIOUS_GP_QUALIFIER
+            + PLUS_SEPARATOR
+            + PLUS_SEPARATOR
+            + PLUS_SEPARATOR
+            + partyName;
     }
 
     @Override

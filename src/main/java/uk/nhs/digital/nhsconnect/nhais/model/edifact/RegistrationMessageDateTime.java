@@ -44,7 +44,12 @@ public class RegistrationMessageDateTime extends Segment {
 
     public static RegistrationMessageDateTime fromString(String edifactString) {
         if (!edifactString.startsWith(KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + RegistrationMessageDateTime.class.getSimpleName() + " from " + edifactString);
+            throw new IllegalArgumentException(
+                "Can't create "
+                    + RegistrationMessageDateTime.class.getSimpleName()
+                    + " from "
+                    + edifactString
+            );
         }
         String timestamp = Split.byColon(edifactString)[1];
         Instant instant = ZonedDateTime.parse(timestamp, DATE_TIME_FORMAT).toInstant();

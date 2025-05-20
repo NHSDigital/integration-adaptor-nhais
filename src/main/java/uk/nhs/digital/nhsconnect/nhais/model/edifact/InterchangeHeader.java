@@ -42,7 +42,10 @@ public class InterchangeHeader extends Segment {
         }
         String[] split = Split.byPlus(edifactString);
 
-        ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
+        ZonedDateTime translationTime = ZonedDateTime.parse(
+            split[4],
+            DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone)
+        );
         return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
     }
 

@@ -27,7 +27,9 @@ public class DeductionRejectionTransactionMapper implements FhirTransactionMappe
 
         var freeText = transaction
             .getFreeText()
-            .orElseThrow(() -> new EdifactValidationException("HA Notes (Free Text) are mandatory for inbound deduction request rejection"));
+            .orElseThrow(
+                () -> new EdifactValidationException("HA Notes (Free Text) are mandatory for inbound deduction request rejection")
+            );
         parameters.addParameter()
             .setName(ParameterNames.FREE_TEXT)
             .setValue(new StringType(freeText.getFreeTextValue()));

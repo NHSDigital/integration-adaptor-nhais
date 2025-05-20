@@ -19,7 +19,11 @@ public class CosmosTtlCreator extends TtlCreator {
 
     public void create(Class<? extends TimeToLive> clazz) {
         if (ttlIndexHasChanged()) {
-            LOGGER.info("TTL value has changed for {} - dropping index and creating new one using value {}", clazz.getSimpleName(), duration);
+            LOGGER.info(
+                "TTL value has changed for {} - dropping index and creating new one using value {}",
+                clazz.getSimpleName(),
+                duration
+            );
             String indexName = findTtlIndex().map(IndexInfo::getName).orElseThrow();
             indexOperations.dropIndex(indexName);
         }

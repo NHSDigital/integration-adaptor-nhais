@@ -50,7 +50,12 @@ public class ResidentialInstituteNameAndAddress extends Segment {
 
     public static ResidentialInstituteNameAndAddress fromString(String edifactString) {
         if (!edifactString.startsWith(ResidentialInstituteNameAndAddress.KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + ResidentialInstituteNameAndAddress.class.getSimpleName() + " from " + edifactString);
+            throw new IllegalArgumentException(
+                "Can't create "
+                    + ResidentialInstituteNameAndAddress.class.getSimpleName()
+                    + " from "
+                    + edifactString
+            );
         }
         String[] components = Split.byPlus(edifactString);
         String code = Split.byColon(components[2])[0];

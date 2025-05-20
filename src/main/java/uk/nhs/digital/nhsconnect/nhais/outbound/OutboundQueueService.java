@@ -36,8 +36,12 @@ public class OutboundQueueService {
 
     @SneakyThrows
     public void publish(OutboundMeshMessage messageContent) {
-        LOGGER.info("Publishing message to MESH outbound queue for asynchronous sending to MESH API OperationId={} recipient={} workflow={}",
-            messageContent.getOperationId(), messageContent.getHaTradingPartnerCode(), messageContent.getWorkflowId());
+        LOGGER.info(
+            "Publishing message to MESH outbound queue for asynchronous sending to MESH API OperationId={} recipient={} workflow={}",
+            messageContent.getOperationId(),
+            messageContent.getHaTradingPartnerCode(),
+            messageContent.getWorkflowId()
+        );
         LOGGER.debug("Publishing message content to outbound mesh queue: {}", messageContent);
         messageContent.setMessageSentTimestamp(timestampService.formatInISO(timestampService.getCurrentTimestamp()));
         jmsTemplate.send(meshOutboundQueueName, session -> {

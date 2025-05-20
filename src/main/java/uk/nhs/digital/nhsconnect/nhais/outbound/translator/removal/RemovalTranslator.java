@@ -38,7 +38,11 @@ public class RemovalTranslator implements FhirToEdifactTranslator {
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         if (validator.nhsNumberIsMissing(parameters)) {
-            throw new FhirValidationException("Patient resource property " + PatientJsonPaths.NHS_NUMBER_PATH + " (NHS Number) is required");
+            throw new FhirValidationException(
+                "Patient resource property "
+                    + PatientJsonPaths.NHS_NUMBER_PATH
+                    + " (NHS Number) is required"
+            );
         }
         return Stream.of(
             //BGM

@@ -51,7 +51,11 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
     public void When_MeshOutboundQueueMessageCannotBeProcessed_Expect_MessageIsSentToDeadLetterQueue() throws Exception {
         String conversationId = Long.toString(System.currentTimeMillis());
         when(conversationIdService.getCurrentConversationId()).thenReturn(conversationId);
-        OutboundMeshMessage meshMessage = OutboundMeshMessage.create("XX11", WorkflowId.REGISTRATION, MESSAGE_CONTENT, "2020-01-01T00:00:00Z", "asdf");
+        OutboundMeshMessage meshMessage = OutboundMeshMessage.create(
+            "XX11",
+            WorkflowId.REGISTRATION, MESSAGE_CONTENT,"2020-01-01T00:00:00Z",
+            "asdf"
+        );
         doThrow(RuntimeException.class).when(meshClient).authenticate();
 
         clearDeadLetterQueue(meshOutboundQueueName);

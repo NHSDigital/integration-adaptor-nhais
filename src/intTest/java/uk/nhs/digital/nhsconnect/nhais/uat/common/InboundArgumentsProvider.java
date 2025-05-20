@@ -24,7 +24,12 @@ public class InboundArgumentsProvider extends AbstractArgumentsProvider  {
             .peek(es -> {
                 if (es.getValue().size() != 3) {
                     throw new IllegalStateException(String.format(
-                        "There should be 3 test data files: '<any>%s', '<any>%s' and '<any>%s': %s", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING, RECEP_FILE_ENDING, es.getKey()));
+                        "There should be 3 test data files: '<any>%s', '<any>%s' and '<any>%s': %s",
+                        FHIR_FILE_ENDING,
+                        EDIFACT_FILE_ENDING,
+                        RECEP_FILE_ENDING,
+                        es.getKey())
+                    );
                 }
             })
             .collect(Collectors.toMap(

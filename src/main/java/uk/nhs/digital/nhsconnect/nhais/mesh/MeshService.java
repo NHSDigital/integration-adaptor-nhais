@@ -66,7 +66,11 @@ public class MeshService {
                 if(sufficientTimeRemainsInPollingCycle(pollingCycleElapsedTime)) {
                     processSingleMessage(messageId);
                 } else {
-                    LOGGER.warn("Insufficient time remains to complete the polling cycle. Processed {} of {} messages from inbox.", i + 1, inboxMessageIds.size());
+                    LOGGER.warn(
+                        "Insufficient time remains to complete the polling cycle. Processed {} of {} messages from inbox.",
+                        i + 1,
+                        inboxMessageIds.size()
+                    );
                     return;
                 }
             }
@@ -101,7 +105,10 @@ public class MeshService {
             meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
             LOGGER.info("Acknowledged MeshMessageId={} on MESH API", messageId);
         } catch (MeshWorkflowUnknownException ex) {
-            LOGGER.warn("MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.", messageId, ex.getWorkflowId());
+            LOGGER.warn(
+                "MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.",
+                messageId, ex.getWorkflowId()
+            );
         } catch (Exception ex) {
             LOGGER.error("Error during reading of MESH message. MeshMessageId={}", messageId, ex);
             // skip message with error and attempt to download the next one

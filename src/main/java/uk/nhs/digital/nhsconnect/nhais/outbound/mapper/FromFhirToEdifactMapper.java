@@ -19,7 +19,11 @@ public interface FromFhirToEdifactMapper<T extends Segment> {
         return new SkipMapper();
     }
 
-    static FromFhirToEdifactMapper<?> optionalGroup(Segment startSegment, Collection<OptionalFromFhirToEdifactMapper<?>> mappers, Parameters parameters) {
+    static FromFhirToEdifactMapper<?> optionalGroup(
+        Segment startSegment,
+        Collection<OptionalFromFhirToEdifactMapper<?>> mappers,
+        Parameters parameters
+    ) {
         List<OptionalFromFhirToEdifactMapper<?>> mappableSegments = mappers
             .stream()
             .filter(mapper -> mapper.inputDataExists(parameters))

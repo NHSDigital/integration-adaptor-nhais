@@ -37,8 +37,10 @@ public class DeductionTransactionMapper implements FhirTransactionMapper {
 
         transaction.getDeductionDate()
             .map(DeductionDate::getDate)
-            .ifPresentOrElse(deductionDate -> parameters.addParameter(ParameterNames.DATE_OF_DEDUCTION, deductionDate.format(DATE_TIME_FORMATTER)),
-                () -> {throw new EdifactValidationException("Missing mandatory date of deduction");});
+            .ifPresentOrElse(
+                deductionDate -> parameters.addParameter(ParameterNames.DATE_OF_DEDUCTION, deductionDate.format(DATE_TIME_FORMATTER)),
+                () -> {throw new EdifactValidationException("Missing mandatory date of deduction");}
+            );
 
         transaction.getNewHealthAuthorityName()
             .map(NewHealthAuthorityName::getHaName)

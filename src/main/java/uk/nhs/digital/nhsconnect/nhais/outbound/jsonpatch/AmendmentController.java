@@ -85,7 +85,9 @@ public class AmendmentController {
             .collect(Collectors.toSet());
 
         if (patchesWithoutExtensions.size() != amendmentPaths.size()) {
-            throw new AmendmentValidationException("Request contains path that is used multiple times. Each patch path must only be used once within the amendment request");
+            throw new AmendmentValidationException(
+                "Request contains path that is used multiple times."
+                    + "Each patch path must only be used once within the amendment request");
         }
     }
 
@@ -100,7 +102,10 @@ public class AmendmentController {
             .filter(AmendmentPatch::isExtension)
             .collect(Collectors.toList());
         if (allExtensionPatches.size() != extensionTypes.size()) {
-            throw new AmendmentValidationException("Request contains extension that is used multiple times. Each extension patch must only be used once within the amendment request");
+            throw new AmendmentValidationException(
+                "Request contains extension that is used multiple times. "
+                    + "Each extension patch must only be used once within the amendment request"
+            );
         }
     }
 

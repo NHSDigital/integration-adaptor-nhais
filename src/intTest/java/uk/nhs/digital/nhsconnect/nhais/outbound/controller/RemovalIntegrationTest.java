@@ -164,7 +164,8 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 
@@ -185,7 +186,8 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
     @Test
@@ -195,7 +197,8 @@ public class RemovalIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 
