@@ -65,7 +65,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
+    void When_MeshInboundQueueRecepMessageIsReceived_Expect_RecepHandled(SoftAssertions softly) throws IOException {
         createOutboundStateRecords();
 
         sendToMeshInboundQueue(new MeshMessage()

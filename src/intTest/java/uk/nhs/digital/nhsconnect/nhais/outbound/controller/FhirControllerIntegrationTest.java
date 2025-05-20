@@ -69,7 +69,7 @@ public class FhirControllerIntegrationTest {
     private Resource acceptanceUnknownRecipient;
 
     @Test
-    void whenNotJson_thenReturns400() throws Exception {
+    void When_NotJson_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -79,7 +79,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenDeductionNoDestinationHaCipher_thenRerturns400() throws Exception {
+    void When_DeductionNoDestinationHaCipher_Expect_Rerturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoHaCipher.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -90,7 +90,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenRemovalNoDestinationHaCipher_thenRerturns400() throws Exception {
+    void When_RemovalNoDestinationHaCipher_Expect_Rerturns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoHaCipher.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -102,7 +102,7 @@ public class FhirControllerIntegrationTest {
 
 
     @Test
-    void whenDeductionNoGpCode_thenReturns400() throws Exception {
+    void When_DeductionNoGpCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoGpCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -113,7 +113,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenRemovalNoGpCode_thenReturns400() throws Exception {
+    void When_RemovalNoGpCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoGpCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -124,7 +124,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenDeductionNpGpTradingPartnerCode_thenReturns400() throws Exception {
+    void When_DeductionNpGpTradingPartnerCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionNoTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -135,7 +135,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenRemovalNpGpTradingPartnerCode_thenReturns400() throws Exception {
+    void When_RemovalNpGpTradingPartnerCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalNoTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -146,7 +146,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenDeductionInvalidJsonStructure_thenReturns400() throws Exception {
+    void When_DeductionInvalidJsonStructure_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionInvalidJsonStructure.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.deduction").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -157,7 +157,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenRemovalInvalidJsonStructure_thenReturns400() throws Exception {
+    void When_RemovalInvalidJsonStructure_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalInvalidJsonStructure.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.removal").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -168,7 +168,7 @@ public class FhirControllerIntegrationTest {
     }
 
     @Test
-    void whenUnknownRecipient_thenReturns400() throws Exception {
+    void When_UnknownRecipient_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(acceptanceUnknownRecipient.getFile().toPath()));
         MvcResult result = mockMvc.perform(post("/fhir/Patient/$nhais.acceptance").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())

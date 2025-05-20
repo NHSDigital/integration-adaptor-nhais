@@ -62,21 +62,21 @@ public class AmendmentControllerIntegrationTest {
     private Resource duplicateExtensionPatches;
 
     @Test
-    void whenNotJson_thenReturns400() throws Exception {
+    void when_NotJson_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenDuplicatedPatches_thenReturns400() throws Exception {
+    void When_DuplicatedPatches_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(duplicatedPatches.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingHealthcarePartyCode_thenReturns400() throws Exception {
+    void When_MissingHealthcarePartyCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingHealthcarePartyCode.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
@@ -84,56 +84,56 @@ public class AmendmentControllerIntegrationTest {
 
 
     @Test
-    void whenEmptyPatches_thenReturns400() throws Exception {
+    void When_EmptyPatches_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(emptyPatches.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenEmptyPatchObject_thenReturns400() throws Exception {
+    void When_EmptyPatchObject_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(emptyPatchObject.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingNhsNumber_thenReturns400() throws Exception {
+    void When_MissingNhsNumber_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingNhsNumber.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingGpCode_thenReturns400() throws Exception {
+    void When_MissingGpCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingGpCode.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingPatches_thenReturns400() throws Exception {
+    void When_MissingPatches_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingPatches.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenMissingGpTradingPartnerCode_thenReturns400() throws Exception {
+    void When_MissingGpTradingPartnerCode_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(missingGpTradingPartnerCode.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenInvalidJsonStructure_thenReturns400() throws Exception {
+    void When_InvalidJsonStructure_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(invalidJsonStructure.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenDuplicateExtensionPatches_thenReturns400() throws Exception {
+    void When_DuplicateExtensionPatches_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(duplicateExtensionPatches.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
                 .andExpect(status().isBadRequest());

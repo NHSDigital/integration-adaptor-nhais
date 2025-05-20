@@ -37,7 +37,7 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void whenSendingInvalidMessage_toMeshInboundQueue_thenMessageIsSentToDeadLetterQueue() throws JMSException {
+    public void When_SendingInvalidMessageToMeshInboundQueue_Expect_MessageIsSentToDeadLetterQueue() throws JMSException {
         clearDeadLetterQueue(meshInboundQueueName);
         sendToMeshInboundQueue(MESSAGE_CONTENT);
 
@@ -48,7 +48,7 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
     }
 
     @Test
-    public void whenMeshOutboundQueueMessageCannotBeProcessed_thenMessageIsSentToDeadLetterQueue() throws Exception {
+    public void When_MeshOutboundQueueMessageCannotBeProcessed_Expect_MessageIsSentToDeadLetterQueue() throws Exception {
         String conversationId = Long.toString(System.currentTimeMillis());
         when(conversationIdService.getCurrentConversationId()).thenReturn(conversationId);
         OutboundMeshMessage meshMessage = OutboundMeshMessage.create("XX11", WorkflowId.REGISTRATION, MESSAGE_CONTENT, "2020-01-01T00:00:00Z", "asdf");
@@ -62,5 +62,4 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
         assertThat(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).isEqualTo(conversationId);
         assertThat(parseTextMessage(message)).isEqualTo(objectMapper.writeValueAsString(meshMessage));
     }
-
 }

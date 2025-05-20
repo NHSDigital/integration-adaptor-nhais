@@ -103,7 +103,9 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException, JSONException {
+    void When_MeshInboundQueueRegistrationMessageIsReceived_Expect_MessageIsHandled(SoftAssertions softly)
+        throws IOException, JMSException {
+
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));

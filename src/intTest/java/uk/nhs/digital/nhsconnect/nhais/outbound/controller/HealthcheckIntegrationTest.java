@@ -25,7 +25,7 @@ public class HealthcheckIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    void whenHealthcheck_thenReturns200() throws Exception {
+    void When_Healthcheck_Expect_Returns200() throws Exception {
         mockMvc.perform(get("/healthcheck"))
             .andExpect(status().isOk());
     }

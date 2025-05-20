@@ -81,7 +81,7 @@ public class DeductionIntegrationTest {
     private Resource deductionWithNullReasonForDeduction;
 
     @Test
-    void whenBlankNhsNumber_thenRespond400() throws Exception {
+    void When_BlankNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithBlankNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -91,7 +91,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenEmptyNhsNumber_thenRespond400() throws Exception {
+    void When_EmptyNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithEmptyNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -102,7 +102,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNoNhsNumber_thenRespond400() throws Exception {
+    void When_NoNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNoNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -112,7 +112,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNullNhsNumber_thenRespond400() throws Exception {
+    void When_NullNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNullNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -122,7 +122,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenBlankDateOfDeduction_thenRespond400() throws Exception {
+    void When_BlankDateOfDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithBlankDateOfDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -132,7 +132,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenEmptyDateOfDeduction_thenRespond400() throws Exception {
+    void When_EmptyDateOfDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithEmptyDateOfDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -143,7 +143,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNoDateOfDeduction_thenRespond400() throws Exception {
+    void When_NoDateOfDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNoDateOfDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -153,7 +153,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNullDateOfDeduction_thenRespond400() throws Exception {
+    void When_NullDateOfDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNullDateOfDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -163,7 +163,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenBlankReasonForDeduction_thenRespond400() throws Exception {
+    void When_BlankReasonForDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithBlankReasonForDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -173,7 +173,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenEmptyReasonForDeduction_thenRespond400() throws Exception {
+    void When_EmptyReasonForDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithEmptyReasonForDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -184,7 +184,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNoReasonForDeduction_thenRespond400() throws Exception {
+    void When_NoReasonForDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNoReasonForDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -194,7 +194,7 @@ public class DeductionIntegrationTest {
     }
 
     @Test
-    void whenNullReasonForDeduction_thenRespond400() throws Exception {
+    void When_NullReasonForDeduction_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(deductionWithNullReasonForDeduction.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())

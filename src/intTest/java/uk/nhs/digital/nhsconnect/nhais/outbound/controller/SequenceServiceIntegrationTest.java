@@ -53,7 +53,7 @@ public class SequenceServiceIntegrationTest {
     private SequenceDao sequenceDao;
 
     @Test
-    public void When_GenerateTransactionId_Then_IncreasedByOne() {
+    public void When_GenerateTransactionId_Expect_IncreasedByOne() {
         resetCounter(TRANSACTION_SENDER);
 
         assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(1L);
@@ -62,7 +62,7 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateInterchangeId_Then_IncreasedByOne() {
+    public void When_GenerateInterchangeId_Expect_IncreasedByOne() {
         resetCounter(INTERCHANGE_KEY_1);
 
         assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
@@ -71,7 +71,7 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateMessageId_Then_IncreasedByOne() {
+    public void When_GenerateMessageId_Expect_IncreasedByOne() {
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
 
         assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
@@ -80,14 +80,14 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateIdAfter_9_999_999_Then_CounterReset() {
+    public void When_GenerateIdGreaterThan9999999_Expect_CounterReset() {
         setCounter(TRANSACTION_KEY, 9_999_999L);
 
         assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(1L);
     }
 
     @Test
-    public void When_GenerateDifferentId_Then_Expect_SeparateSequence() {
+    public void When_GenerateDifferentId_Expect_Expect_SeparateSequence() {
         resetCounter(TRANSACTION_KEY);
         resetCounter(INTERCHANGE_KEY_1);
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
@@ -98,7 +98,7 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateInterchangeId_Then_Expect_SeparateSequenceForEachKey() {
+    public void When_GenerateInterchangeId_Expect_Expect_SeparateSequenceForEachKey() {
         resetCounter(INTERCHANGE_KEY_1);
         resetCounter(INTERCHANGE_KEY_2);
 
@@ -109,7 +109,7 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateMessageId_Then_Expect_SeparateSequenceForEachKey() {
+    public void When_GenerateMessageId_Expect_Expect_SeparateSequenceForEachKey() {
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
         resetCounter(INTERCHANGE_MESSAGE_KEY_2);
 
@@ -120,7 +120,7 @@ public class SequenceServiceIntegrationTest {
     }
 
     @Test
-    public void When_GenerateTransactionIdInParallel_Then_Expect_CorrectValues() {
+    public void When_GenerateTransactionIdInParallel_Expect_Expect_CorrectValues() {
         resetCounter(TRANSACTION_KEY);
 
         List<Long> expectedList = LongStream.rangeClosed(1, 100)
