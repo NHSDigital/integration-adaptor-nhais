@@ -49,7 +49,7 @@ public class MessageTrailer extends Segment{
     }
 
     public static MessageTrailer fromString(String edifactString) {
-        if(!edifactString.startsWith(MessageTrailer.KEY)){
+        if (!edifactString.startsWith(MessageTrailer.KEY)){
             throw new IllegalArgumentException("Can't create " + MessageTrailer.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = Split.byPlus(

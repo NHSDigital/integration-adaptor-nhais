@@ -63,7 +63,7 @@ public class MeshService {
             List<String> inboxMessageIds = authenticateAndGetInboxMessageIds();
             for (int i = 0; i < inboxMessageIds.size(); i++) {
                 String messageId = inboxMessageIds.get(i);
-                if(sufficientTimeRemainsInPollingCycle(pollingCycleElapsedTime)) {
+                if (sufficientTimeRemainsInPollingCycle(pollingCycleElapsedTime)) {
                     processSingleMessage(messageId);
                 } else {
                     LOGGER.warn(

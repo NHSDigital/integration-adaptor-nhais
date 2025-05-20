@@ -70,7 +70,7 @@ public class AcceptanceImmigrantTranslator implements FhirToEdifactTranslator {
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
         boolean nhsNumberIsMissing = validator.nhsNumberIsMissing(parameters);
         boolean placeOfBirthIsMissing = validator.placeOfBirthIsMissing(parameters);
-        if(nhsNumberIsMissing && placeOfBirthIsMissing) {
+        if (nhsNumberIsMissing && placeOfBirthIsMissing) {
             throw new FhirValidationException("Place of birth is mandatory when NHS number is missing");
         }
         if (validator.surnameIsMissing(parameters)) {

@@ -181,7 +181,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
 
         // all transactions come from the same interchange and use the same conversation id
         String conversationId = message.getStringProperty("ConversationId");
-        if(previousConversationId == null) {
+        if (previousConversationId == null) {
             previousConversationId = conversationId;
         }
         softly.assertThat(conversationId).isEqualTo(previousConversationId);

@@ -138,7 +138,7 @@ public class RegistrationConsumerService {
     }
 
     private void logInterchangeReceived(Interchange interchange) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var interchangeHeader = interchange.getInterchangeHeader();
             LOGGER.info("Translating EDIFACT interchange from Sender={} to Recipient={} with RIS={} containing {} messages",
                 interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber(),
@@ -147,7 +147,7 @@ public class RegistrationConsumerService {
     }
 
     private void logRecepSentFor(Interchange interchange) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var interchangeHeader = interchange.getInterchangeHeader();
             LOGGER.info("Published for async send to MESH a RECEP for the interchange from Sender={} to Recipient={} with RIS={}",
                 interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber());
@@ -155,7 +155,7 @@ public class RegistrationConsumerService {
     }
 
     private void logTransactionReceived(Transaction transaction, String operationId) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var message = transaction.getMessage();
             var type = transaction.getMessage().getReferenceTransactionType().getTransactionType().getAbbreviation();
             LOGGER.info("Translating EDIFACT transaction TN={} OperationId={} of message Type={} RMS={}",

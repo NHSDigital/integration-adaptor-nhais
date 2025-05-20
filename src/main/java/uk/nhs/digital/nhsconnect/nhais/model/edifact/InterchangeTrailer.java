@@ -50,7 +50,7 @@ public class InterchangeTrailer extends Segment {
     }
 
     public static InterchangeTrailer fromString(String edifactString) {
-        if(!edifactString.startsWith(InterchangeTrailer.KEY)){
+        if (!edifactString.startsWith(InterchangeTrailer.KEY)){
             throw new IllegalArgumentException("Can't create " + InterchangeTrailer.class.getSimpleName() + " from " + edifactString);
         }
         String[] split = Split.byPlus(
