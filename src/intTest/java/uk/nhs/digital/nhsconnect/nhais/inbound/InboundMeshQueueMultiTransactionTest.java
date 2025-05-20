@@ -1,8 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import org.assertj.core.api.SoftAssertions;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
@@ -100,7 +103,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
+    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException, JSONException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
@@ -148,10 +151,10 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
         softly.assertThat(meshMessage.getMessageSentTimestamp()).isNull();
     }
 
-    private void assertGpSystemInboundQueueMessages(SoftAssertions softly) throws JMSException, IOException {
+    private void assertGpSystemInboundQueueMessages(SoftAssertions softly) throws JMSException, IOException, JSONException {
         var gpSystemInboundQueueMessages = IntStream.range(0, 6)
             .mapToObj(x -> getGpSystemInboundQueueMessage())
-            .collect(Collectors.toList());
+            .toList();
 
         assertGpSystemInboundQueueMessages(
             softly, gpSystemInboundQueueMessages.get(0), MESSAGE_1_TRANSACTION_TYPE, TRANSACTION_1_OPERATION_ID, fhirTN1);
@@ -172,7 +175,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
         Message message,
         ReferenceTransactionType.TransactionType expectedTransactionType,
         String expectedOperationId,
-        Resource expectedFhir) throws JMSException, IOException {
+        Resource expectedFhir) throws JMSException, IOException, JSONException {
 
         // all transactions come from the same interchange and use the same conversation id
         String conversationId = message.getStringProperty("ConversationId");
@@ -185,8 +188,12 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
             .isEqualTo(expectedOperationId);
         softly.assertThat(message.getStringProperty("TransactionType"))
             .isEqualTo(expectedTransactionType.name().toLowerCase());
-        softly.assertThat(parseTextMessage(message))
-            .isEqualTo(new String(Files.readAllBytes(expectedFhir.getFile().toPath())));
+
+        JSONAssert.assertEquals(
+            parseTextMessage(message),
+            new String(Files.readAllBytes(expectedFhir.getFile().toPath())),
+            JSONCompareMode.STRICT
+        );
     }
 
     private void assertInboundStates(SoftAssertions softly, List<InboundState> inboundStates) {
