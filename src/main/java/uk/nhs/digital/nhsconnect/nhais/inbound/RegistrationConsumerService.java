@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.inbound;
 import com.google.common.collect.Streams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundGpSystemService;
@@ -23,7 +22,6 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateFactory;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.util.Collection;
 import java.util.List;
