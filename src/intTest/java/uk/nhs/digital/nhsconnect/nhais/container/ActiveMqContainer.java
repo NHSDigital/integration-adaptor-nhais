@@ -5,7 +5,7 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.nio.file.Path;
 
-public class ActiveMqContainer extends GenericContainer<ActiveMqContainer> {
+public final class ActiveMqContainer extends GenericContainer<ActiveMqContainer> {
 
     public static final int ACTIVEMQ_PORT = 5672;
     private static ActiveMqContainer container;
