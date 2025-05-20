@@ -13,7 +13,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationEx
 @Setter
 @RequiredArgsConstructor
 public class RecepNationalHealthBody extends Segment {
-    private final static String KEY = "NHS";
+    private static final String KEY = "NHS";
 
     //example: NHS+FHS:819:201+4826940:814:202'
     private @NonNull String cipher;

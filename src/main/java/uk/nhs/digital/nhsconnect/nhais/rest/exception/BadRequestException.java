@@ -25,7 +25,7 @@ public abstract class BadRequestException extends NhaisBaseException implements 
     }
 
     @Override
-    final public IBaseOperationOutcome getOperationOutcome() {
+    public final IBaseOperationOutcome getOperationOutcome() {
         return operationOutcome;
     }
 
@@ -34,7 +34,7 @@ public abstract class BadRequestException extends NhaisBaseException implements 
     }
 
     @Override
-    final public HttpStatus getStatusCode() {
+    public final HttpStatus getStatusCode() {
         return HttpStatus.BAD_REQUEST;
     }
 }

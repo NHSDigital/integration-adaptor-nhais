@@ -11,7 +11,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
  */
 public class MeshAuthorizationToken {
 
-    private final static String MESSAGE_TYPE = "NHSMESH ";
+    private static final String MESSAGE_TYPE = "NHSMESH ";
 
     private final String data;
     private final String hash;

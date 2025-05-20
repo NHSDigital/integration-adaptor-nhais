@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SequenceService {
-    private final static String TRANSACTION_KEY_FORMAT = "TN-%s";
-    private final static String INTERCHANGE_FORMAT = "SIS-%s-%s";
-    private final static String INTERCHANGE_MESSAGE_FORMAT = "SMS-%s-%s";
+    private static final String TRANSACTION_KEY_FORMAT = "TN-%s";
+    private static final String INTERCHANGE_FORMAT = "SIS-%s-%s";
+    private static final String INTERCHANGE_MESSAGE_FORMAT = "SMS-%s-%s";
 
     @Autowired
     private SequenceRepository sequenceRepository;

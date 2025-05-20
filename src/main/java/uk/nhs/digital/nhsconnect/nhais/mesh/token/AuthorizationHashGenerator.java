@@ -12,7 +12,7 @@ import org.apache.commons.codec.binary.Hex;
 
 class AuthorizationHashGenerator {
 
-    private final static String HMAC_SHA256_ALGORITHM_NAME = "HmacSHA256";
+    private static final String HMAC_SHA256_ALGORITHM_NAME = "HmacSHA256";
 
     @SneakyThrows
     public String computeHash(MeshConfig meshConfig, Nonce nonce, String timestamp) {

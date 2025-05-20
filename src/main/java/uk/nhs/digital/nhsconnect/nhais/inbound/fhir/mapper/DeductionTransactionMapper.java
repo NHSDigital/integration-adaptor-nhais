@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class DeductionTransactionMapper implements FhirTransactionMapper {
 
-    private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public Parameters map(Transaction transaction) {

@@ -24,7 +24,7 @@ abstract class AbstractArgumentsProvider implements ArgumentsProvider {
 
     public abstract String getFolder();
 
-    abstract public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception;
+    public abstract Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception;
 
     protected String readResource(List<Resource> resources, String fileEnding) {
         return resources.stream()

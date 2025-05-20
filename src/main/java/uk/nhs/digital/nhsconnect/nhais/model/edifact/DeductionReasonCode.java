@@ -17,8 +17,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 @AllArgsConstructor
 public class DeductionReasonCode extends Segment {
 
-    public final static String KEY = "GIS";
-    private final static String ZZZ_SUFFIX = ":ZZZ";
+    public static final String KEY = "GIS";
+    private static final String ZZZ_SUFFIX = ":ZZZ";
     private final @NonNull String code;
 
     public static DeductionReasonCode fromString(String edifactString) {

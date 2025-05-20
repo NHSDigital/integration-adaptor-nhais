@@ -34,16 +34,16 @@ import static org.awaitility.Awaitility.await;
 @Slf4j
 @DirtiesContext
 public class SequenceServiceIntegrationTest {
-    private final static String SENDER_1 = "test-sender-1";
-    private final static String SENDER_2 = "test-sender-2";
-    private final static String RECIPIENT_1 = "test-recipient-1";
-    private final static String RECIPIENT_2 = "test-recipient-2";
-    private final static String TRANSACTION_SENDER = "gp-sender";
-    private final static String TRANSACTION_KEY = String.format("TN-%s", TRANSACTION_SENDER);
-    private final static String INTERCHANGE_KEY_1 = String.format("SIS-%s-%s", SENDER_1, RECIPIENT_1);
-    private final static String INTERCHANGE_KEY_2 = String.format("SIS-%s-%s", SENDER_2, RECIPIENT_2);
-    private final static String INTERCHANGE_MESSAGE_KEY_1 = String.format("SMS-%s-%s", SENDER_1, RECIPIENT_1);
-    private final static String INTERCHANGE_MESSAGE_KEY_2 = String.format("SMS-%s-%s", SENDER_2, RECIPIENT_2);
+    private static final String SENDER_1 = "test-sender-1";
+    private static final String SENDER_2 = "test-sender-2";
+    private static final String RECIPIENT_1 = "test-recipient-1";
+    private static final String RECIPIENT_2 = "test-recipient-2";
+    private static final String TRANSACTION_SENDER = "gp-sender";
+    private static final String TRANSACTION_KEY = String.format("TN-%s", TRANSACTION_SENDER);
+    private static final String INTERCHANGE_KEY_1 = String.format("SIS-%s-%s", SENDER_1, RECIPIENT_1);
+    private static final String INTERCHANGE_KEY_2 = String.format("SIS-%s-%s", SENDER_2, RECIPIENT_2);
+    private static final String INTERCHANGE_MESSAGE_KEY_1 = String.format("SMS-%s-%s", SENDER_1, RECIPIENT_1);
+    private static final String INTERCHANGE_MESSAGE_KEY_2 = String.format("SMS-%s-%s", SENDER_2, RECIPIENT_2);
 
     @Autowired
     private MockMvc mockMvc;

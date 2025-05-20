@@ -15,10 +15,10 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Slf4j
 @Repository
 public class SequenceRepository {
-    private final static String KEY = "key";
-    private final static String SEQUENCE_NUMBER = "sequenceNumber";
-    private final static long MAX_SEQUENCE_NUMBER = 100_000_000L;
-    private final static long MAX_TRANSACTION_SEQUENCE_NUMBER = 10_000_000L;
+    private static final String KEY = "key";
+    private static final String SEQUENCE_NUMBER = "sequenceNumber";
+    private static final long MAX_SEQUENCE_NUMBER = 100_000_000L;
+    private static final long MAX_TRANSACTION_SEQUENCE_NUMBER = 10_000_000L;
 
     @Autowired
     private MongoOperations mongoOperations;
@@ -45,6 +45,6 @@ public class SequenceRepository {
                 new Update().inc(SEQUENCE_NUMBER, 1),
                 options().returnNew(true).upsert(true),
                 OutboundSequenceId.class))
-                .getSequenceNumber() % maxSequenceNumber;
+            .getSequenceNumber() % maxSequenceNumber;
     }
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 @Builder
 @Data
 public class PersonSex extends Segment {
-    public final static String KEY = "PDI";
+    public static final String KEY = "PDI";
 
     //PDI+1'
     private @NonNull Gender gender;
