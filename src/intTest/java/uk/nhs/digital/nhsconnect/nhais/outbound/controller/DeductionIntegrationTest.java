@@ -31,11 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 public class DeductionIntegrationTest {
     public static final String URL = "/fhir/Patient/$nhais.deduction";
-    public static final String ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY =
+    private static final String ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY =
         "Invalid attribute value \"\": Attribute value must not be empty (\"\")";
-    public static final String INVALID_VALUE_STRING_PARAMETER =
+    private static final String INVALID_VALUE_STRING_PARAMETER =
         "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"valueString\"] ";
-    public static final String INVALID_VALUE_PARAMETER =
+    private static final String INVALID_VALUE_PARAMETER =
         "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"value\"] ";
 
     @Autowired
