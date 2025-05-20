@@ -62,7 +62,7 @@ public class AmendmentControllerIntegrationTest {
     private Resource duplicateExtensionPatches;
 
     @Test
-    void when_NotJson_Expect_Returns400() throws Exception {
+    void When_NotJson_Expect_Returns400() throws Exception {
         String requestBody = new String(Files.readAllBytes(notJsonPayload.getFile().toPath()));
         mockMvc.perform(patch("/fhir/Patient/9999999999").contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest());
