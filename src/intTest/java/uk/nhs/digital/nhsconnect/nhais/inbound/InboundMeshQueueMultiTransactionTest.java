@@ -104,7 +104,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
 
     @Test
     void When_MeshInboundQueueRegistrationMessageIsReceived_Expect_MessageIsHandled(SoftAssertions softly)
-        throws IOException, JMSException {
+        throws IOException, JMSException, JSONException {
 
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
