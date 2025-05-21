@@ -16,31 +16,31 @@ public class MeshRequests {
 
     private final MeshHeaders meshHeaders;
 
-    public HttpPost authenticate(){
+    public HttpPost authenticate() {
         var request = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId());
         request.setHeaders(meshHeaders.createAuthenticateHeaders());
         return request;
     }
 
-    public HttpPost sendMessage(String recipient, WorkflowId workflowId){
+    public HttpPost sendMessage(String recipient, WorkflowId workflowId) {
         var request = new HttpPost(meshConfig.getHost() + meshConfig.getMailboxId() + "/outbox");
         request.setHeaders(meshHeaders.createSendHeaders(recipient, workflowId));
         return request;
     }
 
-    public HttpGet getMessage(String messageId){
+    public HttpGet getMessage(String messageId) {
         var request = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox/" + messageId);
         request.setHeaders(meshHeaders.createMinimalHeaders());
         return request;
     }
 
-    public HttpGet getMessageIds(){
+    public HttpGet getMessageIds() {
         var request = new HttpGet(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox");
         request.setHeaders(meshHeaders.createMinimalHeaders());
         return request;
     }
 
-    public HttpPut acknowledge(String messageId){
+    public HttpPut acknowledge(String messageId) {
         var request = new HttpPut(meshConfig.getHost() + meshConfig.getMailboxId() + "/inbox/" + messageId + "/status/acknowledged");
         request.setHeaders(meshHeaders.createMinimalHeaders());
         return request;

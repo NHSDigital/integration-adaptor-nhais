@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
@@ -41,7 +40,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     private static final String SENDER = "FHS1";
     private static final String RECIPIENT = "GP05";
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UKZone)
+        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UK_ZONE)
         .toInstant();
     // Mongo only supports millis precision
     private static final Instant PROCESSED_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -65,7 +64,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRecepMessageIsReceived_thenRecepHandled(SoftAssertions softly) throws IOException {
+    void When_MeshInboundQueueRecepMessageIsReceived_Expect_RecepHandled(SoftAssertions softly) throws IOException {
         createOutboundStateRecords();
 
         sendToMeshInboundQueue(new MeshMessage()

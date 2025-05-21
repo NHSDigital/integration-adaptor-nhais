@@ -15,9 +15,9 @@ import java.util.Objects;
 @Builder
 @Data
 public class AcceptanceType extends Segment {
-    private final static String KEY = "HEA";
-    private final static String APT_PREFIX = "ATP";
-    private final static String ZZZ_SUFFIX = ":ZZZ";
+    private static final String KEY = "HEA";
+    private static final String APT_PREFIX = "ATP";
+    private static final String ZZZ_SUFFIX = ":ZZZ";
 
     private @NonNull AvailableTypes acceptanceType;
 

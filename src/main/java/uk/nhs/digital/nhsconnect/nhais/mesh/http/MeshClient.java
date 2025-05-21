@@ -9,7 +9,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,12 @@ public class MeshClient {
     public MeshMessageId sendEdifactMessage(OutboundMeshMessage outboundMeshMessage) {
         final var loggingName = "Send a message";
         String recipientMailbox = recipientMailboxIdMappings.getRecipientMailboxId(outboundMeshMessage);
-        LOGGER.info("Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}", outboundMeshMessage.getHaTradingPartnerCode(), recipientMailbox, outboundMeshMessage.getWorkflowId());
+        LOGGER.info(
+            "Sending to MESH API: recipient: {}, MESH mailbox: {}, workflow: {}",
+            outboundMeshMessage.getHaTradingPartnerCode(),
+            recipientMailbox,
+            outboundMeshMessage.getWorkflowId()
+        );
         try (CloseableHttpClient client = meshHttpClientBuilder.build()) {
             var request = meshRequests.sendMessage(recipientMailbox, outboundMeshMessage.getWorkflowId());
             String contentString = outboundMeshMessage.getContent();
@@ -174,12 +178,15 @@ public class MeshClient {
         // log as INFO - these are useful for normal operation to trace requests and error reports
         LOGGER.info("MESH '{}' response status line: {}", type, response.getStatusLine());
         LOGGER.info("MESH '{}' response headers: {}", type, response.getAllHeaders());
-        if (LOGGER.isDebugEnabled()) {
-            if (response.getEntity() != null) {
-                var entity = response.getEntity();
-                LOGGER.debug("MESH '{}' response content encoding: {}, content type: {}, content length: {}", type, entity.getContentEncoding(), entity.getContentType(), entity.getContentLength());
-                // response is usually not "repeatable" so we can only decode it once. Log response content separately.
-            }
+        if (LOGGER.isDebugEnabled() && response.getEntity() != null) {
+            var entity = response.getEntity();
+            LOGGER.debug(
+                "MESH '{}' response content encoding: {}, content type: {}, content length: {}",
+                type,
+                entity.getContentEncoding(),
+                entity.getContentType(), entity.getContentLength()
+            );
+            // response is usually not "repeatable" so we can only decode it once. Log response content separately.
         }
     }
 }

@@ -23,15 +23,21 @@ public class OutboundArgumentsProvider extends AbstractArgumentsProvider {
             .entrySet().stream()
             .peek(es -> {
                 if (es.getValue().size() != 2) {
-                    throw new IllegalStateException(String.format(
-                        "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s': %s", FHIR_FILE_ENDING, EDIFACT_FILE_ENDING, es.getKey()));
+                    throw new IllegalStateException(
+                        String.format(
+                            "There should be 2 test data files: 'N.<any>%s' and 'N.<any>%s': %s",
+                            FHIR_FILE_ENDING,
+                            EDIFACT_FILE_ENDING,
+                            es.getKey()
+                        )
+                    );
                 }
             })
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 es -> TestData.builder()
-                    .edifact(readResource(es.getValue(),EDIFACT_FILE_ENDING))
-                    .json(readResource(es.getValue(),FHIR_FILE_ENDING))
+                    .edifact(readResource(es.getValue(), EDIFACT_FILE_ENDING))
+                    .json(readResource(es.getValue(), FHIR_FILE_ENDING))
                     .build()));
 
         return grouped.entrySet().stream()

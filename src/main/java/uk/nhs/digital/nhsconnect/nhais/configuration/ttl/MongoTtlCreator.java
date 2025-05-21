@@ -20,7 +20,11 @@ public class MongoTtlCreator extends TtlCreator {
 
     public void create(Class<? extends TimeToLive> clazz) {
         if (ttlIndexHasChanged()) {
-            LOGGER.info("TTL value has changed for {} - dropping index and creating new one using value {}", clazz.getSimpleName(), duration);
+            LOGGER.info(
+                "TTL value has changed for {} - dropping index and creating new one using value {}",
+                clazz.getSimpleName(),
+                duration
+            );
             indexOperations.dropIndex(TTL_INDEX_NAME);
         }
         indexOperations.ensureIndex(

@@ -12,10 +12,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 @RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class DrugsMarker extends Segment {
-    private final static String KEY = "HEA";
-    private final static String APT_PREFIX = "DM";
-    private final static String ZZZ_SUFFIX = ":ZZZ";
-    public final static String KEY_PREFIX = KEY + PLUS_SEPARATOR + APT_PREFIX;
+    private static final String KEY = "HEA";
+    private static final String APT_PREFIX = "DM";
+    private static final String ZZZ_SUFFIX = ":ZZZ";
+    public static final String KEY_PREFIX = KEY + PLUS_SEPARATOR + APT_PREFIX;
 
     @Getter
     private final boolean drugsMarker;

@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,8 +17,8 @@ import java.util.stream.Stream;
 @Builder
 @Data
 public class PersonOldAddress extends Segment {
-    private final static String KEY = "NAD";
-    private final static String PAT_CODE = "PER";
+    private static final String KEY = "NAD";
+    private static final String PAT_CODE = "PER";
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;

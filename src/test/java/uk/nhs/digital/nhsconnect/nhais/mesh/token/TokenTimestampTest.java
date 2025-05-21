@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class TokenTimestampTest {
 
-    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UKZone)
+    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
         .toInstant();
 
     @Test

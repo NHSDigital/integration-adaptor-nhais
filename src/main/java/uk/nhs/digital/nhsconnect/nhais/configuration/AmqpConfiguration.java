@@ -79,7 +79,7 @@ public class AmqpConfiguration {
         private final int maxRedeliveries;
         private final int outcome;
 
-        public CustomRedeliveryPolicy(int maxRedeliveries, int outcome) {
+        CustomRedeliveryPolicy(int maxRedeliveries, int outcome) {
             this.maxRedeliveries = maxRedeliveries;
             this.outcome = outcome;
         }

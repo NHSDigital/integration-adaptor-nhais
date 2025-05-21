@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Component
 public class EdifactParser {
 
-    private final String TRANSACTION_START_SEGMENT = ReferenceTransactionNumber.KEY_QUALIFIER;
+    private static final String TRANSACTION_START_SEGMENT = ReferenceTransactionNumber.KEY_QUALIFIER;
 
     public Interchange parse(String edifact) {
         var allEdifactSegments = Arrays.asList(Split.bySegmentTerminator(edifact.replaceAll("\\n", "").strip()));
@@ -61,7 +61,8 @@ public class EdifactParser {
             // there might be no transaction inside - RECEP - so all message lines belong to the message
             .orElse(messageTrailerIndex);
 
-        var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex)); // first lines until transaction
+        // first lines until transaction
+        var onlyMessageLines = new ArrayList<>(singleMessageEdifactSegments.subList(0, firstTransactionStartIndex));
         onlyMessageLines.add(singleMessageEdifactSegments.get(messageTrailerIndex));
 
         var message = new Message(onlyMessageLines);

@@ -10,7 +10,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.FhirElementsUtils;
 
 @Component
 public class GpNameAndAddressMapper implements FromFhirToEdifactMapper<GpNameAndAddress> {
-    private final static String GP_CODE = "900";
+    private static final String GP_CODE = "900";
 
     public GpNameAndAddress map(Parameters parameters) {
         Patient patient = ParametersExtension.extractPatient(parameters);

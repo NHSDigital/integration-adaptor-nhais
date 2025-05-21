@@ -41,7 +41,9 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
         this.fhirToEdifactSegmentTranslator = fhirToEdifactSegmentTranslator;
     }
 
-    public OutboundMeshMessage convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType) throws FhirValidationException, EdifactValidationException {
+    public OutboundMeshMessage convertToEdifact(Parameters parameters, ReferenceTransactionType.Outbound transactionType)
+        throws FhirValidationException, EdifactValidationException {
+
         FhirTranslationItems translationItems = new TranslationItems();
         translationItems.setParameters(parameters);
         translationItems.setSender(getSenderTradingPartnerCode(translationItems.getParameters()));
@@ -69,7 +71,9 @@ public class FhirToEdifactService extends AbstractToEdifactService<FhirTranslati
 
     @Override
     protected List<Segment> createMessageSegments(FhirTranslationItems translationItems) throws FhirValidationException {
-        return fhirToEdifactSegmentTranslator.createMessageSegments(translationItems.getParameters(), translationItems.getTransactionType());
+        return fhirToEdifactSegmentTranslator.createMessageSegments(
+            translationItems.getParameters(),
+            translationItems.getTransactionType()
+        );
     }
-
 }

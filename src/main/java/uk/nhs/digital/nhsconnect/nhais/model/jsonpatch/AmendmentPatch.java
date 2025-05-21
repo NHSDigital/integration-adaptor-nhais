@@ -30,8 +30,7 @@ public class AmendmentPatch {
     public Object getValue() {
         if (this.isExtension()) {
             return value;
-        }
-        else if (value != null) {
+        } else if (value != null) {
             return value.get();
         } else {
             return null;

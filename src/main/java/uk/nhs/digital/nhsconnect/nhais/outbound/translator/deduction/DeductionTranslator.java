@@ -42,7 +42,7 @@ public class DeductionTranslator implements FhirToEdifactTranslator {
 
     @Override
     public List<Segment> translate(Parameters parameters) throws FhirValidationException {
-        if(validator.nhsNumberIsMissing(parameters)) {
+        if (validator.nhsNumberIsMissing(parameters)) {
             throw new FhirValidationException("Patient resource property /identifier/0/value (NHS Number) is required");
         }
         List<Segment> segments = Stream.of(

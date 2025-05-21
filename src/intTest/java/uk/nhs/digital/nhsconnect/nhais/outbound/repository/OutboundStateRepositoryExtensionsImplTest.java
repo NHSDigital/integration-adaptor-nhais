@@ -36,7 +36,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
     private OutboundStateRepository outboundStateRepository;
 
     @Test
-    void whenUpdatingRecep_thenRecepDetailsAreUpdated() {
+    void When_UpdatingRecep_Expect_RecepDetailsAreUpdated() {
 
         var outboundState = new OutboundState()
             .setSender(SENDER)
@@ -73,7 +73,7 @@ public class OutboundStateRepositoryExtensionsImplTest {
     }
 
     @Test
-    void whenUpdatingNonExistingEntity_thenReturnsEmpty() {
+    void When_UpdatingNonExistingEntity_Expect_ReturnsEmpty() {
         var recep = new OutboundState.Recep()
             .setInterchangeSequence(RECEP_INTERCHANGE_SEQUENCE)
             .setProcessedTimestamp(RECEP_PROCESSED_TIMESTAMP)

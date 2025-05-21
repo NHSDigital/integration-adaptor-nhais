@@ -23,7 +23,7 @@ public class TimeToLiveConfiguration {
 
     @PostConstruct
     public void init() {
-        if(mongoConfig.isAutoIndexCreation()) {
+        if (mongoConfig.isAutoIndexCreation()) {
             createTimeToLiveIndex(InboundState.class);
             createTimeToLiveIndex(OutboundState.class);
         }
@@ -33,7 +33,7 @@ public class TimeToLiveConfiguration {
         var duration = mongoConfig.getTtl();
         var indexOperations = mongoTemplate.indexOps(clazz);
 
-        if(mongoConfig.isCosmosDbEnabled()) {
+        if (mongoConfig.isCosmosDbEnabled()) {
             new CosmosTtlCreator(indexOperations, duration).create(clazz);
         } else {
             new MongoTtlCreator(indexOperations, duration).create(clazz);

@@ -26,10 +26,10 @@ public class FhirValidationException extends BadRequestException {
     private static String createMessage(ValidationResult validationResult) {
         int numberOfMessages = validationResult.getMessages().size();
         StringBuilder b = new StringBuilder("JSON FHIR Resource failed validation");
-        if(numberOfMessages >= 1) {
+        if (numberOfMessages >= 1) {
             b.append(": ").append(validationResult.getMessages().get(0).getMessage());
         }
-        if(numberOfMessages >= 2) {
+        if (numberOfMessages >= 2) {
             b.append(" (and ").append(numberOfMessages - 1).append(" more error messages truncated)");
         }
         return b.toString();

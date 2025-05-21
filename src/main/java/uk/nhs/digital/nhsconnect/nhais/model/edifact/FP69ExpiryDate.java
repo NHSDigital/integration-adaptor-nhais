@@ -16,11 +16,11 @@ import java.time.format.DateTimeFormatter;
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class FP69ExpiryDate extends Segment {
-    private final static String KEY = "DTM";
-    private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
-    private final static String QUALIFIER = "962";
-    public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
-    private final static String DATE_FORMAT = "102";
+    private static final String KEY = "DTM";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UK_ZONE);
+    private static final String QUALIFIER = "962";
+    public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
+    private static final String DATE_FORMAT = "102";
 
     private final @NonNull LocalDate expiryDate;
 

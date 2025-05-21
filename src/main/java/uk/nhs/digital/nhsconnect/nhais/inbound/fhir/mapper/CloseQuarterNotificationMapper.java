@@ -10,7 +10,7 @@ public class CloseQuarterNotificationMapper implements FhirTransactionMapper {
 
     @Override
     public Parameters map(Transaction transaction) {
-        return new Parameters();//this mapper is intentionally left blank, parameters are not modified for close quarter notification
+        return new Parameters(); //this mapper is intentionally left blank, parameters are not modified for close quarter notification
     }
 
     @Override

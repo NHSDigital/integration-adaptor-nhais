@@ -9,8 +9,8 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
 @Component
 public class DrugsMarkerMapper implements OptionalFromFhirToEdifactMapper<DrugsMarker> {
 
-    private final String AFFIRMATIVE_VALUE = "true";
-    private final String NEGATIVE_VALUE = "false";
+    private static final String AFFIRMATIVE_VALUE = "true";
+    private static final String NEGATIVE_VALUE = "false";
 
     public DrugsMarker map(Parameters parameters) {
         String markerValue = ParametersExtension.extractExtensionValue(parameters, DrugsMarkerExtension.URL)

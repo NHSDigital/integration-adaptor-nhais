@@ -72,7 +72,7 @@ public class RemovalIntegrationTest {
     private FhirParser fhirParser;
 
     @Test
-    void whenBlankNhsNumber_thenRespond400() throws Exception {
+    void When_BlankNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithBlankNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -83,7 +83,7 @@ public class RemovalIntegrationTest {
 
 
     @Test
-    void whenEmptyNhsNumber_thenRespond400() throws Exception {
+    void When_EmptyNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithEmptyNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -98,7 +98,7 @@ public class RemovalIntegrationTest {
 
 
     @Test
-    void whenNoNhsNumber_thenRespond400() throws Exception {
+    void When_NoNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNoNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -108,7 +108,7 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenNullNhsNumber_thenRespond400() throws Exception {
+    void When_NullNhsNumber_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNullNhsNumber.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -118,7 +118,7 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenBlankFreeText_thenRespond400() throws Exception {
+    void When_BlankFreeText_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithBlankFreeText.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -128,7 +128,7 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenEmptyFreeText_thenRespond400() throws Exception {
+    void When_EmptyFreeText_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithEmptyFreeText.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -138,7 +138,7 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenNoFreeText_thenRespond400() throws Exception {
+    void When_NoFreeText_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNoFreeText.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -148,7 +148,7 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenNullFreeText_thenRespond400() throws Exception {
+    void When_NullFreeText_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNullFreeText.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -158,18 +158,19 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenBlankGpTradingPartnerCode_thenRespond400() throws Exception {
+    void When_BlankGpTradingPartnerCode_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithBlankGpTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 
     @Test
-    void whenEmptyGpTradingPartnerCode_thenRespond400() throws Exception {
+    void When_EmptyGpTradingPartnerCode_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithEmptyGpTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
@@ -179,23 +180,25 @@ public class RemovalIntegrationTest {
     }
 
     @Test
-    void whenNoGpTradingPartnerCode_thenRespond400() throws Exception {
+    void When_NoGpTradingPartnerCode_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNoGpTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
     @Test
-    void whenNullGpTradingPartnerCode_thenRespond400() throws Exception {
+    void When_NullGpTradingPartnerCode_Expect_Respond400() throws Exception {
         String requestBody = new String(Files.readAllBytes(removalWithNullGpTradingPartnerCode.getFile().toPath()));
         MvcResult result = mockMvc.perform(post(URL).contentType("application/json").content(requestBody))
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains("Value gpTradingPartnerCode is blank or missing in FHIR Parameters");
     }
 
 

@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 @Configuration
 public class TransactionMapperConfig {
     @Bean
-    public Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> getTransactionMappers(Set<FhirTransactionMapper> fhirTransactionMappers) {
+    public Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> getTransactionMappers(
+        Set<FhirTransactionMapper> fhirTransactionMappers
+    ) {
         return fhirTransactionMappers.stream()
             .collect(Collectors.toMap(FhirTransactionMapper::getTransactionType, Function.identity()));
     }

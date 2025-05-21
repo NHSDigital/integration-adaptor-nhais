@@ -51,9 +51,9 @@ public class MeshService {
 
     @Scheduled(fixedRateString = "${nhais.mesh.wakeupIntervalInMilliseconds}")
     public void scanMeshInboxForMessages() {
-        if (!meshMailBoxScheduler.isEnabled()){
-            LOGGER.warn("Not running the MESH mailbox polling cycle because it is disabled. Set variable " +
-                "NHAIS_SCHEDULER_ENABLED to true to enable it.");
+        if (!meshMailBoxScheduler.isEnabled()) {
+            LOGGER.warn("Not running the MESH mailbox polling cycle because it is disabled. Set variable "
+                + "NHAIS_SCHEDULER_ENABLED to true to enable it.");
             return;
         }
         LOGGER.info("Requesting lock from database to run MESH mailbox polling cycle");
@@ -63,18 +63,22 @@ public class MeshService {
             List<String> inboxMessageIds = authenticateAndGetInboxMessageIds();
             for (int i = 0; i < inboxMessageIds.size(); i++) {
                 String messageId = inboxMessageIds.get(i);
-                if(sufficientTimeRemainsInPollingCycle(pollingCycleElapsedTime)) {
+                if (sufficientTimeRemainsInPollingCycle(pollingCycleElapsedTime)) {
                     processSingleMessage(messageId);
                 } else {
-                    LOGGER.warn("Insufficient time remains to complete the polling cycle. Processed {} of {} messages from inbox.", i + 1, inboxMessageIds.size());
+                    LOGGER.warn(
+                        "Insufficient time remains to complete the polling cycle. Processed {} of {} messages from inbox.",
+                        i + 1,
+                        inboxMessageIds.size()
+                    );
                     return;
                 }
             }
             LOGGER.info("Completed MESH mailbox polling cycle. Processed all messages from inbox.");
         } else {
-            LOGGER.info("Could not obtain database lock to run MESH mailbox polling cycle: insufficient time has elapsed " +
-                "since the previous polling cycle or another adaptor instance has already started the polling cycle. " +
-                "Next scan in {} seconds", TimeUnit.SECONDS.convert(wakeupIntervalInMilliseconds, TimeUnit.MILLISECONDS));
+            LOGGER.info("Could not obtain database lock to run MESH mailbox polling cycle: insufficient time has elapsed "
+                + "since the previous polling cycle or another adaptor instance has already started the polling cycle. "
+                + "Next scan in {} seconds", TimeUnit.SECONDS.convert(wakeupIntervalInMilliseconds, TimeUnit.MILLISECONDS));
         }
     }
 
@@ -101,7 +105,10 @@ public class MeshService {
             meshClient.acknowledgeMessage(meshMessage.getMeshMessageId());
             LOGGER.info("Acknowledged MeshMessageId={} on MESH API", messageId);
         } catch (MeshWorkflowUnknownException ex) {
-            LOGGER.warn("MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.", messageId, ex.getWorkflowId());
+            LOGGER.warn(
+                "MeshMessageId={} has an unsupported MeshWorkflowId={} and has been left in the inbox.",
+                messageId, ex.getWorkflowId()
+            );
         } catch (Exception ex) {
             LOGGER.error("Error during reading of MESH message. MeshMessageId={}", messageId, ex);
             // skip message with error and attempt to download the next one

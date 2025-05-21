@@ -13,10 +13,10 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 @Data
 public class FP69ReasonCode extends Segment {
 
-    private final static String KEY = "HEA";
-    private final static String QUALIFIER = "FRN";
-    public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
-    private final static String ZZZ_SUFFIX = ":ZZZ";
+    private static final String KEY = "HEA";
+    private static final String QUALIFIER = "FRN";
+    public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
+    private static final String ZZZ_SUFFIX = ":ZZZ";
 
     private final @NonNull Integer code;
 

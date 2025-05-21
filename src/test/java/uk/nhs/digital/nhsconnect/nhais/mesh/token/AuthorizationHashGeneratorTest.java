@@ -24,7 +24,7 @@ class AuthorizationHashGeneratorTest {
     private final static String MAILBOX_PASSWORD = "mailbox_password";
     private final static String SHARED_KEY = "shared_key";
 
-    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UKZone)
+    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
         .toInstant();
     private final static String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 

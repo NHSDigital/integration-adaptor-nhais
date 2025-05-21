@@ -48,13 +48,13 @@ public class TimeToLiveTest {
     private NhaisMongoClientConfiguration mongoConfig;
 
     @Test
-    void when_ApplicationStarts_then_TtlIndexExistsForInboundStateWithValueFromConfiguration() {
+    void When_ApplicationStarts_Expect_TtlIndexExistsForInboundStateWithValueFromConfiguration() {
         var indexOperations = mongoTemplate.indexOps(InboundState.class);
         assertThat(timeToLiveIndexExists(indexOperations)).isTrue();
     }
 
     @Test
-    void when_ApplicationStarts_then_TtlIndexExistsForOutboundStateWithValueFromConfiguration() {
+    void When_ApplicationStarts_Expect_TtlIndexExistsForOutboundStateWithValueFromConfiguration() {
         var indexOperations = mongoTemplate.indexOps(OutboundState.class);
         assertThat(timeToLiveIndexExists(indexOperations)).isTrue();
     }
@@ -70,7 +70,7 @@ public class TimeToLiveTest {
 
     @Test
     @Disabled("Long running test that depends on external TTL config, enable when needed")
-    void when_TimeToLiveHasPassedInInboundState_then_documentRemoved() {
+    void When_TimeToLiveHasPassedInInboundState_Expect_DocumentRemoved() {
         var inboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
@@ -89,7 +89,7 @@ public class TimeToLiveTest {
 
     @Test
     @Disabled("Long running test that depends on external TTL config, enable when needed")
-    void when_TimeToLiveHasPassedInOutboundState_then_documentRemoved() {
+    void When_TimeToLiveHasPassedInOutboundState_Expect_DocumentRemoved() {
         var inboundState = new OutboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")

@@ -82,7 +82,10 @@ public class RecepConsumerService {
             .collect(Collectors.toList());
     }
 
-    private OutboundStateRepositoryExtensions.UpdateRecepParams prepareOutboundStateUpdateParams(Message message, ReferenceMessageRecep referenceMessageRecep) {
+    private OutboundStateRepositoryExtensions.UpdateRecepParams prepareOutboundStateUpdateParams(
+        Message message,
+        ReferenceMessageRecep referenceMessageRecep
+    ) {
         //sender is swapped with recipient as communication is done the opposite way
         var outboundSender = message.getInterchange().getInterchangeHeader().getRecipient();
         var outboundRecipient = message.getInterchange().getInterchangeHeader().getSender();

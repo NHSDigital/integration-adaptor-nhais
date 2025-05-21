@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class AmendmentSimpleValue implements AmendmentValue{
+public class AmendmentSimpleValue implements AmendmentValue {
 
     private final String value;
 

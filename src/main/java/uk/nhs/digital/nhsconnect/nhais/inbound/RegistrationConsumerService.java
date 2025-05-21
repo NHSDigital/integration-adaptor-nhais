@@ -3,7 +3,6 @@ package uk.nhs.digital.nhsconnect.nhais.inbound;
 import com.google.common.collect.Streams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.inbound.queue.InboundGpSystemService;
@@ -23,7 +22,6 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.OutboundQueueService;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundState;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateFactory;
 import uk.nhs.digital.nhsconnect.nhais.outbound.state.OutboundStateRepository;
-import uk.nhs.digital.nhsconnect.nhais.utils.OperationId;
 
 import java.util.Collection;
 import java.util.List;
@@ -138,7 +136,7 @@ public class RegistrationConsumerService {
     }
 
     private void logInterchangeReceived(Interchange interchange) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var interchangeHeader = interchange.getInterchangeHeader();
             LOGGER.info("Translating EDIFACT interchange from Sender={} to Recipient={} with RIS={} containing {} messages",
                 interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber(),
@@ -147,7 +145,7 @@ public class RegistrationConsumerService {
     }
 
     private void logRecepSentFor(Interchange interchange) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var interchangeHeader = interchange.getInterchangeHeader();
             LOGGER.info("Published for async send to MESH a RECEP for the interchange from Sender={} to Recipient={} with RIS={}",
                 interchangeHeader.getSender(), interchangeHeader.getRecipient(), interchangeHeader.getSequenceNumber());
@@ -155,7 +153,7 @@ public class RegistrationConsumerService {
     }
 
     private void logTransactionReceived(Transaction transaction, String operationId) {
-        if(LOGGER.isInfoEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             var message = transaction.getMessage();
             var type = transaction.getMessage().getReferenceTransactionType().getTransactionType().getAbbreviation();
             LOGGER.info("Translating EDIFACT transaction TN={} OperationId={} of message Type={} RMS={}",

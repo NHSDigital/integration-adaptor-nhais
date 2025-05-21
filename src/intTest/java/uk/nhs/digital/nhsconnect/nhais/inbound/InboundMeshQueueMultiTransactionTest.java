@@ -65,10 +65,10 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     private static final String TRANSACTION_5_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_5);
     private static final String TRANSACTION_6_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_6);
     private static final Instant INTERCHANGE_TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UKZone)
+        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UK_ZONE)
         .toInstant();
 
-    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 0, 0, TimestampService.UKZone)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 0, 0, TimestampService.UK_ZONE)
         .toInstant();
     private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
 
@@ -103,7 +103,9 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException, JSONException {
+    void When_MeshInboundQueueRegistrationMessageIsReceived_Expect_MessageIsHandled(SoftAssertions softly)
+        throws IOException, JMSException, JSONException {
+
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())));
@@ -179,7 +181,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
 
         // all transactions come from the same interchange and use the same conversation id
         String conversationId = message.getStringProperty("ConversationId");
-        if(previousConversationId == null) {
+        if (previousConversationId == null) {
             previousConversationId = conversationId;
         }
         softly.assertThat(conversationId).isEqualTo(previousConversationId);

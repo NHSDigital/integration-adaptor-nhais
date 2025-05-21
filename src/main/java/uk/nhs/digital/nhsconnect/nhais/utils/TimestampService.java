@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 
 @Component
 public class TimestampService {
-    public static final ZoneId UKZone = ZoneId.of("Europe/London");
+    public static final ZoneId UK_ZONE = ZoneId.of("Europe/London");
 
     public Instant getCurrentTimestamp() {
         var now = Instant.now();
@@ -18,7 +18,7 @@ public class TimestampService {
 
     public String formatInISO(Instant timestamp) {
         return DateTimeFormatter.ISO_DATE_TIME
-            .withZone(TimestampService.UKZone)
+            .withZone(TimestampService.UK_ZONE)
             .format(timestamp);
     }
 }

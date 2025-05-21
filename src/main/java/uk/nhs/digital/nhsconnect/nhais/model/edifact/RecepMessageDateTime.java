@@ -34,7 +34,7 @@ public class RecepMessageDateTime extends Segment {
     public static final String KEY_QUALIFIER = KEY + "+" + TYPE_CODE;
     private static final String FORMAT_CODE = "306";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
-        .withZone(TimestampService.UKZone);
+        .withZone(TimestampService.UK_ZONE);
     /**
      * When creating a new RecepTimestamp the timestamp is not provided. This is considered "stateful" and a value
      * that is shared across multiple segments. For outbound registration messages the RecepProducerService sets this

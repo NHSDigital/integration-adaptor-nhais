@@ -26,9 +26,9 @@ public class AcceptanceCode extends Segment {
         "I" = "Internal transfer within partnership"
         "S" = "Acceptance with same GP new FHSA"
      */
-    private final static String KEY = "HEA";
-    private final static String ACD_PREFIX = "ACD";
-    private final static String ZZZ_SUFFIX = ":ZZZ";
+    private static final String KEY = "HEA";
+    private static final String ACD_PREFIX = "ACD";
+    private static final String ZZZ_SUFFIX = ":ZZZ";
     private @NonNull String code;
 
     private static boolean isCodeAllowed(String inputCode) {

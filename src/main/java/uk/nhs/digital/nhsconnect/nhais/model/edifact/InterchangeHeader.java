@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 public class InterchangeHeader extends Segment {
 
     public static final String KEY = "UNB";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone);
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UK_ZONE);
     private static final long MAX_INTERCHANGE_SEQUENCE = 99_999_999L;
     private static final String RECEP_ENDING = "+RECEP+++EDIFACT TRANSFER";
 
@@ -42,7 +42,10 @@ public class InterchangeHeader extends Segment {
         }
         String[] split = Split.byPlus(edifactString);
 
-        ZonedDateTime translationTime = ZonedDateTime.parse(split[4], DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UKZone));
+        ZonedDateTime translationTime = ZonedDateTime.parse(
+            split[4],
+            DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UK_ZONE)
+        );
         return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
     }
 

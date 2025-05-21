@@ -12,9 +12,9 @@ import java.util.Objects;
 @Builder
 @Data
 public class PartyQualifier extends Segment {
-    private final static String KEY = "NAD";
-    private final static String CODE = "FHS";
-    private final static String REGISTRATION_ID = ":954";
+    private static final String KEY = "NAD";
+    private static final String CODE = "FHS";
+    private static final String REGISTRATION_ID = ":954";
 
     //NAD+FHS+XX1:954'
     private @NonNull String organization;

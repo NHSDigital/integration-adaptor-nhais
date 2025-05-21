@@ -20,7 +20,7 @@ public enum WorkflowId {
         return workflowId;
     }
 
-    public static WorkflowId fromString(String workflowId){
+    public static WorkflowId fromString(String workflowId) {
         return Arrays.stream(WorkflowId.values())
             .filter(workflow -> workflow.workflowId.equalsIgnoreCase(workflowId))
             .findFirst()

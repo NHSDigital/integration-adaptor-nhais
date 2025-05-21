@@ -31,7 +31,9 @@ public class FhirToEdifactSegmentTranslator {
     private final DeductionTranslator deductionTranslator;
     private final RemovalTranslator removalTranslator;
 
-    public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType) throws FhirValidationException {
+    public List<Segment> createMessageSegments(Parameters parameters, ReferenceTransactionType.TransactionType transactionType)
+        throws FhirValidationException {
+
         switch ((ReferenceTransactionType.Outbound) transactionType) {
             case ACCEPTANCE:
                 return delegateAcceptance(parameters);

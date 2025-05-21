@@ -9,11 +9,11 @@ import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 @RequiredArgsConstructor
 class TokenTimestamp {
-    private static final String TIMESTAMP_FORMAT= "yyyyMMddHHmm";
+    private static final String TIMESTAMP_FORMAT = "yyyyMMddHHmm";
 
     @NonNull private final Instant datetime;
 
     public String getValue() {
-        return DateTimeFormatter.ofPattern(TIMESTAMP_FORMAT).withZone(TimestampService.UKZone).format(datetime);
+        return DateTimeFormatter.ofPattern(TIMESTAMP_FORMAT).withZone(TimestampService.UK_ZONE).format(datetime);
     }
 }

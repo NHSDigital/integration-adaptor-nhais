@@ -70,10 +70,16 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
             LOGGER.info("A value was provided from mongodb host. Generating a connection string from individual properties.");
             return createConnectionStringFromProperties();
         } else if (!Strings.isNullOrEmpty(uri)) {
-            LOGGER.info("A mongodb connection string provided in spring.data.mongodb.uri and will be used to configure the database connection.");
+            LOGGER.info(
+                "A mongodb connection string provided in spring.data.mongodb.uri "
+                    + "and will be used to configure the database connection."
+            );
             return uri;
         } else {
-            LOGGER.error("Mongodb must be configured using a connection string or individual properties. Both uri and host are null or empty");
+            LOGGER.error(
+                "Mongodb must be configured using a connection string or individual properties. "
+                    + "Both uri and host are null or empty"
+            );
             throw new RuntimeException("Missing mongodb connection string and/or properties");
         }
     }
@@ -92,7 +98,10 @@ public class NhaisMongoClientConfiguration extends AbstractMongoClientConfigurat
             LOGGER.debug("The generated connection will use use options '{}'", options);
             cs += "/?" + options;
         } else {
-            LOGGER.warn("No options for the mongodb connection string were provided. If connecting to a cluster the driver may not work as expected.");
+            LOGGER.warn(
+                "No options for the mongodb connection string were provided."
+                    + "If connecting to a cluster the driver may not work as expected."
+            );
         }
         return cs;
     }

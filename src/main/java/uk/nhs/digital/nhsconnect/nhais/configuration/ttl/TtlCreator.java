@@ -13,9 +13,9 @@ public abstract class TtlCreator {
     protected final IndexOperations indexOperations;
     protected final Duration duration;
 
-    abstract public void create(Class<? extends TimeToLive> clazz);
+    public abstract void create(Class<? extends TimeToLive> clazz);
 
-    abstract protected Optional<IndexInfo> findTtlIndex();
+    protected abstract Optional<IndexInfo> findTtlIndex();
 
     protected boolean ttlIndexHasChanged() {
         Optional<IndexInfo> ttlIndex = findTtlIndex();

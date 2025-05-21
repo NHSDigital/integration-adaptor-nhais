@@ -15,9 +15,9 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class RecepBeginningOfMessage extends Segment {
-    private final static String DATE_TIME_FORMAT = "yyyyMMddHHmm";
-    private final static String BGM_PREFIX = "+600+243:";
-    private final static String BGM_SUFFIX = ":306+64";
+    private static final String DATE_TIME_FORMAT = "yyyyMMddHHmm";
+    private static final String BGM_PREFIX = "+600+243:";
+    private static final String BGM_SUFFIX = ":306+64";
 
     private @NonNull Instant timestamp;
 
@@ -44,6 +44,6 @@ public class RecepBeginningOfMessage extends Segment {
     }
 
     private DateTimeFormatter getDateTimeFormat() {
-        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UKZone);
+        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UK_ZONE);
     }
 }

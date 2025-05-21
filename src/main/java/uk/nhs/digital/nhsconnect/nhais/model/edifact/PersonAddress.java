@@ -19,10 +19,10 @@ import java.util.stream.Stream;
 @Builder
 @Data
 public class PersonAddress extends Segment {
-    private final static String KEY = "NAD";
-    private final static String QUALIFIER = "PAT";
-    public final static String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
-    private final static int POSTAL_CODE_OFFSET = 5;
+    private static final String KEY = "NAD";
+    private static final String QUALIFIER = "PAT";
+    public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
+    private static final int POSTAL_CODE_OFFSET = 5;
     private static final String EMPTY_FIRST_ADDRESS_LINE_PLACEHOLDER = "??";
     private String addressLine1;
     private String addressLine2;

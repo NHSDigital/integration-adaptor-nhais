@@ -103,7 +103,9 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         assertThat(gpSystemInboundQueueMessage).isNull();
     }
 
-    private void verifyThatNonCloseQuarterNotificationMessageIsTranslated(TestData testData, Message gpSystemInboundQueueMessage) throws JMSException, JSONException {
+    private void verifyThatNonCloseQuarterNotificationMessageIsTranslated(TestData testData, Message gpSystemInboundQueueMessage)
+        throws JMSException, JSONException {
+
         assertThat(gpSystemInboundQueueMessage).isNotNull();
         // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, "fp69_prior_notification");
@@ -130,19 +132,25 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         List<String> messageIds = waitFor(() -> {
             List<String> inboxMessageIds = nhaisMeshClient.getInboxMessageIds();
             return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
-        } );
+        });
         var meshMessage = nhaisMeshClient.getEdifactMessage(messageIds.get(0));
 
         Interchange expectedRecep = edifactParser.parse(recep);
         Interchange actualRecep = edifactParser.parse(meshMessage.getContent());
 
-        assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
-        assertThat(actualRecep.getInterchangeHeader().getRecipient()).isEqualTo(expectedRecep.getInterchangeHeader().getRecipient());
-        assertThat(actualRecep.getInterchangeHeader().getSender()).isEqualTo(expectedRecep.getInterchangeHeader().getSender());
-        assertThat(actualRecep.getInterchangeHeader().getSequenceNumber()).isEqualTo(expectedRecep.getInterchangeHeader().getSequenceNumber());
+        assertThat(meshMessage.getWorkflowId())
+            .isEqualTo(WorkflowId.RECEP);
+        assertThat(actualRecep.getInterchangeHeader().getRecipient())
+            .isEqualTo(expectedRecep.getInterchangeHeader().getRecipient());
+        assertThat(actualRecep.getInterchangeHeader().getSender())
+            .isEqualTo(expectedRecep.getInterchangeHeader().getSender());
+        assertThat(actualRecep.getInterchangeHeader().getSequenceNumber())
+            .isEqualTo(expectedRecep.getInterchangeHeader().getSequenceNumber());
         assertThat(filterTimestampedSegments(actualRecep)).containsExactlyElementsOf(filterTimestampedSegments(expectedRecep));
-        assertThat(actualRecep.getInterchangeTrailer().getNumberOfMessages()).isEqualTo(expectedRecep.getInterchangeTrailer().getNumberOfMessages());
-        assertThat(actualRecep.getInterchangeTrailer().getSequenceNumber()).isEqualTo(expectedRecep.getInterchangeTrailer().getSequenceNumber());
+        assertThat(actualRecep.getInterchangeTrailer().getNumberOfMessages())
+            .isEqualTo(expectedRecep.getInterchangeTrailer().getNumberOfMessages());
+        assertThat(actualRecep.getInterchangeTrailer().getSequenceNumber())
+            .isEqualTo(expectedRecep.getInterchangeTrailer().getSequenceNumber());
     }
 
     private List<String> filterTimestampedSegments(Interchange recep) {

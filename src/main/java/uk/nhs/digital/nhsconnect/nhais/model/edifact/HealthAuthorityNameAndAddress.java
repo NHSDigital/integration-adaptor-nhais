@@ -12,7 +12,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
  * Example NAD+FHS+XX1:954'
  */
 @Getter @Setter @RequiredArgsConstructor
-public class HealthAuthorityNameAndAddress extends Segment{
+public class HealthAuthorityNameAndAddress extends Segment {
 
     public static final String KEY = "NAD";
     public static final String QUALIFIER = "FHS";
@@ -47,8 +47,13 @@ public class HealthAuthorityNameAndAddress extends Segment{
     }
 
     public static HealthAuthorityNameAndAddress fromString(String edifactString) {
-        if(!edifactString.startsWith(HealthAuthorityNameAndAddress.KEY_QUALIFIER)){
-            throw new IllegalArgumentException("Can't create " + HealthAuthorityNameAndAddress.class.getSimpleName() + " from " + edifactString);
+        if (!edifactString.startsWith(HealthAuthorityNameAndAddress.KEY_QUALIFIER)) {
+            throw new IllegalArgumentException(
+                "Can't create "
+                    + HealthAuthorityNameAndAddress.class.getSimpleName()
+                    + " from "
+                    + edifactString
+            );
         }
         String[] keySplit = Split.byPlus(edifactString);
         String identifier = Split.byColon(keySplit[2])[0];

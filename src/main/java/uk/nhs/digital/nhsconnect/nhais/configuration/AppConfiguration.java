@@ -21,7 +21,7 @@ public class AppConfiguration {
 
     @Bean
     public AmazonS3 getS3Client() {
-        if(trustStoreUrl != null && trustStoreUrl.startsWith("s3")) {
+        if (trustStoreUrl != null && trustStoreUrl.startsWith("s3")) {
             return AmazonS3ClientBuilder.standard()
                 .build();
         }

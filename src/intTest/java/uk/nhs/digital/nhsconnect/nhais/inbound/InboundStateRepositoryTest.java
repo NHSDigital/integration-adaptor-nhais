@@ -26,7 +26,7 @@ public class InboundStateRepositoryTest {
     private InboundStateRepository inboundStateRepository;
 
     @Test
-    void whenDuplicateInterchangeInboundStateInserted_thenThrowsException() {
+    void When_DuplicateInterchangeInboundStateInserted_Expect_ThrowsException() {
         var inboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setSender("some_sender")
@@ -44,7 +44,7 @@ public class InboundStateRepositoryTest {
     }
 
     @Test
-    void whenDuplicateRecepInboundStateInserted_thenThrowsException() {
+    void When_DuplicateRecepInboundStateInserted_Expect_ThrowsException() {
         var inboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")

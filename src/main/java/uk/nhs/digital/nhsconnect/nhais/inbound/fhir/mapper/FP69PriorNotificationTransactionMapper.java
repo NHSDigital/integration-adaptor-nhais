@@ -93,7 +93,8 @@ public class FP69PriorNotificationTransactionMapper implements FhirTransactionMa
                 patient::setBirthDate,
                 () -> {
                     throw new EdifactValidationException(
-                        "For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth");
+                        "For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth"
+                    );
                 });
     }
 

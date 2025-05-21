@@ -60,7 +60,15 @@ public class ParametersExtension {
             .map(Parameters.ParametersParameterComponent::getResource)
             .map(clazz::cast)
             .findFirst()
-            .orElseThrow(() -> new FhirValidationException("Resource " + clazz.getSimpleName() + " with name " + name + " is missing in FHIR Parameters"));
+            .orElseThrow(
+                () -> new FhirValidationException(
+                    "Resource "
+                        + clazz.getSimpleName()
+                        + " with name "
+                        + name
+                        + " is missing in FHIR Parameters"
+                )
+            );
     }
 
     public static String extractValue(Parameters parameters, String name) {

@@ -34,7 +34,7 @@ public class RegistrationMessageDateTime extends Segment {
     public static final String KEY_QUALIFIER = KEY + "+" + TYPE_CODE;
     private static final String FORMAT_CODE = "203";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
-        .withZone(TimestampService.UKZone);
+        .withZone(TimestampService.UK_ZONE);
     /**
      * When creating a new RegistrationTimestamp the timestamp is not provided. This is considered "stateful" and a
      * value thas is shared across multiple segments. The FhirToEdifactService sets this value as a pre-precessing step
@@ -44,7 +44,12 @@ public class RegistrationMessageDateTime extends Segment {
 
     public static RegistrationMessageDateTime fromString(String edifactString) {
         if (!edifactString.startsWith(KEY_QUALIFIER)) {
-            throw new IllegalArgumentException("Can't create " + RegistrationMessageDateTime.class.getSimpleName() + " from " + edifactString);
+            throw new IllegalArgumentException(
+                "Can't create "
+                    + RegistrationMessageDateTime.class.getSimpleName()
+                    + " from "
+                    + edifactString
+            );
         }
         String timestamp = Split.byColon(edifactString)[1];
         Instant instant = ZonedDateTime.parse(timestamp, DATE_TIME_FORMAT).toInstant();

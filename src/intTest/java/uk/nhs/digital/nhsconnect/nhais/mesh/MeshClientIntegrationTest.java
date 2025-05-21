@@ -60,14 +60,14 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     }
 
     @Test
-    void When_CallingMeshSendMessageEndpoint_Then_MessageIdIsReturned() {
+    void When_CallingMeshSendMessageEndpoint_Expect_MessageIdIsReturned() {
         MeshMessageId meshMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
         assertThat(meshMessageId).isNotNull();
         assertThat(meshMessageId.getMessageID()).isNotEmpty();
     }
 
     @Test
-    void When_CallingMeshGetMessageEndpoint_Then_MessageIsReturned() {
+    void When_CallingMeshGetMessageEndpoint_Expect_MessageIsReturned() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
         InboundMeshMessage meshMessage = nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID());
@@ -76,7 +76,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     }
 
     @Test
-    void When_CallingGetMessageWithLargeContentAndWrongWorkflowId_Then_MeshWorkflowUnknownExceptionIsThrown() {
+    void When_CallingGetMessageWithLargeContentAndWrongWorkflowId_Expect_MeshWorkflowUnknownExceptionIsThrown() {
         MeshMessageId testMessageId = sendLargeMessageWithWrongWorkflowId();
 
         assertThatThrownBy(() -> nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID()))
@@ -108,7 +108,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     }
 
     @Test
-    void When_CallingMeshAcknowledgeEndpoint_Then_NoExceptionIsThrown() {
+    void When_CallingMeshAcknowledgeEndpoint_Expect_NoExceptionIsThrown() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
         assertThatCode(() -> nhaisMeshClient.acknowledgeMessage(testMessageId.getMessageID()))
@@ -116,31 +116,31 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     }
 
     @Test
-    void When_PollingFromMesh_Then_EmptyListIsReturned() {
+    void When_PollingFromMesh_Expect_EmptyListIsReturned() {
         assertThat(meshClient.getInboxMessageIds()).isEqualTo(List.of());
     }
 
     @Test
-    void When_PollingFromMeshAfterSendingMsg_Then_ListWithMsgIdIsReturned() {
+    void When_PollingFromMeshAfterSendingMsg_Expect_ListWithMsgIdIsReturned() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
         assertThat(nhaisMeshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
     }
 
     @Test
-    void When_Authenticating_Then_NoExceptionThrown() {
+    void When_Authenticating_Expect_NoExceptionThrown() {
         assertThatCode(() -> meshClient.authenticate()).doesNotThrowAnyException();
     }
 
     @Test
-    void When_downloadMessageThatDoesNotExist_then_throwException() {
+    void When_DownloadMessageThatDoesNotExist_Expect_ExceptionThrown() {
         assertThatExceptionOfType(MeshApiConnectionException.class).isThrownBy(
             () -> meshClient.getEdifactMessage("thisisaninvalidmessageid1234567890")
         );
     }
 
     @Test
-    void When_downloadMessageThatIsGone_then_throwException() {
+    void When_DownloadingMessageWhichIsGone_Expect_ExceptionThrown() {
         MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
         var messageId = testMessageId.getMessageID();
         nhaisMeshClient.acknowledgeMessage(messageId);

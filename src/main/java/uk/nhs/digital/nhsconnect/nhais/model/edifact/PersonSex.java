@@ -18,7 +18,7 @@ import java.util.Map;
 @Builder
 @Data
 public class PersonSex extends Segment {
-    public final static String KEY = "PDI";
+    public static final String KEY = "PDI";
 
     //PDI+1'
     private @NonNull Gender gender;
@@ -48,7 +48,7 @@ public class PersonSex extends Segment {
         if (!edifactString.startsWith(PersonSex.KEY)) {
             throw new IllegalArgumentException("Can't create " + PersonSex.class.getSimpleName() + " from " + edifactString);
         }
-        String[] components = StringUtils.split(edifactString,PLUS_SEPARATOR);
+        String[] components = StringUtils.split(edifactString, PLUS_SEPARATOR);
         return PersonSex.builder()
             .gender(Gender.fromCode(components[1]))
             .build();
@@ -60,14 +60,14 @@ public class PersonSex extends Segment {
         FEMALE("2"),
         OTHER("9");
 
-        private final static Map<Enumerations.AdministrativeGender, Gender> FROM_FHIR_MAP = ImmutableMap.of(
+        private static final Map<Enumerations.AdministrativeGender, Gender> FROM_FHIR_MAP = ImmutableMap.of(
             Enumerations.AdministrativeGender.UNKNOWN, Gender.UNKNOWN,
             Enumerations.AdministrativeGender.MALE, Gender.MALE,
             Enumerations.AdministrativeGender.FEMALE, Gender.FEMALE,
             Enumerations.AdministrativeGender.OTHER, Gender.OTHER
         );
 
-        private final static Map<Gender, Enumerations.AdministrativeGender> To_FHIR_MAP = ImmutableMap.of(
+        private static final Map<Gender, Enumerations.AdministrativeGender> TO_FHIR_MAP = ImmutableMap.of(
             Gender.UNKNOWN, Enumerations.AdministrativeGender.UNKNOWN,
             Gender.MALE, Enumerations.AdministrativeGender.MALE,
             Gender.FEMALE, Enumerations.AdministrativeGender.FEMALE,
@@ -100,7 +100,7 @@ public class PersonSex extends Segment {
         }
 
         public static Enumerations.AdministrativeGender toFhir(Gender gender) {
-            return To_FHIR_MAP.get(gender);
+            return TO_FHIR_MAP.get(gender);
         }
 
         public String getName() {
