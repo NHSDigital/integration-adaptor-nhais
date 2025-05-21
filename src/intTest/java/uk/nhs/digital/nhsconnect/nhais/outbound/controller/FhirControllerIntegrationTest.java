@@ -25,6 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Slf4j
 public class FhirControllerIntegrationTest {
+    private static final String INVALID_VALUE_STRING_PARAMETER =
+        "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"valueString\"] ";
+    private static final String INVALID_VALUE_PARAMETER =
+        "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"value\"] ";
+    private static final String ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY =
+        "Invalid attribute value \"\": Attribute value must not be empty (\"\")";
 
     @Autowired
     private MockMvc mockMvc;
@@ -80,7 +86,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -91,7 +97,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
 
@@ -103,7 +109,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -114,7 +120,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -125,7 +131,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_STRING_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -136,7 +142,7 @@ public class FhirControllerIntegrationTest {
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
         assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
-            .contains("Invalid attribute value \"\": Attribute values must not be empty");
+            .contains(INVALID_VALUE_STRING_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test

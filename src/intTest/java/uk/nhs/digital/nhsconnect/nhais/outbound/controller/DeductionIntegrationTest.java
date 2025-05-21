@@ -31,6 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 public class DeductionIntegrationTest {
     public static final String URL = "/fhir/Patient/$nhais.deduction";
+    private static final String ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY =
+        "Invalid attribute value \"\": Attribute value must not be empty (\"\")";
+    private static final String INVALID_VALUE_STRING_PARAMETER =
+        "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"valueString\"] ";
+    private static final String INVALID_VALUE_PARAMETER =
+        "Unable to parse JSON resource as a Parameters: HAPI-1821: [element=\"value\"] ";
 
     @Autowired
     private MockMvc mockMvc;
@@ -91,7 +97,8 @@ public class DeductionIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains(INVALID_VALUE_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -131,7 +138,8 @@ public class DeductionIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains(INVALID_VALUE_STRING_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test
@@ -171,7 +179,8 @@ public class DeductionIntegrationTest {
             .andExpect(status().isBadRequest())
             .andReturn();
         OperationOutcome operationOutcome = (OperationOutcome) fhirParser.parse(result.getResponse().getContentAsString());
-        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText()).contains("Unable to parse JSON resource as a Parameters: Invalid attribute value \"\": Attribute values must not be empty (\"\")");
+        assertThat(operationOutcome.getIssueFirstRep().getDetails().getText())
+            .contains(INVALID_VALUE_STRING_PARAMETER + ATTRIBUTE_VALUE_MUST_NOT_BE_EMPTY);
     }
 
     @Test

@@ -1,8 +1,11 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound;
 
 import org.assertj.core.api.SoftAssertions;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
@@ -63,7 +66,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     }
 
     @Test
-    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException {
+    void whenMeshInboundQueueRegistrationMessageIsReceived_thenMessageIsHandled(SoftAssertions softly) throws IOException, JMSException, JSONException {
         var meshMessage = new MeshMessage()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setContent(new String(Files.readAllBytes(interchange.getFile().toPath())))
@@ -86,14 +89,15 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
         softly.assertThat(meshMessage.getMessageSentTimestamp()).isNull();
     }
 
-    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException {
+    private void assertGpSystemInboundQueueMessage(SoftAssertions softly) throws JMSException, IOException, JSONException {
         var message = getGpSystemInboundQueueMessage();
         var content = parseTextMessage(message);
         var expectedContent = new String(Files.readAllBytes(fhir.getFile().toPath()));
 
         softly.assertThat(message.getStringProperty("OperationId")).isEqualTo(OPERATION_ID);
         softly.assertThat(message.getStringProperty("TransactionType")).isEqualTo(TRANSACTION_TYPE.name().toLowerCase());
-        softly.assertThat(content).isEqualTo(expectedContent);
+
+        JSONAssert.assertEquals(expectedContent, content, JSONCompareMode.STRICT);
     }
 
     private void assertInboundState(SoftAssertions softly) {

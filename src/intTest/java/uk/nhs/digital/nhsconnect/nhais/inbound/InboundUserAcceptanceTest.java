@@ -1,10 +1,13 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound;
 
+import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
@@ -20,6 +23,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.JmsHeaders;
 
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,7 +103,7 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         assertThat(gpSystemInboundQueueMessage).isNull();
     }
 
-    private void verifyThatNonCloseQuarterNotificationMessageIsTranslated(TestData testData, Message gpSystemInboundQueueMessage) throws JMSException {
+    private void verifyThatNonCloseQuarterNotificationMessageIsTranslated(TestData testData, Message gpSystemInboundQueueMessage) throws JMSException, JSONException {
         assertThat(gpSystemInboundQueueMessage).isNotNull();
         // assert transaction type in JMS header is correct
         assertMessageHeaders(gpSystemInboundQueueMessage, "fp69_prior_notification");
@@ -107,9 +111,9 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         assertMessageBody(gpSystemInboundQueueMessage, testData.getJson());
     }
 
-    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedBody) throws JMSException {
+    private void assertMessageBody(Message gpSystemInboundQueueMessage, String expectedBody) throws JMSException, JSONException {
         var body = parseTextMessage(gpSystemInboundQueueMessage);
-        assertThat(body).isEqualTo(expectedBody);
+        JSONAssert.assertEquals(expectedBody, body, JSONCompareMode.STRICT);
     }
 
     private void assertMessageHeaders(Message gpSystemInboundQueueMessage, String expectedTransactionType) throws JMSException {
