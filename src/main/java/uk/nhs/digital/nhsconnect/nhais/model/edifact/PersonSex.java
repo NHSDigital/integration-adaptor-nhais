@@ -67,7 +67,7 @@ public class PersonSex extends Segment {
             Enumerations.AdministrativeGender.OTHER, Gender.OTHER
         );
 
-        private static final Map<Gender, Enumerations.AdministrativeGender> To_FHIR_MAP = ImmutableMap.of(
+        private static final Map<Gender, Enumerations.AdministrativeGender> TO_FHIR_MAP = ImmutableMap.of(
             Gender.UNKNOWN, Enumerations.AdministrativeGender.UNKNOWN,
             Gender.MALE, Enumerations.AdministrativeGender.MALE,
             Gender.FEMALE, Enumerations.AdministrativeGender.FEMALE,
@@ -100,7 +100,7 @@ public class PersonSex extends Segment {
         }
 
         public static Enumerations.AdministrativeGender toFhir(Gender gender) {
-            return To_FHIR_MAP.get(gender);
+            return TO_FHIR_MAP.get(gender);
         }
 
         public String getName() {

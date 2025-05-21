@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Data
 public class FP69ExpiryDate extends Segment {
     private static final String KEY = "DTM";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UK_ZONE);
     private static final String QUALIFIER = "962";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private static final String DATE_FORMAT = "102";

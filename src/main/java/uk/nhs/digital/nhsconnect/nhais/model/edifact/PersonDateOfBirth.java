@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 public class PersonDateOfBirth extends Segment {
     //DTM+329:19911106:102'
     private static final String KEY = "DTM";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UK_ZONE);
     private static final String QUALIFIER = "329";
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private static final String DATE_FORMAT = "102";

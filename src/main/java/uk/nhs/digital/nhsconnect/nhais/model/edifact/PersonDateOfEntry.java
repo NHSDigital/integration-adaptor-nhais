@@ -16,7 +16,7 @@ import java.util.Objects;
 public class PersonDateOfEntry extends Segment {
 
     private static final String KEY = "DTM";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UKZone);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(TimestampService.UK_ZONE);
     private static final String QUALIFIER = "957";
     private static final String DATE_FORMAT = "102";
     private final @NonNull LocalDate dateOfEntry;

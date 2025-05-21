@@ -41,7 +41,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
     private static final String RECIPIENT = "XX11";
     private static final String SENDER = "TES5";
     private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
-        .of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UKZone)
+        .of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UK_ZONE)
         .toInstant();
     @Autowired
     private MockMvc mockMvc;

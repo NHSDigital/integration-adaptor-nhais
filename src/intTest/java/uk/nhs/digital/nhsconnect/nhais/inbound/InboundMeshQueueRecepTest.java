@@ -40,7 +40,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     private static final String SENDER = "FHS1";
     private static final String RECIPIENT = "GP05";
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UKZone)
+        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UK_ZONE)
         .toInstant();
     // Mongo only supports millis precision
     private static final Instant PROCESSED_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);

@@ -44,6 +44,6 @@ public class RecepBeginningOfMessage extends Segment {
     }
 
     private DateTimeFormatter getDateTimeFormat() {
-        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UKZone);
+        return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(TimestampService.UK_ZONE);
     }
 }
