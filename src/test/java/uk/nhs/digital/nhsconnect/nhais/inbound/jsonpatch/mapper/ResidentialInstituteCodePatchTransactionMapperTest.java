@@ -35,7 +35,7 @@ class ResidentialInstituteCodePatchTransactionMapperTest {
 
 
     @Test
-    void whenResidentialInstitutionPresent_thenMapIntoResidentialInstitutionCodeAmendmentPatch() {
+    void When_ResidentialInstitutionPresent_Expect_MapIntoResidentialInstitutionCodeAmendmentPatch() {
         when(transaction.getResidentialInstitution()).thenReturn(Optional.of(residentialInstituteNameAndAddress));
         when(residentialInstituteNameAndAddress.getIdentifier()).thenReturn(IDENTIFIER);
 
@@ -45,7 +45,7 @@ class ResidentialInstituteCodePatchTransactionMapperTest {
     }
 
     @Test
-    void whenResidentialInstituteNotPresent_thenReturnNull() {
+    void When_ResidentialInstituteNotPresent_Expect_ReturnNull() {
         when(transaction.getResidentialInstitution()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = residentialInstituteCodePatchTransactionMapper.map(transaction);
@@ -54,7 +54,7 @@ class ResidentialInstituteCodePatchTransactionMapperTest {
     }
 
     @Test
-    void whenResidentialInstituteCodeIsRemoveIndication_thenReturnValueIsNull() {
+    void When_ResidentialInstituteCodeIsRemoveIndication_Expect_ReturnValueIsNull() {
         when(transaction.getResidentialInstitution()).thenReturn(Optional.of(residentialInstituteNameAndAddress));
         when(residentialInstituteNameAndAddress.getIdentifier()).thenReturn(REMOVE_INDICATOR);
 
@@ -64,7 +64,7 @@ class ResidentialInstituteCodePatchTransactionMapperTest {
     }
 
     @Test
-    void whenResidentialInstituteCodeIsNull_thenReturnValueIsNull() {
+    void When_ResidentialInstituteCodeIsNull_Expect_ReturnValueIsNull() {
         when(transaction.getResidentialInstitution()).thenReturn(Optional.of(residentialInstituteNameAndAddress));
         when(residentialInstituteNameAndAddress.getIdentifier()).thenReturn(null);
 

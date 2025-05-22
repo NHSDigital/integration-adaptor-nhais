@@ -18,7 +18,7 @@ class PersonPreviousNameTest {
 
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() throws EdifactValidationException {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() throws EdifactValidationException {
         var expectedValue = "PNA+PER+1234567890:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN'";
 
         var personName = PersonPreviousName.builder()
@@ -35,7 +35,7 @@ class PersonPreviousNameTest {
     }
 
     @Test
-    public void When_BuildingNameWithTypeOnly_Then_ReturnCorrectValue() {
+    public void When_BuildingNameWithTypeOnly_Expect_ReturnCorrectValue() {
         var expectedValue = "PNA+PER+T247:OPI'";
 
         var personName = PersonPreviousName.builder()
@@ -47,7 +47,7 @@ class PersonPreviousNameTest {
     }
 
     @Test
-    public void When_BuildingEmptyName_Then_ReturnEmptySegment() {
+    public void When_BuildingEmptyName_Expect_ReturnEmptySegment() {
         var expectedValue = "PNA+PER'";
 
         var personName = PersonPreviousName.builder()

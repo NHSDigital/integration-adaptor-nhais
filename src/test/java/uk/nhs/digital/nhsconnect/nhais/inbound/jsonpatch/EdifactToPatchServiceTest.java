@@ -67,7 +67,7 @@ class EdifactToPatchServiceTest {
     }
 
     @Test
-    void whenConvertingToPatch_properMandatoryFieldsAreSet() {
+    void When_ConvertingToPatch_Expect_ProperMandatoryFieldsAreSet() {
         var amendmentBody = edifactToPatchService.convertToPatch(transaction);
 
         assertThat(amendmentBody.getNhsNumber()).isEqualTo(NHS_NUMBER);

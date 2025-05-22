@@ -65,7 +65,7 @@ public class FhirControllerTest {
     private ConversationIdService conversationIdService;
 
     @Test
-    void whenValidAcceptanceInput_thenReturns202() throws Exception {
+    void When_ValidAcceptanceInput_Expect_Returns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
         MeshMessage meshMessage = getMeshMessage();
         meshMessage.setContent("EDI");
@@ -85,7 +85,7 @@ public class FhirControllerTest {
     }
 
     @Test
-    void whenValidRemovalInput_thenReturns202() throws Exception {
+    void When_ValidRemovalInput_Expect_Returns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
         MeshMessage meshMessage = getMeshMessage();
 
@@ -102,7 +102,7 @@ public class FhirControllerTest {
     }
 
     @Test
-    void whenValidDeductionInput_thenReturns202() throws Exception {
+    void When_ValidDeductionInput_Expect_Returns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
         MeshMessage meshMessage = getMeshMessage();
 
@@ -127,7 +127,7 @@ public class FhirControllerTest {
     }
 
     @Test
-    void whenInvalidInput_thenReturns400() throws Exception {
+    void When_InvalidInput_Expect_Returns400() throws Exception {
         String requestBody = "{}";
         when(fhirParser.parseParameters(requestBody)).thenThrow(new FhirValidationException("the message"));
         String expectedResponse = "{\"expected\":\"response\"}";
@@ -141,7 +141,7 @@ public class FhirControllerTest {
     }
 
     @Test
-    void whenUnhandledException_thenReturns500() throws Exception {
+    void When_UnhandledException_Expect_Returns500() throws Exception {
         String requestBody = "{}";
         when(fhirParser.parseParameters(requestBody)).thenThrow(new RuntimeException("the message"));
         String expectedResponse = "{\"expected\":\"response\"}";
@@ -155,7 +155,7 @@ public class FhirControllerTest {
     }
 
     @Test
-    void whenInvalidMediaType_thenReturn415() throws Exception {
+    void When_InvalidMediaType_Expect_Return415() throws Exception {
         String expectedResponse = "{\"expected\":\"response\"}";
         when(fhirParser.encodeToString(any(OperationOutcome.class))).thenReturn(expectedResponse);
 

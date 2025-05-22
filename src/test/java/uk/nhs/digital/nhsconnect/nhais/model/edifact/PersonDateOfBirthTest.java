@@ -11,7 +11,7 @@ public class PersonDateOfBirthTest {
     private static final LocalDate FIXED_TIME = LocalDate.of(1991, 11, 6);
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "DTM+329:19911106:102'";
 
         var personDob = PersonDateOfBirth.builder()
@@ -22,7 +22,7 @@ public class PersonDateOfBirthTest {
     }
 
     @Test
-    public void When_BuildingWithEmptyTimestamp_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithEmptyTimestamp_Expect_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PersonDateOfBirth.builder().build());
     }
 }

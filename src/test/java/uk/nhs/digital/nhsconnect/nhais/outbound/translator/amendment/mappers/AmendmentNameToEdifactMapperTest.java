@@ -49,7 +49,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingAllFields_expectAllFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingAllFields_Expect_AllFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(SURNAME))));
         when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
@@ -76,7 +76,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     }
 
     @Test
-    void whenRemovingAllFields_expectAllFieldsAreMapped() {
+    void When_RemovingAllFields_Expect_AllFieldsAreMapped() {
         when(jsonPatches.getAllForenamesPath()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
@@ -94,7 +94,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     }
 
     @Test
-    void whenRemovingSurname_expectException() {
+    void When_RemovingSurname_Expect_Exception() {
         when(jsonPatches.getSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
@@ -105,7 +105,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenRemovingAllForenamesAndModifyingAtTheSameTime_expectException(AmendmentPatchOperation operation, SoftAssertions softly) {
+    void When_RemovingAllForenamesAndModifyingAtTheSameTime_Expect_Exception(AmendmentPatchOperation operation, SoftAssertions softly) {
         Stream.<Supplier<Optional<AmendmentPatch>>>of(
             jsonPatches::getFirstForename,
             jsonPatches::getSecondForename,
@@ -125,7 +125,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     }
 
     @Test
-    void whenRemovingAnyForename_expectException(SoftAssertions softly) {
+    void When_RemovingAnyForename_Expect_Exception(SoftAssertions softly) {
         reset(jsonPatches);
         when(jsonPatches.getFirstForename()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)
@@ -153,7 +153,7 @@ class AmendmentNameToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getTitle()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.TITLE_PATH)

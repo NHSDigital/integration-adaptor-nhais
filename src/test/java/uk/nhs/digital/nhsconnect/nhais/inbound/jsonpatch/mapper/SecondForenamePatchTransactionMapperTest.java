@@ -35,7 +35,7 @@ class SecondForenamePatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonNameAndSecondNamePresent_thenMapIntoSecondForenameAmendmentPatch() {
+    void When_PersonNameAndSecondNamePresent_Expect_MapIntoSecondForenameAmendmentPatch() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getSecondForename()).thenReturn(SECOND_FORENAME);
 
@@ -45,7 +45,7 @@ class SecondForenamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNameNotPresent_thenReturnNull() {
+    void When_PersonNameNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = secondForenamePatchTransactionMapper.map(transaction);
@@ -54,7 +54,7 @@ class SecondForenamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNamePresentNoSecondForename_thenReturnNull() {
+    void When_PersonNamePresentNoSecondForename_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getSecondForename()).thenReturn(null);
 

@@ -69,7 +69,7 @@ public class RemovalTranslatorTest {
     private OptionalInputValidator validator;
 
     @Test
-    void whenNhsNumberIsMissing_thenExceptionIsThrown() {
+    void When_NhsNumberIsMissing_Expect_ExceptionIsThrown() {
         when(validator.nhsNumberIsMissing(any())).thenReturn(true);
 
         assertThatThrownBy(() -> removalTranslator.translate(parameters))
@@ -78,7 +78,7 @@ public class RemovalTranslatorTest {
     }
 
     @Test
-    void whenFhirRemovalIsTranslated_thenAllRequiredSegmentsArePresentAndAreOfCorrectType(SoftAssertions softly) {
+    void When_FhirRemovalIsTranslated_Expect_AllRequiredSegmentsArePresentAndAreOfCorrectType(SoftAssertions softly) {
         when(validator.nhsNumberIsMissing(any())).thenReturn(false);
         when(partyQualifierMapper.map(parameters)).thenReturn(partyQualifier);
         when(gpNameAndAddressMapper.map(parameters)).thenReturn(gpNameAndAddress);

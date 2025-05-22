@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AcceptanceCodeTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "HEA+ACD+A:ZZZ'";
 
         var acceptanceCode = AcceptanceCode.builder()
@@ -20,7 +20,7 @@ public class AcceptanceCodeTest {
     }
 
     @Test
-    public void When_MappingWithWrongCode_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingWithWrongCode_Expect_EdifactValidationExceptionIsThrown() {
         var acceptanceCode = AcceptanceCode.builder()
             .code("B")
             .build();
@@ -29,7 +29,7 @@ public class AcceptanceCodeTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyType_Expect_EdifactValidationExceptionIsThrown() {
         var acceptanceCode = AcceptanceCode.builder()
             .code("")
             .build();
@@ -38,7 +38,7 @@ public class AcceptanceCodeTest {
     }
 
     @Test
-    public void When_BuildingWithoutType_Then_IsThrown() {
+    public void When_BuildingWithoutType_Expect_IsThrown() {
         assertThrows(NullPointerException.class, () -> AcceptanceCode.builder().build());
     }
 }

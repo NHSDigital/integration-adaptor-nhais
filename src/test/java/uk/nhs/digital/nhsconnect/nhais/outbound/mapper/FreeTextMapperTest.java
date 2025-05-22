@@ -12,7 +12,7 @@ class FreeTextMapperTest {
     private final FreeTextMapper freeTextMapper = new FreeTextMapper();
 
     @Test
-    void when_FreeTextValueExistsAndValueIsSet_Then_CanMap() {
+    void When_FreeTextValueExistsAndValueIsSet_Expect_CanMap() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "text");
 
@@ -20,7 +20,7 @@ class FreeTextMapperTest {
     }
 
     @Test
-    void when_FreeTextValueExistsAndValueIsNotSet_Then_CanMap() {
+    void When_FreeTextValueExistsAndValueIsNotSet_Expect_CanMap() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "");
 
@@ -28,7 +28,7 @@ class FreeTextMapperTest {
     }
 
     @Test
-    void when_FreeTextValueExistsAndValueIsNull_Then_CanNotMap() {
+    void When_FreeTextValueExistsAndValueIsNull_Expect_CanNotMap() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, (String) null);
 
@@ -36,14 +36,14 @@ class FreeTextMapperTest {
     }
 
     @Test
-    void when_FreeTextValueDoesntExist_Then_CanNotMap() {
+    void When_FreeTextValueDoesntExist_Expect_CanNotMap() {
         Parameters parameters = new Parameters();
 
         assertThat(freeTextMapper.inputDataExists(parameters)).isFalse();
     }
 
     @Test
-    void when_DrugsMarkerExtensionExistsAndValueIsSet_Then_MappingSuccessful() {
+    void When_DrugsMarkerExtensionExistsAndValueIsSet_Expect_MappingSuccessful() {
         Parameters parameters = new Parameters()
             .addParameter(ParameterNames.FREE_TEXT, "text");
 

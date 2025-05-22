@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class PersonSexMapperTest {
 
     @Test
-    void When_MappingGender_Then_ExpectCorrectResult() {
+    void When_MappingGender_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         patient.setGender(Enumerations.AdministrativeGender.FEMALE);
 
@@ -32,7 +32,7 @@ class PersonSexMapperTest {
     }
 
     @Test
-    public void When_MappingGenderWrongType_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingGenderWrongType_Expect_FhirValidationExceptionIsThrown() {
         Patient patient = new Patient();
         patient.setGender(Enumerations.AdministrativeGender.NULL);
 
@@ -43,7 +43,7 @@ class PersonSexMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutGender_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutGender_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 

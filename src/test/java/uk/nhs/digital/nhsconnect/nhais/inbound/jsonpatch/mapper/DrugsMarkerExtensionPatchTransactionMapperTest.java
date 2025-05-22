@@ -32,7 +32,7 @@ class DrugsMarkerExtensionPatchTransactionMapperTest {
 
 
     @Test
-    void whenDrugsMarkerIsTrue_thenMapIntoTrue() {
+    void When_DrugsMarkerIsTrue_Expect_MapIntoTrue() {
         when(transaction.getDrugsMarker()).thenReturn(Optional.of(drugsMarker));
         when(drugsMarker.isDrugsMarker()).thenReturn(true);
 
@@ -42,7 +42,7 @@ class DrugsMarkerExtensionPatchTransactionMapperTest {
     }
 
     @Test
-    void whenDrugsMarkerIsFalse_thenMapIntoFalse() {
+    void When_DrugsMarkerIsFalse_Expect_MapIntoFalse() {
         when(transaction.getDrugsMarker()).thenReturn(Optional.of(drugsMarker));
         when(drugsMarker.isDrugsMarker()).thenReturn(false);
 
@@ -52,7 +52,7 @@ class DrugsMarkerExtensionPatchTransactionMapperTest {
     }
 
     @Test
-    void whenNoDrugsMarker_thenReturnNullAmendmentPatch() {
+    void When_NoDrugsMarker_Expect_ReturnNullAmendmentPatch() {
         when(transaction.getDrugsMarker()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = drugsMarkerExtensionPatchTransactionMapper.map(transaction);

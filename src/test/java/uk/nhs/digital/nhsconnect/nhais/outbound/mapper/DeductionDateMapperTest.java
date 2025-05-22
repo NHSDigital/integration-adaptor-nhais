@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DeductionDateMapperTest {
 
     @Test
-    void When_MappingDeductionDate_Then_ExpectCorrectResult() {
+    void When_MappingDeductionDate_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.DATE_OF_DEDUCTION)

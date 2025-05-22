@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class PartyQualifierMapperTest {
 
     @Test
-    void When_MappingPartyQualifier_Then_ExpectCorrectResult() {
+    void When_MappingPartyQualifier_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         patient.setManagingOrganization(
             new Reference().setIdentifier(new ManagingOrganizationIdentifier("X11"))
@@ -36,7 +36,7 @@ class PartyQualifierMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutPartyQualifier_Then_NullPointerExceptionIsThrown() {
+    public void When_MappingWithoutPartyQualifier_Expect_NullPointerExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter(new PatientParameter());
 

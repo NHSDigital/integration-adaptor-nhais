@@ -27,7 +27,7 @@ class MeshRequestsTest {
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
 
     @Test
-    void When_GettingMessage_Then_ExpectHttpGetAndCorrectUri() {
+    void When_GettingMessage_Expect_ExpectHttpGetAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.getMessage("messageId");
@@ -37,7 +37,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_SendingRegistrationMessage_Then_ExpectHttpPostAndCorrectUri() {
+    void When_SendingRegistrationMessage_Expect_ExpectHttpPostAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         String recipient = "recipient";
@@ -47,7 +47,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_SendingRecepMessage_Then_ExpectHttpPostAndCorrectUri() {
+    void When_SendingRecepMessage_Expect_ExpectHttpPostAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         String recipient = "recipient";
@@ -57,7 +57,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_GettingMessageIds_Then_ExpectHttpGetAndCorrectUri() {
+    void When_GettingMessageIds_Expect_ExpectHttpGetAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.getMessageIds();
@@ -67,7 +67,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_AcknowledgeMessage_Then_ExpectHttpPutAndCorrectUri() {
+    void When_AcknowledgeMessage_Expect_ExpectHttpPutAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.acknowledge("messageId");
@@ -77,7 +77,7 @@ class MeshRequestsTest {
     }
 
     @Test
-    void When_Authenticate_Then_ExpectHttpPostAndCorrectUri() {
+    void When_Authenticate_Expect_ExpectHttpPostAndCorrectUri() {
         MeshRequests meshRequests = new MeshRequests(meshConfig, meshHeaders);
 
         var request = meshRequests.authenticate();

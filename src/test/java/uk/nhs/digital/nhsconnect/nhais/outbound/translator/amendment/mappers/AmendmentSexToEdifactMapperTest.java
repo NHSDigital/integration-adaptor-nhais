@@ -29,7 +29,7 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from("female"))));
 
@@ -43,7 +43,7 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingWithIncorrectValue_expectException(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingWithIncorrectValue_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from("qwe"))));
 
@@ -53,7 +53,7 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     }
 
     @Test
-    void whenUsingRemoveOperation_expectException() {
+    void When_UsingRemoveOperation_Expect_Exception() {
         when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
@@ -64,7 +64,7 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.SEX_PATH)

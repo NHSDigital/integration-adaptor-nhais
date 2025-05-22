@@ -36,7 +36,7 @@ class AmendedNhsNumberPatchTransactionMapperTest {
 
 
     @Test
-    void whenNhsNumberPresent_thenMapIntoNhsNumberAmendmentPatch() {
+    void When_NhsNumberPresent_Expect_MapIntoNhsNumberAmendmentPatch() {
         when(transaction.getPersonPreviousName()).thenReturn(Optional.of(personPreviousName));
         when(personPreviousName.getNhsNumber()).thenReturn(NHS_NUMBER);
 
@@ -46,7 +46,7 @@ class AmendedNhsNumberPatchTransactionMapperTest {
     }
 
     @Test
-    void whenNhsNumberNotPresentNotPresent_thenReturnNull() {
+    void When_NhsNumberNotPresentNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonPreviousName()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = amendedNhsNumberPatchTransactionMapper.map(transaction);

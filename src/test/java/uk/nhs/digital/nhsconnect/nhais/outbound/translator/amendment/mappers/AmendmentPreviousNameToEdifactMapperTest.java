@@ -29,7 +29,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingPreviousSurname_expectAllFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingPreviousSurname_Expect_AllFieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(PREVIOUS_SURNAME))));
 
@@ -42,7 +42,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
     }
 
     @Test
-    void whenRemovingPreviousSurname_expectAllFieldsAreMapped() {
+    void When_RemovingPreviousSurname_Expect_AllFieldsAreMapped() {
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
@@ -56,7 +56,7 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.PREVIOUS_SURNAME_PATH)

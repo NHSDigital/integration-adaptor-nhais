@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class PreviousGpNameMapperTest {
 
     @Test
-    void When_MappingGPPrevious_Then_ExpectCorrectResult() {
+    void When_MappingGPPrevious_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.PREVIOUS_GP_NAME)
@@ -31,7 +31,7 @@ class PreviousGpNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutGPPreviousParam_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutGPPreviousParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var personGPPreviousMapper = new PreviousGpNameMapper();

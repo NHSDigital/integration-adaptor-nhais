@@ -63,7 +63,7 @@ class RejectionTransactionMapperTest {
     }
 
     @Test
-    void whenFreeTextIsMissing_expectException(SoftAssertions softly) {
+    void When_FreeTextIsMissing_Expect_Exception(SoftAssertions softly) {
         when(transaction.getFreeText()).thenReturn(Optional.empty());
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);

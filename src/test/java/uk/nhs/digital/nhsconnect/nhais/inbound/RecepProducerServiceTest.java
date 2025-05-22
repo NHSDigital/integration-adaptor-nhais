@@ -55,7 +55,7 @@ class RecepProducerServiceTest {
     private TimestampService timestampService;
 
     @Test
-    public void whenProducingRecep_thenValidRecepIsCreated() throws IOException {
+    public void When_ProducingRecep_Expect_ValidRecepIsCreated() throws IOException {
         when(timestampService.getCurrentTimestamp()).thenReturn(FIXED_TIME);
         when(sequenceService.generateInterchangeSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_INTERCHANGE_SEQUENCE);
         when(sequenceService.generateMessageSequence(REF_SENDER, REF_RECIPIENT)).thenReturn(RECEP_MESSAGE_SEQUENCE);

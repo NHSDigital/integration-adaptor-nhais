@@ -36,14 +36,14 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testValidationResult_NoMessages() {
+    public void When_TestValidationResult_Expect_NoMessages() {
         when(validationResult.getMessages()).thenReturn(Collections.emptyList());
         FhirValidationException exception = new FhirValidationException(validationResult);
         assertEquals("JSON FHIR Resource failed validation", exception.getMessage());
     }
 
     @Test
-    public void testValidationResult_SingleMessage() {
+    public void When_TestValidationResult_Expect_SingleMessage() {
         SingleValidationMessage message = new SingleValidationMessage();
         message.setMessage("the message");
         when(validationResult.getMessages()).thenReturn(List.of(message));
@@ -52,7 +52,7 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testValidationResult_MultipleMessages() {
+    public void When_TestValidationResult_Expect_MultipleMessages() {
         SingleValidationMessage message = new SingleValidationMessage();
         message.setMessage("the message");
         when(validationResult.getMessages()).thenReturn(Arrays.asList(message, message, message));
@@ -61,7 +61,7 @@ public class FhirValidationExceptionTest {
     }
 
     @Test
-    public void testWithoutValidationResult() {
+    public void When_TestWithoutValidationResult_Expect_StructuralIssue() {
         FhirValidationException ex = new FhirValidationException("the message");
         assertEquals("the message", ex.getMessage());
         OperationOutcome operationOutcome = (OperationOutcome) ex.getOperationOutcome();

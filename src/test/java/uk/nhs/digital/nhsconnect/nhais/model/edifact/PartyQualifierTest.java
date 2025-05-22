@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PartyQualifierTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "NAD+FHS+XX1:954'";
 
         var partyQualifier = PartyQualifier.builder()
@@ -20,7 +20,7 @@ public class PartyQualifierTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyHA_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyHA_Expect_EdifactValidationExceptionIsThrown() {
         var partyQualifier = PartyQualifier.builder()
             .organization("")
             .build();
@@ -29,7 +29,7 @@ public class PartyQualifierTest {
     }
 
     @Test
-    public void When_BuildingWithoutOrganization_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithoutOrganization_Expect_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PartyQualifier.builder().build());
     }
 }

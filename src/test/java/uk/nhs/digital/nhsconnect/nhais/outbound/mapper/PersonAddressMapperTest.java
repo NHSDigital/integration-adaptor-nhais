@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class PersonAddressMapperTest {
 
     @Test
-    void When_MappingAddress_Then_ExpectCorrectResult() {
+    void When_MappingAddress_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         Address address = new Address();
         address.setUse(Address.AddressUse.HOME);
@@ -45,7 +45,7 @@ class PersonAddressMapperTest {
     }
 
     @Test
-    void When_MappingAddressWithPostcode_Then_ExpectCorrectResult() {
+    void When_MappingAddressWithPostcode_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         Address address = new Address();
         address.addLine("")
@@ -76,7 +76,7 @@ class PersonAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutAddress_Then_IllegalStateExceptionIsThrown() {
+    public void When_MappingWithoutAddress_Expect_IllegalStateExceptionIsThrown() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 

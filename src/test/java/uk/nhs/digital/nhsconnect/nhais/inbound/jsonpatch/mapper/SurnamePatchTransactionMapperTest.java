@@ -36,7 +36,7 @@ class SurnamePatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonNameAndSurnamePresent_thenMapIntoSurnameAmendmentPatch() {
+    void When_PersonNameAndSurnamePresent_Expect_MapIntoSurnameAmendmentPatch() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getSurname()).thenReturn(SURNAME);
 
@@ -46,7 +46,7 @@ class SurnamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNAmeNotPresent_thenReturnNull() {
+    void When_PersonNAmeNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = surnamePatchTransactionMapper.map(transaction);
@@ -55,7 +55,7 @@ class SurnamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNameHasNoSurname_thenReturnNull() {
+    void When_PersonNameHasNoSurname_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getSurname()).thenReturn(null);
 

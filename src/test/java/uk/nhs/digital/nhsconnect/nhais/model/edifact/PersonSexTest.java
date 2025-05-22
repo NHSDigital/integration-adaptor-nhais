@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PersonSexTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "PDI+1'";
 
         var personSex = PersonSex.builder()
@@ -19,7 +19,7 @@ public class PersonSexTest {
     }
 
     @Test
-    public void When_BuildingWithoutType_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithoutType_Expect_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PersonSex.builder().build());
     }
 }

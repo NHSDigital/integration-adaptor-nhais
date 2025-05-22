@@ -10,20 +10,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class DeductionDateTest {
 
     @Test
-    public void When_deductionDateToEdifact_Then_edifactFormattedCorrectly() {
+    public void When_DeductionDateToEdifact_Expect_EdifactFormattedCorrectly() {
         DeductionDate deductionDate = new DeductionDate(LocalDate.parse("2005-01-15"));
         assertThat(deductionDate.toEdifact()).isEqualTo("DTM+961:20050115:102'");
     }
 
     @Test
-    void When_fromStringWithValidInput_Then_SegmentCreated() {
+    void When_FromStringWithValidInput_Expect_SegmentCreated() {
         DeductionDate deductionDate = DeductionDate.fromString("DTM+961:20050115:102");
         DeductionDate expectedDeductionDate = new DeductionDate(LocalDate.of(2005,1,15));
 
         assertThat(deductionDate.getValue()).isEqualTo(expectedDeductionDate.getValue());
     }
     @Test
-    void When_fromStringWithInvalidInput_Then_ExceptionThrown() {
+    void When_FromStringWithInvalidInput_Expect_ExceptionThrown() {
         assertThatThrownBy(() -> DeductionDate.fromString("DTM+96999:20050115:102"))
             .isExactlyInstanceOf(IllegalArgumentException.class);
     }

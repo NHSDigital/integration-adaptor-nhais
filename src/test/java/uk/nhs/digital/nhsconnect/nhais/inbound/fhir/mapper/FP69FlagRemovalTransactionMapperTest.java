@@ -56,7 +56,7 @@ class FP69FlagRemovalTransactionMapperTest {
     private GpNameAndAddress gpNameAndAddress;
 
     @Test
-    void when_AllDataPresent_then_mapped(SoftAssertions softly) {
+    void When_AllDataPresent_Expect_Mapped(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
         when(transaction.getMessage()).thenReturn(message);
@@ -76,7 +76,7 @@ class FP69FlagRemovalTransactionMapperTest {
     }
 
     @Test
-    void when_missingOfficialPatientIdentifier_then_throwsException() {
+    void When_MissingOfficialPatientIdentifier_Expect_ThrowsException() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getNhsNumber()).thenReturn(null);
         when(transaction.getMessage()).thenReturn(message);
@@ -91,7 +91,7 @@ class FP69FlagRemovalTransactionMapperTest {
     }
 
     @Test
-    void when_missingPersonNameSegment_then_throwsException() {
+    void When_MissingPersonNameSegment_Expect_ThrowsException() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);

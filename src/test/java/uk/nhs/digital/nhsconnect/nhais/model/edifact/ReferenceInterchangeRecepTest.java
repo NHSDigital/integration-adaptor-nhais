@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SoftAssertionsExtension.class)
 class ReferenceInterchangeRecepTest {
     @Test
-    void whenGettingKey_thenReturnsProperValue() {
+    void When_GettingKey_Expect_ReturnsProperValue() {
         String key = new ReferenceInterchangeRecep(
             123L, ReferenceInterchangeRecep.RecepCode.RECEIVED, 3)
             .getKey();
@@ -20,7 +20,7 @@ class ReferenceInterchangeRecepTest {
     }
 
     @Test
-    void whenGettingValue_thenReturnsProperValue() {
+    void When_GettingValue_Expect_ReturnsProperValue() {
         String value = new ReferenceInterchangeRecep(
             123L, ReferenceInterchangeRecep.RecepCode.RECEIVED, 3)
             .getValue();
@@ -29,7 +29,7 @@ class ReferenceInterchangeRecepTest {
     }
 
     @Test
-    void whenPreValidatedDataViolatesNullChecks_thenThrowsException(SoftAssertions softly) {
+    void When_PreValidatedDataViolatesNullChecks_Expect_ThrowsException(SoftAssertions softly) {
         softly.assertThatThrownBy(
             () -> new ReferenceInterchangeRecep(null, ReferenceInterchangeRecep.RecepCode.RECEIVED, 3)
                 .preValidate())
@@ -50,7 +50,7 @@ class ReferenceInterchangeRecepTest {
     }
 
     @Test
-    void whenParsing_thenRecepCreated() {
+    void When_Parsing_Expect_RecepCreated() {
         var recepRow = ReferenceInterchangeRecep.fromString("RFF+RIS:00000005 OK:4");
 
         assertThat(recepRow.getInterchangeSequenceNumber()).isEqualTo(5L);
@@ -71,7 +71,7 @@ class ReferenceInterchangeRecepTest {
     }
 
     @Test
-    void whenParsingRecepCodeFromCode_thenRecepCodeIsCreated(SoftAssertions softly) {
+    void When_ParsingRecepCodeFromCode_Expect_RecepCodeIsCreated(SoftAssertions softly) {
         var toParse = new String[] {"OK", "NA", "ER"};
 
         for (int i = 0; i < ReferenceInterchangeRecep.RecepCode.values().length; i++) {

@@ -41,7 +41,7 @@ public class ConversationIdHeadersTest {
     private ConversationIdService conversationIdService;
 
     @Test
-    void whenConversationIdInRequestHeader_thenProvidedIdIsUsed() throws Exception {
+    void When_ConversationIdInRequestHeader_Expect_ProvidedIdIsUsed() throws Exception {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .header("ConversationId", "asdf1234")
@@ -51,7 +51,7 @@ public class ConversationIdHeadersTest {
     }
 
     @Test
-    void whenConversationNotIdInRequestHeader_thenGeneratedIdIsUsed() throws Exception {
+    void When_ConversationNotIdInRequestHeader_Expect_GeneratedIdIsUsed() throws Exception {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .content("qwe"))

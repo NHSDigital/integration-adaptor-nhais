@@ -72,7 +72,7 @@ public class InboundQueueServiceTest {
     private Message message;
 
     @Test
-    public void when_receive_registrationMessage_then_handledByRegistrationConsumerService() throws Exception {
+    public void When_ReceiveRegistrationMessage_Expect_HandledByRegistrationConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
@@ -87,7 +87,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void when_receive_registrationMessage_registrationConsumerServiceThrowsException_noAck() throws Exception {
+    public void When_ReceiveRegistrationMessage_Expect_RegistrationConsumerServiceThrowsExceptionWithNoAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_REG\"}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
         doThrow(RuntimeException.class).when(registrationConsumerService).handleRegistration(any(MeshMessage.class));
@@ -100,7 +100,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void when_receive_recepMessage_handledByRecepConsumerService() throws Exception {
+    public void When_Receive_RecepMessage_Expect_HandledByRecepConsumerService() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
@@ -115,7 +115,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void when_receive_registrationMessage_recepConsumerServiceThrowsException_noAck() throws Exception {
+    public void When_ReceiveRegistrationMessage_Expect_RecepConsumerServiceThrowsExceptionWithNoAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{\"workflowId\":\"NHAIS_RECEP\"}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
         doThrow(RuntimeException.class).when(recepConsumerService).handleRecep(any(MeshMessage.class));
@@ -128,7 +128,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void when_receive_unknownWorkflow_throwsUnknownWorkflowException_noAck() throws Exception{
+    public void When_ReceiveUnknownWorkflow_Expect_ThrowsUnknownWorkflowExceptionWithNoAck() throws Exception{
         when(message.getBody(String.class)).thenReturn("{}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
@@ -141,7 +141,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void when_publish_inboundMessageFromMesh_thenTimestampAndConversationIdAreSet() throws Exception {
+    public void When_PublishInboundMessageFromMesh_Expect_TimestampAndConversationIdAreSet() throws Exception {
         final var now = Instant.now();
         when(timestampService.getCurrentTimestamp()).thenReturn(now);
         final var messageSentTimestamp = "2020-06-12T14:15:16Z";

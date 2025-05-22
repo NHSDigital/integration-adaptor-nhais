@@ -23,7 +23,7 @@ class PersonDateOfBirthMapperTest {
     private final PersonDateOfBirthMapper personDateOfBirthMapper = new PersonDateOfBirthMapper();
 
     @Test
-    void When_MappingDob_Then_ExpectCorrectResult() {
+    void When_MappingDob_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         patient.setBirthDate(Date.from(FIXED_TIME_LOCAL));
 
@@ -41,7 +41,7 @@ class PersonDateOfBirthMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutDob_Then_NullPointerExceptionIsThrown() {
+    public void When_MappingWithoutDob_Expect_NullPointerExceptionIsThrown() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
@@ -49,7 +49,7 @@ class PersonDateOfBirthMapperTest {
     }
 
     @Test
-    public void When_ParametersWithoutDob_Then_CanNotMap() {
+    public void When_ParametersWithoutDob_Expect_CanNotMap() {
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter());
 
@@ -57,7 +57,7 @@ class PersonDateOfBirthMapperTest {
     }
 
     @Test
-    public void When_ParametersWithDob_Then_CanMap() {
+    public void When_ParametersWithDob_Expect_CanMap() {
         Patient patient = new Patient();
         patient.setBirthDate(Date.from(FIXED_TIME_LOCAL));
         Parameters parameters = new Parameters()

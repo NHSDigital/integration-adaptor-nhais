@@ -35,7 +35,7 @@ class AddressHouseNamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressHasLineFirst_theMapIntoHouseNameAmendmentPatch() {
+    void When_PersonAddressHasLineFirst_Expect_MapIntoHouseNameAmendmentPatch() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine1()).thenReturn(HOUSE_NAME);
 
@@ -45,7 +45,7 @@ class AddressHouseNamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressNotPresent_thenReturnNull() {
+    void When_PersonAddressNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = addressHouseNamePatchTransactionMapper.map(transaction);
@@ -54,7 +54,7 @@ class AddressHouseNamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressHasNoLineFirst_thenReturnValueIsNull() {
+    void When_PersonAddressHasNoLineFirst_Expect_ReturnValueIsNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine1()).thenReturn(null);
 

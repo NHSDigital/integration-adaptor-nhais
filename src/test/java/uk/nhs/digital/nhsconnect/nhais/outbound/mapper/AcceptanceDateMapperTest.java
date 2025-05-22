@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AcceptanceDateMapperTest {
 
     @Test
-    void When_MappingAcceptanceCode_Then_ExpectCorrectResult() {
+    void When_MappingAcceptanceCode_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ACCEPTANCE_DATE)

@@ -18,7 +18,7 @@ public class PersonNameTest {
 
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() throws EdifactValidationException {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() throws EdifactValidationException {
         var expectedValue = "PNA+PAT+1234567890:OPI+++SU:STEVENS+FO:CHARLES+TI:MR+MI:ANTHONY+FS:JOHN'";
 
         var personName = PersonName.builder()
@@ -35,7 +35,7 @@ public class PersonNameTest {
     }
 
     @Test
-    public void When_BuildingNameWithTypeOnly_Then_ReturnCorrectValue() {
+    public void When_BuildingNameWithTypeOnly_Expect_ReturnCorrectValue() {
         var expectedValue = "PNA+PAT+T247:OPI'";
 
         var personName = PersonName.builder()
@@ -47,7 +47,7 @@ public class PersonNameTest {
     }
 
     @Test
-    public void When_BuildingEmptyName_Then_ReturnEmptySegment() {
+    public void When_BuildingEmptyName_Expect_ReturnEmptySegment() {
         var expectedValue = "PNA+PAT'";
 
         var personName = PersonName.builder()
@@ -81,7 +81,7 @@ public class PersonNameTest {
     }
 
     @Test
-    void when_BlankNhsNumber_Then_ReturnNull() {
+    void When_BlankNhsNumber_Expect_ReturnNull() {
         assertThat(PersonName.fromString(BLANK_NHS_VALUE).getNhsNumber()).isNull();
     }
 }

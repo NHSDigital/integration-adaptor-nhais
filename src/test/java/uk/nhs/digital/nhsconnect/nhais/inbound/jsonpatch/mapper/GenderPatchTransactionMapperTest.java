@@ -33,7 +33,7 @@ class GenderPatchTransactionMapperTest {
 
 
     @Test
-    void whenTransactionHasFemaleGender_thenMapIntoFemale() {
+    void When_TransactionHasFemaleGender_Expect_MapIntoFemale() {
         when(transaction.getGender()).thenReturn(Optional.of(personSex));
         when(personSex.getGender()).thenReturn(PersonSex.Gender.FEMALE);
 
@@ -43,7 +43,7 @@ class GenderPatchTransactionMapperTest {
     }
 
     @Test
-    void whenTransactionHasMaleGender_thenMapIntoMale() {
+    void When_TransactionHasMaleGender_Expect_MapIntoMale() {
         when(transaction.getGender()).thenReturn(Optional.of(personSex));
         when(personSex.getGender()).thenReturn(PersonSex.Gender.MALE);
 
@@ -53,7 +53,7 @@ class GenderPatchTransactionMapperTest {
     }
 
     @Test
-    void whenTransactionHasOtherGender_thenMapIntoOther() {
+    void When_TransactionHasOtherGender_Expect_MapIntoOther() {
         when(transaction.getGender()).thenReturn(Optional.of(personSex));
         when(personSex.getGender()).thenReturn(PersonSex.Gender.OTHER);
 
@@ -63,7 +63,7 @@ class GenderPatchTransactionMapperTest {
     }
 
     @Test
-    void whenTransactionHasUnknownGender_thenMapIntoUnknown() {
+    void When_TransactionHasUnknownGender_Expect_MapIntoUnknown() {
         when(transaction.getGender()).thenReturn(Optional.of(personSex));
         when(personSex.getGender()).thenReturn(PersonSex.Gender.UNKNOWN);
 
@@ -73,7 +73,7 @@ class GenderPatchTransactionMapperTest {
     }
 
     @Test
-    void whenNoGenderInTransaction_thenReturnNull() {
+    void When_NoGenderInTransaction_Expect_ReturnNull() {
         when(transaction.getGender()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = genderPatchTransactionMapper.map(transaction);

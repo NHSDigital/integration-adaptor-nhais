@@ -20,7 +20,7 @@ class AcceptanceImmigrantTranslatorTest {
     private AcceptanceImmigrantTranslator acceptanceImmigrantTranslator;
 
     @Test
-    void When_MissingNhsNumberAndBirthPlace_Then_ThrowFhirValidationException() {
+    void When_MissingNhsNumberAndBirthPlace_Expect_ThrowFhirValidationException() {
         Parameters parameters = new Parameters();
         when(validator.nhsNumberIsMissing(parameters)).thenReturn(true);
         when(validator.placeOfBirthIsMissing(parameters)).thenReturn(true);
@@ -31,7 +31,7 @@ class AcceptanceImmigrantTranslatorTest {
     }
 
     @Test
-    void when_MisssingSurname_Then_ThrowFhirValidationException() {
+    void When_MisssingSurname_Expect_ThrowFhirValidationException() {
         Parameters parameters = new Parameters();
         when(validator.surnameIsMissing(parameters)).thenReturn(true);
 

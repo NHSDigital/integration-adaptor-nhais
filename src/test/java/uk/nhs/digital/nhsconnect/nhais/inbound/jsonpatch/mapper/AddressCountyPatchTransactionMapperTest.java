@@ -35,7 +35,7 @@ class AddressCountyPatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonAddressHasLineFifth_thenMapIntoCountyAmendmentPatch() {
+    void When_PersonAddressHasLineFifth_Expect_MapIntoCountyAmendmentPatch() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine5()).thenReturn(COUNTY);
 
@@ -45,7 +45,7 @@ class AddressCountyPatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressNotPresent_thenReturnNull() {
+    void When_PersonAddressNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = addressCountyPatchTransactionMapper.map(transaction);
@@ -54,7 +54,7 @@ class AddressCountyPatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressHasNoLineFifth_thenReturnValueIsNull() {
+    void When_PersonAddressHasNoLineFifth_Expect_ReturnValueIsNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine5()).thenReturn(null);
 

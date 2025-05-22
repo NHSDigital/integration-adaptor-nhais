@@ -38,7 +38,7 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingDateOfBirth_expectFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingDateOfBirth_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(DATE_OF_BIRTH))));
 
@@ -51,7 +51,7 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
     }
 
     @Test
-    void whenUsingRemoveOperation_expectException() {
+    void When_UsingRemoveOperation_Expect_Exception() {
         when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
@@ -62,7 +62,7 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.BIRTH_DATE_PATH)

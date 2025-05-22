@@ -22,7 +22,7 @@ class PersonNameMapperTest {
     public static final String FAMILY_NAME = "Smith";
 
     @Test
-    void When_MappingPatientFamilyName_Then_ExpectCorrectResult() {
+    void When_MappingPatientFamilyName_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         PatientName patientName = PatientName.builder()
             .familyName(FAMILY_NAME)
@@ -48,7 +48,7 @@ class PersonNameMapperTest {
     }
 
     @Test
-    void When_MappingAllPossiblePatientNames_Then_ExpectCorrectResult() {
+    void When_MappingAllPossiblePatientNames_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         PatientName patientName = PatientName.builder()
             .familyName(FAMILY_NAME)
@@ -82,7 +82,7 @@ class PersonNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutSurname_Then_UnsupportedOperationExceptionIsThrown() {
+    public void When_MappingWithoutSurname_Expect_UnsupportedOperationExceptionIsThrown() {
         Patient patient = new Patient();
         patient.setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
         patient.setName(List.of());
@@ -95,7 +95,7 @@ class PersonNameMapperTest {
     }
 
     @Test
-    void When_MappingWithoutNhsNumber_Then_ExpectCorrectResult() {
+    void When_MappingWithoutNhsNumber_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         HumanName humanName = new HumanName();
         humanName.setFamily(FAMILY_NAME);
@@ -116,7 +116,7 @@ class PersonNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutPatient_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutPatient_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var personNameMapper = new PersonNameMapper();

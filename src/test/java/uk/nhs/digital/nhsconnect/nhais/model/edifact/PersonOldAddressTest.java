@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class PersonOldAddressTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "NAD+PER++MOORSIDE FARM:OLD LANE:ST PAULS CRAY:ORPINGTON:KENT'";
 
         var personOldAddress = PersonOldAddress.builder()
@@ -24,7 +24,7 @@ public class PersonOldAddressTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithMissingFields_Then_ReturnCorrectString() {
+    public void When_MappingToEdifactWithMissingFields_Expect_ReturnCorrectString() {
         var expectedValue = "NAD+PER++MOORSIDE FARM:ST PAULS CRAY:KENT'";
 
         var personOldAddress = PersonOldAddress.builder()
@@ -39,7 +39,7 @@ public class PersonOldAddressTest {
     }
 
     @Test
-    void When_MappingEmptyAddress_Then_ThrowException() {
+    void When_MappingEmptyAddress_Expect_ThrowException() {
         var personOldAddress = PersonOldAddress.builder()
             .build();
 
