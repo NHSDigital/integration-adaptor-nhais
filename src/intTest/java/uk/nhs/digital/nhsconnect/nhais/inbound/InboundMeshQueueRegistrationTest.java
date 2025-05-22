@@ -23,6 +23,7 @@ import jakarta.jms.JMSException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static org.mockito.Mockito.when;
@@ -42,11 +43,13 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-01-25T12:35:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 00, 0, TimestampService.UK_ZONE)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
+        .of(LocalDateTime.parse("2020-06-10T14:28:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
+    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService()
+        .formatInISO(GENERATED_TIMESTAMP);
 
     @MockBean
     private TimestampService timestampService;

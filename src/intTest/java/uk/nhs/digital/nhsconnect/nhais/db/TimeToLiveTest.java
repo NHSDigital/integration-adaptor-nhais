@@ -34,6 +34,8 @@ import static org.awaitility.Awaitility.await;
 @AutoConfigureMockMvc
 @DirtiesContext
 public class TimeToLiveTest {
+    private static final long INTERCHANGE_SEQUENCE = 123L;
+    private static final int AWAIT_TIMEOUT = 90;
 
     @Autowired
     private InboundStateRepository inboundStateRepository;
@@ -75,14 +77,14 @@ public class TimeToLiveTest {
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
             .setTranslationTimestamp(Instant.now().atZone(ZoneId.systemDefault()).toInstant());
 
         assertThat(inboundStateRepository.findAll()).isEmpty();
         inboundStateRepository.save(inboundState);
         assertThat(inboundStateRepository.findAll()).isNotEmpty();
         await()
-            .atMost(90, TimeUnit.SECONDS)
+            .atMost(AWAIT_TIMEOUT, TimeUnit.SECONDS)
             .pollInterval(Durations.ONE_SECOND)
             .untilAsserted(() -> assertThat(inboundStateRepository.findAll()).isEmpty());
     }
@@ -94,14 +96,14 @@ public class TimeToLiveTest {
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
             .setTranslationTimestamp(Instant.now().atZone(ZoneId.systemDefault()).toInstant());
 
         assertThat(outboundStateRepository.findAll()).isEmpty();
         outboundStateRepository.save(inboundState);
         assertThat(outboundStateRepository.findAll()).isNotEmpty();
         await()
-            .atMost(90, TimeUnit.SECONDS)
+            .atMost(AWAIT_TIMEOUT, TimeUnit.SECONDS)
             .pollInterval(Durations.ONE_SECOND)
             .untilAsserted(() -> assertThat(outboundStateRepository.findAll()).isEmpty());
     }

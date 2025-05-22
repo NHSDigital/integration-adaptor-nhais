@@ -46,6 +46,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     private static final OutboundMeshMessage OUTBOUND_MESH_MESSAGE = OutboundMeshMessage.create(
         RECIPIENT, WorkflowId.REGISTRATION, CONTENT, null, null
     );
+    private static final int REPEAT_COUNT = 100000000;
 
     @Autowired
     private MeshRequests meshRequests;
@@ -93,7 +94,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
             var request = meshRequests.sendMessage(recipientMailbox, WorkflowId.REGISTRATION);
             request.removeHeaders("Mex-WorkflowID");
             request.setHeader("Mex-WorkflowID", "NOT_NHAIS");
-            request.setEntity(new StringEntity("a".repeat(100000000))); // 100mb
+            request.setEntity(new StringEntity("a".repeat(REPEAT_COUNT))); // 100mb
             try (CloseableHttpResponse response = client.execute(request)) {
                 assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.ACCEPTED.value());
                 return parseInto(MeshMessageId.class, response);
