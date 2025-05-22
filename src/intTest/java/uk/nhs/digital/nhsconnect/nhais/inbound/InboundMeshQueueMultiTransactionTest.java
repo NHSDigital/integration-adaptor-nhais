@@ -139,12 +139,12 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     private Optional<InboundState> findInboundState(long sms, long tn) {
-        return inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, sms, tn);
+        return super.getInboundStateRepository().findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, sms, tn);
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
 
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -241,8 +241,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundState(SoftAssertions softly) {
-        waitForCondition(() -> outboundStateRepository.findAll().iterator().hasNext());
-        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+        waitForCondition(() -> super.getOutboundStateRepository().findAll().iterator().hasNext());
+        Iterable<OutboundState> outboundStates = super.getOutboundStateRepository().findAll();
 
         assertThat(outboundStates).hasSize(1);
         var outboundState = outboundStates.iterator().next();

@@ -22,21 +22,21 @@ public class CosmosTtlCreator extends TtlCreator {
             LOGGER.info(
                 "TTL value has changed for {} - dropping index and creating new one using value {}",
                 clazz.getSimpleName(),
-                duration
+                super.getDuration()
             );
             String indexName = findTtlIndex().map(IndexInfo::getName).orElseThrow();
-            indexOperations.dropIndex(indexName);
+            super.getIndexOperations().dropIndex(indexName);
         }
-        indexOperations.ensureIndex(
+        super.getIndexOperations().ensureIndex(
             new Index()
-                .expire(duration)
+                .expire(super.getDuration())
                 .on(INDEX_FIELD_KEY, Sort.Direction.ASC)
         );
     }
 
     @Override
     protected Optional<IndexInfo> findTtlIndex() {
-        return indexOperations.getIndexInfo().stream()
+        return super.getIndexOperations().getIndexInfo().stream()
             .filter(this::isTtlIndex)
             .findFirst();
     }

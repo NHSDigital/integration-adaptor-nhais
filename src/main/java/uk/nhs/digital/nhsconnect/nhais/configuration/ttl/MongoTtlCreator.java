@@ -23,13 +23,13 @@ public class MongoTtlCreator extends TtlCreator {
             LOGGER.info(
                 "TTL value has changed for {} - dropping index and creating new one using value {}",
                 clazz.getSimpleName(),
-                duration
+                super.getDuration()
             );
-            indexOperations.dropIndex(TTL_INDEX_NAME);
+            super.getIndexOperations().dropIndex(TTL_INDEX_NAME);
         }
-        indexOperations.ensureIndex(
+        super.getIndexOperations().ensureIndex(
             new Index()
-                .expire(duration)
+                .expire(super.getDuration())
                 .named(TTL_INDEX_NAME)
                 .on(FIELD_KEY, Sort.Direction.ASC)
         );
@@ -37,7 +37,7 @@ public class MongoTtlCreator extends TtlCreator {
 
     @Override
     protected Optional<IndexInfo> findTtlIndex() {
-        return indexOperations.getIndexInfo().stream()
+        return super.getIndexOperations().getIndexInfo().stream()
             .filter(index -> TTL_INDEX_NAME.equals(index.getName()))
             .findFirst();
     }

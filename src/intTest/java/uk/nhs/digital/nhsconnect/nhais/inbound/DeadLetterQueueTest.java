@@ -38,10 +38,10 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
 
     @Test
     public void When_SendingInvalidMessageToMeshInboundQueue_Expect_MessageIsSentToDeadLetterQueue() throws JMSException {
-        clearDeadLetterQueue(meshInboundQueueName);
+        clearDeadLetterQueue(super.getMeshInboundQueueName());
         sendToMeshInboundQueue(MESSAGE_CONTENT);
 
-        var message = getDeadLetterMeshInboundQueueMessage(meshInboundQueueName);
+        var message = getDeadLetterMeshInboundQueueMessage(super.getMeshInboundQueueName());
         var messageBody = parseTextMessage(message);
 
         assertThat(messageBody).isEqualTo(MESSAGE_CONTENT);
@@ -59,10 +59,10 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
         );
         doThrow(RuntimeException.class).when(meshClient).authenticate();
 
-        clearDeadLetterQueue(meshOutboundQueueName);
+        clearDeadLetterQueue(super.getMeshOutboundQueueName());
         outboundQueueService.publish(meshMessage);
 
-        var message = getDeadLetterMeshInboundQueueMessage(meshOutboundQueueName);
+        var message = getDeadLetterMeshInboundQueueMessage(super.getMeshOutboundQueueName());
 
         assertThat(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).isEqualTo(conversationId);
         assertThat(parseTextMessage(message)).isEqualTo(objectMapper.writeValueAsString(meshMessage));

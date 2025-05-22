@@ -83,7 +83,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -104,7 +104,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
 
     private void assertInboundState(SoftAssertions softly) {
         var inboundState = waitFor(
-            () -> inboundStateRepository
+            () -> super.getInboundStateRepository()
                 .findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS, TN)
                 .orElse(null));
 
@@ -123,7 +123,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundState(SoftAssertions softly) {
-        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+        Iterable<OutboundState> outboundStates = super.getOutboundStateRepository().findAll();
 
         softly.assertThat(outboundStates).hasSize(1);
         var outboundState = outboundStates.iterator().next();

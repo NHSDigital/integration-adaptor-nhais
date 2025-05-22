@@ -67,7 +67,7 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
             .getInterchangeHeader().getRecipient();
 
         // Acting as an NHAIS system, send EDIFACT to adaptor's MESH mailbox
-        nhaisMeshClient.sendEdifactMessage(OutboundMeshMessage.create(
+        super.getNhaisMeshClient().sendEdifactMessage(OutboundMeshMessage.create(
             recipient, WorkflowId.REGISTRATION, testData.getEdifact(), null, null));
 
         var expectedTransactionType = category.split("/")[0];
@@ -92,7 +92,7 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
         if (category.equals("close_quarter_notification/close-quarter-notification")) {
             // there should be no inbound gp system message for close quarter
             // fetch without the helper and waitFor since we expect this to be null so only need to try once
-            return jmsTemplate.receive(gpSystemInboundQueueName);
+            return super.getJmsTemplate().receive(super.getGpSystemInboundQueueName());
         } else {
             // use the helper method that includes a more robust waitFor
             return getGpSystemInboundQueueMessage();
@@ -130,10 +130,10 @@ public class InboundUserAcceptanceTest extends IntegrationBaseTest {
     private void assertOutboundRecepMessage(String recep) {
         // Acting as an NHAIS system, receive and validate the RECEP returned by the adaptor
         List<String> messageIds = waitFor(() -> {
-            List<String> inboxMessageIds = nhaisMeshClient.getInboxMessageIds();
+            List<String> inboxMessageIds = super.getNhaisMeshClient().getInboxMessageIds();
             return inboxMessageIds.isEmpty() ? null : inboxMessageIds;
         });
-        var meshMessage = nhaisMeshClient.getEdifactMessage(messageIds.get(0));
+        var meshMessage = super.getNhaisMeshClient().getEdifactMessage(messageIds.get(0));
 
         Interchange expectedRecep = edifactParser.parse(recep);
         Interchange actualRecep = edifactParser.parse(meshMessage.getContent());

@@ -67,7 +67,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
         sendToApi(testData.getJson(), transactionType);
 
         // fetch EDIFACT message from MESH
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         // assert output EDIFACT is correct
         assertMessageBody(meshMessage, testData.getEdifact());
@@ -100,7 +100,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
 
     private void assertOutboundState(String transactionTypeString) {
         Iterable<OutboundState> outboundStates = waitFor(() -> {
-            var result = outboundStateRepository.findAll();
+            var result = super.getOutboundStateRepository().findAll();
             return result.iterator().hasNext() ? result : null;
         });
 

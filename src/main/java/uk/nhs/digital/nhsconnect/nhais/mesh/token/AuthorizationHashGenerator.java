@@ -19,8 +19,8 @@ class AuthorizationHashGenerator {
         String hashInput = String.join(
             ":",
             meshConfig.getMailboxId(),
-            nonce.value,
-            nonce.count,
+            nonce.getValue(),
+            nonce.getCount(),
             meshConfig.getMailboxPassword(),
             timestamp
         );

@@ -1,6 +1,7 @@
 package uk.nhs.digital.nhsconnect.nhais;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -45,6 +46,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith({SpringExtension.class, SoftAssertionsExtension.class, IntegrationTestsExtension.class})
 @SpringBootTest
 @Slf4j
+@Getter
 public abstract class IntegrationBaseTest {
 
     public static final String DLQ_PREFIX = "DLQ.";
@@ -54,18 +56,19 @@ public abstract class IntegrationBaseTest {
     private static final int JMS_RECEIVE_TIMEOUT = 500;
     @Rule
     public Timeout globalTimeout = Timeout.seconds(2);
+
     @Autowired
-    protected JmsTemplate jmsTemplate;
+    private JmsTemplate jmsTemplate;
     @Autowired
-    protected InboundStateRepository inboundStateRepository;
+    private InboundStateRepository inboundStateRepository;
     @Autowired
-    protected OutboundStateRepository outboundStateRepository;
+    private OutboundStateRepository outboundStateRepository;
     @Autowired
-    protected ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @Autowired
-    protected MeshClient meshClient;
+    private MeshClient meshClient;
     @Autowired
-    protected MeshConfig meshConfig;
+    private MeshConfig meshConfig;
     @Autowired
     private RecipientMailboxIdMappings recipientMailboxIdMappings;
     @Autowired
@@ -73,15 +76,15 @@ public abstract class IntegrationBaseTest {
     @Autowired
     private MeshHttpClientBuilder meshHttpClientBuilder;
     @Value("${nhais.amqp.meshInboundQueueName}")
-    protected String meshInboundQueueName;
+    private String meshInboundQueueName;
     @Value("${nhais.amqp.meshOutboundQueueName}")
-    protected String meshOutboundQueueName;
+    private String meshOutboundQueueName;
     @Value("${nhais.amqp.gpSystemInboundQueueName}")
-    protected String gpSystemInboundQueueName;
+    private String gpSystemInboundQueueName;
     @Autowired
     private InboundQueueService inboundQueueService;
     private long originalReceiveTimeout;
-    protected MeshClient nhaisMeshClient;
+    private MeshClient nhaisMeshClient;
 
     @PostConstruct
     private void postConstruct() {

@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshApiConnectionException;
+import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;
@@ -61,16 +62,16 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
 
     @Test
     void When_CallingMeshSendMessageEndpoint_Expect_MessageIdIsReturned() {
-        MeshMessageId meshMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        MeshMessageId meshMessageId = super.getMeshClient().sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
         assertThat(meshMessageId).isNotNull();
         assertThat(meshMessageId.getMessageID()).isNotEmpty();
     }
 
     @Test
     void When_CallingMeshGetMessageEndpoint_Expect_MessageIsReturned() {
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        MeshMessageId testMessageId = super.getMeshClient().sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        InboundMeshMessage meshMessage = nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID());
+        InboundMeshMessage meshMessage = super.getNhaisMeshClient().getEdifactMessage(testMessageId.getMessageID());
         assertThat(meshMessage.getContent()).isEqualTo(CONTENT);
         assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.REGISTRATION);
     }
@@ -79,7 +80,7 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
     void When_CallingGetMessageWithLargeContentAndWrongWorkflowId_Expect_MeshWorkflowUnknownExceptionIsThrown() {
         MeshMessageId testMessageId = sendLargeMessageWithWrongWorkflowId();
 
-        assertThatThrownBy(() -> nhaisMeshClient.getEdifactMessage(testMessageId.getMessageID()))
+        assertThatThrownBy(() -> super.getNhaisMeshClient().getEdifactMessage(testMessageId.getMessageID()))
             .isInstanceOf(MeshWorkflowUnknownException.class)
             .hasMessageContaining("NOT_NHAIS");
     }
@@ -109,44 +110,44 @@ public class MeshClientIntegrationTest extends IntegrationBaseTest {
 
     @Test
     void When_CallingMeshAcknowledgeEndpoint_Expect_NoExceptionIsThrown() {
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        MeshMessageId testMessageId = super.getMeshClient().sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        assertThatCode(() -> nhaisMeshClient.acknowledgeMessage(testMessageId.getMessageID()))
+        assertThatCode(() -> super.getNhaisMeshClient().acknowledgeMessage(testMessageId.getMessageID()))
             .doesNotThrowAnyException();
     }
 
     @Test
     void When_PollingFromMesh_Expect_EmptyListIsReturned() {
-        assertThat(meshClient.getInboxMessageIds()).isEqualTo(List.of());
+        assertThat(super.getMeshClient().getInboxMessageIds()).isEqualTo(List.of());
     }
 
     @Test
     void When_PollingFromMeshAfterSendingMsg_Expect_ListWithMsgIdIsReturned() {
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        MeshMessageId testMessageId = super.getMeshClient().sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
 
-        assertThat(nhaisMeshClient.getInboxMessageIds()).contains(testMessageId.getMessageID());
+        assertThat(super.getNhaisMeshClient().getInboxMessageIds()).contains(testMessageId.getMessageID());
     }
 
     @Test
     void When_Authenticating_Expect_NoExceptionThrown() {
-        assertThatCode(() -> meshClient.authenticate()).doesNotThrowAnyException();
+        assertThatCode(() -> super.getMeshClient().authenticate()).doesNotThrowAnyException();
     }
 
     @Test
     void When_DownloadMessageThatDoesNotExist_Expect_ExceptionThrown() {
         assertThatExceptionOfType(MeshApiConnectionException.class).isThrownBy(
-            () -> meshClient.getEdifactMessage("thisisaninvalidmessageid1234567890")
+            () -> super.getMeshClient().getEdifactMessage("thisisaninvalidmessageid1234567890")
         );
     }
 
     @Test
     void When_DownloadingMessageWhichIsGone_Expect_ExceptionThrown() {
-        MeshMessageId testMessageId = meshClient.sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
+        MeshMessageId testMessageId = super.getMeshClient().sendEdifactMessage(OUTBOUND_MESH_MESSAGE);
         var messageId = testMessageId.getMessageID();
-        nhaisMeshClient.acknowledgeMessage(messageId);
+        super.getNhaisMeshClient().acknowledgeMessage(messageId);
 
         assertThatExceptionOfType(MeshApiConnectionException.class).isThrownBy(
-            () -> meshClient.getEdifactMessage(messageId)
+            () -> super.getMeshClient().getEdifactMessage(messageId)
         );
     }
 }

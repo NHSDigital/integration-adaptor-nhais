@@ -81,7 +81,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
         var expectedOutboundStateRef2 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_2, ReferenceMessageRecep.RecepCode.ERROR);
 
         var outboundStates = waitFor(() -> {
-            var all = Lists.newArrayList(outboundStateRepository.findAll());
+            var all = Lists.newArrayList(super.getOutboundStateRepository().findAll());
             if (all.stream().allMatch(outboundState -> outboundState.getRecep() != null)) {
                 return all;
             }
@@ -105,7 +105,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
 
     private void assertInboundState(SoftAssertions softly) {
         var inboundState = waitFor(
-            () -> inboundStateRepository
+            () -> super.getInboundStateRepository()
                 .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, null)
                 .orElse(null));
 
@@ -123,8 +123,8 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     }
 
     private void createOutboundStateRecords() {
-        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_1));
-        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_2));
+        super.getOutboundStateRepository().save(buildOutboundState(REF_MESSAGE_SEQUENCE_1));
+        super.getOutboundStateRepository().save(buildOutboundState(REF_MESSAGE_SEQUENCE_2));
     }
 
     private OutboundState buildOutboundState(long refMessageSequence1) {
