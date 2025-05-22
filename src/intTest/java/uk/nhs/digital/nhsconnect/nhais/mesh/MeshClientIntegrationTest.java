@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationTestsExtension;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshApiConnectionException;
-import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshHttpClientBuilder;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshRequests;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.InboundMeshMessage;

@@ -23,7 +23,7 @@ public class DeductionRejectionTransactionMapper implements FhirTransactionMappe
             .map(PersonName::getNhsNumber)
             .map(NhsIdentifier::new)
             .orElseThrow(() -> new EdifactValidationException("NHS Number is mandatory for inbound deduction request rejection"));
-         ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier));
+        ParametersExtension.extractPatient(parameters).setIdentifier(List.of(nhsIdentifier));
 
         var freeText = transaction
             .getFreeText()
