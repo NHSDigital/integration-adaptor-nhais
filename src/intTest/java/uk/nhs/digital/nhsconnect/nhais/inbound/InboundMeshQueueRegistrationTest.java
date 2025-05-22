@@ -46,7 +46,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
         .of(LocalDateTime.parse("2020-01-25T12:35:00"), TimestampService.UK_ZONE)
         .toInstant();
     private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
-        .of(LocalDateTime.parse("2020-06-10T14:28:00"), TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-06-10T14:38:00"), TimestampService.UK_ZONE)
         .toInstant();
     private static final String ISO_GENERATED_TIMESTAMP = new TimestampService()
         .formatInISO(GENERATED_TIMESTAMP);
