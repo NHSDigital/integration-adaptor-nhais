@@ -1,6 +1,5 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -16,14 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MeshRequestsTest {
 
-    private final MeshConfig meshConfig = new MeshConfig("mailboxId",
-        "password",
-        "SharedKey",
-        "https://localhost:8829/messageexchange/",
-        "false",
-        StringUtils.EMPTY,
-        StringUtils.EMPTY,
-        StringUtils.EMPTY);
+    private final MeshConfig meshConfig = new MeshConfig()
+        .setMailboxId("mailboxId")
+        .setMailboxPassword("password")
+        .setSharedKey("SharedKey")
+        .setHost("https://localhost:8829/messageexchange/")
+        .setCertValidation("false")
+        .setEndpointCert("")
+        .setEndpointPrivateKey("")
+        .setSubCAcert("");
+
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
 
     @Test

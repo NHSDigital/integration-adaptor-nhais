@@ -193,9 +193,15 @@ public abstract class IntegrationBaseTest {
         String endpointCert = (String) FieldUtils.readField(meshConfig, "endpointCert", true);
         String endpointPrivateKey = (String) FieldUtils.readField(meshConfig, "endpointPrivateKey", true);
         String subCaCert = (String) FieldUtils.readField(meshConfig, "subCAcert", true);
-        MeshConfig nhaisMailboxConfig = new MeshConfig(nhaisMailboxId, meshConfig.getMailboxPassword(),
-            meshConfig.getSharedKey(), meshConfig.getHost(), meshConfig.getCertValidation(), endpointCert,
-            endpointPrivateKey, subCaCert);
+        MeshConfig nhaisMailboxConfig = new MeshConfig()
+            .setMailboxId(nhaisMailboxId)
+            .setMailboxPassword(meshConfig.getMailboxPassword())
+            .setSharedKey(meshConfig.getSharedKey())
+            .setHost(meshConfig.getHost())
+            .setCertValidation(meshConfig.getCertValidation())
+            .setEndpointCert(endpointCert)
+            .setEndpointPrivateKey(endpointPrivateKey)
+            .setSubCAcert(subCaCert);
         MeshHeaders meshHeaders = new MeshHeaders(nhaisMailboxConfig);
         MeshRequests meshRequests = new MeshRequests(nhaisMailboxConfig, meshHeaders);
         return new MeshClient(meshRequests, mockRecipientMailboxIdMappings, meshHttpClientBuilder);
