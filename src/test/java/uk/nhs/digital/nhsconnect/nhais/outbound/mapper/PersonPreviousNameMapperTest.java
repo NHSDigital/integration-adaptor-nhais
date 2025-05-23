@@ -20,18 +20,18 @@ class PersonPreviousNameMapperTest {
     public static final String FAMILY_NAME = "Smith";
     public static final String FAMILY_NAME_2 = "Kowalski";
 
-    public static final PatientName patientName = PatientName.builder()
+    public static final PatientName PATIENT_NAME = PatientName.builder()
         .familyName(FAMILY_NAME)
         .build();
 
-    public static final PatientName patientName2 = PatientName.builder()
+    public static final PatientName PATIENT_NAME_2 = PatientName.builder()
         .familyName(FAMILY_NAME_2)
         .build();
 
     @Test
     void When_MappingPatientPreviousFamilyName_Expect_ExpectCorrectResult() {
         Patient patient = new Patient()
-            .setName(List.of(patientName, patientName2))
+            .setName(List.of(PATIENT_NAME, PATIENT_NAME_2))
             .setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
 
         Parameters parameters = new Parameters()
@@ -102,7 +102,7 @@ class PersonPreviousNameMapperTest {
     @Test
     void When_MappingWithoutNhsNumber_Expect_ExpectCorrectResult() {
         Patient patient = new Patient()
-            .setName(List.of(patientName, patientName2));
+            .setName(List.of(PATIENT_NAME, PATIENT_NAME_2));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
@@ -128,7 +128,7 @@ class PersonPreviousNameMapperTest {
     @Test
     void When_ThereIsOnlyOneName_Expect_CanNotMap() {
         Patient patient = new Patient()
-            .setName(List.of(patientName));
+            .setName(List.of(PATIENT_NAME));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));
@@ -141,7 +141,7 @@ class PersonPreviousNameMapperTest {
     @Test
     void When_ThereAreTwoNamea_Expect_CanMap() {
         Patient patient = new Patient()
-            .setName(List.of(patientName, patientName2));
+            .setName(List.of(PATIENT_NAME, PATIENT_NAME_2));
 
         Parameters parameters = new Parameters()
             .addParameter(new PatientParameter(patient));

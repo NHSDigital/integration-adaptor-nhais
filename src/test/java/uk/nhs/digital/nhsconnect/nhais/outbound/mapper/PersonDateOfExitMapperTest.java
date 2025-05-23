@@ -49,8 +49,8 @@ class PersonDateOfExitMapperTest {
     public void When_MappingWithoutDateParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
-        var PersonDateOfExitMapper = new PersonDateOfExitMapper();
-        assertThatThrownBy(() -> PersonDateOfExitMapper.map(parameters))
+        var personDateOfExitMapper = new PersonDateOfExitMapper();
+        assertThatThrownBy(() -> personDateOfExitMapper.map(parameters))
             .isExactlyInstanceOf(FhirValidationException.class);
     }
 

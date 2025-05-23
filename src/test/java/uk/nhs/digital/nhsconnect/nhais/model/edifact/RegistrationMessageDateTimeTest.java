@@ -12,10 +12,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class RegistrationMessageDateTimeTest {
 
-    private final Instant WINTER = ZonedDateTime
+    private static final Instant WINTER = ZonedDateTime
         .of(2020, 3, 28, 20, 58, 0, 0, ZoneOffset.UTC)
         .toInstant();
-    private final Instant SUMMER = ZonedDateTime
+    private static final Instant SUMMER = ZonedDateTime
         .of(2020, 5, 28, 20, 58, 0, 0, ZoneOffset.UTC)
         .toInstant();
 

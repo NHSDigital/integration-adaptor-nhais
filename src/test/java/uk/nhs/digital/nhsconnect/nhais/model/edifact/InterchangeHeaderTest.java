@@ -13,10 +13,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InterchangeHeaderTest {
 
-    private final Instant TRANSLATION_WINTER_DATE_TIME = ZonedDateTime
+    private static final Instant TRANSLATION_WINTER_DATE_TIME = ZonedDateTime
         .of(2019, 3, 23, 9, 0, 0, 0, ZoneOffset.UTC)
         .toInstant();
-    private final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
+    private static final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
         .of(2019, 5, 23, 9, 0, 0, 0, ZoneOffset.UTC)
         .toInstant();
     private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
