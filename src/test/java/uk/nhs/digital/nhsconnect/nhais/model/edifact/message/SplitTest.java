@@ -5,8 +5,6 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split.byColon;
 import static uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split.byPlus;
 import static uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split.bySegmentTerminator;

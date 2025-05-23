@@ -9,8 +9,6 @@ import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParameterNames;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DeductionReasonCodeMapperTest {
 
