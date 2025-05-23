@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -14,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class InterchangeHeaderTest {
 
     private static final Instant TRANSLATION_WINTER_DATE_TIME = ZonedDateTime
-        .of(2019, 3, 23, 9, 0, 0, 0, ZoneOffset.UTC)
+        .of(LocalDateTime.parse("2019-03-23T09:00:00"), ZoneOffset.UTC)
         .toInstant();
     private static final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
-        .of(2019, 5, 23, 9, 0, 0, 0, ZoneOffset.UTC)
+        .of(LocalDateTime.parse("2019-05-23T09:00:00"), ZoneOffset.UTC)
         .toInstant();
     private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
     private final InterchangeHeader interchangeHeaderSummer = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);

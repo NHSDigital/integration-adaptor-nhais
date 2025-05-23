@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -40,7 +41,7 @@ class RecepProducerServiceTest {
     private static final Long INTERCHANGE_SEQUENCE = 45L;
     private static final Long MESSAGE_SEQUENCE_1 = 56L;
     private static final Instant FIXED_TIME = ZonedDateTime
-        .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-04-27T17:37:00"), TimestampService.UK_ZONE)
         .toInstant();
     private static final long RECEP_INTERCHANGE_SEQUENCE = 123123;
     private static final long RECEP_MESSAGE_SEQUENCE = 234234;

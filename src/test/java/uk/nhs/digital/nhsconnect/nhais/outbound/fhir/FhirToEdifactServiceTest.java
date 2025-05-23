@@ -31,6 +31,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -85,7 +86,7 @@ public class FhirToEdifactServiceTest {
         when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionNumber(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
-            .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UK_ZONE)
+            .of(LocalDateTime.parse("2020-04-27T17:37:00"), TimestampService.UK_ZONE)
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
         // segments related to state management only

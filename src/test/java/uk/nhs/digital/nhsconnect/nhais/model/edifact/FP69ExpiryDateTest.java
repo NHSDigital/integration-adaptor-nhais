@@ -17,7 +17,7 @@ class FP69ExpiryDateTest {
 
     @Test
     void toEdifact() {
-        var fp69ReasonCode = new FP69ExpiryDate(LocalDate.of(1990, 1, 23));
+        var fp69ReasonCode = new FP69ExpiryDate(LocalDate.parse("1990-01-23"));
 
         assertThat(fp69ReasonCode.toEdifact())
             .isEqualTo("DTM+962:19900123:102'");
@@ -26,6 +26,6 @@ class FP69ExpiryDateTest {
     @Test
     void fromEdifact() {
         assertThat(FP69ExpiryDate.fromString("DTM+962:19920225:102"))
-            .isEqualTo(new FP69ExpiryDate(LocalDate.of(1992, 2, 25)));
+            .isEqualTo(new FP69ExpiryDate(LocalDate.parse("1992-02-25")));
     }
 }

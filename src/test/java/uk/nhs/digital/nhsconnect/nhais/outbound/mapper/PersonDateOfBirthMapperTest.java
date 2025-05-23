@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PersonDateOfBirthMapperTest {
-    private static final LocalDate FIXED_TIME = LocalDate.of(1991, 11, 6);
-    private static final Instant FIXED_TIME_LOCAL = LocalDate.of(1991, 11, 6)
+    private static final LocalDate FIXED_TIME = LocalDate.parse("1991-11-06");
+    private static final Instant FIXED_TIME_LOCAL = LocalDate.parse("1991-11-06")
         .atStartOfDay(ZoneId.systemDefault())
         .toInstant();
     private final PersonDateOfBirthMapper personDateOfBirthMapper = new PersonDateOfBirthMapper();
