@@ -30,6 +30,11 @@ public class InterchangeHeader extends Segment {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UK_ZONE);
     private static final long MAX_INTERCHANGE_SEQUENCE = 99_999_999L;
     private static final String RECEP_ENDING = "+RECEP+++EDIFACT TRANSFER";
+    private static final int EDIFACT_SENDER_INDEX = 2;
+    private static final int EDIFACT_RECIPIENT_INDEX = 3;
+    private static final int EDIFACT_DATETIME_INDEX = 4;
+    private static final int EDIFACT_SEQUENCE_NUMBER_INDEX = 5;
+
 
     private @NonNull String sender;
     private @NonNull String recipient;
@@ -43,10 +48,14 @@ public class InterchangeHeader extends Segment {
         String[] split = Split.byPlus(edifactString);
 
         ZonedDateTime translationTime = ZonedDateTime.parse(
-            split[4],
+            split[EDIFACT_DATETIME_INDEX],
             DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(TimestampService.UK_ZONE)
         );
-        return new InterchangeHeader(split[2], split[3], translationTime.toInstant(), Long.valueOf(split[5]));
+        return new InterchangeHeader(
+            split[EDIFACT_SENDER_INDEX],
+            split[EDIFACT_RECIPIENT_INDEX],
+            translationTime.toInstant(),
+            Long.valueOf(split[EDIFACT_SEQUENCE_NUMBER_INDEX]));
     }
 
     @Override

@@ -1,54 +1,34 @@
 package uk.nhs.digital.nhsconnect.nhais.mesh.http;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import uk.nhs.digital.nhsconnect.nhais.utils.PemFormatter;
 
-@Component
 @Getter
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = "nhais.mesh")
 public class MeshConfig {
+    private String mailboxId;
+    private String mailboxPassword;
+    private String sharedKey;
+    private String host;
+    private String certValidation;
+    private String endpointCert;
+    private String endpointPrivateKey;
+    private String subCAcert;
 
-    private final String mailboxId;
-    private final String mailboxPassword;
-    private final String sharedKey;
-    private final String host;
-    private final String certValidation;
-    private final String endpointCert;
-    private final String endpointPrivateKey;
-    private final String subCAcert;
-
-    @Autowired
-    public MeshConfig(
-            @Value("${nhais.mesh.mailboxId}") String mailboxId,
-            @Value("${nhais.mesh.mailboxPassword}") String mailboxPassword,
-            @Value("${nhais.mesh.sharedKey}") String sharedKey,
-            @Value("${nhais.mesh.host}") String host,
-            @Value("${nhais.mesh.certValidation}") String certValidation,
-            @Value("${nhais.mesh.endpointCert}") String endpointCert,
-            @Value("${nhais.mesh.endpointPrivateKey}") String endpointPrivateKey,
-            @Value("${nhais.mesh.subCAcert}") String subCAcert) {
-        this.mailboxId = mailboxId;
-        this.mailboxPassword = mailboxPassword;
-        this.sharedKey = sharedKey;
-        this.host = host;
-        this.certValidation = certValidation;
-        this.endpointCert = endpointCert;
-        this.endpointPrivateKey = endpointPrivateKey;
-        this.subCAcert = subCAcert;
-    }
-
-    public String getEndpointCert() {
+    public String getFormattedEndpointCert() {
         return PemFormatter.format(endpointCert);
     }
 
-    public String getEndpointPrivateKey() {
+    public String getFormattedEndpointPrivateKey() {
         return PemFormatter.format(endpointPrivateKey);
     }
 
-    public String getSubCAcert() {
+    public String getFormattedSubCaCert() {
         return PemFormatter.format(subCAcert);
     }
-
 }

@@ -29,11 +29,11 @@ import java.util.Objects;
 @Slf4j
 public abstract class AbstractToEdifactService<T extends CommonTranslationItems> {
 
-    protected final SequenceService sequenceService;
-    protected final TimestampService timestampService;
-    protected final OutboundStateRepository outboundStateRepository;
-    protected final RecipientMailboxIdMappings recipientMailboxIdMappings;
-    protected final ConversationIdService conversationIdService;
+    private final SequenceService sequenceService;
+    private final TimestampService timestampService;
+    private final OutboundStateRepository outboundStateRepository;
+    private final RecipientMailboxIdMappings recipientMailboxIdMappings;
+    private final ConversationIdService conversationIdService;
 
     protected abstract List<Segment> createMessageSegments(T translationItems);
 

@@ -24,6 +24,7 @@ import jakarta.jms.Message;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,13 +65,21 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     private static final String TRANSACTION_4_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_4);
     private static final String TRANSACTION_5_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_5);
     private static final String TRANSACTION_6_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_6);
+    private static final int TN1_INDEX = 0;
+    private static final int TN2_INDEX = 1;
+    private static final int TN3_INDEX = 2;
+    private static final int TN4_INDEX = 3;
+    private static final int TN5_INDEX = 4;
+    private static final int TN6_INDEX = 5;
+    private static final int INBOUND_STATE_EXPECTED_SIZE = 6;
     private static final Instant INTERCHANGE_TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-01-25T12:35:00"), TimestampService.UK_ZONE)
         .toInstant();
-
-    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 0, 0, TimestampService.UK_ZONE)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
+        .of(LocalDateTime.parse("2020-06-10T14:38:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
+    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService()
+        .formatInISO(GENERATED_TIMESTAMP);
 
     @MockBean
     private TimestampService timestampService;
@@ -132,19 +141,19 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
             .flatMap(Optional::stream)
             .collect(Collectors.toList());
 
-        if (inboundStates.size() == 6) {
+        if (inboundStates.size() == INBOUND_STATE_EXPECTED_SIZE) {
             return inboundStates;
         }
         return null;
     }
 
     private Optional<InboundState> findInboundState(long sms, long tn) {
-        return inboundStateRepository.findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, sms, tn);
+        return super.getInboundStateRepository().findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, sms, tn);
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
 
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -154,22 +163,22 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     private void assertGpSystemInboundQueueMessages(SoftAssertions softly) throws JMSException, IOException, JSONException {
-        var gpSystemInboundQueueMessages = IntStream.range(0, 6)
+        var gpSystemInboundQueueMessages = IntStream.range(0, INBOUND_STATE_EXPECTED_SIZE)
             .mapToObj(x -> getGpSystemInboundQueueMessage())
             .toList();
 
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(0), MESSAGE_1_TRANSACTION_TYPE, TRANSACTION_1_OPERATION_ID, fhirTN1);
+            softly, gpSystemInboundQueueMessages.get(TN1_INDEX), MESSAGE_1_TRANSACTION_TYPE, TRANSACTION_1_OPERATION_ID, fhirTN1);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(1), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_2_OPERATION_ID, fhirTN2);
+            softly, gpSystemInboundQueueMessages.get(TN2_INDEX), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_2_OPERATION_ID, fhirTN2);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(2), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_3_OPERATION_ID, fhirTN3);
+            softly, gpSystemInboundQueueMessages.get(TN3_INDEX), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_3_OPERATION_ID, fhirTN3);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(3), MESSAGE_3_TRANSACTION_TYPE, TRANSACTION_4_OPERATION_ID, fhirTN4);
+            softly, gpSystemInboundQueueMessages.get(TN4_INDEX), MESSAGE_3_TRANSACTION_TYPE, TRANSACTION_4_OPERATION_ID, fhirTN4);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(4), MESSAGE_4_TRANSACTION_TYPE, TRANSACTION_5_OPERATION_ID, fhirTN5);
+            softly, gpSystemInboundQueueMessages.get(TN5_INDEX), MESSAGE_4_TRANSACTION_TYPE, TRANSACTION_5_OPERATION_ID, fhirTN5);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(5), MESSAGE_4_TRANSACTION_TYPE, TRANSACTION_6_OPERATION_ID, fhirTN6);
+            softly, gpSystemInboundQueueMessages.get(TN6_INDEX), MESSAGE_4_TRANSACTION_TYPE, TRANSACTION_6_OPERATION_ID, fhirTN6);
     }
 
     private void assertGpSystemInboundQueueMessages(
@@ -199,20 +208,20 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     private void assertInboundStates(SoftAssertions softly, List<InboundState> inboundStates) {
-        softly.assertThat(inboundStates).hasSize(6);
+        softly.assertThat(inboundStates).hasSize(INBOUND_STATE_EXPECTED_SIZE);
 
         assertInboundState(
-            softly, inboundStates.get(0), TRANSACTION_1_OPERATION_ID, SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN1_INDEX), TRANSACTION_1_OPERATION_ID, SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(1), TRANSACTION_2_OPERATION_ID, SMS_2, TN_2, MESSAGE_2_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN2_INDEX), TRANSACTION_2_OPERATION_ID, SMS_2, TN_2, MESSAGE_2_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(2), TRANSACTION_3_OPERATION_ID, SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN3_INDEX), TRANSACTION_3_OPERATION_ID, SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(3), TRANSACTION_4_OPERATION_ID, SMS_3, TN_4, MESSAGE_3_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN4_INDEX), TRANSACTION_4_OPERATION_ID, SMS_3, TN_4, MESSAGE_3_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(4), TRANSACTION_5_OPERATION_ID, SMS_4, TN_5, MESSAGE_4_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN5_INDEX), TRANSACTION_5_OPERATION_ID, SMS_4, TN_5, MESSAGE_4_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(5), TRANSACTION_6_OPERATION_ID, SMS_4, TN_6, MESSAGE_4_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN6_INDEX), TRANSACTION_6_OPERATION_ID, SMS_4, TN_6, MESSAGE_4_TRANSACTION_TYPE);
     }
 
     private void assertInboundState(
@@ -241,8 +250,8 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundState(SoftAssertions softly) {
-        waitForCondition(() -> outboundStateRepository.findAll().iterator().hasNext());
-        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+        waitForCondition(() -> super.getOutboundStateRepository().findAll().iterator().hasNext());
+        Iterable<OutboundState> outboundStates = super.getOutboundStateRepository().findAll();
 
         assertThat(outboundStates).hasSize(1);
         var outboundState = outboundStates.iterator().next();

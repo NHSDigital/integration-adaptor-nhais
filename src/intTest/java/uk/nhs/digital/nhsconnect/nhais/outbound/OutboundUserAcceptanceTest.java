@@ -21,6 +21,7 @@ import uk.nhs.digital.nhsconnect.nhais.uat.common.TestData;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,8 +42,9 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
     private static final String RECIPIENT = "XX11";
     private static final String SENDER = "TES5";
     private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
-        .of(2020, 6, 10, 14, 38, 10, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-06-10T14:38:10"), TimestampService.UK_ZONE)
         .toInstant();
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -67,7 +69,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
         sendToApi(testData.getJson(), transactionType);
 
         // fetch EDIFACT message from MESH
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         // assert output EDIFACT is correct
         assertMessageBody(meshMessage, testData.getEdifact());
@@ -100,7 +102,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
 
     private void assertOutboundState(String transactionTypeString) {
         Iterable<OutboundState> outboundStates = waitFor(() -> {
-            var result = outboundStateRepository.findAll();
+            var result = super.getOutboundStateRepository().findAll();
             return result.iterator().hasNext() ? result : null;
         });
 

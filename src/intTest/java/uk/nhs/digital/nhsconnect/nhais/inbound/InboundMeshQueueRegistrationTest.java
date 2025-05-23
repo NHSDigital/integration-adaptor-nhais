@@ -23,6 +23,7 @@ import jakarta.jms.JMSException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static org.mockito.Mockito.when;
@@ -42,11 +43,13 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     private static final ReferenceTransactionType.Inbound TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
     private static final String OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN);
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 1, 25, 12, 35, 0, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-01-25T12:35:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime.of(2020, 6, 10, 14, 38, 00, 0, TimestampService.UK_ZONE)
+    private static final Instant GENERATED_TIMESTAMP = ZonedDateTime
+        .of(LocalDateTime.parse("2020-06-10T14:38:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService().formatInISO(GENERATED_TIMESTAMP);
+    private static final String ISO_GENERATED_TIMESTAMP = new TimestampService()
+        .formatInISO(GENERATED_TIMESTAMP);
 
     @MockBean
     private TimestampService timestampService;
@@ -83,7 +86,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundRecepMessage(SoftAssertions softly) throws IOException {
-        var meshMessage = waitForMeshMessage(nhaisMeshClient);
+        var meshMessage = waitForMeshMessage(super.getNhaisMeshClient());
 
         softly.assertThat(meshMessage.getContent()).isEqualTo(new String(Files.readAllBytes(recep.getFile().toPath())));
         softly.assertThat(meshMessage.getWorkflowId()).isEqualTo(WorkflowId.RECEP);
@@ -104,7 +107,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
 
     private void assertInboundState(SoftAssertions softly) {
         var inboundState = waitFor(
-            () -> inboundStateRepository
+            () -> super.getInboundStateRepository()
                 .findBy(WorkflowId.REGISTRATION, SENDER, RECIPIENT, SIS, SMS, TN)
                 .orElse(null));
 
@@ -123,7 +126,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     }
 
     private void assertOutboundState(SoftAssertions softly) {
-        Iterable<OutboundState> outboundStates = outboundStateRepository.findAll();
+        Iterable<OutboundState> outboundStates = super.getOutboundStateRepository().findAll();
 
         softly.assertThat(outboundStates).hasSize(1);
         var outboundState = outboundStates.iterator().next();

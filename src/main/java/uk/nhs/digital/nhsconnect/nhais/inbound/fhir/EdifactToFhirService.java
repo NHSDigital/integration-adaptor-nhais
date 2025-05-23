@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EdifactToFhirService {
 
-    public final Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
+    private final Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 
     public Parameters convertToFhir(Transaction transaction) {
         var transactionType = transaction.getMessage().getReferenceTransactionType().getTransactionType();

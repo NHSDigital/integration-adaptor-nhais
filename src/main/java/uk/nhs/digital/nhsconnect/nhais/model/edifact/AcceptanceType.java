@@ -52,7 +52,7 @@ public class AcceptanceType extends Segment {
         IMMIGRANT("4");
 
         @Getter
-        public String code;
+        private final String code;
         AvailableTypes(String code) {
             this.code = code;
         }

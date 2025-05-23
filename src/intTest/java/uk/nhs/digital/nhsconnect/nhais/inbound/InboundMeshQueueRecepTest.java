@@ -20,6 +20,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -40,7 +41,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     private static final String SENDER = "FHS1";
     private static final String RECIPIENT = "GP05";
     private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime
-        .of(2020, 6, 20, 14, 0, 0, 0, TimestampService.UK_ZONE)
+        .of(LocalDateTime.parse("2020-06-20T14:00:00"), TimestampService.UK_ZONE)
         .toInstant();
     // Mongo only supports millis precision
     private static final Instant PROCESSED_TIMESTAMP = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -81,7 +82,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
         var expectedOutboundStateRef2 = buildExpectedOutboundState(REF_MESSAGE_SEQUENCE_2, ReferenceMessageRecep.RecepCode.ERROR);
 
         var outboundStates = waitFor(() -> {
-            var all = Lists.newArrayList(outboundStateRepository.findAll());
+            var all = Lists.newArrayList(super.getOutboundStateRepository().findAll());
             if (all.stream().allMatch(outboundState -> outboundState.getRecep() != null)) {
                 return all;
             }
@@ -105,7 +106,7 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
 
     private void assertInboundState(SoftAssertions softly) {
         var inboundState = waitFor(
-            () -> inboundStateRepository
+            () -> super.getInboundStateRepository()
                 .findBy(WorkflowId.RECEP, SENDER, RECIPIENT, INTERCHANGE_SEQUENCE, MESSAGE_SEQUENCE, null)
                 .orElse(null));
 
@@ -123,8 +124,8 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     }
 
     private void createOutboundStateRecords() {
-        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_1));
-        outboundStateRepository.save(buildOutboundState(REF_MESSAGE_SEQUENCE_2));
+        super.getOutboundStateRepository().save(buildOutboundState(REF_MESSAGE_SEQUENCE_1));
+        super.getOutboundStateRepository().save(buildOutboundState(REF_MESSAGE_SEQUENCE_2));
     }
 
     private OutboundState buildOutboundState(long refMessageSequence1) {

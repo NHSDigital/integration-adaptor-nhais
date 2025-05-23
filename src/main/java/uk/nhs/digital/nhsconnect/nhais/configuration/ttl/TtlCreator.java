@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.configuration.ttl;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.index.IndexOperations;
@@ -8,10 +9,11 @@ import java.time.Duration;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Getter
 public abstract class TtlCreator {
 
-    protected final IndexOperations indexOperations;
-    protected final Duration duration;
+    private final IndexOperations indexOperations;
+    private final Duration duration;
 
     public abstract void create(Class<? extends TimeToLive> clazz);
 

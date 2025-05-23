@@ -16,7 +16,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MeshHeadersTest {
 
-    private final MeshConfig meshConfig = new FakeMeshConfig();
+    private final MeshConfig meshConfig = new MeshConfig()
+        .setMailboxId("mailboxId")
+        .setMailboxPassword("password")
+        .setSharedKey("SharedKey")
+        .setHost("NHAIS_MESH_HOST")
+        .setCertValidation("false")
+        .setEndpointCert("NHAIS_MESH_ENDPOINT_CERT")
+        .setEndpointPrivateKey("NHAIS_MESH_ENDPOINT_PRIVATE_KEY")
+        .setSubCAcert("NHAIS_MESH_SUB_CA");
+
     private final MeshHeaders meshHeaders = new MeshHeaders(meshConfig);
 
     @Test

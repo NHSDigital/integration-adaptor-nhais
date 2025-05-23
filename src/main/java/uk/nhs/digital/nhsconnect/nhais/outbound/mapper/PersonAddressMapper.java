@@ -8,21 +8,21 @@ import org.springframework.stereotype.Component;
 import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonAddress;
 import uk.nhs.digital.nhsconnect.nhais.model.fhir.ParametersExtension;
+import uk.nhs.digital.nhsconnect.nhais.utils.EdifactAddressPart;
 
 import java.util.List;
 
 @Component
 public class PersonAddressMapper implements FromFhirToEdifactMapper<PersonAddress> {
-
     public PersonAddress map(Parameters parameters) {
         Address address = getAddress(parameters);
 
         return PersonAddress.builder()
-            .addressLine1(getAddressLineOrNull(address.getLine(), 0))
-            .addressLine2(getAddressLineOrNull(address.getLine(), 1))
-            .addressLine3(getAddressLineOrNull(address.getLine(), 2))
-            .addressLine4(getAddressLineOrNull(address.getLine(), 3))
-            .addressLine5(getAddressLineOrNull(address.getLine(), 4))
+            .addressLine1(getAddressLineOrNull(address.getLine(), EdifactAddressPart.ADDRESS_LINE_1_INDEX))
+            .addressLine2(getAddressLineOrNull(address.getLine(), EdifactAddressPart.ADDRESS_LINE_2_INDEX))
+            .addressLine3(getAddressLineOrNull(address.getLine(), EdifactAddressPart.ADDRESS_LINE_3_INDEX))
+            .addressLine4(getAddressLineOrNull(address.getLine(), EdifactAddressPart.ADDRESS_LINE_4_INDEX))
+            .addressLine5(getAddressLineOrNull(address.getLine(), EdifactAddressPart.ADDRESS_LINE_5_INDEX))
             .postalCode(address.getPostalCode())
             .build();
     }

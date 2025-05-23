@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InboundArgumentsProvider extends AbstractArgumentsProvider  {
+    private static final int EXPECTED_NUMBER_OF_TEST_FILES = 3;
 
     @Override
     public String getFolder() {
@@ -22,7 +23,7 @@ public class InboundArgumentsProvider extends AbstractArgumentsProvider  {
         var grouped = groupedResources(resources).entrySet()
             .stream()
             .peek(es -> {
-                if (es.getValue().size() != 3) {
+                if (es.getValue().size() != EXPECTED_NUMBER_OF_TEST_FILES) {
                     throw new IllegalStateException(String.format(
                         "There should be 3 test data files: '<any>%s', '<any>%s' and '<any>%s': %s",
                         FHIR_FILE_ENDING,

@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureMockMvc
 @DirtiesContext
 public class InboundStateRepositoryTest {
+    private static final long INTERCHANGE_SEQUENCE = 123L;
+    private static final long MESSAGE_SEQUENCE = 234L;
 
     @Autowired
     private InboundStateRepository inboundStateRepository;
@@ -31,14 +33,14 @@ public class InboundStateRepositoryTest {
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
-            .setMessageSequence(234L);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
         var duplicateInboundState = new InboundState()
             .setWorkflowId(WorkflowId.REGISTRATION)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L)
-            .setMessageSequence(234L);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE)
+            .setMessageSequence(MESSAGE_SEQUENCE);
 
         assertInsert(inboundState, duplicateInboundState);
     }
@@ -49,12 +51,12 @@ public class InboundStateRepositoryTest {
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE);
         var duplicateInboundState = new InboundState()
             .setWorkflowId(WorkflowId.RECEP)
             .setSender("some_sender")
             .setRecipient("some_recipient")
-            .setInterchangeSequence(123L);
+            .setInterchangeSequence(INTERCHANGE_SEQUENCE);
 
         assertInsert(inboundState, duplicateInboundState);
     }

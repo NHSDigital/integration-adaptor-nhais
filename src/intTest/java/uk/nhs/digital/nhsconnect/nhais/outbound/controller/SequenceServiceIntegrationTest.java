@@ -44,6 +44,10 @@ public class SequenceServiceIntegrationTest {
     private static final String INTERCHANGE_KEY_2 = String.format("SIS-%s-%s", SENDER_2, RECIPIENT_2);
     private static final String INTERCHANGE_MESSAGE_KEY_1 = String.format("SMS-%s-%s", SENDER_1, RECIPIENT_1);
     private static final String INTERCHANGE_MESSAGE_KEY_2 = String.format("SMS-%s-%s", SENDER_2, RECIPIENT_2);
+    private static final long SEQUENCE_NUMBER_1 = 1L;
+    private static final long SEQUENCE_NUMBER_2 = 2L;
+    private static final long SEQUENCE_NUMBER_3 = 3L;
+    private static final long MAXIMUM_ID_VALUE = 9_999_999L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,34 +60,34 @@ public class SequenceServiceIntegrationTest {
     public void When_GenerateTransactionId_Expect_IncreasedByOne() {
         resetCounter(TRANSACTION_SENDER);
 
-        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(1L);
-        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(2L);
-        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(3L);
+        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(SEQUENCE_NUMBER_2);
+        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(SEQUENCE_NUMBER_3);
     }
 
     @Test
     public void When_GenerateInterchangeId_Expect_IncreasedByOne() {
         resetCounter(INTERCHANGE_KEY_1);
 
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(2L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(3L);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_2);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_3);
     }
 
     @Test
     public void When_GenerateMessageId_Expect_IncreasedByOne() {
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
 
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(2L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(3L);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_2);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_3);
     }
 
     @Test
     public void When_GenerateIdGreaterThan9999999_Expect_CounterReset() {
-        setCounter(TRANSACTION_KEY, 9_999_999L);
+        setCounter(TRANSACTION_KEY, MAXIMUM_ID_VALUE);
 
-        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(1L);
+        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(SEQUENCE_NUMBER_1);
     }
 
     @Test
@@ -92,9 +96,9 @@ public class SequenceServiceIntegrationTest {
         resetCounter(INTERCHANGE_KEY_1);
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
 
-        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(1L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
+        assertThat(sequenceService.generateTransactionNumber(TRANSACTION_SENDER)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
     }
 
     @Test
@@ -102,10 +106,10 @@ public class SequenceServiceIntegrationTest {
         resetCounter(INTERCHANGE_KEY_1);
         resetCounter(INTERCHANGE_KEY_2);
 
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_2, RECIPIENT_2)).isEqualTo(1L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(2L);
-        assertThat(sequenceService.generateInterchangeSequence(SENDER_2, RECIPIENT_2)).isEqualTo(2L);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_2, RECIPIENT_2)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_2);
+        assertThat(sequenceService.generateInterchangeSequence(SENDER_2, RECIPIENT_2)).isEqualTo(SEQUENCE_NUMBER_2);
     }
 
     @Test
@@ -113,17 +117,19 @@ public class SequenceServiceIntegrationTest {
         resetCounter(INTERCHANGE_MESSAGE_KEY_1);
         resetCounter(INTERCHANGE_MESSAGE_KEY_2);
 
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(1L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_2, RECIPIENT_2)).isEqualTo(1L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(2L);
-        assertThat(sequenceService.generateMessageSequence(SENDER_2, RECIPIENT_2)).isEqualTo(2L);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateMessageSequence(SENDER_2, RECIPIENT_2)).isEqualTo(SEQUENCE_NUMBER_1);
+        assertThat(sequenceService.generateMessageSequence(SENDER_1, RECIPIENT_1)).isEqualTo(SEQUENCE_NUMBER_2);
+        assertThat(sequenceService.generateMessageSequence(SENDER_2, RECIPIENT_2)).isEqualTo(SEQUENCE_NUMBER_2);
     }
 
     @Test
     public void When_GenerateTransactionIdInParallel_Expect_Expect_CorrectValues() {
         resetCounter(TRANSACTION_KEY);
+        final long minimumRange = 1;
+        final long maximumRange = 100;
 
-        List<Long> expectedList = LongStream.rangeClosed(1, 100)
+        List<Long> expectedList = LongStream.rangeClosed(minimumRange, maximumRange)
             .boxed()
             .collect(Collectors.toList());
 
@@ -139,17 +145,22 @@ public class SequenceServiceIntegrationTest {
     }
 
     private List<Long> generateMultiThreadedSeqList() {
+        final int numberOfThreads = 10;
+        final int sequenceCount = 100;
+        final int awaitDelay = 20;
+
         List<Long> seqList = Collections.synchronizedList(new ArrayList<>());
 
-        ExecutorService service = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 100; i++) {
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+
+        for (int i = 0; i < sequenceCount; i++) {
             service.submit(() -> {
                 seqList.add(sequenceService.generateTransactionNumber(TRANSACTION_SENDER));
             });
         }
 
-        await().atMost(20, SECONDS)
-            .untilAsserted(() -> MatcherAssert.assertThat(seqList.size(), Matchers.is(100)));
+        await().atMost(awaitDelay, SECONDS)
+            .untilAsserted(() -> MatcherAssert.assertThat(seqList.size(), Matchers.is(sequenceCount)));
 
         return seqList.stream()
             .sorted()

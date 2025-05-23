@@ -70,15 +70,15 @@ public class SSLContextBuilder {
     @SneakyThrows
     private static KeyStore buildKeyStore(MeshConfig meshConfig) {
         return EnvKeyStore.createFromPEMStrings(
-            meshConfig.getEndpointPrivateKey(),
-            meshConfig.getEndpointCert(),
+            meshConfig.getFormattedEndpointPrivateKey(),
+            meshConfig.getFormattedEndpointCert(),
             meshConfig.getMailboxPassword()).keyStore();
     }
 
     @SneakyThrows
     private static KeyStore buildTrustStore(MeshConfig meshConfig) {
         return EnvKeyStore.createFromPEMStrings(
-            meshConfig.getSubCAcert(),
+            meshConfig.getFormattedSubCaCert(),
             meshConfig.getMailboxPassword()).keyStore();
     }
 }

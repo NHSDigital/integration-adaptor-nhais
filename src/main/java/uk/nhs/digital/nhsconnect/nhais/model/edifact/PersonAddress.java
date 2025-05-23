@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
+import uk.nhs.digital.nhsconnect.nhais.utils.EdifactAddressPart;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class PersonAddress extends Segment {
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
     private static final int POSTAL_CODE_OFFSET = 5;
     private static final String EMPTY_FIRST_ADDRESS_LINE_PLACEHOLDER = "??";
+    private static final int ADDRESS_LINE_INDEX = 3;
+
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -37,28 +40,28 @@ public class PersonAddress extends Segment {
         }
         String[] addressComponents = Split.byPlus(edifactString);
         String[] addressLinesParts =
-            Split.byColon(addressComponents[3]);
+            Split.byColon(addressComponents[ADDRESS_LINE_INDEX]);
 
         var builder = PersonAddress.builder();
-        if (addressLinesParts.length > 0) {
-            String addressLine1 = replacePlaceholderWithEmpty(addressLinesParts[0]);
+        if (addressLinesParts.length > EdifactAddressPart.ADDRESS_LINE_1_INDEX) {
+            String addressLine1 = replacePlaceholderWithEmpty(addressLinesParts[EdifactAddressPart.ADDRESS_LINE_1_INDEX]);
             builder.addressLine1(addressLine1);
         }
-        if (addressLinesParts.length > 1) {
-            builder.addressLine2(addressLinesParts[1]);
+        if (addressLinesParts.length > EdifactAddressPart.ADDRESS_LINE_2_INDEX) {
+            builder.addressLine2(addressLinesParts[EdifactAddressPart.ADDRESS_LINE_2_INDEX]);
         }
-        if (addressLinesParts.length > 2) {
-            builder.addressLine3(addressLinesParts[2]);
+        if (addressLinesParts.length > EdifactAddressPart.ADDRESS_LINE_3_INDEX) {
+            builder.addressLine3(addressLinesParts[EdifactAddressPart.ADDRESS_LINE_3_INDEX]);
         }
-        if (addressLinesParts.length > 3) {
-            builder.addressLine4(addressLinesParts[3]);
+        if (addressLinesParts.length > EdifactAddressPart.ADDRESS_LINE_4_INDEX) {
+            builder.addressLine4(addressLinesParts[EdifactAddressPart.ADDRESS_LINE_4_INDEX]);
         }
-        if (addressLinesParts.length > 4) {
-            builder.addressLine5(addressLinesParts[4]);
+        if (addressLinesParts.length > EdifactAddressPart.ADDRESS_LINE_5_INDEX) {
+            builder.addressLine5(addressLinesParts[EdifactAddressPart.ADDRESS_LINE_5_INDEX]);
         }
 
-        if (addressComponents.length > 8) {
-            builder.postalCode(addressComponents[8]);
+        if (addressComponents.length > EdifactAddressPart.POSTAL_CODE_INDEX) {
+            builder.postalCode(addressComponents[EdifactAddressPart.POSTAL_CODE_INDEX]);
         }
 
         return builder.build();

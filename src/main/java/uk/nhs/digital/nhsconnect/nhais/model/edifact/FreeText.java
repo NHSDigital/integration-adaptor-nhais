@@ -16,6 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.Split;
 public class FreeText extends Segment {
     private static final String KEY = "FTX";
     private static final String QUALIFIER = "RGI";
+    private static final int FREE_TEXT_INDEX = 4;
     public static final String KEY_QUALIFIER = KEY + PLUS_SEPARATOR + QUALIFIER;
 
     private final String freeTextValue;
@@ -27,7 +28,7 @@ public class FreeText extends Segment {
         String[] split = Split.byPlus(
             Split.bySegmentTerminator(edifactString)[0]
         );
-        return new FreeText(split[4]);
+        return new FreeText(split[FREE_TEXT_INDEX]);
     }
 
     @Override
