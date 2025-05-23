@@ -19,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MeshAuthorizationTokenTest {
 
-    private final static String AUTHORIZATION_HASH = "474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569";
-    private final static String MAILBOX_ID = "mailbox_id";
+    private static final String AUTHORIZATION_HASH = "474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569";
+    private static final String MAILBOX_ID = "mailbox_id";
 
-    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
+    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
         .toInstant();
-    private final static String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
+    private static final String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 
     @Mock
     private MeshConfig meshConfig;

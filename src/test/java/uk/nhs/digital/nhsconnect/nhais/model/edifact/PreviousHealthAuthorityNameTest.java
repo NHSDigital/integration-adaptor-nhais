@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class PreviousHealthAuthorityNameTest {
 
-    private final static String IDENTIFIER = "ID1";
+    private static final String IDENTIFIER = "ID1";
 
     @Test
     void toEdifact() {

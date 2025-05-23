@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PreviousHealthAuthorityNameMapperTest {
 
-    private final static String IDENTIFIER = "ID1";
+    private static final String IDENTIFIER = "ID1";
 
     @Test
     void When_MappingGPPrevious_Expect_ExpectCorrectResult() {

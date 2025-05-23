@@ -12,10 +12,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SequenceServiceTest {
-    private final static String TRANSACTION_ID = "TN-sender";
-    private final static String INTERCHANGE_ID = "SIS-sender-recipient";
-    private final static String MESSAGE_ID = "SMS-sender-recipient";
-    private final static Long SEQ_VALUE = 1L;
+    private static final String TRANSACTION_ID = "TN-sender";
+    private static final String INTERCHANGE_ID = "SIS-sender-recipient";
+    private static final String MESSAGE_ID = "SMS-sender-recipient";
+    private static final Long SEQ_VALUE = 1L;
 
     @InjectMocks
     private SequenceService sequenceService;

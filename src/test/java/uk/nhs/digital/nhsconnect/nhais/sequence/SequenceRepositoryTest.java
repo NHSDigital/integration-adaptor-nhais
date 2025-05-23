@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SequenceRepositoryTest {
-    private final static String MAX_KEY = "max-key";
-    private final static String NEW_KEY = "new-key";
-    private final static OutboundSequenceId SEQUENCE_ID = new OutboundSequenceId(NEW_KEY, 1L);
+    private static final String MAX_KEY = "max-key";
+    private static final String NEW_KEY = "new-key";
+    private static final OutboundSequenceId SEQUENCE_ID = new OutboundSequenceId(NEW_KEY, 1L);
 
     @InjectMocks
     private SequenceRepository sequenceRepository;

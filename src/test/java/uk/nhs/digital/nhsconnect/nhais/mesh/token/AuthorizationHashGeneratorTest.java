@@ -20,13 +20,13 @@ class AuthorizationHashGeneratorTest {
     @Mock
     private MeshConfig meshConfig;
 
-    private final static String MAILBOX_ID = "mailbox_id";
-    private final static String MAILBOX_PASSWORD = "mailbox_password";
-    private final static String SHARED_KEY = "shared_key";
+    private static final String MAILBOX_ID = "mailbox_id";
+    private static final String MAILBOX_PASSWORD = "mailbox_password";
+    private static final String SHARED_KEY = "shared_key";
 
-    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
+    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
         .toInstant();
-    private final static String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
+    private static final String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 
     @BeforeEach
     void setUp() {

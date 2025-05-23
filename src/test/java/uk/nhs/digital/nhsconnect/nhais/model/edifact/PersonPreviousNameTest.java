@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PersonPreviousNameTest {
 
-    private final static String NHS_AND_NAMES = "PNA+PER+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_AND_NAMES_VALUE = "PER+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY = "PNA+PER++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY_VALUE = "PER++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_ONLY = "PNA+PER+RAT56:OPI";
-    private final static String NHS_ONLY_VALUE = "PER+RAT56:OPI";
+    private static final String NHS_AND_NAMES = "PNA+PER+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NHS_AND_NAMES_VALUE = "PER+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NAMES_ONLY = "PNA+PER++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NAMES_ONLY_VALUE = "PER++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NHS_ONLY = "PNA+PER+RAT56:OPI";
+    private static final String NHS_ONLY_VALUE = "PER+RAT56:OPI";
 
 
     @Test
