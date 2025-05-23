@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
@@ -22,7 +23,8 @@ class MeshAuthorizationTokenTest {
     private static final String AUTHORIZATION_HASH = "474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569";
     private static final String MAILBOX_ID = "mailbox_id";
 
-    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
+    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime
+        .of(LocalDateTime.parse("1991-11-06T12:30:00"), TimestampService.UK_ZONE)
         .toInstant();
     private static final String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 

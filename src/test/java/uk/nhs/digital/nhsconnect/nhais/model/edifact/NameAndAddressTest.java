@@ -12,7 +12,7 @@ public class NameAndAddressTest {
 
     @Test
     public void testValidMessageHeader() throws EdifactValidationException {
-        NameAndAddress nameAndAddress = new NameAndAddress("PARTY",NameAndAddress.QualifierAndCode.FHS);
+        NameAndAddress nameAndAddress = new NameAndAddress("PARTY", NameAndAddress.QualifierAndCode.FHS);
 
         String edifact = nameAndAddress.toEdifact();
 
@@ -21,7 +21,7 @@ public class NameAndAddressTest {
 
     @Test
     public void testValidationStatefulNonSequenceNumber() {
-        NameAndAddress nameAndAddress = new NameAndAddress("",NameAndAddress.QualifierAndCode.FHS);
+        NameAndAddress nameAndAddress = new NameAndAddress("", NameAndAddress.QualifierAndCode.FHS);
 
         Exception exception = assertThrows(EdifactValidationException.class, nameAndAddress::preValidate);
 

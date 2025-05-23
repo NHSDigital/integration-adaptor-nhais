@@ -31,7 +31,7 @@ class HealthAuthorityNameAndAddressTest {
     void testPreValidate() {
         HealthAuthorityNameAndAddress emptyIdentifier = new HealthAuthorityNameAndAddress("", "x");
         HealthAuthorityNameAndAddress emptyCode = new HealthAuthorityNameAndAddress("x", "");
-        SoftAssertions.assertSoftly( softly -> {
+        SoftAssertions.assertSoftly(softly -> {
             softly.assertThatThrownBy(emptyIdentifier::preValidate)
                 .isExactlyInstanceOf(EdifactValidationException.class)
                 .hasMessage("NAD: Attribute identifier is required");

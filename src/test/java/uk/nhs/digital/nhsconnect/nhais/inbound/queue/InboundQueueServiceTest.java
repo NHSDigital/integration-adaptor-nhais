@@ -125,7 +125,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void When_ReceiveUnknownWorkflow_Expect_ThrowsUnknownWorkflowExceptionWithNoAck() throws Exception{
+    public void When_ReceiveUnknownWorkflow_Expect_ThrowsUnknownWorkflowExceptionWithNoAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
