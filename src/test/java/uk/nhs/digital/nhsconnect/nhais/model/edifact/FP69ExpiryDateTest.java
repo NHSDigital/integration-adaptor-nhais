@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FP69ExpiryDateTest {
 
     @Test
-    void whenSettingNullTimestamp_expectException() {
+    void When_SettingNullTimestamp_Expect_Exception() {
         assertThatThrownBy(() -> new FP69ExpiryDate(null))
             .isInstanceOf(NullPointerException.class);
     }

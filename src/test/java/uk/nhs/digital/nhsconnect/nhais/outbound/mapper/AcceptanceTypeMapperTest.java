@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AcceptanceTypeMapperTest {
 
     @Test
-    void When_MappingAcceptanceType_Then_ExpectCorrectResult() {
+    void When_MappingAcceptanceType_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ACCEPTANCE_TYPE)
@@ -32,7 +32,7 @@ class AcceptanceTypeMapperTest {
     }
 
     @Test
-    public void When_MappingWithWrongType_Then_NoSuchElementExceptionIsThrown() {
+    public void When_MappingWithWrongType_Expect_NoSuchElementExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ACCEPTANCE_TYPE)
@@ -43,7 +43,7 @@ class AcceptanceTypeMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutTypeParam_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutTypeParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var acceptanceTypeMapper = new AcceptanceTypeMapper();

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PreviousGpNameTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "NAD+PGP+++DR PREVIOUS'";
 
         var personGPPrevious = PreviousGpName.builder()
@@ -20,7 +20,7 @@ public class PreviousGpNameTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyFields_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyFields_Expect_EdifactValidationExceptionIsThrown() {
         var personGPPrevious = PreviousGpName.builder()
             .partyName("")
             .build();
@@ -29,7 +29,7 @@ public class PreviousGpNameTest {
     }
 
     @Test
-    public void When_BuildingWithoutMandatoryFields_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithoutMandatoryFields_Expect_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> PreviousGpName.builder().build());
     }
 }

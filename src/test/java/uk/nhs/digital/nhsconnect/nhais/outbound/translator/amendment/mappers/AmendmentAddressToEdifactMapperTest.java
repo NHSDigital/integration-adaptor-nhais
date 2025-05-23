@@ -45,7 +45,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenReplacingAllFiveAddressLinesFields_expectAllAddressLinesAreMapped() {
+    void When_ReplacingAllFiveAddressLinesFields_Expect_AllAddressLinesAreMapped() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -71,7 +71,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenAddressLineIsnull_expectNullToBeMapperAsEmptyEdifactString() {
+    void When_AddressLineIsnull_Expect_NullToBeMapperAsEmptyEdifactString() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -97,7 +97,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenRemovingFourAddressLinesFields_expectFourAddressLinesRemoved() {
+    void When_RemovingFourAddressLinesFields_Expect_FourAddressLinesRemoved() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
@@ -123,7 +123,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenHouseNameMissing_thenThrowsFhirValidationException() {
+    void When_HouseNameMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.empty());
         when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
@@ -141,7 +141,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenNumberOrRoadNameMissing_thenThrowsFhirValidationException() {
+    void When_NumberOrRoadNameMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -159,7 +159,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenLocalityMissing_thenThrowsFhirValidationException() {
+    void When_LocalityMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -177,7 +177,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenPostTownMissing_thenThrowsFhirValidationException() {
+    void When_PostTownMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -195,7 +195,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenCountyMissing_thenThrowsFhirValidationException() {
+    void When_CountyMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
@@ -213,7 +213,7 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     }
 
     @Test
-    void whenRemoveForPostTown_thenThrowsPatchValidationException() {
+    void When_RemoveForPostTown_Expect_ThrowsPatchValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
         when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));

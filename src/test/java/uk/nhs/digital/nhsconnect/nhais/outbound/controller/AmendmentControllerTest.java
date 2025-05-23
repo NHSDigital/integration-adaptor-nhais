@@ -60,7 +60,7 @@ public class AmendmentControllerTest {
     private Resource paramsPayload;
 
     @Test
-    void whenValidInput_thenReturns202() throws Exception {
+    void When_ValidInput_Expect_Returns202() throws Exception {
         String requestBody = new String(Files.readAllBytes(paramsPayload.getFile().toPath()));
 
         MeshMessage meshMessage = new MeshMessage();

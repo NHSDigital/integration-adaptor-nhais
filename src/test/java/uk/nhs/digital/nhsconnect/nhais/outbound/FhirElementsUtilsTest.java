@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FhirElementsUtilsTest {
 
     @Test
-    public void whenNullGpCodeObject_theThrowsFhirValidationException() {
+    public void When_NullGpCodeObject_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         patient.setGeneralPractitioner(null);
         assertThatThrownBy(() -> FhirElementsUtils.checkGpCodePresence(patient))
@@ -21,7 +21,7 @@ class FhirElementsUtilsTest {
     }
 
     @Test
-    public void whenEmptyGpCodeList_thenThrowsFhirValidationException() {
+    public void When_EmptyGpCodeList_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         List<Reference> generalPractitioners = Collections.emptyList();
         patient.setGeneralPractitioner(generalPractitioners);
@@ -30,7 +30,7 @@ class FhirElementsUtilsTest {
     }
 
     @Test
-    public void whenBlankGpCodeString_thenThrowsFhirValidationException() {
+    public void When_BlankGpCodeString_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         Reference reference = new Reference();
         Identifier identifier = new Identifier();
@@ -43,7 +43,7 @@ class FhirElementsUtilsTest {
     }
 
     @Test
-    public void whenNullHaCipherObject_theThrowsFhirValidationException() {
+    public void When_NullHaCipherObject_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         patient.setManagingOrganization(null);
         assertThatThrownBy(() -> FhirElementsUtils.checkGpCodePresence(patient))
@@ -51,7 +51,7 @@ class FhirElementsUtilsTest {
     }
 
     @Test
-    public void whenEmptyHaCipherNullIdentifier_thenThrowsFhirValidationException() {
+    public void When_EmptyHaCipherNullIdentifier_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         Reference managingOrganization = new Reference();
         patient.setManagingOrganization(managingOrganization);
@@ -60,7 +60,7 @@ class FhirElementsUtilsTest {
     }
 
     @Test
-    public void whenBlankHaCipherString_thenThrowsFhirValidationException() {
+    public void When_BlankHaCipherString_Expect_ThrowsFhirValidationException() {
         Patient patient = new Patient();
         Reference managingOrganization = new Reference();
         Identifier identifier = new Identifier();
@@ -70,5 +70,4 @@ class FhirElementsUtilsTest {
         assertThatThrownBy(() -> FhirElementsUtils.checkGpCodePresence(patient))
             .isExactlyInstanceOf(FhirValidationException.class);
     }
-
 }

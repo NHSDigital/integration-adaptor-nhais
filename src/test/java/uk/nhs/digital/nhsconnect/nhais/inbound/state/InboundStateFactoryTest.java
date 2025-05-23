@@ -96,14 +96,14 @@ public class InboundStateFactoryTest {
     }
 
     @Test
-    void whenFromInterchangeCalled_thenInboundStateObjectIsCreated() {
+    void When_FromInterchangeCalled_Expect_InboundStateObjectIsCreated() {
         when(inboundOperationIdService.createOperationIdForTransaction(TRANSACTION)).thenReturn(OPERATION_ID);
         var inboundStateFromInterchange = inboundStateFactory.fromTransaction(TRANSACTION);
         assertThat(inboundStateFromInterchange).isEqualTo(EXPECTED_INTERCHANGE_INBOUND_STATE);
     }
 
     @Test
-    void whenFromRecepCalled_thenInboundStateObjectIsCreated() {
+    void When_FromRecepCalled_Expect_InboundStateObjectIsCreated() {
         var inboundStateFromInterchange = inboundStateFactory.fromRecep(MESSAGE);
         assertThat(inboundStateFromInterchange).isEqualTo(EXPECTED_RECEP_INBOUND_STATE);
     }

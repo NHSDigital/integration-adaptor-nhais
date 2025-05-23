@@ -12,13 +12,13 @@ public class PersonDateOfEntryTest {
 
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var personDateOfEntry = new PersonDateOfEntry(LOCAL_DATE);
         assertThat(personDateOfEntry.toEdifact()).isEqualTo("DTM+957:19910113:102'");
     }
 
     @Test
-    public void When_BuildingWithEmptyTimestamp_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithEmptyTimestamp_Expect_NullPointerExceptionIsThrown() {
         assertThatThrownBy(() -> new PersonDateOfEntry(null))
             .isExactlyInstanceOf(NullPointerException.class);
     }

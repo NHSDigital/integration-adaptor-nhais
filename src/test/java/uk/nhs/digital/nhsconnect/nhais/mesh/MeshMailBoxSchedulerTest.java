@@ -33,7 +33,7 @@ public class MeshMailBoxSchedulerTest {
     private ApplicationContext applicationContext;
 
     @Test
-    public void When_CollectionIsEmpty_Then_SingleDocumentIsCreatedAndTheJobIsNotExecuted() {
+    public void When_CollectionIsEmpty_Expect_SingleDocumentIsCreatedAndTheJobIsNotExecuted() {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -43,7 +43,7 @@ public class MeshMailBoxSchedulerTest {
     }
 
     @Test
-    public void When_DocumentExistsAndTimestampIsBeforeProvidedTime_Then_DocumentIsUpdateAndTheJobIsExecuted() {
+    public void When_DocumentExistsAndTimestampIsBeforeProvidedTime_Expect_DocumentIsUpdateAndTheJobIsExecuted() {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(true);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -53,7 +53,7 @@ public class MeshMailBoxSchedulerTest {
     }
 
     @Test
-    public void When_DocumentExistsAndTimestampIsAfterProvidedTime_Then_DocumentIsNotUpdateAndTheJobIsNotExecuted() {
+    public void When_DocumentExistsAndTimestampIsAfterProvidedTime_Expect_DocumentIsNotUpdateAndTheJobIsNotExecuted() {
         when(schedulerTimestampRepository.updateTimestamp(anyString(), isA(Instant.class), anyLong())).thenReturn(false);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
@@ -63,7 +63,7 @@ public class MeshMailBoxSchedulerTest {
     }
 
     @Test
-    void When_SchedulerIsDisabled_Then_ReturnFalse() {
+    void When_SchedulerIsDisabled_Expect_ReturnFalse() {
         Environment environment = mock(Environment.class);
         when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("false");
         when(applicationContext.getEnvironment()).thenReturn(environment);
@@ -72,7 +72,7 @@ public class MeshMailBoxSchedulerTest {
     }
 
     @Test
-    void When_SchedulerIsEnabled_Then_ReturnTrue() {
+    void When_SchedulerIsEnabled_Expect_ReturnTrue() {
         Environment environment = mock(Environment.class);
         when(environment.getProperty("nhais.scheduler.enabled")).thenReturn("true");
         when(applicationContext.getEnvironment()).thenReturn(environment);

@@ -36,7 +36,7 @@ class BirthDatePatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonDateOfBirth_thenMapIntoBirthDateAmendmentPatch() {
+    void When_PersonDateOfBirth_Expect_MapIntoBirthDateAmendmentPatch() {
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.of(personDateOfBirth));
         when(personDateOfBirth.getDateOfBirth()).thenReturn(BIRTH_DATE);
 
@@ -46,7 +46,7 @@ class BirthDatePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressNotPresent_thenReturnNull() {
+    void When_PersonAddressNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonDateOfBirth()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = birthDatePatchTransactionMapper.map(transaction);

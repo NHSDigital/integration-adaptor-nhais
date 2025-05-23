@@ -43,7 +43,7 @@ class InboundEdifactTransactionHandlerTest {
     }
 
     @Test
-    void whenTranslatingAmendment_expectPatchTranslationServiceIsUsed() {
+    void When_TranslatingAmendment_Expect_PatchTranslationServiceIsUsed() {
         when(message.getReferenceTransactionType())
             .thenReturn(new ReferenceTransactionType(ReferenceTransactionType.Inbound.AMENDMENT));
         var amendmentBody = new AmendmentBody();
@@ -59,7 +59,7 @@ class InboundEdifactTransactionHandlerTest {
 
     @ParameterizedTest
     @EnumSource(names = {"DEDUCTION", "REJECTION", "APPROVAL"})
-    void whenTranslatingNonAmendment_expectFhirTranslationServiceIsUsed(ReferenceTransactionType.Inbound transactionType) {
+    void When_TranslatingNonAmendment_Expect_FhirTranslationServiceIsUsed(ReferenceTransactionType.Inbound transactionType) {
         when(message.getReferenceTransactionType())
             .thenReturn(new ReferenceTransactionType(transactionType));
         var parameters = new Parameters();

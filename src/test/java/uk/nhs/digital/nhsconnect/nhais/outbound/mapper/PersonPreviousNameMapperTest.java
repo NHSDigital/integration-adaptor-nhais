@@ -29,7 +29,7 @@ class PersonPreviousNameMapperTest {
         .build();
 
     @Test
-    void When_MappingPatientPreviousFamilyName_Then_ExpectCorrectResult() {
+    void When_MappingPatientPreviousFamilyName_Expect_ExpectCorrectResult() {
         Patient patient = new Patient()
             .setName(List.of(patientName, patientName2))
             .setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
@@ -50,7 +50,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    void When_MappingAllPossiblePatientNames_Then_ExpectCorrectResult() {
+    void When_MappingAllPossiblePatientNames_Expect_ExpectCorrectResult() {
         PatientName patientName = PatientName.builder()
             .familyName(FAMILY_NAME)
             .forename("Forename")
@@ -87,7 +87,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutSurname_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutSurname_Expect_FhirValidationExceptionIsThrown() {
         Patient patient = new Patient();
         patient.setIdentifier(List.of(new NhsIdentifier(NHS_NUMBER)));
         patient.setName(List.of());
@@ -100,7 +100,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    void When_MappingWithoutNhsNumber_Then_ExpectCorrectResult() {
+    void When_MappingWithoutNhsNumber_Expect_ExpectCorrectResult() {
         Patient patient = new Patient()
             .setName(List.of(patientName, patientName2));
 
@@ -118,7 +118,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutPatient_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutPatient_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var previousPersonNameMapper = new PersonPreviousNameMapper();
@@ -126,7 +126,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    void When_ThereIsOnlyOneName_Then_CanNotMap() {
+    void When_ThereIsOnlyOneName_Expect_CanNotMap() {
         Patient patient = new Patient()
             .setName(List.of(patientName));
 
@@ -139,7 +139,7 @@ class PersonPreviousNameMapperTest {
     }
 
     @Test
-    void When_ThereAreTwoNamea_Then_CanMap() {
+    void When_ThereAreTwoNamea_Expect_CanMap() {
         Patient patient = new Patient()
             .setName(List.of(patientName, patientName2));
 

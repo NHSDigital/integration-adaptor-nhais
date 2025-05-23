@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReferenceMessageRecepTest {
 
     @Test
-    void whenGettingKey_thenReturnsProperValue() {
+    void When_GettingKey_Expect_ReturnsProperValue() {
         String key = new ReferenceMessageRecep(
             123L, ReferenceMessageRecep.RecepCode.ERROR)
             .getKey();
@@ -21,7 +21,7 @@ class ReferenceMessageRecepTest {
     }
 
     @Test
-    void whenGettingValue_thenReturnsProperValue() {
+    void When_GettingValue_Expect_ReturnsProperValue() {
         String value = new ReferenceMessageRecep(
             123L, ReferenceMessageRecep.RecepCode.ERROR)
             .getValue();
@@ -30,7 +30,7 @@ class ReferenceMessageRecepTest {
     }
 
     @Test
-    void whenPreValidatedDataViolatesNullChecks_thenThrowsException(SoftAssertions softly) {
+    void When_PreValidatedDataViolatesNullChecks_Expect_ThrowsException(SoftAssertions softly) {
         softly.assertThatThrownBy(
             () -> new ReferenceMessageRecep(null, ReferenceMessageRecep.RecepCode.ERROR)
                 .preValidate())
@@ -45,7 +45,7 @@ class ReferenceMessageRecepTest {
     }
 
     @Test
-    void whenParsing_thenRecepCreated(SoftAssertions softly) {
+    void When_Parsing_Expect_RecepCreated(SoftAssertions softly) {
         var recepRow = ReferenceMessageRecep.fromString("RFF+MIS:00000005 CP");
 
         softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(5L);
@@ -63,7 +63,7 @@ class ReferenceMessageRecepTest {
     }
 
     @Test
-    void whenParsingRecepCodeFromCode_thenRecepCodeIsCreated(SoftAssertions softly) {
+    void When_ParsingRecepCodeFromCode_Expect_RecepCodeIsCreated(SoftAssertions softly) {
         var toParse = new String[] {"CP", "CA", "CI"};
 
         for (int i = 0; i < ReferenceMessageRecep.RecepCode.values().length; i++) {

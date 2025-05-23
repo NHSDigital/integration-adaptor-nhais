@@ -61,7 +61,7 @@ class DeductionTransactionMapperTest {
     private GpNameAndAddress gpNameAndAddress;
 
     @Test
-    void when_allFieldsInTransaction_Then_mapAllFields(SoftAssertions softly) {
+    void When_AllFieldsInTransaction_Expect_MapAllFields(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.of(deductionReasonCode));
         when(transaction.getDeductionDate()).thenReturn(Optional.of(deductionDate));
@@ -91,7 +91,7 @@ class DeductionTransactionMapperTest {
     }
 
     @Test
-    void when_allMandatoryFieldsInTransaction_Then_mapOnlyMandatoryFields(SoftAssertions softly) {
+    void When_AllMandatoryFieldsInTransaction_Expect_MapOnlyMandatoryFields(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.of(deductionReasonCode));
         when(transaction.getDeductionDate()).thenReturn(Optional.of(deductionDate));
@@ -119,7 +119,7 @@ class DeductionTransactionMapperTest {
     }
 
     @Test
-    void when_NhsNumberIsMissing_Then_ThrowException(SoftAssertions softly) {
+    void When_NhsNumberIsMissing_Expect_ThrowException(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
@@ -133,7 +133,7 @@ class DeductionTransactionMapperTest {
     }
 
     @Test
-    void when_DeductionReasonCodeIsMissing_Then_ThrowException(SoftAssertions softly) {
+    void When_DeductionReasonCodeIsMissing_Expect_ThrowException(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.empty());
         when(transaction.getMessage()).thenReturn(message);
@@ -150,7 +150,7 @@ class DeductionTransactionMapperTest {
     }
 
     @Test
-    void when_DeductionDateIsMissing_Then_ThrowException(SoftAssertions softly) {
+    void When_DeductionDateIsMissing_Expect_ThrowException(SoftAssertions softly) {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.of(deductionReasonCode));
         when(transaction.getDeductionDate()).thenReturn(Optional.empty());

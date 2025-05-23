@@ -12,7 +12,7 @@ public class AcceptanceDateTest {
     private final LocalDate DATE = LocalDate.of(2020, 3, 28);
 
     @Test
-    public void When_toEdifact_And_instantInWinter_Then_edifactIsCorrect() throws EdifactValidationException {
+    public void When_ToEdifactAndInstantInWinter_Expect_EdifactIsCorrect() throws EdifactValidationException {
         assertThat(new AcceptanceDate(DATE).toEdifact()).isEqualTo("DTM+956:20200328:102'");
     }
 

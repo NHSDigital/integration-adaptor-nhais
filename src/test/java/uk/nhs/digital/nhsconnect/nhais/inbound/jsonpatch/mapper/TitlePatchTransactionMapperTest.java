@@ -36,7 +36,7 @@ class TitlePatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonNameAndTitlePresent_thenMapIntoTitleAmendmentPatch() {
+    void When_PersonNameAndTitlePresent_Expect_MapIntoTitleAmendmentPatch() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getTitle()).thenReturn(TITLE);
 
@@ -46,7 +46,7 @@ class TitlePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNameNotPresent_thenReturnNull() {
+    void When_PersonNameNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = titlePatchTransactionMapper.map(transaction);
@@ -55,7 +55,7 @@ class TitlePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonNameHasNoTitle_thenReturnNull() {
+    void When_PersonNameHasNoTitle_Expect_ReturnNull() {
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getTitle()).thenReturn(null);
 

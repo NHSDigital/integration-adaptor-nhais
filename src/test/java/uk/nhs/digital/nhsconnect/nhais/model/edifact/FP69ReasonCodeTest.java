@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FP69ReasonCodeTest {
 
     @Test
-    void whenSettingNullCode_expectException() {
+    void When_SettingNullCode_Expect_Exception() {
         assertThatThrownBy(() -> new FP69ReasonCode(null))
             .isInstanceOf(NullPointerException.class);
     }

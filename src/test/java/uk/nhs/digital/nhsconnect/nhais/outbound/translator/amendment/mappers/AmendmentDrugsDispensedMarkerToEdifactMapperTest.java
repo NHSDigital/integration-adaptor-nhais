@@ -26,7 +26,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(true))));
@@ -39,7 +39,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenRemoving_expectFieldsAreRemoved(AmendmentPatchOperation operation) {
+    void When_Removing_Expect_FieldsAreRemoved(AmendmentPatchOperation operation) {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(false))));
@@ -51,7 +51,7 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     }
 
     @Test
-    void whenUsingRemoveOperation_expectException() {
+    void When_UsingRemoveOperation_Expect_Exception() {
         when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 

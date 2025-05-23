@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OperationIdTest {
 
     @Test
-    void whenBuildingOperationId_thenHashIsCreated() {
+    void When_BuildingOperationId_Expect_HashIsCreated() {
         assertEquals(
             "5d6c5b2009aa0a3a88ca8bd8ba339df16a831c35196136cba56f13b742461231",
             OperationId.buildOperationId("some_sender", 123L));

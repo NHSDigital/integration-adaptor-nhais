@@ -101,7 +101,7 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_dependenciesCalledCorrectly() {
+    public void When_ConvertedSuccessfully_Expect_DependenciesCalledCorrectly() {
         Parameters patient = createPatient();
 
         fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
@@ -126,7 +126,7 @@ public class FhirToEdifactServiceTest {
     }
 
     @Test
-    public void when_convertedSuccessfully_edifactIsCorrect() {
+    public void When_ConvertedSuccessfully_Expect_EdifactIsCorrect() {
         Parameters patient = createPatient();
 
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);

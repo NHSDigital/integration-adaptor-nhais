@@ -15,14 +15,14 @@ public class FhirParserTest {
     private FhirParser fhirParser = new FhirParser();
 
     @Test
-    public void When_parseParameters_Then_returnParametersObject() throws Exception {
+    public void When_ParseParameters_Expect_ReturnParametersObject() throws Exception {
         String json = new String(Files.readAllBytes(Paths.get(getClass().getResource("/patient/parameters.json").toURI())));
         Parameters parameters = fhirParser.parseParameters(json);
         assertThat(parameters.getParameter()).isEmpty();
     }
 
     @Test
-    public void When_parseNotJson_Then_returnFhirValidationException(){
+    public void When_ParseNotJson_Expect_ReturnFhirValidationException(){
         String xml = "<item></item>";
         assertThatThrownBy(() -> fhirParser.parseParameters(xml)).isExactlyInstanceOf(FhirValidationException.class);
     }

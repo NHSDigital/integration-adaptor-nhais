@@ -16,7 +16,7 @@ class PersonPlaceOfBirthMapperTest {
     private final PersonPlaceOfBirthMapper personPlaceOfBirthMapper = new PersonPlaceOfBirthMapper();
 
     @Test
-    void when_ExtensionExistsAndValueIsSet_Then_CanMap() {
+    void When_ExtensionExistsAndValueIsSet_Expect_CanMap() {
         Patient patient = new Patient();
         patient.addExtension(new BirthPlaceExtension("GLASGOW"));
         PatientParameter patientParameter = new PatientParameter(patient);
@@ -27,7 +27,7 @@ class PersonPlaceOfBirthMapperTest {
     }
 
     @Test
-    void when_ExtensionExistsAndValueIsNotSet_Then_CanMap() {
+    void When_ExtensionExistsAndValueIsNotSet_Expect_CanMap() {
         Patient patient = new Patient();
         patient.addExtension(new BirthPlaceExtension(""));
         PatientParameter patientParameter = new PatientParameter(patient);
@@ -41,7 +41,7 @@ class PersonPlaceOfBirthMapperTest {
     }
 
     @Test
-    void when_ExtensionDoesntExist_Then_CanNotMap() {
+    void When_ExtensionDoesntExist_Expect_CanNotMap() {
         PatientParameter patientParameter = new PatientParameter();
         Parameters parameters = new Parameters()
             .addParameter(patientParameter);
@@ -50,7 +50,7 @@ class PersonPlaceOfBirthMapperTest {
     }
 
     @Test
-    void when_ExtensionExistsAndValueIsSet_Then_MappingSuccessful() {
+    void When_ExtensionExistsAndValueIsSet_Expect_MappingSuccessful() {
         Patient patient = new Patient();
         patient.addExtension(new BirthPlaceExtension("GLASGOW"));
         PatientParameter patientParameter = new PatientParameter(patient);

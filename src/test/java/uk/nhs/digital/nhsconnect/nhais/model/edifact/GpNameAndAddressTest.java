@@ -51,7 +51,7 @@ class GpNameAndAddressTest {
     }
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "NAD+GP+4826940,281:900'";
 
         var personGP = GpNameAndAddress.builder()
@@ -63,7 +63,7 @@ class GpNameAndAddressTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyMandatoryFields_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyMandatoryFields_Expect_EdifactValidationExceptionIsThrown() {
         var personGP = GpNameAndAddress.builder()
             .identifier("")
             .code("")
@@ -73,7 +73,7 @@ class GpNameAndAddressTest {
     }
 
     @Test
-    public void When_BuildingWithoutMandatoryFields_Then_NullPointerExceptionIsThrown() {
+    public void When_BuildingWithoutMandatoryFields_Expect_NullPointerExceptionIsThrown() {
         assertThrows(NullPointerException.class, () -> GpNameAndAddress.builder().build());
     }
 }

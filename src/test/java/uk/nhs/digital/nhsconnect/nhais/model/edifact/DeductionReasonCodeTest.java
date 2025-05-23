@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class DeductionReasonCodeTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "GIS+11:ZZZ'";
 
         var deductionReasonCode = DeductionReasonCode.builder()
@@ -20,7 +20,7 @@ public class DeductionReasonCodeTest {
     }
 
     @Test
-    public void When_MappingToEdifactWithEmptyType_Then_EdifactValidationExceptionIsThrown() {
+    public void When_MappingToEdifactWithEmptyType_Expect_EdifactValidationExceptionIsThrown() {
         var deductionReasonCode = DeductionReasonCode.builder()
             .code("")
             .build();
@@ -29,14 +29,14 @@ public class DeductionReasonCodeTest {
     }
 
     @Test
-    void When_fromStringWithValidInput_Then_SegmentCreated() {
+    void When_FromStringWithValidInput_Expect_SegmentCreated() {
         DeductionReasonCode deductionReasonCode = DeductionReasonCode.fromString("GIS+1:ZZZ");
         DeductionReasonCode expectedDeductionReasonCode = new DeductionReasonCode("1");
 
         assertThat(deductionReasonCode.getValue()).isEqualTo(expectedDeductionReasonCode.getValue());
     }
     @Test
-    void When_fromStringWithInvalidInput_Then_ExceptionThrown() {
+    void When_FromStringWithInvalidInput_Expect_ExceptionThrown() {
         assertThatThrownBy(() -> DeductionReasonCode.fromString("XXX+1:ZZZ"))
             .isExactlyInstanceOf(IllegalArgumentException.class);
     }

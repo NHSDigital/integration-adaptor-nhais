@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PemFormatterTest {
 
     @Test
-    public void when_certHasExtraWhitespace_then_itIsTrimmed() {
+    public void When_CertHasExtraWhitespace_Expect_ItIsTrimmed() {
         String withWhitespace = " -----BEGIN CERTIFICATE-----\n " +
             "    \t  MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV \n" +
             "  \n\n    W/JNIRmhLoeFNGNh8HvhI2PwOCsFiqT1rrCaUtusTyH0Ggs=\n" +
@@ -22,7 +22,7 @@ public class PemFormatterTest {
     }
 
     @Test
-    public void when_certHasNoNewlines_then_itIsReformatted() {
+    public void When_CertHasNoNewlines_Expect_ItIsReformatted() {
         String withoutNewlines = "-----BEGIN RSA PRIVATE KEY-----" +
             " MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5" +
             " M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG" +
@@ -37,7 +37,7 @@ public class PemFormatterTest {
     }
 
     @Test
-    public void when_certUsesDifferentHeaderAndFormattedCorrectly_then_itIsNotModified() {
+    public void When_CertUsesDifferentHeaderAndFormattedCorrectly_Expect_ItIsNotModified() {
         String pem = "-----BEGIN PRIVATE KEY-----\n" +
             "MIIJKQIBAAKCAgEA0x7V2cpEuXbLxb4TFigeN6e/TViXx4B9LMuHwwENX1P5V3O5\n" +
             "M0d/fLCFruu5dU3PWKoU2rTzUkflj5XOzu2xAftYi3KDMzRR2sByxjjxb/qMIybG\n" +

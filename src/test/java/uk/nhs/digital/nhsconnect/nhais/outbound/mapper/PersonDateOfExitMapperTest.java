@@ -19,7 +19,7 @@ class PersonDateOfExitMapperTest {
     private static final LocalDate LOCAL_DATE = LocalDate.parse(DATE_STRING);
 
     @Test
-    void When_MappingDateOfEntry_Then_ExpectCorrectResult() {
+    void When_MappingDateOfEntry_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.EXIT_DATE)
@@ -34,7 +34,7 @@ class PersonDateOfExitMapperTest {
     }
 
     @Test
-    public void When_MappingWithWrongDate_Then_DateTimeParseExceptionIsThrown() {
+    public void When_MappingWithWrongDate_Expect_DateTimeParseExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.EXIT_DATE)
@@ -46,7 +46,7 @@ class PersonDateOfExitMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutDateParam_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutDateParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var PersonDateOfExitMapper = new PersonDateOfExitMapper();

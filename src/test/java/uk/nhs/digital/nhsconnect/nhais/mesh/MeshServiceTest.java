@@ -67,7 +67,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndMessagesFound_Then_DownloadAndPublishAllMessages() {
+    public void When_IntervalPassedAndMessagesFound_Expect_DownloadAndPublishAllMessages() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1, MESSAGE_ID2));
@@ -90,7 +90,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalHasPassed_DurationExceeded_Then_StopDownloading() {
+    public void When_IntervalHasPassed_DurationExceeded_Expect_StopDownloading() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1, MESSAGE_ID2));
@@ -112,7 +112,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndRequestToGetMessageListFails_Then_DoNotPublishAndAcknowledgeMessages() {
+    public void When_IntervalPassedAndRequestToGetMessageListFails_Expect_DoNotPublishAndAcknowledgeMessages() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenThrow(new MeshApiConnectionException("error"));
@@ -128,7 +128,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Then_DoNotPublishAndAcknowledgeMessage() {
+    public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Expect_DoNotPublishAndAcknowledgeMessage() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID));
@@ -146,7 +146,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Then_SkipMessageAndDownloadNextOne() {
+    public void When_IntervalPassedAndRequestToDownloadMeshMessageFails_Expect_SkipMessageAndDownloadNextOne() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(ERROR_MESSAGE_ID, MESSAGE_ID1));
@@ -166,7 +166,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndAcknowledgeMeshMessageFails_Then_SkipMessageAndDownloadNextOne() {
+    public void When_IntervalPassedAndAcknowledgeMeshMessageFails_Expect_SkipMessageAndDownloadNextOne() {
         MeshMessage messageForAckError = new MeshMessage();
         messageForAckError.setMeshMessageId(ERROR_MESSAGE_ID);
 
@@ -193,7 +193,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalPassedAndPublishingToQueueFails_Then_DoNotAcknowledgeMessage() {
+    public void When_IntervalPassedAndPublishingToQueueFails_Expect_DoNotAcknowledgeMessage() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1));
@@ -212,7 +212,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalHasNotPassed_Then_DoNothing() {
+    public void When_IntervalHasNotPassed_Expect_DoNothing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(false);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
 
@@ -224,7 +224,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalHasPassedButNoMessagesFound_Then_DoNothing() {
+    public void When_IntervalHasPassedButNoMessagesFound_Expect_DoNothing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of());
@@ -237,7 +237,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_IntervalHasPassedButAuthenticationFails_Then_StopProcessing() {
+    public void When_IntervalHasPassedButAuthenticationFails_Expect_StopProcessing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR)).when(meshClient).authenticate();
@@ -251,7 +251,7 @@ class MeshServiceTest {
     }
 
     @Test
-    public void When_SchedulerIsDisabled_Then_DoNothing() {
+    public void When_SchedulerIsDisabled_Expect_DoNothing() {
         when(meshMailBoxScheduler.isEnabled()).thenReturn(false);
 
         meshService.scanMeshInboxForMessages();

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AcceptanceCodeMapperTest {
 
     @Test
-    void When_MappingAcceptanceCode_Then_ExpectCorrectResult() {
+    void When_MappingAcceptanceCode_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.ACCEPTANCE_CODE)
@@ -30,7 +30,7 @@ class AcceptanceCodeMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutCodeParam_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutCodeParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var acceptanceCodeMapper = new AcceptanceCodeMapper();

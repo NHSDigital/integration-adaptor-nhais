@@ -69,7 +69,7 @@ class FP69PriorNotificationTransactionMapperTest {
     private GpNameAndAddress gpNameAndAddress;
 
     @Test
-    void whenPersonNameSegmentIsMissing_expectException() {
+    void When_PersonNameSegmentIsMissing_Expect_Exception() {
         when(transaction.getPersonName()).thenReturn(Optional.empty());
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
@@ -83,7 +83,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenNhsNumberIsMissing_expectException() {
+    void When_NhsNumberIsMissing_Expect_Exception() {
         when(transaction.getPersonName()).thenReturn(Optional.of(PersonName.builder().build()));
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
@@ -97,7 +97,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenSurnameIsMissing_expectException() {
+    void When_SurnameIsMissing_Expect_Exception() {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -113,7 +113,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenDateOfBirthSegmentIsMissing_expectException() {
+    void When_DateOfBirthSegmentIsMissing_Expect_Exception() {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -131,7 +131,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenReasonCodeSegmentIsMissing_expectException() {
+    void When_ReasonCodeSegmentIsMissing_Expect_Exception() {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -152,7 +152,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenExpiryDateSegmentIsMissing_expectException() {
+    void When_ExpiryDateSegmentIsMissing_Expect_Exception() {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -174,7 +174,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenMappingRequiredValues_expectParametersAreMapped(SoftAssertions softly) {
+    void When_MappingRequiredValues_Expect_ParametersAreMapped(SoftAssertions softly) {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -189,7 +189,7 @@ class FP69PriorNotificationTransactionMapperTest {
     }
 
     @Test
-    void whenMappingAllValues_expectParametersAreMapped(SoftAssertions softly) {
+    void When_MappingAllValues_Expect_ParametersAreMapped(SoftAssertions softly) {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);

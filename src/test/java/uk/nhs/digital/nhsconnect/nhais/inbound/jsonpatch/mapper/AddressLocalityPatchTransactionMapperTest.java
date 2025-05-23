@@ -36,7 +36,7 @@ class AddressLocalityPatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonAddressHasLineThird_thenMapIntoLocalityAmendmentPatch() {
+    void When_PersonAddressHasLineThird_Expect_MapIntoLocalityAmendmentPatch() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine3()).thenReturn(LOCALITY);
 
@@ -46,7 +46,7 @@ class AddressLocalityPatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressNotPresent_thenReturnNull() {
+    void When_PersonAddressNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = addressLocalityPatchTransactionMapper.map(transaction);
@@ -55,7 +55,7 @@ class AddressLocalityPatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressHasNoLineThird_thenReturnValueIsNull() {
+    void When_PersonAddressHasNoLineThird_Expect_ReturnValueIsNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine3()).thenReturn(null);
 

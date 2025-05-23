@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AcceptanceTypeTest {
 
     @Test
-    public void When_MappingToEdifact_Then_ReturnCorrectString() {
+    public void When_MappingToEdifact_Expect_ReturnCorrectString() {
         var expectedValue = "HEA+ATP+1:ZZZ'";
 
         var acceptanceType = AcceptanceType.builder()
@@ -20,7 +20,7 @@ public class AcceptanceTypeTest {
     }
 
     @Test
-    public void When_BuildingWithoutType_Then_IsThrown() {
+    public void When_BuildingWithoutType_Expect_IsThrown() {
         assertThrows(NullPointerException.class, () -> AcceptanceType.builder().build());
     }
 }

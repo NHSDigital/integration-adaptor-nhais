@@ -20,28 +20,28 @@ public class TransactionTypeMapperTest {
     }
 
     @Test
-    public void whenAcceptanceRequestParameter_thenReturnAcceptanceType() {
+    public void When_AcceptanceRequestParameter_Expect_ReturnAcceptanceType() {
         String parameter = "$nhais.acceptance";
         assertThat(transactionTypeMapper.mapTransactionType(parameter))
             .isEqualTo(ReferenceTransactionType.Outbound.ACCEPTANCE);
     }
 
     @Test
-    public void whenRemovalRequestParameter_thenReturnAcceptanceType() {
+    public void When_RemovalRequestParameter_Expect_ReturnAcceptanceType() {
         String parameter = "$nhais.removal";
         assertThat(transactionTypeMapper.mapTransactionType(parameter))
             .isEqualTo(ReferenceTransactionType.Outbound.REMOVAL);
     }
 
     @Test
-    public void whenDeductionRequestParameter_thenReturnAcceptanceType() {
+    public void When_DeductionRequestParameter_Expect_ReturnAcceptanceType() {
         String parameter = "$nhais.deduction";
         assertThat(transactionTypeMapper.mapTransactionType(parameter))
             .isEqualTo(ReferenceTransactionType.Outbound.DEDUCTION);
     }
 
     @Test
-    public void whenUnknownRequestParameter_thenReturnParameterValidationException() {
+    public void When_UnknownRequestParameter_Expect_ReturnParameterValidationException() {
         String parameter = "$nhais.addPatient";
         assertThatThrownBy(() -> transactionTypeMapper.mapTransactionType(parameter))
             .isExactlyInstanceOf(ParameterValidationException.class);

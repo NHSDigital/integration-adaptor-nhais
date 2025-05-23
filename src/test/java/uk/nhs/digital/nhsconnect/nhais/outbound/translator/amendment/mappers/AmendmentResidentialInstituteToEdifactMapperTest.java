@@ -27,7 +27,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddingOrReplacingWithCorrectValue_expectFieldsAreMapped(AmendmentPatchOperation operation) {
+    void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode("null"))));
@@ -40,7 +40,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenRemoving_expectFieldsAreRemoved(AmendmentPatchOperation operation) {
+    void When_Removing_Expect_FieldsAreRemoved(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode(null))));
@@ -52,7 +52,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     }
 
     @Test
-    void whenUsingRemoveOperation_expectException() {
+    void When_UsingRemoveOperation_Expect_Exception() {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
@@ -63,7 +63,7 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
 
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
-    void whenAddOrReplaceValuesAreEmpty_expectException(AmendmentPatchOperation operation) {
+    void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
         when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode(StringUtils.EMPTY))

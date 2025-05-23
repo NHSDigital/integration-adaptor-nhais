@@ -37,7 +37,7 @@ class AddressNumberOrRoadNamePatchTransactionMapperTest {
 
 
     @Test
-    void whenPersonAddressHasLineSecond_thenMapIntoAddressNumberOrRoadNameAmendmentPatch() {
+    void When_PersonAddressHasLineSecond_Expect_MapIntoAddressNumberOrRoadNameAmendmentPatch() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine2()).thenReturn(ROAD_NAME);
 
@@ -47,7 +47,7 @@ class AddressNumberOrRoadNamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressNotPresent_thenReturnNull() {
+    void When_PersonAddressNotPresent_Expect_ReturnNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.empty());
 
         AmendmentPatch amendmentPatch = addressNumberOrRoadNamePatchTransactionMapper.map(transaction);
@@ -56,7 +56,7 @@ class AddressNumberOrRoadNamePatchTransactionMapperTest {
     }
 
     @Test
-    void whenPersonAddressHasNoLineSecond_thenReturnValueIsNull() {
+    void When_PersonAddressHasNoLineSecond_Expect_ReturnValueIsNull() {
         when(transaction.getPersonAddress()).thenReturn(Optional.of(personAddress));
         when(personAddress.getAddressLine2()).thenReturn(null);
 

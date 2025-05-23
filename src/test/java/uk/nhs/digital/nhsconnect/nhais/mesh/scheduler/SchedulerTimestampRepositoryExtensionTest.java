@@ -55,7 +55,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     }
 
     @Test
-    public void whenUnableToCreateInitialDocument_mongoException_thenReturnFalse() {
+    public void When_UnableToCreateInitialDocumentWithMongoException_Expect_ReturnFalse() {
         when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(0L);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         MongoWriteException exception = mock(MongoWriteException.class);
@@ -67,7 +67,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     }
 
     @Test
-    public void whenUnableToCreateInitialDocument_springException_thenReturnFalse() {
+    public void When_UnableToCreateInitialDocumentWithSpringException_Expect_ReturnFalse() {
         when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(0L);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
         DuplicateKeyException exception = mock(DuplicateKeyException.class);
@@ -79,7 +79,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     }
 
     @Test
-    public void whenUpdatedThenReturnTrue() {
+    public void When_Updated_Expect_ReturnTrue() {
         when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(1L);
 
         when(mongoOperations.updateFirst(isA(Query.class), isA(UpdateDefinition.class), isA(String.class))).thenReturn(updateResult);
@@ -92,7 +92,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
     }
 
     @Test
-    public void whenNotUpdatedThenReturnFalse() {
+    public void When_NotUpdated_Expect_ReturnFalse() {
         when(mongoOperations.count(any(Query.class), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenReturn(1L);
 
         when(mongoOperations.updateFirst(isA(Query.class), isA(UpdateDefinition.class), isA(String.class))).thenReturn(updateResult);
@@ -103,5 +103,4 @@ public class SchedulerTimestampRepositoryExtensionTest {
 
         assertThat(updated).isFalse();
     }
-
 }

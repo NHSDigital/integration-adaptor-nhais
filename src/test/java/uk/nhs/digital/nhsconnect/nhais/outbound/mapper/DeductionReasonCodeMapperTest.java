@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DeductionReasonCodeMapperTest {
 
     @Test
-    void When_MappingAcceptanceCode_Then_ExpectCorrectResult() {
+    void When_MappingAcceptanceCode_Expect_ExpectCorrectResult() {
         Parameters parameters = new Parameters();
         parameters.addParameter()
             .setName(ParameterNames.DEDUCTION_REASON_CODE)
@@ -32,7 +32,7 @@ class DeductionReasonCodeMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutCodeParam_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutCodeParam_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
 
         var mapper = new DeductionReasonCodeMapper();

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 class GpNameAndAddressMapperTest {
 
     @Test
-    void When_MappingGP_Then_ExpectCorrectResult() {
+    void When_MappingGP_Expect_ExpectCorrectResult() {
         Patient patient = new Patient();
         patient.setGeneralPractitioner(List.of(
             new Reference().setIdentifier(new GeneralPractitionerIdentifier("4826940,281"))
@@ -40,7 +40,7 @@ class GpNameAndAddressMapperTest {
     }
 
     @Test
-    public void When_MappingWithoutGP_Then_FhirValidationExceptionIsThrown() {
+    public void When_MappingWithoutGP_Expect_FhirValidationExceptionIsThrown() {
         Parameters parameters = new Parameters();
         parameters.addParameter(new PatientParameter());
 

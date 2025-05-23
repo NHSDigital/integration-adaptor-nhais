@@ -38,14 +38,14 @@ class NewHealthAuthorityNameTest {
     }
 
     @Test
-    void When_fromStringWithValidInput_Then_SegmentCreated() {
+    void When_FromStringWithValidInput_Expect_SegmentCreated() {
         NewHealthAuthorityName newHealthAuthorityName = NewHealthAuthorityName.fromString("NAD+NFH+ID1:954");
         NewHealthAuthorityName expectedNewHealthAuthorityName = new NewHealthAuthorityName(IDENTIFIER);
 
         assertThat(newHealthAuthorityName.getValue()).isEqualTo(expectedNewHealthAuthorityName.getValue());
     }
     @Test
-    void When_fromStringWithInvalidInput_Then_ExceptionThrown() {
+    void When_FromStringWithInvalidInput_Expect_ExceptionThrown() {
         assertThatThrownBy(() -> DeductionDate.fromString("DTM+96999:20050115:102"))
             .isExactlyInstanceOf(IllegalArgumentException.class);
     }

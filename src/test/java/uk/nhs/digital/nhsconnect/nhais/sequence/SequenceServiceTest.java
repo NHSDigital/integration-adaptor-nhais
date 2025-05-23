@@ -37,7 +37,7 @@ public class SequenceServiceTest {
     }
 
     @Test
-    public void When_generateMessageId_Expect_ResetValue() {
+    public void When_GenerateMessageId_Expect_ResetValue() {
         when(sequenceRepository.getNext(MESSAGE_ID)).thenReturn(SEQ_VALUE);
         assertThat(sequenceService.generateMessageSequence("sender", "recipient"))
                 .isEqualTo(SEQ_VALUE);
