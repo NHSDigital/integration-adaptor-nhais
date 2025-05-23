@@ -31,8 +31,6 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     private static final String COUNTY = "KENT";
     private static final String EMPTY_STRING = "";
 
-    private static final String LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE = "If at least one of the Address - Locality, Address - Post Town and Address County " +
-        "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: ";
     private static final String ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE = "All five address lines must be provided for amendment";
 
     private final AmendmentAddressToEdifactMapper translator = new AmendmentAddressToEdifactMapper();

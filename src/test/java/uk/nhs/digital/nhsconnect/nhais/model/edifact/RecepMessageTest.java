@@ -17,18 +17,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SoftAssertionsExtension.class)
 class RecepMessageTest {
 
-    private final String exampleMessage = "UNB+UNOA:2+FHS1+GP05+020114:1619+00000064++RECEP+++EDIFACT TRANSFER'\n" +
-        "UNH+00000028+RECEP:0:2:FH'\n" +
-        "BGM++600+243:199305201355:306+64'\n" +
-        "NHS+FHS:819:201+123456:814:202'\n" +
-        "DTM+815:199305190600:306'\n" +
-        "RFF+MIS:00000101 CP'\n" +
-        "RFF+MIS:00000102 CA'\n" +
-        "RFF+MIS:00000103 CI'\n" +
-        "RFF+MIS:00000104 CP'\n" +
-        "RFF+RIS:00000100 OK:4'\n" +
-        "UNT+10+00000028'\n" +
-        "UNZ+1+00000064'";
+    private final String exampleMessage = """
+        UNB+UNOA:2+FHS1+GP05+020114:1619+00000064++RECEP+++EDIFACT TRANSFER'
+        UNH+00000028+RECEP:0:2:FH'
+        BGM++600+243:199305201355:306+64'
+        NHS+FHS:819:201+123456:814:202'
+        DTM+815:199305190600:306'
+        RFF+MIS:00000101 CP'
+        RFF+MIS:00000102 CA'
+        RFF+MIS:00000103 CI'
+        RFF+MIS:00000104 CP'
+        RFF+RIS:00000100 OK:4'
+        UNT+10+00000028'
+        UNZ+1+00000064'""";
 
     @Test
     void testParsingInterchangeHeader() {
