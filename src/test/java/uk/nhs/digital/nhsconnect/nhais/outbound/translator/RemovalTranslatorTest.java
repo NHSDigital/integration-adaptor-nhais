@@ -35,6 +35,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith({MockitoExtension.class, SoftAssertionsExtension.class})
 public class RemovalTranslatorTest {
 
+    private static final int BEGINNING_OF_MESSAGE_INDEX = 0;
+    private static final int PARTY_QUALIFIER_INDEX = 1;
+    private static final int DATETIME_INDEX = 2;
+    private static final int INDEX = 3;
+    private static final int FIRST_SEGMENT_GROUP_INDEX = 4;
+    private static final int TRANSACTION_NUMBER = 5;
+    private static final int GP_ADDRESS_INDEX = 6;
+    private static final int FREE_TEXT_INDEX = 7;
+    private static final int SECOND_SENGMENT_GROUP_INDEX = 8;
+    private static final int PERSON_NAME_INDEX = 9;
     @Mock
     private PartyQualifierMapper partyQualifierMapper;
 
@@ -79,6 +89,8 @@ public class RemovalTranslatorTest {
 
     @Test
     void When_FhirRemovalIsTranslated_Expect_AllRequiredSegmentsArePresentAndAreOfCorrectType(SoftAssertions softly) {
+        final int expectedSegmentCount = 10;
+
         when(validator.nhsNumberIsMissing(any())).thenReturn(false);
         when(partyQualifierMapper.map(parameters)).thenReturn(partyQualifier);
         when(gpNameAndAddressMapper.map(parameters)).thenReturn(gpNameAndAddress);
@@ -87,17 +99,17 @@ public class RemovalTranslatorTest {
 
         List<Segment> segments = removalTranslator.translate(parameters);
 
-        softly.assertThat(segments.size()).isEqualTo(10);
+        softly.assertThat(segments.size()).isEqualTo(expectedSegmentCount);
 
-        softly.assertThat(segments.get(0)).isExactlyInstanceOf(BeginningOfMessage.class);
-        softly.assertThat(segments.get(1)).isEqualTo(partyQualifier);
-        softly.assertThat(segments.get(2)).isExactlyInstanceOf(RegistrationMessageDateTime.class);
-        softly.assertThat(segments.get(3)).isExactlyInstanceOf(ReferenceTransactionType.class);
-        softly.assertThat(segments.get(4)).isExactlyInstanceOf(SegmentGroup.class);
-        softly.assertThat(segments.get(5)).isExactlyInstanceOf(ReferenceTransactionNumber.class);
-        softly.assertThat(segments.get(6)).isEqualTo(gpNameAndAddress);
-        softly.assertThat(segments.get(7)).isEqualTo(freeText);
-        softly.assertThat(segments.get(8)).isExactlyInstanceOf(SegmentGroup.class);
-        softly.assertThat(segments.get(9)).isEqualTo(personName);
+        softly.assertThat(segments.get(BEGINNING_OF_MESSAGE_INDEX)).isExactlyInstanceOf(BeginningOfMessage.class);
+        softly.assertThat(segments.get(PARTY_QUALIFIER_INDEX)).isEqualTo(partyQualifier);
+        softly.assertThat(segments.get(DATETIME_INDEX)).isExactlyInstanceOf(RegistrationMessageDateTime.class);
+        softly.assertThat(segments.get(INDEX)).isExactlyInstanceOf(ReferenceTransactionType.class);
+        softly.assertThat(segments.get(FIRST_SEGMENT_GROUP_INDEX)).isExactlyInstanceOf(SegmentGroup.class);
+        softly.assertThat(segments.get(TRANSACTION_NUMBER)).isExactlyInstanceOf(ReferenceTransactionNumber.class);
+        softly.assertThat(segments.get(GP_ADDRESS_INDEX)).isEqualTo(gpNameAndAddress);
+        softly.assertThat(segments.get(FREE_TEXT_INDEX)).isEqualTo(freeText);
+        softly.assertThat(segments.get(SECOND_SENGMENT_GROUP_INDEX)).isExactlyInstanceOf(SegmentGroup.class);
+        softly.assertThat(segments.get(PERSON_NAME_INDEX)).isEqualTo(personName);
     }
 }

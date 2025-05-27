@@ -35,7 +35,8 @@ public class InboundStateFactoryTest {
     private static final String OPERATION_ID = "4b93239acaf902960fad67a339cfda2c1c0f771d51122627066cfcc667bc6b16";
     private static final String SENDER = "some_sender";
     private static final String RECIPIENT = "some_recipient";
-    private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime.now().minusHours(4).toInstant();
+    private static final Integer FOUR_HOURS = 4;
+    private static final Instant TRANSLATION_TIMESTAMP = ZonedDateTime.now().minusHours(FOUR_HOURS).toInstant();
     private static final Instant PROCESSED_TIMESTAMP = Instant.now();
     private static final long INTERCHANGE_SEQUENCE = 123L;
     private static final long MESSAGE_SEQUENCE = 234L;

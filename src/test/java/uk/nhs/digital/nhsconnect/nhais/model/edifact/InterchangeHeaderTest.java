@@ -20,6 +20,8 @@ public class InterchangeHeaderTest {
     private static final Instant TRANSLATION_SUMMER_DATE_TIME = ZonedDateTime
         .of(LocalDateTime.parse("2019-05-23T09:00:00"), ZoneOffset.UTC)
         .toInstant();
+    private static final long SEQUENCE_NUMBER_OUT_OF_UPPER_BOUND = 100_000_000L;
+    private static final long MAX_SEQUENCE_NUMBER = 99_999_999L;
     private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
     private final InterchangeHeader interchangeHeaderSummer = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
 
@@ -54,7 +56,7 @@ public class InterchangeHeaderTest {
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
 
-        interchangeHeader.setSequenceNumber(100_000_000L);
+        interchangeHeader.setSequenceNumber(SEQUENCE_NUMBER_OUT_OF_UPPER_BOUND);
         assertThatThrownBy(interchangeHeader::validateStateful)
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("UNB: Attribute sequenceNumber must be between 1 and 99999999");
@@ -62,7 +64,7 @@ public class InterchangeHeaderTest {
         interchangeHeader.setSequenceNumber(1L);
         interchangeHeader.validateStateful();
 
-        interchangeHeader.setSequenceNumber(99_999_999L);
+        interchangeHeader.setSequenceNumber(MAX_SEQUENCE_NUMBER);
         interchangeHeader.validateStateful();
     }
 

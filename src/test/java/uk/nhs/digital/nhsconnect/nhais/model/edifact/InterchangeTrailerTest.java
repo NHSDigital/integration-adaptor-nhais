@@ -47,7 +47,10 @@ public class InterchangeTrailerTest {
 
     @Test
     void testFromString() {
-        var expectedInterchangeTrailer = new InterchangeTrailer(18).setSequenceNumber(3L);
+        final int numberOfMessages = 18;
+        final long sequenceNumber = 3L;
+        var expectedInterchangeTrailer = new InterchangeTrailer(numberOfMessages)
+            .setSequenceNumber(sequenceNumber);
         var edifact = "UNZ+18+00000003'";
 
         var interchangeTrailer = InterchangeTrailer.fromString(edifact);

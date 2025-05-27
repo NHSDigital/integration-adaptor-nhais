@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 class RejectionTransactionMapperTest {
 
     private static final String TEXT_LITERAL = "some_text_literal";
+    private static final int EXPECTED_PARAMETER_COUNT = 3;
     @Mock
     private Transaction transaction;
     @Mock
@@ -58,7 +59,7 @@ class RejectionTransactionMapperTest {
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        softly.assertThat(parameters.getParameter().size()).isEqualTo(3);
+        softly.assertThat(parameters.getParameter().size()).isEqualTo(EXPECTED_PARAMETER_COUNT);
         softly.assertThat(parametersExt.extractValue(ParameterNames.FREE_TEXT)).isEqualTo(TEXT_LITERAL);
     }
 

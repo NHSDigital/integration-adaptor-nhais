@@ -47,6 +47,12 @@ class FP69PriorNotificationTransactionMapperTest {
     private static final String ADDRESS_LINE_4 = "1/4";
     private static final String ADDRESS_LINE_5 = null;
     private static final String POSTAL_CODE = "ABC-123";
+    private static final int ADDRESS_LINE_1_INDEX = 0;
+    private static final int ADDRESS_LINE_2_INDEX = 1;
+    private static final int ADDRESS_LINE_3_INDEX = 2;
+    private static final int ADDRESS_LINE_4_INDEX = 3;
+    private static final int ADDRESS_LINE_5_INDEX = 4;
+
     @InjectMocks
     private FP69PriorNotificationTransactionMapper transactionMapper;
 
@@ -190,6 +196,8 @@ class FP69PriorNotificationTransactionMapperTest {
 
     @Test
     void When_MappingAllValues_Expect_ParametersAreMapped(SoftAssertions softly) {
+        final int expectedAddressLineCount = 5;
+
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getGpNameAndAddress()).thenReturn(gpNameAndAddress);
         when(message.getInterchange()).thenReturn(interchange);
@@ -224,17 +232,18 @@ class FP69PriorNotificationTransactionMapperTest {
 
         softly.assertThat(patient.getAddress()).hasSize(1);
         var address = patient.getAddressFirstRep();
-        softly.assertThat(address.getLine()).hasSize(5);
-        softly.assertThat(address.getLine().get(0).getValue()).isEqualTo(ADDRESS_LINE_1);
-        softly.assertThat(address.getLine().get(1).getValue()).isEqualTo(ADDRESS_LINE_2);
-        softly.assertThat(address.getLine().get(2).getValue()).isEqualTo(ADDRESS_LINE_3);
-        softly.assertThat(address.getLine().get(3).getValue()).isEqualTo(ADDRESS_LINE_4);
-        softly.assertThat(address.getLine().get(4).getValue()).isEqualTo(ADDRESS_LINE_5);
+        softly.assertThat(address.getLine()).hasSize(expectedAddressLineCount);
+        softly.assertThat(address.getLine().get(ADDRESS_LINE_1_INDEX).getValue()).isEqualTo(ADDRESS_LINE_1);
+        softly.assertThat(address.getLine().get(ADDRESS_LINE_2_INDEX).getValue()).isEqualTo(ADDRESS_LINE_2);
+        softly.assertThat(address.getLine().get(ADDRESS_LINE_3_INDEX).getValue()).isEqualTo(ADDRESS_LINE_3);
+        softly.assertThat(address.getLine().get(ADDRESS_LINE_4_INDEX).getValue()).isEqualTo(ADDRESS_LINE_4);
+        softly.assertThat(address.getLine().get(ADDRESS_LINE_5_INDEX).getValue()).isEqualTo(ADDRESS_LINE_5);
         softly.assertThat(address.getPostalCode()).isEqualTo(POSTAL_CODE);
     }
 
     private void assertRequiredFields(SoftAssertions softly, Parameters parameters) {
-        softly.assertThat(parameters.getParameter()).hasSize(4);
+        final int expectedParameterCount = 4;
+        softly.assertThat(parameters.getParameter()).hasSize(expectedParameterCount);
 
         var patient = ParametersExtension.extractPatient(parameters);
         softly.assertThat(patient.getName()).hasSize(1);

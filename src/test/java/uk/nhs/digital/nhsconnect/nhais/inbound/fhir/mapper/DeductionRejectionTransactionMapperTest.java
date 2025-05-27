@@ -56,6 +56,8 @@ class DeductionRejectionTransactionMapperTest {
 
     @Test
     void When_AllDataPresent_Expect_Mapped(SoftAssertions softly) {
+        final int expectedParametersCount = 3;
+
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(personName.getNhsNumber()).thenReturn(NHS_NUMBER);
         when(transaction.getFreeText()).thenReturn(Optional.of(new FreeText("TEXT VALUE")));
@@ -70,7 +72,7 @@ class DeductionRejectionTransactionMapperTest {
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        softly.assertThat(parametersExt.size()).isEqualTo(3);
+        softly.assertThat(parametersExt.size()).isEqualTo(expectedParametersCount);
         Patient patient = parametersExt.extractPatient();
         softly.assertThat(patient.getIdentifierFirstRep().getValue()).isEqualTo(NHS_NUMBER);
         softly.assertThat(patient.getIdentifierFirstRep().getSystem()).isEqualTo(NhsIdentifier.SYSTEM);

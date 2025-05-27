@@ -28,6 +28,7 @@ import static uk.nhs.digital.nhsconnect.nhais.mesh.scheduler.SchedulerTimestampR
 public class SchedulerTimestampRepositoryExtensionTest {
 
     private static final String SCHEDULER_TYPE = "meshTimestamp";
+    private static final int THREE_HUNDRED_SECONDS = 300;
 
     @InjectMocks
     private SchedulerTimestampRepositoryExtensionsImpl schedulerTimestampRepositoryExtensions;
@@ -47,7 +48,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
         Instant timestamp = Instant.now();
         when(timestampService.getCurrentTimestamp()).thenReturn(timestamp);
 
-        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, timestamp, 300);
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, timestamp, THREE_HUNDRED_SECONDS);
 
         assertThat(updated).isFalse();
         var expected = new SchedulerTimestamp(SCHEDULER_TYPE, timestamp);
@@ -61,7 +62,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
         MongoWriteException exception = mock(MongoWriteException.class);
         when(mongoOperations.save(any(), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenThrow(exception);
 
-        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), THREE_HUNDRED_SECONDS);
 
         assertThat(updated).isFalse();
     }
@@ -73,7 +74,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
         DuplicateKeyException exception = mock(DuplicateKeyException.class);
         when(mongoOperations.save(any(), eq(MESH_TIMESTAMP_COLLECTION_NAME))).thenThrow(exception);
 
-        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), THREE_HUNDRED_SECONDS);
 
         assertThat(updated).isFalse();
     }
@@ -86,7 +87,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
         when(updateResult.getModifiedCount()).thenReturn(1L);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
-        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), THREE_HUNDRED_SECONDS);
 
         assertThat(updated).isTrue();
     }
@@ -99,7 +100,7 @@ public class SchedulerTimestampRepositoryExtensionTest {
         when(updateResult.getModifiedCount()).thenReturn(0L);
         when(timestampService.getCurrentTimestamp()).thenReturn(Instant.now());
 
-        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), 300);
+        boolean updated = schedulerTimestampRepositoryExtensions.updateTimestamp(SCHEDULER_TYPE, Instant.now(), THREE_HUNDRED_SECONDS);
 
         assertThat(updated).isFalse();
     }

@@ -23,7 +23,8 @@ public class SegmentGroupTest {
 
     @Test
     public void testValidationStateful() {
-        SegmentGroup segmentGroup = new SegmentGroup(3);
+        final int segmentGroupNumber = 3;
+        SegmentGroup segmentGroup = new SegmentGroup(segmentGroupNumber);
 
         Exception exception = assertThrows(EdifactValidationException.class, segmentGroup::preValidate);
 

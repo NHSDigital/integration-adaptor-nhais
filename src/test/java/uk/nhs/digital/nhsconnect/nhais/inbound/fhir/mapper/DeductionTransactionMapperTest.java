@@ -62,6 +62,7 @@ class DeductionTransactionMapperTest {
 
     @Test
     void When_AllFieldsInTransaction_Expect_MapAllFields(SoftAssertions softly) {
+        final int expectedParametersCount = 5;
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.of(deductionReasonCode));
         when(transaction.getDeductionDate()).thenReturn(Optional.of(deductionDate));
@@ -81,7 +82,7 @@ class DeductionTransactionMapperTest {
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        softly.assertThat(parametersExt.size()).isEqualTo(5);
+        softly.assertThat(parametersExt.size()).isEqualTo(expectedParametersCount);
         Patient patient = parametersExt.extractPatient();
         softly.assertThat(patient.getIdentifierFirstRep().getValue()).isEqualTo(NHS_NUMBER);
         softly.assertThat(patient.getIdentifierFirstRep().getSystem()).isEqualTo(NhsIdentifier.SYSTEM);
@@ -92,6 +93,8 @@ class DeductionTransactionMapperTest {
 
     @Test
     void When_AllMandatoryFieldsInTransaction_Expect_MapOnlyMandatoryFields(SoftAssertions softly) {
+        final int expectedParametersCount = 4;
+
         when(transaction.getPersonName()).thenReturn(Optional.of(personName));
         when(transaction.getDeductionReasonCode()).thenReturn(Optional.of(deductionReasonCode));
         when(transaction.getDeductionDate()).thenReturn(Optional.of(deductionDate));
@@ -110,7 +113,7 @@ class DeductionTransactionMapperTest {
 
         ParametersExtension parametersExt = new ParametersExtension(parameters);
 
-        softly.assertThat(parametersExt.size()).isEqualTo(4);
+        softly.assertThat(parametersExt.size()).isEqualTo(expectedParametersCount);
         Patient patient = parametersExt.extractPatient();
         softly.assertThat(patient.getIdentifierFirstRep().getValue()).isEqualTo(NHS_NUMBER);
         softly.assertThat(patient.getIdentifierFirstRep().getSystem()).isEqualTo(NhsIdentifier.SYSTEM);

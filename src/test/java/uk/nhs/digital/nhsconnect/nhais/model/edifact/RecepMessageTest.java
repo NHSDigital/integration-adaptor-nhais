@@ -17,6 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SoftAssertionsExtension.class)
 class RecepMessageTest {
 
+    private static final long FIRST_SUCCESS_KEY = 101L;
+    private static final long ERROR_KEY = 102L;
+    private static final long INCOMPLETE_KEY = 103L;
+    private static final long SECOND_SUCCESS_KEY = 104L;
     private final String exampleMessage = """
         UNB+UNOA:2+FHS1+GP05+020114:1619+00000064++RECEP+++EDIFACT TRANSFER'
         UNH+00000028+RECEP:0:2:FH'
@@ -33,6 +37,7 @@ class RecepMessageTest {
 
     @Test
     void testParsingInterchangeHeader() {
+        final long expectedSequenceNumber = 64L;
         var recepMessage = new RecepMessage(exampleMessage);
         InterchangeHeader interchangeHeader = recepMessage.getInterchangeHeader();
 
@@ -42,32 +47,35 @@ class RecepMessageTest {
             .parse("020114:1619", DateTimeFormatter.ofPattern("yyMMdd:HHmm").withZone(ZoneId.of("Europe/London")))
             .toInstant();
         assertThat(interchangeHeader.getTranslationTime()).isEqualTo(expectedTime);
-        assertThat(interchangeHeader.getSequenceNumber()).isEqualTo(64L);
+        assertThat(interchangeHeader.getSequenceNumber()).isEqualTo(expectedSequenceNumber);
     }
 
     @Test
     void testParsingReferenceInterchangeRecep() {
+        final long expectedInterchangeSequenceNumber = 100L;
+        final int expectedMessageCount = 4;
         var recepMessage = new RecepMessage(exampleMessage);
         var referenceInterchangeRecep = recepMessage.getReferenceInterchangeRecep();
 
-        assertThat(referenceInterchangeRecep.getInterchangeSequenceNumber()).isEqualTo(100L);
+        assertThat(referenceInterchangeRecep.getInterchangeSequenceNumber()).isEqualTo(expectedInterchangeSequenceNumber);
         assertThat(referenceInterchangeRecep.getRecepCode()).isEqualTo(ReferenceInterchangeRecep.RecepCode.RECEIVED);
-        assertThat(referenceInterchangeRecep.getMessageCount()).isEqualTo(4);
+        assertThat(referenceInterchangeRecep.getMessageCount()).isEqualTo(expectedMessageCount);
     }
 
     @Test
     void testParsingReferenceMessageRecep(SoftAssertions softly) {
+        final int expectedReferenceMessageCount = 4;
         var recepMessage = new RecepMessage(exampleMessage);
         var referenceMessageReceps = recepMessage.getReferenceMessageReceps();
 
         var expectedReceps = List.of(
-            Pair.of(101L, ReferenceMessageRecep.RecepCode.SUCCESS),
-            Pair.of(102L, ReferenceMessageRecep.RecepCode.ERROR),
-            Pair.of(103L, ReferenceMessageRecep.RecepCode.INCOMPLETE),
-            Pair.of(104L, ReferenceMessageRecep.RecepCode.SUCCESS)
+            Pair.of(FIRST_SUCCESS_KEY, ReferenceMessageRecep.RecepCode.SUCCESS),
+            Pair.of(ERROR_KEY, ReferenceMessageRecep.RecepCode.ERROR),
+            Pair.of(INCOMPLETE_KEY, ReferenceMessageRecep.RecepCode.INCOMPLETE),
+            Pair.of(SECOND_SUCCESS_KEY, ReferenceMessageRecep.RecepCode.SUCCESS)
         );
 
-        softly.assertThat(referenceMessageReceps.size()).isEqualTo(4);
+        softly.assertThat(referenceMessageReceps.size()).isEqualTo(expectedReferenceMessageCount);
 
         for (int i = 0; i < referenceMessageReceps.size(); i++) {
             softly
