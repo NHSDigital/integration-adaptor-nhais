@@ -53,9 +53,6 @@ jobs:
       id-token: write
     uses: ./.github/workflows/publish.yml
     with:
-      directory: .
-      repository: nhais
-      build-context: .
       build-id: ${{ needs.generate-build-id.outputs.build-id }}
     secrets: inherit
 
