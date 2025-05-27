@@ -68,16 +68,16 @@ public class InboundStateFactoryTest {
         .setConversationId(CONVERSATION_ID);
 
     @Mock
-    TimestampService timestampService;
+    private TimestampService timestampService;
 
     @Mock
-    ConversationIdService conversationIdService;
+    private ConversationIdService conversationIdService;
 
     @Mock
-    InboundOperationIdService inboundOperationIdService;
+    private InboundOperationIdService inboundOperationIdService;
 
     @InjectMocks
-    InboundStateFactory inboundStateFactory;
+    private InboundStateFactory inboundStateFactory;
 
     @BeforeEach
     void setUp() {

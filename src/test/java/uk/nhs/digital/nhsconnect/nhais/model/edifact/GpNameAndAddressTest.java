@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GpNameAndAddressTest {
 
-    public final GpNameAndAddress gpNameAndAddress = new GpNameAndAddress("ABC", "code1");
+    private final GpNameAndAddress gpNameAndAddress = new GpNameAndAddress("ABC", "code1");
 
     @Test
     void testGetKey() {

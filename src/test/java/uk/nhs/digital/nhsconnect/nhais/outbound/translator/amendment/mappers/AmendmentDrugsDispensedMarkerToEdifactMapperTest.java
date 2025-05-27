@@ -27,11 +27,11 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(true))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new DrugsMarker(true));
@@ -40,11 +40,11 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_Removing_Expect_FieldsAreRemoved(AmendmentPatchOperation operation) {
-        when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentBooleanExtension.DrugsDispensedMarker(false))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new DrugsMarker(false));
@@ -52,10 +52,10 @@ class AmendmentDrugsDispensedMarkerToEdifactMapperTest extends AmendmentFhirToEd
 
     @Test
     void When_UsingRemoveOperation_Expect_Exception() {
-        when(jsonPatches.getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getDrugsDispensedMarker()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing Drugs Dispensed Marker should be done using extension with 'false' value");
     }

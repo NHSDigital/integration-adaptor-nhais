@@ -28,11 +28,11 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode("null"))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new ResidentialInstituteNameAndAddress("null"));
@@ -41,11 +41,11 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_Removing_Expect_FieldsAreRemoved(AmendmentPatchOperation operation) {
-        when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode(null))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new ResidentialInstituteNameAndAddress("%"));
@@ -53,10 +53,10 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
 
     @Test
     void When_UsingRemoveOperation_Expect_Exception() {
-        when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Removing Residential Institute Code should be done using extension with 'null' value");
     }
@@ -64,12 +64,12 @@ class AmendmentResidentialInstituteToEdifactMapperTest extends AmendmentFhirToEd
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
-        when(jsonPatches.getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getResidentialInstituteCode()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setValue(new AmendmentStringExtension.ResidentialInstituteCode(StringUtils.EMPTY))
         ));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("String value must not be empty");
     }

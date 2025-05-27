@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HealthAuthorityNameAndAddressTest {
 
-    public final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = new HealthAuthorityNameAndAddress("ABC", "code1");
+    private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = new HealthAuthorityNameAndAddress("ABC", "code1");
 
     @Test
     void testGetKey() {

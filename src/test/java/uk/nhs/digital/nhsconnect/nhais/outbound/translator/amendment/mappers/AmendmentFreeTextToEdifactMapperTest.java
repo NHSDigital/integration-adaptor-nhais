@@ -30,9 +30,9 @@ class AmendmentFreeTextToEdifactMapperTest extends AmendmentFhirToEdifactTestBas
 
     @Test
     void When_FreeTextIsPresent_Expect_ValueIsMapped() {
-        when(amendmentBody.getFreeText()).thenReturn(FREE_TEXT);
+        when(super.getAmendmentBody().getFreeText()).thenReturn(FREE_TEXT);
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(new FreeText(FREE_TEXT));
@@ -41,9 +41,9 @@ class AmendmentFreeTextToEdifactMapperTest extends AmendmentFhirToEdifactTestBas
     @ParameterizedTest
     @MethodSource(value = "getEmptyValues")
     void When_FreeTextIsEmpty_Expect_ValueIsMapped(String value) {
-        when(amendmentBody.getFreeText()).thenReturn(value);
+        when(super.getAmendmentBody().getFreeText()).thenReturn(value);
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isEmpty();
     }
