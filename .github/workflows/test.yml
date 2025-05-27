@@ -84,7 +84,6 @@ jobs:
   integration_tests:
     name: Integration Tests
     permissions:
-      id-token: write
       contents: read
     runs-on: ubuntu-latest
     steps:

@@ -14,7 +14,6 @@ jobs:
     uses: ./.github/workflows/test.yml
     permissions:
       contents: read
-      id-token: write
 
   generate-build-id:
     name: "Generate Build Id"
