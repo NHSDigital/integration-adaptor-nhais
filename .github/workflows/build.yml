@@ -12,16 +12,20 @@ jobs:
   tests:
     name: Tests
     uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
 
   generate-build-id:
     name: "Generate Build Id"
     needs: [ tests ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       build-id: ${{ steps.generate.outputs.buildId }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - id: generate
         working-directory: ./scripts
@@ -32,9 +36,9 @@ jobs:
           chmod +x ./create_build_id.sh
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          GIT_BRANCH=PR
+            GIT_BRANCH=PR
           elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
-          GIT_BRANCH=main
+            GIT_BRANCH=main
           fi
 
           BUILD_ID=$(./create_build_id.sh $GIT_BRANCH ${{ github.run_number }} ${{ github.sha }})
@@ -44,12 +48,11 @@ jobs:
   publish-docker-image:
     name: "Publish docker image to ECR"
     needs: [ generate-build-id ]
-
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish.yml
     with:
-      directory: .
-      repository: nhais
-      build-context: .
       build-id: ${{ needs.generate-build-id.outputs.build-id }}
     secrets: inherit
 
@@ -63,10 +66,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
+        uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
         with:
           message: |
             Images built and published to ECR using a Build Id of ${{ needs.generate-build-id.outputs.build-id }}
           comment-tag: images-built
           mode: upsert
-

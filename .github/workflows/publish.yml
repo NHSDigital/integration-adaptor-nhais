@@ -2,15 +2,6 @@ name: Publish Workflow
 on:
   workflow_call:
     inputs:
-      directory:
-        required: true
-        type: string
-      repository:
-        required: true
-        type: string
-      build-context:
-        required: true
-        type: string
       build-id:
         required: true
         type: string
@@ -25,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df #4.2.1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: gp2gp_github_action_build_workflow
@@ -37,11 +28,11 @@ jobs:
       - name: Build Docker Image
         run: |
           DOCKER_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          DOCKER_TAG="$DOCKER_REGISTRY/${{ inputs.repository }}:${{ inputs.build-id }}"
+          DOCKER_TAG="$DOCKER_REGISTRY/nhais:${{ inputs.build-id }}"
           echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
 
           # Build Image
-          docker build -f ./${{ inputs.directory }}/Dockerfile -t $DOCKER_TAG ${{ inputs.build-context }}
+          docker build -f ./Dockerfile -t $DOCKER_TAG .
 
       - name: Login to AWS ECR
         run: |
