@@ -11,7 +11,7 @@ public class ReferenceTransactionNumberTest {
 
     private static final long TRANSACTION_NUMBER = 1234L;
     private static final long MAX_TRANSACTION_SEQUENCE_NUMBER = 10_000_000L;
-    private static final long MAX_SEQUENCE_NUMBER = 99_999_999L;
+    private static final long MAX_SEQUENCE_NUMBER = 9_999_999L;
 
     @Test
     public void testValidReferenceTransactionType() throws EdifactValidationException {
