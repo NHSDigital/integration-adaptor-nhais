@@ -24,7 +24,7 @@ class FP69ReasonCodeTest {
 
     @Test
     void fromEdifact() {
-        assertThat(FP69ReasonCode.fromString("HEA+FRN+" + REASON_CODE+ ":ZZZ"))
+        assertThat(FP69ReasonCode.fromString("HEA+FRN+" + REASON_CODE + ":ZZZ"))
             .isEqualTo(new FP69ReasonCode(REASON_CODE));
     }
 }
