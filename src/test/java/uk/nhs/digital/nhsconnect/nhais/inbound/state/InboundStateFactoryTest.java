@@ -81,7 +81,10 @@ public class InboundStateFactoryTest {
 
     @BeforeEach
     void setUp() {
-        when(INTERCHANGE.getInterchangeHeader()).thenReturn(new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE));
+        when(INTERCHANGE.getInterchangeHeader())
+            .thenReturn(
+                new InterchangeHeader(SENDER, RECIPIENT, TRANSLATION_TIMESTAMP).setSequenceNumber(INTERCHANGE_SEQUENCE)
+            );
         when(INTERCHANGE.getMessages()).thenReturn(List.of(MESSAGE));
 
         when(MESSAGE.getMessageHeader()).thenReturn(new MessageHeader().setSequenceNumber(MESSAGE_SEQUENCE));
@@ -89,7 +92,10 @@ public class InboundStateFactoryTest {
         when(MESSAGE.getInterchange()).thenReturn(INTERCHANGE);
         when(MESSAGE.getTransactions()).thenReturn(List.of(TRANSACTION));
 
-        when(TRANSACTION.getReferenceTransactionNumber()).thenReturn(new ReferenceTransactionNumber().setTransactionNumber(TRANSACTION_NUMBER));
+        when(TRANSACTION.getReferenceTransactionNumber())
+            .thenReturn(
+                new ReferenceTransactionNumber().setTransactionNumber(TRANSACTION_NUMBER)
+            );
         when(TRANSACTION.getMessage()).thenReturn(MESSAGE);
 
         when(timestampService.getCurrentTimestamp()).thenReturn(PROCESSED_TIMESTAMP);

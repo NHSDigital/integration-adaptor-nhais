@@ -44,8 +44,10 @@ class HealthAuthorityNameAndAddressTest {
 
     @Test
     void testFromString() {
-        assertThat(HealthAuthorityNameAndAddress.fromString("NAD+FHS+ABC:code1").getValue()).isEqualTo(healthAuthorityNameAndAddress.getValue());
-        assertThatThrownBy(() -> HealthAuthorityNameAndAddress.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThat(HealthAuthorityNameAndAddress.fromString("NAD+FHS+ABC:code1").getValue())
+            .isEqualTo(healthAuthorityNameAndAddress.getValue());
+        assertThatThrownBy(() -> HealthAuthorityNameAndAddress.fromString("wrong value"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
 }

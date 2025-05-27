@@ -133,7 +133,9 @@ class FP69PriorNotificationTransactionMapperTest {
 
         assertThatThrownBy(() -> transactionMapper.map(transaction))
             .isInstanceOf(EdifactValidationException.class)
-            .hasMessage("For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth");
+            .hasMessage(
+                "For an FP69 prior notification (reference F9) the DTM+329 segment is required to provide the patient date of birth"
+            );
     }
 
     @Test

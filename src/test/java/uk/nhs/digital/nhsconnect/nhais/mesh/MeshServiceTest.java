@@ -241,7 +241,8 @@ class MeshServiceTest {
     public void When_IntervalHasPassedButAuthenticationFails_Expect_StopProcessing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR)).when(meshClient).authenticate();
+        doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR))
+            .when(meshClient).authenticate();
 
         Assertions.assertThatThrownBy(() -> meshService.scanMeshInboxForMessages())
             .isExactlyInstanceOf(MeshApiConnectionException.class);

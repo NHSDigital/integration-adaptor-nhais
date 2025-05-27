@@ -44,6 +44,7 @@ public class RegistrationMessageDateTimeTest {
 
     @Test
     void When_FromStringAndStringIsNotDTMSegment_Expect_ThrowsException() {
-        assertThatThrownBy(() -> RegistrationMessageDateTime.fromString("ABC+123:456:789'")).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> RegistrationMessageDateTime.fromString("ABC+123:456:789'"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }

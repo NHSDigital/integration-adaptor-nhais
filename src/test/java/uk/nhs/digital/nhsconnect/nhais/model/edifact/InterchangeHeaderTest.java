@@ -22,8 +22,10 @@ public class InterchangeHeaderTest {
         .toInstant();
     private static final long SEQUENCE_NUMBER_OUT_OF_UPPER_BOUND = 100_000_000L;
     private static final long MAX_SEQUENCE_NUMBER = 99_999_999L;
-    private final InterchangeHeader interchangeHeaderWinter = new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
-    private final InterchangeHeader interchangeHeaderSummer = new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
+    private final InterchangeHeader interchangeHeaderWinter =
+        new InterchangeHeader("SNDR", "RECP", TRANSLATION_WINTER_DATE_TIME).setSequenceNumber(1L);
+    private final InterchangeHeader interchangeHeaderSummer =
+        new InterchangeHeader("SNDR", "RECP", TRANSLATION_SUMMER_DATE_TIME).setSequenceNumber(1L);
 
     @Test
     public void testValidInterchangeHeaderWithWinterTime() throws EdifactValidationException {
@@ -86,7 +88,9 @@ public class InterchangeHeaderTest {
 
     @Test
     void testFromString() {
-        assertThat(InterchangeHeader.fromString("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001").getValue()).isEqualTo(interchangeHeaderWinter.getValue());
-        assertThatThrownBy(() -> InterchangeHeader.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThat(InterchangeHeader.fromString("UNB+UNOA:2+SNDR+RECP+190323:0900+00000001").getValue())
+            .isEqualTo(interchangeHeaderWinter.getValue());
+        assertThatThrownBy(() -> InterchangeHeader.fromString("wrong value"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }
