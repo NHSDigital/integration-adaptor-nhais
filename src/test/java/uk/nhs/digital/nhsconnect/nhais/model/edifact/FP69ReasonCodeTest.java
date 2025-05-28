@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FP69ReasonCodeTest {
+    private static final int REASON_CODE = 123;
 
     @Test
     void When_SettingNullCode_Expect_Exception() {
@@ -15,15 +16,15 @@ class FP69ReasonCodeTest {
 
     @Test
     void toEdifact() {
-        var fp69ReasonCode = new FP69ReasonCode(123);
+        var fp69ReasonCode = new FP69ReasonCode(REASON_CODE);
 
         assertThat(fp69ReasonCode.toEdifact())
-            .isEqualTo("HEA+FRN+123:ZZZ'");
+            .isEqualTo("HEA+FRN+" + REASON_CODE + ":ZZZ'");
     }
 
     @Test
     void fromEdifact() {
-        assertThat(FP69ReasonCode.fromString("HEA+FRN+8:ZZZ"))
-            .isEqualTo(new FP69ReasonCode(8));
+        assertThat(FP69ReasonCode.fromString("HEA+FRN+" + REASON_CODE + ":ZZZ"))
+            .isEqualTo(new FP69ReasonCode(REASON_CODE));
     }
 }

@@ -30,10 +30,10 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingWithCorrectValue_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from("female"))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonSex.builder()
@@ -44,20 +44,20 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingWithIncorrectValue_Expect_Exception(AmendmentPatchOperation operation) {
-        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from("qwe"))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("No gender value for 'qwe'");
     }
 
     @Test
     void When_UsingRemoveOperation_Expect_Exception() {
-        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Illegal remove operation on /gender");
     }
@@ -65,13 +65,13 @@ class AmendmentSexToEdifactMapperTest extends AmendmentFhirToEdifactTestBase {
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
-        when(jsonPatches.getSex()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getSex()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.SEX_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
         ));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Invalid values for: [/gender]");
     }

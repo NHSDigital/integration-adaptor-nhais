@@ -39,10 +39,10 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingDateOfBirth_Expect_FieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(DATE_OF_BIRTH))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonDateOfBirth.builder()
@@ -52,10 +52,10 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
 
     @Test
     void When_UsingRemoveOperation_Expect_Exception() {
-        when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Illegal remove operation on /birthDate");
     }
@@ -63,13 +63,13 @@ class AmendmentDateOfBirthToEdifactMapperTest extends AmendmentFhirToEdifactTest
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
-        when(jsonPatches.getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getBirthDate()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.BIRTH_DATE_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
         ));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Invalid values for: [/birthDate]");
     }

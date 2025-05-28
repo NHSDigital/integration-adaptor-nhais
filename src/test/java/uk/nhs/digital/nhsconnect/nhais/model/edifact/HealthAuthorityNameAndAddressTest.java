@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HealthAuthorityNameAndAddressTest {
 
-    public final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = new HealthAuthorityNameAndAddress("ABC", "code1");
+    private final HealthAuthorityNameAndAddress healthAuthorityNameAndAddress = new HealthAuthorityNameAndAddress("ABC", "code1");
 
     @Test
     void testGetKey() {
@@ -31,7 +31,7 @@ class HealthAuthorityNameAndAddressTest {
     void testPreValidate() {
         HealthAuthorityNameAndAddress emptyIdentifier = new HealthAuthorityNameAndAddress("", "x");
         HealthAuthorityNameAndAddress emptyCode = new HealthAuthorityNameAndAddress("x", "");
-        SoftAssertions.assertSoftly( softly -> {
+        SoftAssertions.assertSoftly(softly -> {
             softly.assertThatThrownBy(emptyIdentifier::preValidate)
                 .isExactlyInstanceOf(EdifactValidationException.class)
                 .hasMessage("NAD: Attribute identifier is required");
@@ -44,8 +44,10 @@ class HealthAuthorityNameAndAddressTest {
 
     @Test
     void testFromString() {
-        assertThat(HealthAuthorityNameAndAddress.fromString("NAD+FHS+ABC:code1").getValue()).isEqualTo(healthAuthorityNameAndAddress.getValue());
-        assertThatThrownBy(() -> HealthAuthorityNameAndAddress.fromString("wrong value")).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThat(HealthAuthorityNameAndAddress.fromString("NAD+FHS+ABC:code1").getValue())
+            .isEqualTo(healthAuthorityNameAndAddress.getValue());
+        assertThatThrownBy(() -> HealthAuthorityNameAndAddress.fromString("wrong value"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
 }

@@ -11,10 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SoftAssertionsExtension.class)
 class ReferenceMessageRecepTest {
 
+    private static final long MESSAGE_SEQUENCE_NUMBER = 123L;
+
     @Test
     void When_GettingKey_Expect_ReturnsProperValue() {
         String key = new ReferenceMessageRecep(
-            123L, ReferenceMessageRecep.RecepCode.ERROR)
+            MESSAGE_SEQUENCE_NUMBER, ReferenceMessageRecep.RecepCode.ERROR)
             .getKey();
 
         assertThat(key).isEqualTo("RFF");
@@ -23,7 +25,7 @@ class ReferenceMessageRecepTest {
     @Test
     void When_GettingValue_Expect_ReturnsProperValue() {
         String value = new ReferenceMessageRecep(
-            123L, ReferenceMessageRecep.RecepCode.ERROR)
+            MESSAGE_SEQUENCE_NUMBER, ReferenceMessageRecep.RecepCode.ERROR)
             .getValue();
 
         assertThat("MIS:00000123 CA").isEqualTo(value);
@@ -38,7 +40,7 @@ class ReferenceMessageRecepTest {
             .hasMessage("RFF: Attribute messageSequenceNumber is required");
 
         softly.assertThatThrownBy(
-            () -> new ReferenceMessageRecep(123L, null)
+            () -> new ReferenceMessageRecep(MESSAGE_SEQUENCE_NUMBER, null)
                 .preValidate())
             .isInstanceOf(EdifactValidationException.class)
             .hasMessage("RFF: Attribute recepCode is required");
@@ -46,19 +48,23 @@ class ReferenceMessageRecepTest {
 
     @Test
     void When_Parsing_Expect_RecepCreated(SoftAssertions softly) {
+        final long expectedSuccessMessageSequenceNumber = 5L;
+        final long expectedErrorMessageSequenceNumber = 10000006L;
+        final long expectedIncompleteMessageSequenceNumber = 99000006L;
+
         var recepRow = ReferenceMessageRecep.fromString("RFF+MIS:00000005 CP");
 
-        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(5L);
+        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(expectedSuccessMessageSequenceNumber);
         softly.assertThat(recepRow.getRecepCode()).isEqualTo(ReferenceMessageRecep.RecepCode.SUCCESS);
 
         recepRow = ReferenceMessageRecep.fromString("RFF+MIS:10000006 CA:5:QWE+ASD");
 
-        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(10000006L);
+        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(expectedErrorMessageSequenceNumber);
         softly.assertThat(recepRow.getRecepCode()).isEqualTo(ReferenceMessageRecep.RecepCode.ERROR);
 
         recepRow = ReferenceMessageRecep.fromString("RFF+MIS:99000006 CI+ASD++");
 
-        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(99000006L);
+        softly.assertThat(recepRow.getMessageSequenceNumber()).isEqualTo(expectedIncompleteMessageSequenceNumber);
         softly.assertThat(recepRow.getRecepCode()).isEqualTo(ReferenceMessageRecep.RecepCode.INCOMPLETE);
     }
 

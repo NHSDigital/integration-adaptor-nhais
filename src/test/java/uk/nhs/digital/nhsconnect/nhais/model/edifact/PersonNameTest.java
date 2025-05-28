@@ -8,13 +8,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonNameTest {
-    private final static String NHS_AND_NAMES = "PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_AND_NAMES_VALUE = "PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY = "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
-    private final static String NHS_ONLY = "PNA+PAT+RAT56:OPI";
-    private final static String NHS_ONLY_VALUE = "PAT+RAT56:OPI";
-    private final static String BLANK_NHS_VALUE = "PNA+PAT+   +++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NHS_AND_NAMES = "PNA+PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NHS_AND_NAMES_VALUE = "PAT+RAT56:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NAMES_ONLY = "PNA+PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NAMES_ONLY_VALUE = "PAT++++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
+    private static final String NHS_ONLY = "PNA+PAT+RAT56:OPI";
+    private static final String NHS_ONLY_VALUE = "PAT+RAT56:OPI";
+    private static final String BLANK_NHS_VALUE = "PNA+PAT+   +++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA";
 
 
     @Test

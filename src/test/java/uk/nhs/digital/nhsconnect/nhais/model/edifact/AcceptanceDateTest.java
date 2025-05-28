@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AcceptanceDateTest {
 
-    private final LocalDate DATE = LocalDate.of(2020, 3, 28);
+    private static final LocalDate DATE = LocalDate.of(2020, 3, 28);
 
     @Test
     public void When_ToEdifactAndInstantInWinter_Expect_EdifactIsCorrect() throws EdifactValidationException {

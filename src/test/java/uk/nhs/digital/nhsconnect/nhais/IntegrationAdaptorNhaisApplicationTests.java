@@ -6,12 +6,10 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-		"nhais.mongodb.autoIndexCreation=false" // no mongodb instance to create indexes at startup
+    "nhais.mongodb.autoIndexCreation=false" // no mongodb instance to create indexes at startup
 })
 class IntegrationAdaptorNhaisApplicationTests {
 
-	@Test
-	void When_DatabaseIsNotReachable_Expect_ApplicationStartsUpWithNegativeHealthcheck() {
-	}
-
+    @Test
+    void When_DatabaseIsNotReachable_Expect_ApplicationStartsUpWithNegativeHealthcheck() { }
 }

@@ -31,8 +31,6 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     private static final String COUNTY = "KENT";
     private static final String EMPTY_STRING = "";
 
-    private static final String LOCALITY_POST_TOWN_AND_LOCALITY_INCONSISTENCY_MESSAGE = "If at least one of the Address - Locality, Address - Post Town and Address County " +
-        "fields is amended for a patient, then the values held for all three of these fields MUST be provided. Actual state: ";
     private static final String ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE = "All five address lines must be provided for amendment";
 
     private final AmendmentAddressToEdifactMapper translator = new AmendmentAddressToEdifactMapper();
@@ -41,24 +39,24 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Override
     void setUp() {
         super.setUp();
-        lenient().when(amendmentBody.getNhsNumber()).thenReturn(NHS_NUMBER);
+        lenient().when(super.getAmendmentBody().getNhsNumber()).thenReturn(NHS_NUMBER);
     }
 
     @Test
     void When_ReplacingAllFiveAddressLinesFields_Expect_AllAddressLinesAreMapped() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        Optional<Segment> segments = translator.map(amendmentBody);
+        Optional<Segment> segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isNotEmpty().get()
             .isEqualTo(PersonAddress.builder()
@@ -73,18 +71,18 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_AddressLineIsnull_Expect_NullToBeMapperAsEmptyEdifactString() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(null)));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(null)));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(null)));
 
-        Optional<Segment> segments = translator.map(amendmentBody);
+        Optional<Segment> segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isNotEmpty().get()
             .isEqualTo(PersonAddress.builder()
@@ -99,18 +97,18 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_RemovingFourAddressLinesFields_Expect_FourAddressLinesRemoved() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REPLACE).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(REMOVE_INDICATOR))));
 
-        Optional<Segment> segments = translator.map(amendmentBody);
+        Optional<Segment> segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isNotEmpty().get()
             .isEqualTo(PersonAddress.builder()
@@ -125,17 +123,17 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_HouseNameMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.empty());
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.empty());
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
@@ -143,17 +141,17 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_NumberOrRoadNameMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.empty());
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.empty());
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
@@ -161,17 +159,17 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_LocalityMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.empty());
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.empty());
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
@@ -179,17 +177,17 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_PostTownMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.empty());
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.empty());
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
@@ -197,17 +195,17 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_CountyMissing_Expect_ThrowsFhirValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REPLACE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.empty());
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(FhirValidationException.class)
             .hasMessage(ALL_FIVE_ADDRESS_LINES_NEEDED_MESSAGE);
     }
@@ -215,18 +213,18 @@ public class AmendmentAddressToEdifactMapperTest extends AmendmentFhirToEdifactT
     @Test
     void When_RemoveForPostTown_Expect_ThrowsPatchValidationException() {
         AmendmentPatchOperation operation = AmendmentPatchOperation.REMOVE;
-        when(jsonPatches.getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getHouseName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(HOUSE_NAME))));
-        when(jsonPatches.getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getNumberOrRoadName()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(ROAD_NAME))));
-        when(jsonPatches.getLocality()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getLocality()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(LOCALITY))));
-        when(jsonPatches.getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPostTown()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(POST_TOWN))));
-        when(jsonPatches.getCounty()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getCounty()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(COUNTY))));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isExactlyInstanceOf(PatchValidationException.class)
             .hasMessage("Post town ('address/0/line/3') cannot be removed");
     }

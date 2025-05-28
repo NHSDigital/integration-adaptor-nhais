@@ -22,7 +22,7 @@ public class FhirParserTest {
     }
 
     @Test
-    public void When_ParseNotJson_Expect_ReturnFhirValidationException(){
+    public void When_ParseNotJson_Expect_ReturnFhirValidationException() {
         String xml = "<item></item>";
         assertThatThrownBy(() -> fhirParser.parseParameters(xml)).isExactlyInstanceOf(FhirValidationException.class);
     }

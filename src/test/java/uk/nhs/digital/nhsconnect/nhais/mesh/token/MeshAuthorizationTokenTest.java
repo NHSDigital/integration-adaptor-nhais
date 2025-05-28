@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshConfig;
@@ -19,12 +20,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MeshAuthorizationTokenTest {
 
-    private final static String AUTHORIZATION_HASH = "474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569";
-    private final static String MAILBOX_ID = "mailbox_id";
+    private static final String AUTHORIZATION_HASH = "474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569";
+    private static final String MAILBOX_ID = "mailbox_id";
+    private static final int EDIFACT_MAILBOX_INDEX = 0;
+    private static final int EDIFACT_NONCE_VALUE_INDEX = 1;
+    private static final int EDIFACT_NONCE_COUNT_INDEX = 2;
+    private static final int EDIFACT_TIMESTAMP_INDEX = 3;
+    private static final int EDIFACT_AUTHORIZATION_HASH_INDEX = 4;
 
-    private final static Instant FIXED_TIME_LOCAL = ZonedDateTime.of(1991,11,6,12,30,0,0, TimestampService.UK_ZONE)
+    private static final Instant FIXED_TIME_LOCAL = ZonedDateTime
+        .of(LocalDateTime.parse("1991-11-06T12:30:00"), TimestampService.UK_ZONE)
         .toInstant();
-    private final static String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
+    private static final String UUID = "73eefd69-811f-44d0-81f8-a54ff352a991";
 
     @Mock
     private MeshConfig meshConfig;
@@ -39,16 +46,30 @@ class MeshAuthorizationTokenTest {
 
     @Test
     void testTokenUsesCorrectFormat() {
-        MeshAuthorizationToken meshToken = new MeshAuthorizationToken(meshConfig, FIXED_TIME_LOCAL, new Nonce(UUID), authorizationHashGenerator);
+        MeshAuthorizationToken meshToken = new MeshAuthorizationToken(
+            meshConfig,
+            FIXED_TIME_LOCAL,
+            new Nonce(UUID),
+            authorizationHashGenerator
+        );
+
         SoftAssertions.assertSoftly(softly -> {
             String[] values = meshToken.getValue().split(":");
-            softly.assertThat(values[0]).isEqualTo("NHSMESH " + MAILBOX_ID);
-            softly.assertThat(values[1]).isEqualTo(UUID);
-            softly.assertThat(values[2]).isEqualTo("1");
-            softly.assertThat(values[3]).isEqualTo(new TokenTimestamp(FIXED_TIME_LOCAL).getValue());
-            softly.assertThat(values[4]).isEqualTo(AUTHORIZATION_HASH);
+            softly.assertThat(values[EDIFACT_MAILBOX_INDEX])
+                .isEqualTo("NHSMESH " + MAILBOX_ID);
+            softly.assertThat(values[EDIFACT_NONCE_VALUE_INDEX])
+                .isEqualTo(UUID);
+            softly.assertThat(values[EDIFACT_NONCE_COUNT_INDEX])
+                .isEqualTo("1");
+            softly.assertThat(values[EDIFACT_TIMESTAMP_INDEX])
+                .isEqualTo(new TokenTimestamp(FIXED_TIME_LOCAL).getValue());
+            softly.assertThat(values[EDIFACT_AUTHORIZATION_HASH_INDEX])
+                .isEqualTo(AUTHORIZATION_HASH);
             softly.assertThat(meshToken.getValue())
-                .isEqualTo("NHSMESH mailbox_id:73eefd69-811f-44d0-81f8-a54ff352a991:1:199111061230:474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569");
+                .isEqualTo(
+                    "NHSMESH mailbox_id:73eefd69-811f-44d0-81f8-a54ff352a991:1"
+                        + ":199111061230:474c0634fd2267e41252bddfb40031d85e433599a8015c74546e95b05c2df569"
+                );
         });
     }
 

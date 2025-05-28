@@ -21,59 +21,61 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class EdifactToFhirServiceTest {
 
-    private final String rejectionMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
-        "UNH+00000004+FHSREG:0:1:FH:FHS001'\n" +
-        "BGM+++507'\n" +
-        "NAD+FHS+XX1:954'\n" +
-        "DTM+137:199201141619:203'\n" +
-        "RFF+950:F3'\n" +
-        "RFF+TN:18'\n" +
-        "S01+1'\n" +
-        "NAD+GP+2750922,295:900'\n" +
-        "NAD+RIC+RT:956'\n" +
-        "QTY+951:6'\n" +
-        "QTY+952:3'\n" +
-        "HEA+ACD+A:ZZZ'\n" +
-        "HEA+ATP+2:ZZZ'\n" +
-        "HEA+BM+S:ZZZ'\n" +
-        "HEA+DM+Y:ZZZ'\n" +
-        "DTM+956:19920114:102'\n" +
-        "LOC+950+GLASGOW'\n" +
-        "FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'\n" +
-        "S02+2'\n" +
-        "PNA+PAT+NHS123:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
-        "DTM+329:19911209:102'\n" +
-        "PDI+2'\n" +
-        "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
-        "UNT+24+00000004'\n" +
-        "UNZ+1+00000003'";
+    private final String rejectionMessage = """
+        UNB+UNOA:2+TES5+XX11+020114:1619+00000003'
+        UNH+00000004+FHSREG:0:1:FH:FHS001'
+        BGM+++507'
+        NAD+FHS+XX1:954'
+        DTM+137:199201141619:203'
+        RFF+950:F3'
+        RFF+TN:18'
+        S01+1'
+        NAD+GP+2750922,295:900'
+        NAD+RIC+RT:956'
+        QTY+951:6'
+        QTY+952:3'
+        HEA+ACD+A:ZZZ'
+        HEA+ATP+2:ZZZ'
+        HEA+BM+S:ZZZ'
+        HEA+DM+Y:ZZZ'
+        DTM+956:19920114:102'
+        LOC+950+GLASGOW'
+        FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'
+        S02+2'
+        PNA+PAT+NHS123:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+        DTM+329:19911209:102'
+        PDI+2'
+        NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'
+        UNT+24+00000004'
+        UNZ+1+00000003'""";
 
-    private final String approvalMessage = "UNB+UNOA:2+TES5+XX11+020114:1619+00000003'\n" +
-        "UNH+00000004+FHSREG:0:1:FH:FHS001'\n" +
-        "BGM+++507'\n" +
-        "NAD+FHS+XX1:954'\n" +
-        "DTM+137:199201141619:203'\n" +
-        "RFF+950:F4'\n" +
-        "RFF+TN:18'\n" +
-        "S01+1'\n" +
-        "NAD+GP+2750922,295:900'\n" +
-        "NAD+RIC+RT:956'\n" +
-        "QTY+951:6'\n" +
-        "QTY+952:3'\n" +
-        "HEA+ACD+A:ZZZ'\n" +
-        "HEA+ATP+2:ZZZ'\n" +
-        "HEA+BM+S:ZZZ'\n" +
-        "HEA+DM+Y:ZZZ'\n" +
-        "DTM+956:19920114:102'\n" +
-        "LOC+950+GLASGOW'\n" +
-        "FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'\n" +
-        "S02+2'\n" +
-        "PNA+PAT+NHS123:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'\n" +
-        "DTM+329:19911209:102'\n" +
-        "PDI+2'\n" +
-        "NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'\n" +
-        "UNT+24+00000004'\n" +
-        "UNZ+1+00000003'";
+    private final String approvalMessage = """
+        UNB+UNOA:2+TES5+XX11+020114:1619+00000003'
+        UNH+00000004+FHSREG:0:1:FH:FHS001'
+        BGM+++507'
+        NAD+FHS+XX1:954'
+        DTM+137:199201141619:203'
+        RFF+950:F4'
+        RFF+TN:18'
+        S01+1'
+        NAD+GP+2750922,295:900'
+        NAD+RIC+RT:956'
+        QTY+951:6'
+        QTY+952:3'
+        HEA+ACD+A:ZZZ'
+        HEA+ATP+2:ZZZ'
+        HEA+BM+S:ZZZ'
+        HEA+DM+Y:ZZZ'
+        DTM+956:19920114:102'
+        LOC+950+GLASGOW'
+        FTX+RGI+++BABY AT THE REYNOLDS-THORPE CENTRE'
+        S02+2'
+        PNA+PAT+NHS123:OPI+++SU:KENNEDY+FO:SARAH+TI:MISS+MI:ANGELA'
+        DTM+329:19911209:102'
+        PDI+2'
+        NAD+PAT++??:26 FARMSIDE CLOSE:ST PAULS CRAY:ORPINGTON:KENT+++++BR6  7ET'
+        UNT+24+00000004'
+        UNZ+1+00000003'""";
 
     private Map<ReferenceTransactionType.TransactionType, FhirTransactionMapper> transactionMappers;
 

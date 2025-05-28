@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.translator.amendment.mappers;
 
+import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.provider.Arguments;
 import org.mockito.Mock;
@@ -12,14 +13,15 @@ import java.util.stream.Stream;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+@Getter
 public class AmendmentFhirToEdifactTestBase {
     protected static final String REMOVE_INDICATOR = "%";
 
     @Mock
-    protected AmendmentBody amendmentBody;
+    private AmendmentBody amendmentBody;
 
     @Mock
-    protected JsonPatches jsonPatches;
+    private JsonPatches jsonPatches;
 
     @SuppressWarnings("unused")
     protected static Stream<Arguments> getAddOrReplaceEnums() {

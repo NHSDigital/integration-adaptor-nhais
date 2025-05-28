@@ -18,7 +18,7 @@ public class DeductionDateTest {
     @Test
     void When_FromStringWithValidInput_Expect_SegmentCreated() {
         DeductionDate deductionDate = DeductionDate.fromString("DTM+961:20050115:102");
-        DeductionDate expectedDeductionDate = new DeductionDate(LocalDate.of(2005,1,15));
+        DeductionDate expectedDeductionDate = new DeductionDate(LocalDate.parse("2005-01-15"));
 
         assertThat(deductionDate.getValue()).isEqualTo(expectedDeductionDate.getValue());
     }

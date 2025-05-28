@@ -47,8 +47,8 @@ public class ReferenceTransactionTypeTest {
             .build();
 
         assertThat(abbreviationMap).hasSize(
-            ReferenceTransactionType.Inbound.values().length +
-                ReferenceTransactionType.Outbound.values().length);
+            ReferenceTransactionType.Inbound.values().length + ReferenceTransactionType.Outbound.values().length
+        );
 
         abbreviationMap.forEach((abbreviation, transactionType) ->
             assertThat(ReferenceTransactionType.TransactionType.fromAbbreviation(abbreviation)).isEqualTo(transactionType));
@@ -72,8 +72,8 @@ public class ReferenceTransactionTypeTest {
             .build();
 
         assertThat(codeMap).hasSize(
-            ReferenceTransactionType.Inbound.values().length +
-                ReferenceTransactionType.Outbound.values().length);
+            ReferenceTransactionType.Inbound.values().length + ReferenceTransactionType.Outbound.values().length
+        );
 
         codeMap.forEach((code, transactionType) ->
             assertThat(ReferenceTransactionType.TransactionType.fromCode(code)).isEqualTo(transactionType));

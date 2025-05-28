@@ -1,7 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.inbound.queue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,8 +28,6 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -128,7 +125,7 @@ public class InboundQueueServiceTest {
     }
 
     @Test
-    public void When_ReceiveUnknownWorkflow_Expect_ThrowsUnknownWorkflowExceptionWithNoAck() throws Exception{
+    public void When_ReceiveUnknownWorkflow_Expect_ThrowsUnknownWorkflowExceptionWithNoAck() throws Exception {
         when(message.getBody(String.class)).thenReturn("{}");
         when(message.getStringProperty(JmsHeaders.CONVERSATION_ID)).thenReturn(CONVERSATION_ID);
 
@@ -152,7 +149,12 @@ public class InboundQueueServiceTest {
         inboundQueueService.publish(inboundMeshMessage);
 
         // the method parameter is modified so another copy is needed. Timestamp set to expected value
-        InboundMeshMessage expectedInboundMeshMessage = InboundMeshMessage.create(WorkflowId.REGISTRATION, "ASDF", messageSentTimestamp, "ID123");
+        InboundMeshMessage expectedInboundMeshMessage = InboundMeshMessage.create(
+            WorkflowId.REGISTRATION,
+            "ASDF",
+            messageSentTimestamp,
+            "ID123"
+        );
         String expectedStringMessage = objectMapper.writeValueAsString(expectedInboundMeshMessage);
         verify(jmsTemplate).send(org.mockito.Mockito.<String>isNull(), jmsMessageCreatorCaptor.capture());
         MessageCreator messageCreator = jmsMessageCreatorCaptor.getValue();

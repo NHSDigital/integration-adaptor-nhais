@@ -31,6 +31,7 @@ import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 import uk.nhs.digital.nhsconnect.nhais.utils.TimestampService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -85,7 +86,7 @@ public class FhirToEdifactServiceTest {
         when(sequenceService.generateInterchangeSequence(GP_TRADING_PARTNER_CODE, HA_TRADING_PARTNER_CODE)).thenReturn(SIS);
         when(sequenceService.generateTransactionNumber(GP_TRADING_PARTNER_CODE)).thenReturn(TN);
         expectedTimestamp = ZonedDateTime
-            .of(2020, 4, 27, 17, 37, 0, 0, TimestampService.UK_ZONE)
+            .of(LocalDateTime.parse("2020-04-27T17:37:00"), TimestampService.UK_ZONE)
             .toInstant();
         when(timestampService.getCurrentTimestamp()).thenReturn(expectedTimestamp);
         // segments related to state management only
@@ -131,16 +132,17 @@ public class FhirToEdifactServiceTest {
 
         OutboundMeshMessage meshMessage = fhirToEdifactService.convertToEdifact(patient, ReferenceTransactionType.Outbound.ACCEPTANCE);
 
-        String expected = "UNB+UNOA:2+GP123+HA41+200427:1737+00000045'\n" +
-            "UNH+00000056+FHSREG:0:1:FH:FHS001'\n" +
-            "BGM+++507'\n" +
-            "NAD+FHS+HA4:954'\n" +
-            "DTM+137:202004271737:203'\n" +
-            "RFF+950:G1'\n" +
-            "S01+1'\n" +
-            "RFF+TN:5174'\n" +
-            "UNT+8+00000056'\n" +
-            "UNZ+1+00000045'";
+        String expected = """
+            UNB+UNOA:2+GP123+HA41+200427:1737+00000045'
+            UNH+00000056+FHSREG:0:1:FH:FHS001'
+            BGM+++507'
+            NAD+FHS+HA4:954'
+            DTM+137:202004271737:203'
+            RFF+950:G1'
+            S01+1'
+            RFF+TN:5174'
+            UNT+8+00000056'
+            UNZ+1+00000045'""";
 
         assertThat(meshMessage.getContent()).isEqualTo(expected);
     }

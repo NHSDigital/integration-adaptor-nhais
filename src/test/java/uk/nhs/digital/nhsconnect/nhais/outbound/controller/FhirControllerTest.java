@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -162,7 +163,7 @@ public class FhirControllerTest {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .content("qwe"))
-            .andExpect(status().is(415))
+            .andExpect(status().is(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
             .andExpect(content().json(expectedResponse));
 
         var operationOutcomeArgumentCaptor = ArgumentCaptor.forClass(OperationOutcome.class);

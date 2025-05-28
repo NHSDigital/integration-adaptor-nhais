@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.message.EdifactValidationException;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
@@ -12,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class RegistrationMessageDateTimeTest {
 
-    private final Instant WINTER = ZonedDateTime
-        .of(2020, 3, 28, 20, 58, 0, 0, ZoneOffset.UTC)
+    private static final Instant WINTER = ZonedDateTime
+        .of(LocalDateTime.parse("2020-03-28T20:58:00"), ZoneOffset.UTC)
         .toInstant();
-    private final Instant SUMMER = ZonedDateTime
-        .of(2020, 5, 28, 20, 58, 0, 0, ZoneOffset.UTC)
+    private static final Instant SUMMER = ZonedDateTime
+        .of(LocalDateTime.parse("2020-05-28T20:58:00"), ZoneOffset.UTC)
         .toInstant();
 
     @Test
@@ -43,6 +44,7 @@ public class RegistrationMessageDateTimeTest {
 
     @Test
     void When_FromStringAndStringIsNotDTMSegment_Expect_ThrowsException() {
-        assertThatThrownBy(() -> RegistrationMessageDateTime.fromString("ABC+123:456:789'")).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> RegistrationMessageDateTime.fromString("ABC+123:456:789'"))
+            .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }

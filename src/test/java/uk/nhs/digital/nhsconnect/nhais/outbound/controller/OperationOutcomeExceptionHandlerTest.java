@@ -51,7 +51,7 @@ public class OperationOutcomeExceptionHandlerTest extends ResponseEntityExceptio
 
     private static class StubOperationOutcomeError extends Exception implements OperationOutcomeError {
 
-        public StubOperationOutcomeError(String message) {
+        StubOperationOutcomeError(String message) {
             super(message);
         }
 

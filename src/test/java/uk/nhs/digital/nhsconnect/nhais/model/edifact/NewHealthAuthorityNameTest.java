@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class NewHealthAuthorityNameTest {
 
-    private final static String IDENTIFIER = "ID1";
+    private static final String IDENTIFIER = "ID1";
 
     @Test
     void toEdifact() {

@@ -30,10 +30,10 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddingOrReplacingPreviousSurname_Expect_AllFieldsAreMapped(AmendmentPatchOperation operation) {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation).setValue(AmendmentValue.from(PREVIOUS_SURNAME))));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonPreviousName.builder()
@@ -43,10 +43,10 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
 
     @Test
     void When_RemovingPreviousSurname_Expect_AllFieldsAreMapped() {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(AmendmentPatchOperation.REMOVE)));
 
-        var segments = translator.map(amendmentBody);
+        var segments = translator.map(super.getAmendmentBody());
 
         assertThat(segments).isPresent().get()
             .isEqualTo(PersonPreviousName.builder()
@@ -57,13 +57,13 @@ class AmendmentPreviousNameToEdifactMapperTest extends AmendmentFhirToEdifactTes
     @ParameterizedTest
     @MethodSource(value = "getAddOrReplaceEnums")
     void When_AddOrReplaceValuesAreEmpty_Expect_Exception(AmendmentPatchOperation operation) {
-        when(jsonPatches.getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
+        when(super.getJsonPatches().getPreviousSurname()).thenReturn(Optional.of(new AmendmentPatch()
             .setOp(operation)
             .setPath(JsonPatches.PREVIOUS_SURNAME_PATH)
             .setValue(AmendmentValue.from(StringUtils.EMPTY))
         ));
 
-        assertThatThrownBy(() -> translator.map(amendmentBody))
+        assertThatThrownBy(() -> translator.map(super.getAmendmentBody()))
             .isInstanceOf(PatchValidationException.class)
             .hasMessage("Invalid values for: [/name/1/family]");
     }

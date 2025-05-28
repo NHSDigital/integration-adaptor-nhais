@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import uk.nhs.digital.nhsconnect.nhais.inbound.jsonpatch.mapper.ThirdForenamePatchTransactionMapper;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.PersonName;
 import uk.nhs.digital.nhsconnect.nhais.model.edifact.Transaction;
 import uk.nhs.digital.nhsconnect.nhais.model.jsonpatch.AmendmentPatch;

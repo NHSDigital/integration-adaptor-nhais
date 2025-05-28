@@ -1,5 +1,6 @@
 package uk.nhs.digital.nhsconnect.nhais.outbound.controller;
 
+import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class ConversationIdHeadersTest {
             .contentType("text/plain")
             .header("ConversationId", "asdf1234")
             .content("qwe"))
-            .andExpect(status().is(415))
+            .andExpect(status().is(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE))
             .andExpect(header().string("ConversationId", "asdf1234"));
     }
 
@@ -55,7 +56,7 @@ public class ConversationIdHeadersTest {
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .content("qwe"))
-            .andExpect(status().is(415))
+            .andExpect(status().is(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE))
             .andExpect(header().string("ConversationId", Matchers.matchesRegex("[0-9A-F]{32}")));
     }
 

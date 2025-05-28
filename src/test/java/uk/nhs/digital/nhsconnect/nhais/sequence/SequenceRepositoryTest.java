@@ -17,9 +17,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SequenceRepositoryTest {
-    private final static String MAX_KEY = "max-key";
-    private final static String NEW_KEY = "new-key";
-    private final static OutboundSequenceId SEQUENCE_ID = new OutboundSequenceId(NEW_KEY, 1L);
+    private static final String MAX_KEY = "max-key";
+    private static final String NEW_KEY = "new-key";
+    private static final OutboundSequenceId SEQUENCE_ID = new OutboundSequenceId(NEW_KEY, 1L);
+    private static final long MAX_KEY_OUT_OF_BOUNDS_VALUE = 100000001L;
+    private static final long MAX_KEY_VALUE = 100000000L;
 
     @InjectMocks
     private SequenceRepository sequenceRepository;
@@ -37,11 +39,12 @@ public class SequenceRepositoryTest {
 
     @Test
     public void When_GetMaxNextKey_Expect_ValueReset() {
+        final long expectedNextKey = 1L;
         when(mongoOperations.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class),
             eq(OutboundSequenceId.class)))
-            .thenReturn(new OutboundSequenceId(MAX_KEY, 100000000L))
-            .thenReturn(new OutboundSequenceId(MAX_KEY, 100000001L));
+            .thenReturn(new OutboundSequenceId(MAX_KEY, MAX_KEY_VALUE))
+            .thenReturn(new OutboundSequenceId(MAX_KEY, MAX_KEY_OUT_OF_BOUNDS_VALUE));
 
-        assertThat(sequenceRepository.getNext(MAX_KEY)).isEqualTo(1L);
+        assertThat(sequenceRepository.getNext(MAX_KEY)).isEqualTo(expectedNextKey);
     }
 }

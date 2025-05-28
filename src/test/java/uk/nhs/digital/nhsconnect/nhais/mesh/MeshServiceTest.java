@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MeshServiceTest {
 
+    private static final long ONE_SECOND = 1000L;
     @Mock
     private MeshClient meshClient;
 
@@ -95,7 +96,7 @@ class MeshServiceTest {
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
         when(meshClient.getInboxMessageIds()).thenReturn(List.of(MESSAGE_ID1, MESSAGE_ID2));
         when(meshClient.getEdifactMessage(any())).thenAnswer((invocation) -> {
-            Thread.sleep((pollingCycleMaximumDurationInSeconds + 1) * 1000L); // ensure first download exceeds duration
+            Thread.sleep((pollingCycleMaximumDurationInSeconds + 1) * ONE_SECOND); // ensure first download exceeds duration
             return meshMessage1;
         });
 
@@ -240,7 +241,8 @@ class MeshServiceTest {
     public void When_IntervalHasPassedButAuthenticationFails_Expect_StopProcessing() {
         when(meshMailBoxScheduler.hasTimePassed(scanDelayInSeconds)).thenReturn(true);
         when(meshMailBoxScheduler.isEnabled()).thenReturn(true);
-        doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR)).when(meshClient).authenticate();
+        doThrow(new MeshApiConnectionException("Auth fail", HttpStatus.OK, HttpStatus.INTERNAL_SERVER_ERROR))
+            .when(meshClient).authenticate();
 
         Assertions.assertThatThrownBy(() -> meshService.scanMeshInboxForMessages())
             .isExactlyInstanceOf(MeshApiConnectionException.class);
