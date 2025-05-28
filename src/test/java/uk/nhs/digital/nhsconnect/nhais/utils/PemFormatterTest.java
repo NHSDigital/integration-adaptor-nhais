@@ -9,17 +9,16 @@ public class PemFormatterTest {
     @Test
     public void When_CertHasExtraWhitespace_Expect_ItIsTrimmed() {
 
-        // this warning is suppressed as the extra whitespace (including trailing whitespace) is intentional
-        @SuppressWarnings("com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSingleLineCheck")
+        //The extra whitespace (including trailing whitespace) is intentional for this test and has been suppressed with `\s`
         final String withWhitespace = """
              -----BEGIN CERTIFICATE-----
-                MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV 
-                
-                
+                MIIFXzCCA0egAwIBAgIJALRbCSor9bEbMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV \s
+               \s
+               \s
                 W/JNIRmhLoeFNGNh8HvhI2PwOCsFiqT1rrCaUtusTyH0Ggs=
-            
-               -----END CERTIFICATE-----    
-            """;
+           \s
+               -----END CERTIFICATE-----   \s
+           \s""";
 
         final String trimmed = """
         -----BEGIN CERTIFICATE-----
