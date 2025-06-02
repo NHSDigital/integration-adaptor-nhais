@@ -55,7 +55,7 @@ jobs:
           distribution: temurin
 
       - name: Run SpotBugs
-        run: ./gradlew spotbugsMain spotbugsIntTest spotbugs --parallel
+        run: ./gradlew spotbugsMain spotbugsIntTest spotbugsTest --parallel
 
   unit-tests:
     name: Unit Tests
