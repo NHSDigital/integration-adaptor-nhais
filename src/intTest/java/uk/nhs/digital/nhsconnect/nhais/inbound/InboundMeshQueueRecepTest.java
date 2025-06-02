@@ -5,9 +5,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -50,10 +50,10 @@ public class InboundMeshQueueRecepTest extends IntegrationBaseTest {
     @Value("classpath:edifact/recep.dat")
     private Resource recep;
 
-    @MockBean
+    @MockitoBean
     private TimestampService timestampService;
 
-    @MockBean
+    @MockitoBean
     private ConversationIdService conversationIdService;
 
     @BeforeEach
