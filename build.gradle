@@ -51,7 +51,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework:spring-jms'
-	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 	implementation 'com.heroku.sdk:env-keystore:1.1.11'
 
 	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:8.0.0'
