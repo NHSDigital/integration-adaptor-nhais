@@ -16,6 +16,7 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirParser;
 import uk.nhs.digital.nhsconnect.nhais.outbound.fhir.FhirToEdifactService;
 import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +53,7 @@ public class ConversationIdHeadersTest {
 
     @Test
     void When_ConversationNotIdInRequestHeader_Expect_GeneratedIdIsUsed() throws Exception {
+        when(conversationIdService.applyRandomConversationId()).thenCallRealMethod();
         mockMvc.perform(post("/fhir/Patient/$nhais.acceptance")
             .contentType("text/plain")
             .content("qwe"))

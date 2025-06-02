@@ -9,9 +9,8 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.ConversationIdFilter;
 public class ConversationIdFilterConfig {
 
     @Bean
-    public FilterRegistrationBean<ConversationIdFilter> servletRegistrationBean() {
+    public FilterRegistrationBean<ConversationIdFilter> servletRegistrationBean(ConversationIdFilter conversationIdFilter) {
         final FilterRegistrationBean<ConversationIdFilter> registrationBean = new FilterRegistrationBean<>();
-        final ConversationIdFilter conversationIdFilter = new ConversationIdFilter();
         registrationBean.setFilter(conversationIdFilter);
         registrationBean.setOrder(2);
         return registrationBean;
