@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -62,7 +61,7 @@ public class FhirControllerTest {
     @MockitoBean
     private FhirParser fhirParser;
 
-    @MockitoSpyBean
+    @MockitoBean
     private ConversationIdService conversationIdService;
 
     @Test
