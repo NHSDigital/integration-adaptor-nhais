@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.inbound.state.InboundState;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -51,7 +51,7 @@ public class InboundMeshQueueRegistrationTest extends IntegrationBaseTest {
     private static final String ISO_GENERATED_TIMESTAMP = new TimestampService()
         .formatInISO(GENERATED_TIMESTAMP);
 
-    @MockBean
+    @MockitoBean
     private TimestampService timestampService;
     @Value("classpath:edifact/registration.dat")
     private Resource interchange;

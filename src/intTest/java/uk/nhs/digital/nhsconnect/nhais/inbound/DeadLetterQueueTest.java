@@ -3,8 +3,8 @@ package uk.nhs.digital.nhsconnect.nhais.inbound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
 import uk.nhs.digital.nhsconnect.nhais.mesh.http.MeshClient;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.OutboundMeshMessage;
@@ -27,10 +27,10 @@ public class DeadLetterQueueTest extends IntegrationBaseTest {
     @Autowired
     private OutboundQueueService outboundQueueService;
 
-    @SpyBean
+    @MockitoSpyBean
     private MeshClient meshClient;
 
-    @SpyBean
+    @MockitoSpyBean
     private ConversationIdService conversationIdService;
 
     @Autowired
