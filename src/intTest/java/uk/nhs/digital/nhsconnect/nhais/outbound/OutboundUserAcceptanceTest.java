@@ -6,8 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.nhs.digital.nhsconnect.nhais.IntegrationBaseTest;
@@ -48,7 +48,7 @@ public class OutboundUserAcceptanceTest extends IntegrationBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @SpyBean
+    @MockitoSpyBean
     private TimestampService timestampService;
 
     private String conversationId;

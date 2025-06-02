@@ -4,13 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uk.nhs.digital.nhsconnect.nhais.utils.ConversationIdService;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,12 +19,15 @@ public class ConversationIdFilter extends OncePerRequestFilter {
 
     static final String HEADER_NAME = "ConversationId";
 
-    private ConversationIdService conversationIdService;
+    private final ConversationIdService conversationIdService;
+
+    public ConversationIdFilter(ConversationIdService conversationIdService) {
+        this.conversationIdService = conversationIdService;
+    }
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
         throws java.io.IOException, ServletException {
-        lazyInitialize(request);
         try {
             var token = request.getHeader(HEADER_NAME);
             if (StringUtils.isEmpty(token)) {
@@ -39,14 +39,6 @@ public class ConversationIdFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } finally {
             conversationIdService.resetConversationId();
-        }
-    }
-
-    private void lazyInitialize(HttpServletRequest request) {
-        if (conversationIdService == null) {
-            ServletContext servletContext = request.getServletContext();
-            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            this.conversationIdService = webApplicationContext.getBean(ConversationIdService.class);
         }
     }
 }

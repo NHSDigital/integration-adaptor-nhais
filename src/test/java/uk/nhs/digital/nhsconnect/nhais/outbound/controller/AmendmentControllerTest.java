@@ -6,9 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,19 +40,19 @@ public class AmendmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private JsonPatchToEdifactService jsonPatchToEdifactService;
 
-    @MockBean
+    @MockitoBean
     private OutboundQueueService outboundQueueService;
 
-    @MockBean
+    @MockitoBean
     private ObjectMapper objectMapper;
 
-    @SpyBean
+    @MockitoBean
     private ConversationIdService conversationIdService;
 
-    @MockBean
+    @MockitoBean
     private FhirParser fhirParser;
 
     @Value("classpath:/amendment/amendment.json")
