@@ -113,7 +113,7 @@ jobs:
 
   component-tests:
     name: Component Tests
-    needs: [ checkstyle ]
+    needs: [ checkstyle, spotbugs ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -153,7 +153,7 @@ jobs:
 
   integration_tests:
     name: Integration Tests
-    needs: [ checkstyle ]
+    needs: [ checkstyle, spotbugs ]
     permissions:
       contents: read
     runs-on: ubuntu-latest
