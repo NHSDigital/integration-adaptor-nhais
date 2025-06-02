@@ -10,10 +10,10 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.nhs.digital.nhsconnect.nhais.mesh.message.MeshMessage;
@@ -53,16 +53,16 @@ public class FhirControllerTest {
     @Value("classpath:/patient/parameters.json")
     private Resource paramsPayload;
 
-    @MockBean
+    @MockitoBean
     private OutboundQueueService outboundQueueService;
 
-    @MockBean
+    @MockitoBean
     private FhirToEdifactService fhirToEdifactService;
 
-    @MockBean
+    @MockitoBean
     private FhirParser fhirParser;
 
-    @SpyBean
+    @MockitoSpyBean
     private ConversationIdService conversationIdService;
 
     @Test
