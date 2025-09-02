@@ -36,11 +36,6 @@ sourceSets {
 		runtimeClasspath += sourceSets.main.output
 	}
 
-	componentTest {
-		compileClasspath += sourceSets.main.output
-		runtimeClasspath += sourceSets.main.output
-	}
-
 	recepResponder {
 		compileClasspath += sourceSets.main.output
 		runtimeClasspath += sourceSets.main.output
@@ -81,7 +76,7 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-	testImplementation "org.testcontainers:testcontainers:1.21.0"
+	testImplementation "org.testcontainers:testcontainers:1.21.1"
 	testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
 	testImplementation("org.assertj:assertj-core:3.27.3")
 }
