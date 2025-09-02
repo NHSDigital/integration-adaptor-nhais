@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   nhais:
     image: local/nhais:${BUILD_TAG}
