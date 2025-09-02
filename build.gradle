@@ -36,6 +36,11 @@ sourceSets {
 		runtimeClasspath += sourceSets.main.output
 	}
 
+	componentTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+
 	recepResponder {
 		compileClasspath += sourceSets.main.output
 		runtimeClasspath += sourceSets.main.output
@@ -94,6 +99,9 @@ jacocoTestReport {
 tasks.register('componentTest', Test) {
 	useJUnitPlatform() {
 		includeTags 'component'
+
+		testClassesDirs = testing.suites.test.sources.output.classesDirs
+		classpath = testing.suites.test.sources.runtimeClasspath
 	}
 }
 
