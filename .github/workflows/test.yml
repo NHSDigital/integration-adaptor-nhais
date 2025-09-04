@@ -46,10 +46,10 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Make script executable
-        run: chmod +x .scripts/sbom-generator.sh
+        run: chmod +x ./scripts/sbom-generator.sh
 
       - name: Run the shell script
-        run: .scripts/sbom-generator.sh
+        run: ./scripts/sbom-generator.sh
 
 
   unit-tests:
