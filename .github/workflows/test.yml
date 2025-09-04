@@ -43,13 +43,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
 
       - name: Make script executable
-        run: chmod +x ./././scripts/sbom-generator.sh
+        run: chmod +x ./scripts/sbom-generator.sh
 
       - name: Run the shell script
-        run:  ./././scripts/sbom-generator.sh
+        run: ./scripts/sbom-generator.sh
+
+      - name: List all files in the current directory
+        run: ls -R
 
       - name: Collect Artifacts
         run: |
@@ -57,13 +60,14 @@ jobs:
           cp -r ./build/reports/sbom ./artifacts
 
       - name: Upload SBOM Artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v4
         with:
           name: SBOM Report
           path: ./artifacts/**
           compression-level: 9
 
       - name: Temporary Artifacts Cleanup
+        if: always()
         run: rm -rf ./artifacts
 
 
