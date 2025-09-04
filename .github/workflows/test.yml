@@ -51,7 +51,7 @@ jobs:
       - name: Run the shell script
         run: ./scripts/sbom-generator.sh
 
-      - name: List all files in the current directory
+      - name: List all files in the current directory - rekick
         run: ls -R
 
       - name: Collect Artifacts
