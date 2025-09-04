@@ -12,27 +12,28 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
+      actions: write
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df #4.2.1
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: gp2gp_github_action_build_workflow
-          aws-region: ${{ secrets.AWS_REGION }}
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df #4.2.1
+#        with:
+#          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_TO_ASSUME }}
+#          role-session-name: gp2gp_github_action_build_workflow
+#          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build Docker Image
-        run: |
-          DOCKER_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          DOCKER_TAG="$DOCKER_REGISTRY/nhais:${{ inputs.build-id }}"
-          echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
-
-          # Build Image
-          docker build -f ./Dockerfile -t $DOCKER_TAG .
+#      - name: Build Docker Image
+#        run: |
+#          DOCKER_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+#          DOCKER_TAG="$DOCKER_REGISTRY/nhais:${{ inputs.build-id }}"
+#          echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
+#
+#          # Build Image
+#          docker build -f ./Dockerfile -t $DOCKER_TAG .
 
       - name: Make script executable
         run: chmod +x ./scripts/sbom-generator.sh
@@ -43,21 +44,60 @@ jobs:
       - name: Collect Artifacts
         run: |
           mkdir -p artifacts
-          pwd
-          ls
-      
           cp -r ./sbom-spdx.json ./artifacts
+          ls ./artifacts
 
-      - name: Upload SBOM Artifacts
-        uses: actions/upload-artifact@v4
+#      - name: Upload SBOM Artifacts
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: sbom-report
+#          path: ./artifacts/**
+#          compression-level: 9
+#
+#      - name: Temporary Artifacts Cleanup
+#        if: always()
+#        run: rm -rf ./artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: GITHUBTOKEN
         with:
-          name: SBOM Report
-          path: ./artifacts/**
-          compression-level: 9
+          tag_name: v1.0.0-testing-4
+          release_name: release name
+          draft: false
+          prerelease: false
 
-      - name: Temporary Artifacts Cleanup
-        if: always()
-        run: rm -rf ./artifacts
+      - name: Exec
+        run: |
+          echo release upload url
+          echo ${{ github.event.release.upload_url }}
+          echo release 
+          echo ${{ github.event.release }}
+          echo outputs_upload_url
+          echo ${{ steps.create_release.outputs.upload_url }}
+#      - name: Download artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: sbom-report.zip
+
+#      - name: Upload release asset
+#        uses: actions/upload-release-asset@v1
+#        with:
+#          # ... other inputs
+#          asset_path: ./artifacts/sbom-spdx.json
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: GITHUBTOKEN
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./artifacts/sbom-spdx.json
+          asset_name: sbom-spdx.json
+          asset_content_type: application/json
 
 #      - name: Login to AWS ECR
 #        run: |

@@ -62,7 +62,7 @@ jobs:
       - name: Upload SBOM Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SBOM Report
+          name: sbom-report
           path: ./artifacts/**
           compression-level: 9
 
