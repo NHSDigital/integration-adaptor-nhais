@@ -39,6 +39,19 @@ jobs:
       - name: Temporary Artifacts Cleanup
         run: rm -rf ./artifacts
 
+  run-sbom-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Make script executable
+        run: chmod +x .scripts/sbom-generator.sh
+
+      - name: Run the shell script
+        run: .scripts/sbom-generator.sh
+
+
   unit-tests:
     name: Unit Tests
     needs: [ checkstyle ]
