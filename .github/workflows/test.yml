@@ -1,8 +1,6 @@
 name: Test Workflow
 on:
-  push:
-    branches:
-      - test-sbom
+  workflow_call:
 
 jobs:
   checkstyle:
