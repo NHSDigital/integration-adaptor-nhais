@@ -51,13 +51,10 @@ jobs:
       - name: Run the shell script
         run: ./scripts/sbom-generator.sh
 
-      - name: List all files in the current directory - rekick
-        run: ls -R
-
       - name: Collect Artifacts
         run: |
           mkdir -p artifacts
-          cp -r ./build/reports/sbom ./artifacts
+          cp -r /scan/sbom-spdx.json ./artifacts
 
       - name: Upload SBOM Artifacts
         uses: actions/upload-artifact@v4
