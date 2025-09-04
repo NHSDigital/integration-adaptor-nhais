@@ -51,6 +51,21 @@ jobs:
       - name: Run the shell script
         run:  ./././scripts/sbom-generator.sh
 
+      - name: Collect Artifacts
+        run: |
+          mkdir -p artifacts
+          cp -r <path_to_sbom_files> ./artifacts
+
+      - name: Upload SBOM Artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: SBOM Report
+          path: ./artifacts/**
+          compression-level: 9
+
+      - name: Temporary Artifacts Cleanup
+        run: rm -rf ./artifacts
+
 
   unit-tests:
     name: Unit Tests
