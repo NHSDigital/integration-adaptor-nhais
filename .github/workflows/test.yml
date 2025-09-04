@@ -57,7 +57,7 @@ jobs:
           pwd
           ls
           
-          cp -r /scan/sbom-spdx.json ./artifacts
+          cp -r ./sbom-spdx.json ./artifacts
 
       - name: Upload SBOM Artifacts
         uses: actions/upload-artifact@v4
