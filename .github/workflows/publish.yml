@@ -34,16 +34,41 @@ jobs:
           # Build Image
           docker build -f ./Dockerfile -t $DOCKER_TAG .
 
-      - name: Login to AWS ECR
+      - name: Make script executable
+        run: chmod +x ./scripts/sbom-generator.sh
+
+      - name: Run the shell script
+        run: ./scripts/sbom-generator.sh
+
+      - name: Collect Artifacts
         run: |
-          DOCKER_REGISTRY="https://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+          mkdir -p artifacts
+          pwd
+          ls
+      
+          cp -r ./sbom-spdx.json ./artifacts
 
-      - name: Publish image to ECR
-        run: docker push $DOCKER_TAG
+      - name: Upload SBOM Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SBOM Report
+          path: ./artifacts/**
+          compression-level: 9
 
-      - name: Logout of AWS ECR (Clean up Credentials)
+      - name: Temporary Artifacts Cleanup
         if: always()
-        run: |
-          DOCKER_REGISTRY="https://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          docker logout $DOCKER_REGISTRY
+        run: rm -rf ./artifacts
+
+#      - name: Login to AWS ECR
+#        run: |
+#          DOCKER_REGISTRY="https://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+#          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+#
+#      - name: Publish image to ECR
+#        run: docker push $DOCKER_TAG
+#
+#      - name: Logout of AWS ECR (Clean up Credentials)
+#        if: always()
+#        run: |
+#          DOCKER_REGISTRY="https://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+#          docker logout $DOCKER_REGISTRY
