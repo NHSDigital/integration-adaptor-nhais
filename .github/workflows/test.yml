@@ -55,6 +55,8 @@ jobs:
         run: |
           mkdir -p artifacts
           pwd
+          ls
+          
           cp -r /scan/sbom-spdx.json ./artifacts
 
       - name: Upload SBOM Artifacts
