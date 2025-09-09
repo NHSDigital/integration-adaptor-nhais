@@ -187,16 +187,19 @@ This is to accommodate differences in the capabilities of deployment automation 
 
 Option 1: If `NHAIS_MONGO_HOST` **is defined** then this adaptor forms a connection string from the following properties:
 
-| Environment Variable      | Default | Description                                                                                                                                                   |
-|---------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NHAIS_MONGO_DATABASE_NAME | nhais   | Database name for Mongo                                                                                                                                       |
-| NHAIS_MONGO_HOST          |         | Mongodb host                                                                                                                                                  |
-| NHAIS_MONGO_PORT          |         | Mongodb port                                                                                                                                                  |
-| NHAIS_MONGO_USERNAME      |         | (Optional) Mongodb username. If set then password must also be set.                                                                                           |
-| NHAIS_MONGO_PASSWORD      |         | (Optional) Mongodb password                                                                                                                                   |
-| NHAIS_MONGO_OPTIONS       |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?                                                                       |
+| Environment Variable      | Default | Description                                                                                                                                                  |
+|---------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NHAIS_MONGO_DATABASE_NAME | nhais   | Database name for Mongo                                                                                                                                      |
+| NHAIS_MONGO_HOST          |         | Mongodb host                                                                                                                                                 |
+| NHAIS_MONGO_PORT          |         | Mongodb port                                                                                                                                                 |
+| NHAIS_MONGO_USERNAME      |         | (Optional) Mongodb username. If set then password must also be set.                                                                                          |
+| NHAIS_MONGO_PASSWORD      |         | (Optional) Mongodb password                                                                                                                                  |
+| NHAIS_MONGO_OPTIONS       |         | (Optional) Mongodb URL encoded parameters for the connection string without a leading ?                                                                      |
 | NHAIS_MONGO_TTL           | P30D    | (Optional) Time-to-live value for inbound and outbound state collection documents as an [ISO 8601 Duration](https://en.wikipedia.org/wiki/ISO_8601#Durations) |
-| NHAIS_COSMOS_DB_ENABLED   | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB                                                                |
+| NHAIS_COSMOS_DB_ENABLED   | false   | (Optional) If true the adaptor will enable features and workarounds to support Azure Cosmos DB                 |
+
+
+
 
 Option 2: If `NHAIS_MONGO_HOST` **is undefined** then the adaptor uses the connection string provided:
 
