@@ -200,7 +200,6 @@ Option 1: If `NHAIS_MONGO_HOST` **is defined** then this adaptor forms a connect
 
 
 
-
 Option 2: If `NHAIS_MONGO_HOST` **is undefined** then the adaptor uses the connection string provided:
 
 | Environment Variable      | Default                   | Description               |
