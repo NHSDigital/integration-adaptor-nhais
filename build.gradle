@@ -76,9 +76,9 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-	testImplementation "org.testcontainers:testcontainers:1.21.1"
-	testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
-	testImplementation("org.assertj:assertj-core:3.27.3")
+  testImplementation "org.testcontainers:testcontainers:1.21.3"
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
+  testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 test {
