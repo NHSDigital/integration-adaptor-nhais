@@ -13,19 +13,28 @@ apply plugin: 'checkstyle'
 apply plugin: 'org.springframework.boot'
 
 group = 'uk.nhs.digital.nhsconnect.nhais'
-sourceCompatibility = '21'
 
-mainClassName = 'uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+application {
+	mainClass = 'uk.nhs.digital.nhsconnect.nhais.IntegrationAdaptorNhaisApplication'
+}
+
 
 repositories {
 	mavenCentral()
 }
 
 sourceSets {
-    intTest {
+	intTest {
 		compileClasspath += sourceSets.main.output
 		runtimeClasspath += sourceSets.main.output
-    }
+	}
 
 	recepResponder {
 		compileClasspath += sourceSets.main.output
@@ -54,9 +63,9 @@ dependencies {
 	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 	implementation 'com.heroku.sdk:env-keystore:1.1.11'
 
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:8.0.0'
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:8.0.0'
-	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:8.0.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:8.4.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:8.4.0'
+	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:8.4.0'
 	implementation 'com.google.guava:guava:33.4.8-jre'
 	implementation 'org.apache.qpid:qpid-jms-client:2.7.0'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.783'
@@ -67,9 +76,9 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-    testImplementation "org.testcontainers:testcontainers:1.21.3"
-    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
-    testImplementation("org.assertj:assertj-core:3.27.3")
+  testImplementation "org.testcontainers:testcontainers:1.21.3"
+  testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
+  testImplementation("org.assertj:assertj-core:3.27.3")
 }
 
 test {
@@ -79,24 +88,27 @@ test {
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+	dependsOn test // tests are required to run before generating the report
 }
 
-task componentTest(type: Test) {
+tasks.register('componentTest', Test) {
 	useJUnitPlatform() {
 		includeTags 'component'
+
+		testClassesDirs = testing.suites.test.sources.output.classesDirs
+		classpath = testing.suites.test.sources.runtimeClasspath
 	}
 }
 
-task integrationTest(type: Test) {
+tasks.register('integrationTest', Test) {
 	useJUnitPlatform() {
 		description = 'Runs integration tests.'
 		group = 'verification'
 
 		testClassesDirs = sourceSets.intTest.output.classesDirs
 		classpath = sourceSets.intTest.runtimeClasspath
-		shouldRunAfter test
 	}
+	shouldRunAfter test
 }
 
 check.dependsOn componentTest

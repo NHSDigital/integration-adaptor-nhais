@@ -1,0 +1,20 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  push_to_dockerhub:
+    strategy:
+      matrix:
+        config:
+          - folder: .
+            dockerhub_name: nia-nhais-adaptor
+            upload_url: ${{ github.event.release.upload_url }}
+
+    uses: NHSDigital/integration-adaptor-actions/.github/workflows/release-adaptor-container-image.yml@main
+    with:
+        dockerhub_name: ${{matrix.config.dockerhub_name}}
+        folder: ${{matrix.config.folder}}
+        upload_url: ${{matrix.config.upload_url}}
+
+    secrets: inherit
