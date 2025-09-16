@@ -68,7 +68,7 @@ dependencies {
 	implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:8.4.0'
 	implementation 'com.google.guava:guava:33.4.8-jre'
 	implementation 'org.apache.qpid:qpid-jms-client:2.7.0'
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.783'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.791'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
