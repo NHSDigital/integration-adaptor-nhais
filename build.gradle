@@ -78,7 +78,7 @@ dependencies {
 
   testImplementation "org.testcontainers:testcontainers:1.21.3"
   testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.3.0'
-  testImplementation("org.assertj:assertj-core:3.27.4")
+  testImplementation("org.assertj:assertj-core:3.27.6")
 }
 
 test {
