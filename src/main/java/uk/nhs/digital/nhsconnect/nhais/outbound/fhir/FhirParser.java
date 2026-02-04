@@ -13,7 +13,6 @@ import uk.nhs.digital.nhsconnect.nhais.outbound.FhirValidationException;
 public class FhirParser {
 
     private final IParser parser;
-//    private final FhirValidator validator;
 
     /*
      * TODO: Consider revisiting validation if we are able to update to FHIR 5.x

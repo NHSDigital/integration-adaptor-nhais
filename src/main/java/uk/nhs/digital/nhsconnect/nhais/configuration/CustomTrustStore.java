@@ -48,8 +48,8 @@ public class CustomTrustStore {
         trustManagerFactory.init((KeyStore) null); // Using null here initialises the TMF with the default trust store.
 
         for (TrustManager tm : trustManagerFactory.getTrustManagers()) {
-            if (tm instanceof X509TrustManager) {
-                return (X509TrustManager) tm;
+            if (tm instanceof X509TrustManager x509TrustManager) {
+                return x509TrustManager;
             }
         }
         throw new IllegalStateException("Cannot find trust manager");
@@ -70,8 +70,8 @@ public class CustomTrustStore {
         }
 
         for (TrustManager tm : trustManagerFactory.getTrustManagers()) {
-            if (tm instanceof X509TrustManager) {
-                return (X509TrustManager) tm;
+            if (tm instanceof X509TrustManager x509TrustManager) {
+                return x509TrustManager;
             }
         }
         throw new IllegalStateException("Cannot find trust manager");

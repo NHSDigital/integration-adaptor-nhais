@@ -23,7 +23,7 @@ public class ResidentialInstituteNameAndAddress extends Segment {
     public static final String KEY = "NAD";
     public static final String QUALIFIER = "RIC";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
-    private final String code = "956";
+    private static final String CODE = "956";
     private @NonNull String identifier;
 
     @Override
@@ -33,7 +33,7 @@ public class ResidentialInstituteNameAndAddress extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + "+" + identifier + ":" + code;
+        return QUALIFIER + "+" + identifier + ":" + CODE;
     }
 
     @Override

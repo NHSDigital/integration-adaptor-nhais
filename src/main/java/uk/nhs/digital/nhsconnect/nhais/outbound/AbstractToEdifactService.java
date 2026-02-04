@@ -127,23 +127,17 @@ public abstract class AbstractToEdifactService<T extends CommonTranslationItems>
 
     protected void addSequenceNumbersToSegments(T translationItems) {
         for (Segment segment : translationItems.getSegments()) {
-            if (segment instanceof InterchangeHeader) {
-                InterchangeHeader interchangeHeader = (InterchangeHeader) segment;
+            if (segment instanceof InterchangeHeader interchangeHeader) {
                 interchangeHeader.setSequenceNumber(translationItems.getSendInterchangeSequence());
-            } else if (segment instanceof InterchangeTrailer) {
-                InterchangeTrailer interchangeTrailer = (InterchangeTrailer) segment;
+            } else if (segment instanceof InterchangeTrailer interchangeTrailer) {
                 interchangeTrailer.setSequenceNumber(translationItems.getSendInterchangeSequence());
-            } else if (segment instanceof MessageHeader) {
-                MessageHeader messageHeader = (MessageHeader) segment;
+            } else if (segment instanceof MessageHeader messageHeader) {
                 messageHeader.setSequenceNumber(translationItems.getSendMessageSequence());
-            } else if (segment instanceof MessageTrailer) {
-                MessageTrailer messageTrailer = (MessageTrailer) segment;
+            } else if (segment instanceof MessageTrailer messageTrailer) {
                 messageTrailer.setSequenceNumber(translationItems.getSendMessageSequence());
-            } else if (segment instanceof ReferenceTransactionNumber) {
-                ReferenceTransactionNumber referenceTransactionNumber = (ReferenceTransactionNumber) segment;
+            } else if (segment instanceof ReferenceTransactionNumber referenceTransactionNumber) {
                 referenceTransactionNumber.setTransactionNumber(translationItems.getTransactionNumber());
-            } else if (segment instanceof RegistrationMessageDateTime) {
-                RegistrationMessageDateTime registrationMessageDateTime = (RegistrationMessageDateTime) segment;
+            } else if (segment instanceof RegistrationMessageDateTime registrationMessageDateTime) {
                 registrationMessageDateTime.setTimestamp(translationItems.getTranslationTimestamp());
             }
         }

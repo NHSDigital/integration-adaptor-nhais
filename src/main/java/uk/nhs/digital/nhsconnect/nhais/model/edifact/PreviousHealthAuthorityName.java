@@ -17,8 +17,7 @@ public class PreviousHealthAuthorityName extends Segment {
     public static final String QUALIFIER = "PFH";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
     private @NonNull String identifier;
-    private final String code = "954";
-
+    private static final String CODE = "954";
 
     @Override
     public String getKey() {
@@ -27,7 +26,7 @@ public class PreviousHealthAuthorityName extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + "+" + identifier + ":" + code;
+        return QUALIFIER + "+" + identifier + ":" + CODE;
     }
 
     @Override
