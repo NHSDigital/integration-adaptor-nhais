@@ -18,7 +18,7 @@ public class NewHealthAuthorityName extends Segment {
     public static final String QUALIFIER = "NFH";
     public static final String KEY_QUALIFIER = KEY + "+" + QUALIFIER;
     private @NonNull String haName;
-    private final String code = "954";
+    private static final String CODE = "954";
 
     public static NewHealthAuthorityName fromString(String edifactString) {
         if (!edifactString.startsWith(NewHealthAuthorityName.KEY_QUALIFIER)) {
@@ -36,7 +36,7 @@ public class NewHealthAuthorityName extends Segment {
 
     @Override
     public String getValue() {
-        return QUALIFIER + "+" + haName + ":" + code;
+        return QUALIFIER + "+" + haName + ":" + CODE;
     }
 
     @Override

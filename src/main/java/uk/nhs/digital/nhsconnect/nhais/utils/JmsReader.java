@@ -9,11 +9,11 @@ import jakarta.jms.Message;
 public class JmsReader {
 
     public static String readMessage(Message message) throws JMSException {
-        if (message instanceof JmsTextMessage) {
-            return readTextMessage((JmsTextMessage) message);
+        if (message instanceof JmsTextMessage jmsTextMessage) {
+            return readTextMessage(jmsTextMessage);
         }
-        if (message instanceof JmsBytesMessage) {
-            return readBytesMessage((JmsBytesMessage) message);
+        if (message instanceof JmsBytesMessage jmsBytesMessage) {
+            return readBytesMessage(jmsBytesMessage);
         }
         if (message != null) {
             return message.getBody(String.class);

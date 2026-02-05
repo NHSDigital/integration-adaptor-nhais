@@ -17,11 +17,11 @@ public class ObjectSerializer {
 
     @SneakyThrows
     public String serialize(Object object) {
-        if (object instanceof IBaseResource) {
-            return fhirParser.encodeToString((IBaseResource) object);
+        if (object instanceof IBaseResource iBaseResource) {
+            return fhirParser.encodeToString(iBaseResource);
         }
-        if (object instanceof AmendmentBody) {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        if (object instanceof AmendmentBody amendmentBody) {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(amendmentBody);
         }
         throw new UnsupportedOperationException("Data type " + object.getClass().getSimpleName() + " is not supported");
     }

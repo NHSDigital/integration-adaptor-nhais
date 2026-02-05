@@ -163,8 +163,8 @@ public class MeshClient {
             LOGGER.debug("MESH '{}' request line: {}", type, request.getRequestLine());
             LOGGER.debug("MESH '{}' request headers: {}", type, request.getAllHeaders());
 
-            if (request instanceof HttpEntityEnclosingRequest) {
-                var entity = ((HttpEntityEnclosingRequest) request).getEntity();
+            if (request instanceof HttpEntityEnclosingRequest httpEntityEnclosingRequest) {
+                var entity = httpEntityEnclosingRequest.getEntity();
                 if (entity != null) {
                     LOGGER.debug("MESH '{}' request content line: {}", type, entity);
                     // request content is usually not "repeatable" so we can only decode it once. Log response content separately.

@@ -34,10 +34,9 @@ public class OperationOutcomeExceptionHandler extends ResponseEntityExceptionHan
         LOGGER.error("Creating OperationOutcome response for unhandled exception", ex);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, singletonList("application/json"));
-        if (ex instanceof OperationOutcomeError) {
-            OperationOutcomeError error = (OperationOutcomeError) ex;
-            String content = fhirParser.encodeToString(error.getOperationOutcome());
-            return new ResponseEntity<>(content, headers, error.getStatusCode());
+        if (ex instanceof OperationOutcomeError operationOutcomeError) {
+            String content = fhirParser.encodeToString(operationOutcomeError.getOperationOutcome());
+            return new ResponseEntity<>(content, headers, operationOutcomeError.getStatusCode());
         }
         OperationOutcome operationOutcome = OperationOutcomeUtils.createFromMessage(ex.getMessage());
         String content = fhirParser.encodeToString(operationOutcome);
