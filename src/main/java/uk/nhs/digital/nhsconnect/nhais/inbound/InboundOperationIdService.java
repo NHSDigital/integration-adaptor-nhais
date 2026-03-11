@@ -21,11 +21,9 @@ public class InboundOperationIdService {
             // inbound transactions matched to the outbound transaction by their transaction number use recipient
             // trading partner code to ensure the same OperationId is generated
             tradingPartnerCode = transaction.getMessage().getInterchange().getInterchangeHeader().getRecipient();
-        } else {
-            // inbound transactions not matched to an outbound transaction by transaction number use sender
-            // trading partner code to ensure the OperationId is unique
-            tradingPartnerCode = transaction.getMessage().getInterchange().getInterchangeHeader().getSender();
+            return OperationId.buildOperationId(tradingPartnerCode, transactionNumber);
         }
-        return OperationId.buildOperationId(tradingPartnerCode, transactionNumber);
+        // inbound transactions that can't be matched to an outbound transaction don't return an OperationId
+        return null;
     }
 }
