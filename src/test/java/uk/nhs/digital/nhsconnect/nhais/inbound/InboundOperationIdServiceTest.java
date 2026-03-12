@@ -50,15 +50,15 @@ public class InboundOperationIdServiceTest {
     private void beforeEach() {
         when(transaction.getMessage()).thenReturn(message);
         when(transaction.getReferenceTransactionNumber()).thenReturn(referenceTransactionNumber);
-        when(message.getInterchange()).thenReturn(interchange);
         when(message.getReferenceTransactionType()).thenReturn(referenceTransactionType);
-        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(referenceTransactionNumber.getTransactionNumber()).thenReturn(TN);
     }
 
     @ParameterizedTest
     @EnumSource(value = ReferenceTransactionType.Inbound.class, names = {"APPROVAL", "REJECTION"})
     public void When_ApprovalOrRejectionTransaction_Expect_OperationIdUsesRecipient(ReferenceTransactionType.Inbound transactionType) {
+        when(message.getInterchange()).thenReturn(interchange);
+        when(interchange.getInterchangeHeader()).thenReturn(interchangeHeader);
         when(referenceTransactionType.getTransactionType()).thenReturn(transactionType);
         when(interchangeHeader.getRecipient()).thenReturn(RECIPIENT);
         assertThat(RECIPIENT_OID).isEqualTo(operationIdService.createOperationIdForTransaction(transaction));
@@ -66,10 +66,9 @@ public class InboundOperationIdServiceTest {
 
     @ParameterizedTest
     @EnumSource(value = ReferenceTransactionType.Inbound.class, names = {"APPROVAL", "REJECTION"}, mode = EnumSource.Mode.EXCLUDE)
-    public void When_AllOtherTransactions_Expect_OperationIdUsesSender(ReferenceTransactionType.Inbound transactionType) {
+    public void When_AllOtherTransactions_Expect_OperationIdNotGenerated(ReferenceTransactionType.Inbound transactionType) {
         when(referenceTransactionType.getTransactionType()).thenReturn(transactionType);
-        when(interchangeHeader.getSender()).thenReturn(SENDER);
-        assertThat(SENDER_OID).isEqualTo(operationIdService.createOperationIdForTransaction(transaction));
+        assertThat(operationIdService.createOperationIdForTransaction(transaction)).isNull();
     }
 
 }

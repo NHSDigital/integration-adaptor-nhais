@@ -59,9 +59,7 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
     private static final ReferenceTransactionType.Inbound MESSAGE_2_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.DEDUCTION;
     private static final ReferenceTransactionType.Inbound MESSAGE_3_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.REJECTION;
     private static final ReferenceTransactionType.Inbound MESSAGE_4_TRANSACTION_TYPE = ReferenceTransactionType.Inbound.APPROVAL;
-    private static final String TRANSACTION_1_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_1);
-    private static final String TRANSACTION_2_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_2);
-    private static final String TRANSACTION_3_OPERATION_ID = OperationId.buildOperationId(SENDER, TN_3);
+    private static final String NULL_OPERATION_ID = null;
     private static final String TRANSACTION_4_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_4);
     private static final String TRANSACTION_5_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_5);
     private static final String TRANSACTION_6_OPERATION_ID = OperationId.buildOperationId(RECIPIENT, TN_6);
@@ -168,11 +166,11 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
             .toList();
 
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(TN1_INDEX), MESSAGE_1_TRANSACTION_TYPE, TRANSACTION_1_OPERATION_ID, fhirTN1);
+            softly, gpSystemInboundQueueMessages.get(TN1_INDEX), MESSAGE_1_TRANSACTION_TYPE, NULL_OPERATION_ID, fhirTN1);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(TN2_INDEX), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_2_OPERATION_ID, fhirTN2);
+            softly, gpSystemInboundQueueMessages.get(TN2_INDEX), MESSAGE_2_TRANSACTION_TYPE, NULL_OPERATION_ID, fhirTN2);
         assertGpSystemInboundQueueMessages(
-            softly, gpSystemInboundQueueMessages.get(TN3_INDEX), MESSAGE_2_TRANSACTION_TYPE, TRANSACTION_3_OPERATION_ID, fhirTN3);
+            softly, gpSystemInboundQueueMessages.get(TN3_INDEX), MESSAGE_2_TRANSACTION_TYPE, NULL_OPERATION_ID, fhirTN3);
         assertGpSystemInboundQueueMessages(
             softly, gpSystemInboundQueueMessages.get(TN4_INDEX), MESSAGE_3_TRANSACTION_TYPE, TRANSACTION_4_OPERATION_ID, fhirTN4);
         assertGpSystemInboundQueueMessages(
@@ -211,11 +209,11 @@ public class InboundMeshQueueMultiTransactionTest extends IntegrationBaseTest {
         softly.assertThat(inboundStates).hasSize(INBOUND_STATE_EXPECTED_SIZE);
 
         assertInboundState(
-            softly, inboundStates.get(TN1_INDEX), TRANSACTION_1_OPERATION_ID, SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN1_INDEX), NULL_OPERATION_ID, SMS_1, TN_1, MESSAGE_1_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(TN2_INDEX), TRANSACTION_2_OPERATION_ID, SMS_2, TN_2, MESSAGE_2_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN2_INDEX), NULL_OPERATION_ID, SMS_2, TN_2, MESSAGE_2_TRANSACTION_TYPE);
         assertInboundState(
-            softly, inboundStates.get(TN3_INDEX), TRANSACTION_3_OPERATION_ID, SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE);
+            softly, inboundStates.get(TN3_INDEX), NULL_OPERATION_ID, SMS_2, TN_3, MESSAGE_2_TRANSACTION_TYPE);
         assertInboundState(
             softly, inboundStates.get(TN4_INDEX), TRANSACTION_4_OPERATION_ID, SMS_3, TN_4, MESSAGE_3_TRANSACTION_TYPE);
         assertInboundState(

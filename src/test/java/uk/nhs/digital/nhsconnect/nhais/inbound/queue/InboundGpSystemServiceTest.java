@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,6 +21,7 @@ import jakarta.jms.TextMessage;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 public class InboundGpSystemServiceTest {
@@ -72,6 +74,37 @@ public class InboundGpSystemServiceTest {
 
         verify(session).createTextMessage(eq(serializedData));
         verify(textMessage).setStringProperty("OperationId", operationId);
+        verify(textMessage).setStringProperty("TransactionType", transactionType.name().toLowerCase());
+        verify(textMessage).setStringProperty("ConversationId", "ABC123");
+    }
+
+    @Test
+    public void testPublishToGpSupplierQueueOmitsOperationIdHeaderWhenNoOperationIdPresent() throws JMSException {
+        Parameters parameters = new Parameters();
+        String operationId = null;
+        ReferenceTransactionType.TransactionType transactionType = ReferenceTransactionType.Outbound.ACCEPTANCE;
+
+        var dataToSend = new InboundGpSystemService.DataToSend()
+                .setOperationId(operationId)
+                .setTransactionType(transactionType)
+                .setContent(parameters);
+
+        String serializedData = "some_serialized_data";
+        when(serializer.serialize(parameters)).thenReturn(serializedData);
+        when(conversationIdService.getCurrentConversationId()).thenReturn("ABC123");
+
+        inboundGpSystemService.publishToSupplierQueue(dataToSend);
+
+        var messageCreatorArgumentCaptor = ArgumentCaptor.forClass(MessageCreator.class);
+
+        verify(jmsTemplate).send(eq(gpSystemInboundQueueName), messageCreatorArgumentCaptor.capture());
+
+        when(session.createTextMessage(serializedData)).thenReturn(textMessage);
+
+        messageCreatorArgumentCaptor.getValue().createMessage(session);
+
+        verify(session).createTextMessage(eq(serializedData));
+        verify(textMessage, never()).setStringProperty(eq("OperationId"), Mockito.anyString());
         verify(textMessage).setStringProperty("TransactionType", transactionType.name().toLowerCase());
         verify(textMessage).setStringProperty("ConversationId", "ABC123");
     }
