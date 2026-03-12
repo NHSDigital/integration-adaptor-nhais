@@ -32,7 +32,7 @@ public class InboundGpSystemService {
         LOGGER.debug("Encoded FHIR to string: {}", jsonMessage);
         jmsTemplate.send(gpSystemInboundQueueName, session -> {
             var message = session.createTextMessage(jsonMessage);
-            if(dataToSend.getOperationId() != null) {
+            if (dataToSend.getOperationId() != null) {
                 message.setStringProperty(JmsHeaders.OPERATION_ID, dataToSend.getOperationId());
             }
             message.setStringProperty(JmsHeaders.TRANSACTION_TYPE, dataToSend.getTransactionType().name().toLowerCase());
