@@ -36,7 +36,7 @@ specification" except where it directly involves EDIFACT. The specification cont
 the GP System itself which are out of scope for the adaptor.
 
 The patient registration and demographics portion of the former NHS NHAIS system was called 
-[HA/GP Links](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation). PCRM may support some 
+[HA/GP Links](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentationn). PCRM may support some 
 features in addition to GP Links, but these are out of scope for the GP Links Adaptor API.
 
 HA/GP Links messaging comprises several types of "transactions" used to update and reconcile patient lists and 
@@ -127,11 +127,11 @@ system concern.
 
 ## Adaptor Architecture
 
-[NHS Digital Developer Hub - NHAIS GP Links adaptor](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/nhais-gp-links-adaptor)
+[NHS Digital Developer Hub - NHAIS GP Links adaptor](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)
 
 ## Resources
 
-**[Guide to NHAIS/GP links documentation](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation)**
+**[Guide to NHAIS/GP links documentation](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)**
 
 The "Guide to NHAIS/GP links documentation" describes how to use the "NHAIS developer document library" (see below) and 
 provides updates and clarifications to the original documentation.
