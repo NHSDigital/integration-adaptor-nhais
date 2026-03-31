@@ -5,7 +5,7 @@ import org.hl7.fhir.r4.model.Identifier;
 
 @DatatypeDef(name = "Identifier")
 public class ManagingOrganizationIdentifier extends Identifier {
-    private static final String SYSTEM = "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation";
+    private static final String SYSTEM = "https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation";
 
     public ManagingOrganizationIdentifier(String organizationId) {
         super();
