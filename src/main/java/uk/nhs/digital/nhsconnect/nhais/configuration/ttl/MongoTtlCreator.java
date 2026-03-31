@@ -27,7 +27,7 @@ public class MongoTtlCreator extends TtlCreator {
             );
             super.getIndexOperations().dropIndex(TTL_INDEX_NAME);
         }
-        super.getIndexOperations().ensureIndex(
+        super.getIndexOperations().createIndex(
             new Index()
                 .expire(super.getDuration())
                 .named(TTL_INDEX_NAME)
