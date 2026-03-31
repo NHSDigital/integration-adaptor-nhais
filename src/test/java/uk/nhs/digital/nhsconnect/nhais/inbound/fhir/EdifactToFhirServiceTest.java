@@ -118,7 +118,7 @@ class EdifactToFhirServiceTest {
         String gpTradingPartnerCode = parametersExt.extractValue("gpTradingPartnerCode");
 
         assertThat(patient.getManagingOrganization().getIdentifier().getSystem())
-            .isEqualTo("https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation");
+            .isEqualTo("https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation");
         assertThat(patient.getManagingOrganization().getIdentifier().getValue()).isEqualTo("XX1");
 
         assertThat(patient.getGeneralPractitionerFirstRep().getIdentifier().getSystem())
