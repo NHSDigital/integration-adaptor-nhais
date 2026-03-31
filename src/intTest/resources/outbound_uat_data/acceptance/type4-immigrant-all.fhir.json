@@ -42,7 +42,7 @@
         "managingOrganization": {
           "identifier": [
             {
-              "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation",
+              "system": "https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation",
               "value": "XX1"
             }
           ]

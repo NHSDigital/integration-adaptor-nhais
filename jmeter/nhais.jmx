@@ -130,7 +130,7 @@
         &quot;managingOrganization&quot;: {&#xd;
           &quot;identifier&quot;: [&#xd;
             {&#xd;
-              &quot;system&quot;: &quot;https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation&quot;,&#xd;
+              &quot;system&quot;: &quot;https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation&quot;,&#xd;
               &quot;value&quot;: &quot;XX1&quot;&#xd;
             }&#xd;
           ]&#xd;
@@ -409,7 +409,7 @@
         &quot;managingOrganization&quot;: {&#xd;
           &quot;identifier&quot;: [&#xd;
             {&#xd;
-              &quot;system&quot;: &quot;https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation&quot;,&#xd;
+              &quot;system&quot;: &quot;https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation&quot;,&#xd;
               &quot;value&quot;: &quot;XX1&quot;&#xd;
             }&#xd;
           ]&#xd;
@@ -495,7 +495,7 @@
         &quot;managingOrganization&quot;: {&#xd;
           &quot;identifier&quot;: [&#xd;
             {&#xd;
-              &quot;system&quot;: &quot;https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation&quot;,&#xd;
+              &quot;system&quot;: &quot;https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation&quot;,&#xd;
               &quot;value&quot;: &quot;XX1&quot;&#xd;
             }&#xd;
           ]&#xd;
