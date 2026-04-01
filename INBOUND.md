@@ -29,7 +29,7 @@ other transactions. See "Transaction Matching" section below for more details.
 | fp69_flag_removal            | FHIR      | FP69 Flag Removal
 | amendment                    | JSONPatch | Amendment
 
-Some transaction types are [obsolete](https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation) and 
+Some transaction types are [obsolete](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation) and 
 not supported by the adaptor:
 
 * MRF and MRS (Medical Records) transactions
@@ -89,7 +89,7 @@ GP Links Specification Chapter 3.16.3 lists data fields and their requirements f
 | Transaction Type          | N/A           | N/A                                     | N/A                      | N/A                                | See "TransactionType" message header
 | GP Trading Partner Code   | Parameters    | gpTradingPartnerCode                    | valueString              |                                    |                                                                                         |
 | GP Code                   | Patient       | /generalPractitioner/0/identifier/value |                          |                                    | "system": "https://fhir.hl7.org.uk/Id/gmc-number"                                       |
-| Sending HA Cipher         | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation" |
+| Sending HA Cipher         | Patient       | /managingOrganization/identifier/value  |                          |                                    | "system": "https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation" |
 | Transaction Date and Time | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor
 | Transaction Number        | N/A           | N/A                                     | N/A                      | N/A                                | Managed by the adaptor and abstracted by the OperationId message header
 | NHS Number                | Patient       | /identifier/0/value                     |                          |                                    | "system": "https://fhir.nhs.uk/Id/nhs-number"                                           |
