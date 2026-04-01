@@ -25,7 +25,7 @@ info:
     this adaptor for ANY transaction type.
     
     ## Technology
-    This API is [RESTful](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#basic-rest) and expects and responds with JSON data formats.
+    This API is [RESTful](https://digital.nhs.uk/developer/getting-started#learn-about-our-apis) and expects and responds with JSON data formats.
     
     It also conforms to the [FHIR](https://digital.nhs.uk/developer/developer-reference/introduction-to-apis#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
@@ -161,7 +161,7 @@ paths:
         Refer to GP Links Specification Chapter 3 for the complete requirements for deductions. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+        [Guide to NHAIS GP links](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)
 
         | GP Links Data Item      | Deduction |
         |-------------------------|-----------|
@@ -251,7 +251,7 @@ paths:
         Refer to GP Links Specification Chapter 3 for the complete requirements for removals. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+        [Guide to NHAIS GP links](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)
 
         | GP Links Data Item      | Removal  |
         |-------------------------|----------|
@@ -338,7 +338,7 @@ paths:
         Refer to GP Links Specification Chapter 3 for the complete requirements for manually-entered acceptances. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+        [Guide to NHAIS GP links](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)
 
         The following fields are OBSOLETE and not supported by the adaptor:
 
@@ -513,7 +513,7 @@ paths:
         Refer to GP Links Specification Chapter 3.5 for the complete requirements for manually-entered amendments. The
         values sent to the adaptor must comply with the GP Links Specification and FHSREG:0:1:FH:FHS001.
 
-        https://digital.nhs.uk/services/nhais/guide-to-nhais-gp-links-documentation
+        [Guide to NHAIS GP links](https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links/guide-to-nhais-gp-links-documentation)
 
         Three fields are obsolete and not supported by the adaptor:
 
